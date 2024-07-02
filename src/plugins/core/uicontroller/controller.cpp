@@ -16,6 +16,7 @@
 #include "modules/documentfindmodule.h"
 #include "modules/contextmodule.h"
 #include "modules/notificationmodule.h"
+#include "modules/dependencemodule.h"
 #include "locator/locatormanager.h"
 #include "find/placeholdermanager.h"
 #include "common/util/utils.h"
@@ -139,6 +140,7 @@ Controller::Controller(QObject *parent)
     registerModule("docFindModule", new DocumentFindModule());
     registerModule("contextModule", new ContextModule());
     registerModule("notifyModule", new NotificationModule());
+    registerModule("dependenceModule", new DependenceModule());
     initModules();
 }
 

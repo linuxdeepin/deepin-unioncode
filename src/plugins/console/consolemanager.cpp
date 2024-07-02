@@ -10,6 +10,7 @@
 #include <DDialog>
 #include <DFrame>
 
+#include <QUuid>
 #include <QHBoxLayout>
 #include <QListView>
 #include <QSplitter>
@@ -17,14 +18,26 @@
 
 DWIDGET_USE_NAMESPACE
 
-class ConsoleManagerPrivate
+const int IdRole = Qt::UserRole + 1;
+
+class ConsoleManagerPrivate : public QObject
 {
 public:
-    friend class ConsoleManager;
+    explicit ConsoleManagerPrivate(ConsoleManager *qq);
 
-    QHBoxLayout *mainLayout { nullptr };
-    ConsoleWidget *currentConsole { nullptr };
-    QList<ConsoleWidget *> consoleList;
+    void initUI();
+    void initConnection();
+
+    void createDefaultConsole();
+    void appendConsole();
+    void removeConsole();
+    void switchConsole(const QModelIndex &index, const QModelIndex &previous);
+    void updateButtonState();
+
+public:
+    ConsoleManager *q;
+
+    QMap<QString, ConsoleWidget *> consoleMap;
     DStackedWidget *consoleStackedWidget { nullptr };
     QListView *consoleListView { nullptr };
     QStandardItemModel *model { nullptr };
@@ -32,11 +45,113 @@ public:
     DToolButton *removeConsoleBtn { nullptr };
 };
 
-ConsoleManager::ConsoleManager(QWidget *parent)
-    : QWidget(parent), d(new ConsoleManagerPrivate)
+ConsoleManagerPrivate::ConsoleManagerPrivate(ConsoleManager *qq)
+    : q(qq)
 {
-    initUI();
-    initConnection();
+}
+
+void ConsoleManagerPrivate::initUI()
+{
+    auto mainLayout = new QHBoxLayout(q);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    consoleStackedWidget = new DStackedWidget(q);
+    consoleStackedWidget->setMinimumWidth(500);
+    consoleStackedWidget->setContentsMargins(0, 0, 0, 0);
+
+    DFrame *listViewFrame = new DFrame(q);
+    listViewFrame->setLineWidth(0);
+    DStyle::setFrameRadius(listViewFrame, 0);
+
+    consoleListView = new QListView(listViewFrame);
+    consoleListView->setLineWidth(0);
+    model = new QStandardItemModel(consoleListView);
+    consoleListView->setModel(model);
+
+    addConsoleBtn = new DToolButton(listViewFrame);
+    removeConsoleBtn = new DToolButton(listViewFrame);
+
+    addConsoleBtn->setIcon(QIcon::fromTheme("binarytools_add"));
+    removeConsoleBtn->setIcon(QIcon::fromTheme("binarytools_reduce"));
+    removeConsoleBtn->setEnabled(false);
+
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addWidget(addConsoleBtn);
+    btnLayout->addWidget(removeConsoleBtn);
+    btnLayout->setContentsMargins(0, 0, 0, 0);
+    btnLayout->setAlignment(Qt::AlignLeft);
+    btnLayout->setSpacing(5);
+
+    QVBoxLayout *listViewLayout = new QVBoxLayout(listViewFrame);
+    listViewLayout->addLayout(btnLayout);
+    listViewLayout->addWidget(consoleListView);
+    listViewLayout->setContentsMargins(0, 0, 0, 0);
+
+    QSplitter *splitter = new QSplitter(q);
+    splitter->addWidget(consoleStackedWidget);
+    splitter->addWidget(listViewFrame);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 0);
+    splitter->setHandleWidth(2);
+
+    mainLayout->addWidget(splitter);
+}
+
+void ConsoleManagerPrivate::initConnection()
+{
+    connect(consoleListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &ConsoleManagerPrivate::switchConsole);
+    connect(addConsoleBtn, &DToolButton::clicked, this, &ConsoleManagerPrivate::appendConsole);
+    connect(removeConsoleBtn, &DToolButton::clicked, this, &ConsoleManagerPrivate::removeConsole);
+    connect(model, &QStandardItemModel::rowsRemoved, this, &ConsoleManagerPrivate::updateButtonState);
+    connect(model, &QStandardItemModel::rowsInserted, this, &ConsoleManagerPrivate::updateButtonState);
+}
+
+void ConsoleManagerPrivate::createDefaultConsole()
+{
+    q->createConsole(ConsoleManager::tr("Console"));
+}
+
+void ConsoleManagerPrivate::appendConsole()
+{
+    q->createConsole(ConsoleManager::tr("New Console"));
+}
+
+void ConsoleManagerPrivate::removeConsole()
+{
+    auto index = consoleListView->currentIndex();
+    if (!index.isValid())
+        return;
+
+    auto id = index.data(IdRole).toString();
+    if (auto console = q->findConsole(id)) {
+        consoleStackedWidget->removeWidget(console);
+        console->deleteLater();
+    }
+
+    model->removeRow(index.row());
+    consoleMap.remove(id);
+}
+
+void ConsoleManagerPrivate::switchConsole(const QModelIndex &index, const QModelIndex &previous)
+{
+    auto id = index.data(IdRole).toString();
+    if (auto console = q->findConsole(id)) {
+        console->setFocus();
+        consoleStackedWidget->setCurrentWidget(console);
+    }
+}
+
+void ConsoleManagerPrivate::updateButtonState()
+{
+    removeConsoleBtn->setEnabled(model->rowCount() > 1);
+}
+
+ConsoleManager::ConsoleManager(QWidget *parent)
+    : QWidget(parent),
+      d(new ConsoleManagerPrivate(this))
+{
+    d->initUI();
+    d->initConnection();
 }
 
 ConsoleManager::~ConsoleManager()
@@ -44,122 +159,62 @@ ConsoleManager::~ConsoleManager()
     delete d;
 }
 
-void ConsoleManager::initUI()
-{
-    d->mainLayout = new QHBoxLayout(this);
-    d->mainLayout->setContentsMargins(0, 0, 0, 0);
-
-    d->consoleStackedWidget = new DStackedWidget(this);
-    d->consoleStackedWidget->setMinimumWidth(500);
-    d->consoleStackedWidget->setContentsMargins(0, 0, 0, 0);
-
-    DFrame *listViewFrame = new DFrame(this);
-    listViewFrame->setLineWidth(0);
-    DStyle::setFrameRadius(listViewFrame, 0);
-
-    d->consoleListView = new QListView(listViewFrame);
-    d->consoleListView->setLineWidth(0);
-    d->model = new QStandardItemModel(d->consoleListView);
-    d->consoleListView->setModel(d->model);
-
-    d->addConsoleBtn = new DToolButton(listViewFrame);
-    d->removeConsoleBtn = new DToolButton(listViewFrame);
-
-    d->addConsoleBtn->setIcon(QIcon::fromTheme("binarytools_add"));
-    d->removeConsoleBtn->setIcon(QIcon::fromTheme("binarytools_reduce"));
-    d->removeConsoleBtn->setEnabled(false);
-
-    QHBoxLayout *btnLayout = new QHBoxLayout();
-    btnLayout->addWidget(d->addConsoleBtn);
-    btnLayout->addWidget(d->removeConsoleBtn);
-    btnLayout->setContentsMargins(0, 0, 0, 0);
-    btnLayout->setAlignment(Qt::AlignLeft);
-    btnLayout->setSpacing(5);
-
-    QVBoxLayout *listViewLayout = new QVBoxLayout(listViewFrame);
-    listViewLayout->addLayout(btnLayout);
-    listViewLayout->addWidget(d->consoleListView);
-    listViewLayout->setContentsMargins(0, 0, 0, 0);
-
-    d->mainLayout->addWidget(d->consoleStackedWidget);
-
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(d->consoleStackedWidget);
-    splitter->addWidget(listViewFrame);
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 0);
-    splitter->setHandleWidth(2);
-
-    d->mainLayout->addWidget(splitter);
-}
-
-void ConsoleManager::initConnection()
-{
-    connect(d->consoleListView, &QListView::clicked, this, &ConsoleManager::switchConsole);
-    connect(d->addConsoleBtn, &DToolButton::clicked, this, &ConsoleManager::appendConsole);
-    connect(d->removeConsoleBtn, &DToolButton::clicked, this, &ConsoleManager::removeConsole);
-    connect(d->model, &QStandardItemModel::rowsRemoved, this, [=](){
-        bool enable = d->consoleList.count() > 1;
-        d->removeConsoleBtn->setEnabled(enable);
-    });
-}
-
-QTermWidget *ConsoleManager::getCurrentConsole()
+QTermWidget *ConsoleManager::currentConsole()
 {
     //todo: when switch to other project`s path, open a new console
-    return d->currentConsole;
+    auto index = d->consoleListView->currentIndex();
+    if (!index.isValid())
+        return nullptr;
+
+    auto id = index.data(IdRole).toString();
+    return findConsole(id);
 }
 
-void ConsoleManager::executeCommand(const QString &text)
+QTermWidget *ConsoleManager::findConsole(const QString &id)
 {
-    if (!d->currentConsole)
-        initDefaultConsole();
-    d->currentConsole->sendText(text);
+    return d->consoleMap.value(id, nullptr);
+}
+
+QTermWidget *ConsoleManager::createConsole(const QString &name)
+{
+    auto id = QUuid::createUuid().toString();
+    ConsoleWidget *console = new ConsoleWidget(this);
+    d->consoleMap.insert(id, console);
+    d->consoleStackedWidget->addWidget(console);
+
+    QStandardItem *item = new QStandardItem(name);
+    item->setData(id, IdRole);
+    d->model->appendRow(item);
+    d->consoleListView->setCurrentIndex(d->model->index(d->model->rowCount() - 1, 0));
+
+    return console;
+}
+
+void ConsoleManager::sendCommand(const QString &text)
+{
+    if (!currentConsole())
+        d->createDefaultConsole();
+
+    currentConsole()->sendText(text);
+}
+
+void ConsoleManager::executeCommand(const QString &name, const QString &program, const QStringList &args, const QString &workingDir)
+{
+    auto console = createConsole(name);
+    auto dir = workingDir;
+    if (!dir.isEmpty() && QFile::exists(dir)) {
+        console->changeDir(dir);
+        console->sendText("clear\n");
+    }
+
+    QString cmd = program + ' ';
+    cmd += args.join(' ') + '\n';
+    console->sendText(cmd);
 }
 
 void ConsoleManager::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
-    if (!d->currentConsole)
-        initDefaultConsole();
-}
-
-void ConsoleManager::initDefaultConsole()
-{
-    auto defaultConsole = new ConsoleWidget(this);
-    d->consoleList.append(defaultConsole);
-    d->currentConsole = defaultConsole;
-    d->consoleStackedWidget->addWidget(defaultConsole);
-
-    QStandardItem *item = new QStandardItem(tr("Console"));
-    d->model->appendRow(item);
-}
-
-void ConsoleManager::appendConsole()
-{
-    ConsoleWidget *console = new ConsoleWidget(this);
-    d->consoleList.append(console);
-    d->consoleStackedWidget->addWidget(console);
-    d->consoleStackedWidget->setCurrentWidget(console);
-    d->currentConsole = console;
-
-    QStandardItem *item = new QStandardItem(tr("New Console"));
-    d->model->appendRow(item);
-    d->consoleListView->setCurrentIndex(d->model->index(d->model->rowCount() - 1, 0));
-    d->removeConsoleBtn->setEnabled(true);
-}
-
-void ConsoleManager::removeConsole()
-{
-    d->consoleStackedWidget->removeWidget(d->currentConsole);
-    d->consoleList.removeOne(d->currentConsole);
-    d->model->removeRow(d->consoleListView->currentIndex().row());
-    delete d->currentConsole;
-    d->currentConsole = d->consoleList.at(d->consoleListView->currentIndex().row());
-}
-
-void ConsoleManager::switchConsole(const QModelIndex &index)
-{
-    d->consoleStackedWidget->setCurrentIndex(index.row());
-    d->currentConsole = d->consoleList.at(index.row());
+    if (!currentConsole())
+        d->createDefaultConsole();
 }

@@ -34,6 +34,10 @@ const char PLUGIN_LICENSE[] = "License";
 const char PLUGIN_URLLINK[] = "UrlLink";
 /// @nrief PLUGIN_VENDOR 插件依赖
 const char PLUGIN_DEPENDS[] = "Depends";
+/// @nrief PLUGIN_INSTALLDEPENDS 插件安装依赖
+const char PLUGIN_INSTALLDEPENDS[] = "InstallDepends";
+const char PLUGIN_INSTALLERNAME[] = "InstallerName";
+const char PLUGIN_PACKAGES[] = "Packages";
 
 class PluginMetaObject;
 class PluginMetaObjectPrivate
@@ -56,6 +60,7 @@ public:
     QString error;
     PluginMetaObject::State state;
     QList<PluginDepend> depends;
+    QList<PluginInstallDepend> installDepends;
     QSharedPointer<Plugin> plugin;
     QSharedPointer<QPluginLoader> loader;
     QSharedPointer<PluginContext> context;

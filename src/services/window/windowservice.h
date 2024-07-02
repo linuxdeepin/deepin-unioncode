@@ -20,6 +20,7 @@ class Core;
 class AbstractAction;
 class AbstractMenu;
 class AbstractWidget;
+class AbstractInstaller;
 
 namespace Priority {
 const quint8 lowest = 255;
@@ -203,6 +204,15 @@ public:
     DPF_INTERFACE(void, notify, uint type, const QString &name, const QString &msg, const QStringList &actions);
     using NotifyCallback = std::function<void(const QString &actId)>;
     DPF_INTERFACE(void, notifyWithCallback, uint type, const QString &name, const QString &msg, const QStringList &actions, NotifyCallback cb);
+
+    DPF_INTERFACE(void, registerInstaller, const QString &name, AbstractInstaller *installer);
+    /**
+     * @param plugin: plugin name
+     * @param name: installer name, with apt and pip by default
+     * @param packageList: installation package list
+     * @param error: error message
+     */
+    DPF_INTERFACE(bool, installPackages, const QString &plugin, const QString &name, const QStringList &packageList, QString *error);
 };
 
 }   // namespace dpfservice

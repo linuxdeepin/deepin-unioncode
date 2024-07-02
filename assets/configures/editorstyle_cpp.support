@@ -19,7 +19,7 @@
             "Foreground": "#d6bb9a"
         },
         "Property": {
-            "Foreground": "#ff8080"
+            "Foreground": "#d6cf9a"
         },
         "Parameter": {
             "Foreground": "#d6bb9a"
@@ -75,7 +75,7 @@
             "Foreground": "#092e64"
         },
         "Property": {
-            "Foreground": "#800080"
+            "Foreground": "#800000"
         },
         "Parameter": {
             "Foreground": "#092e64"
