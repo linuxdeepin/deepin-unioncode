@@ -17,6 +17,7 @@
 
 class ControllerPrivate;
 class AbstractModule;
+class WidgetInfo;
 class Controller : public QObject
 {
     Q_OBJECT
@@ -40,6 +41,8 @@ public slots:
     void insertWidget(const QString &name, Position pos, Qt::Orientation orientation);
     void hideWidget(const QString &name);
     void showWidgetAtPosition(const QString &name, Position pos, bool replace = true);
+    void resizeDocks(const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation);
+    void setDockHeaderName(const QString &dockName, const QString &headerName);
 
     void addNavigationItem(AbstractAction *action, quint8 priority);
     void addNavigationItemToBottom(AbstractAction *action, quint8 priority);
@@ -81,6 +84,7 @@ private:
     ControllerPrivate *d;
 
     void registerService();
+    void createDockWidget(WidgetInfo &info);
 
     //show loadingwidget
     void loading();

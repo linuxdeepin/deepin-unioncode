@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
+#include "common/util/eventdefinitions.h"
 
 #include <DTitlebar>
 #include <DStatusBar>
@@ -62,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     addTopToolBar();
-    setContextMenuPolicy(Qt::NoContextMenu);  //donot show left toolbar`s contextmenu
+    setContextMenuPolicy(Qt::NoContextMenu);   //donot show left toolbar`s contextmenu
     //setStyleSheet("QMainWindow::separator { width: 2px; margin: 0px; padding: 0px; }");
 
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
@@ -129,11 +130,11 @@ void MainWindow::addToolBtnToDockHeader(const QString &dockName, DToolButton *bt
         titleBar->addToolButton(btn);
 }
 
-void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
+QDockWidget *MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
 {
     if (d->dockList.contains(name)) {
         qWarning() << "dockWidget-" << name << "is already exist";
-        return;
+        return nullptr;
     }
 
     if (pos == Position::FullWindow)
@@ -146,7 +147,7 @@ void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
         setCentralWidget(widget);
         d->centralWidgetName = name;
         d->centralWidgets.insert(name, widget);
-        return;
+        return nullptr;
     }
 
     auto area = positionTodockArea(pos);
@@ -160,18 +161,19 @@ void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
 
     //add close btn to dock`s header
     initDockHeader(dock, pos);
+    return dock;
 }
 
-void MainWindow::addWidget(const QString &name, QWidget *widget, dpfservice::Position pos, Qt::Orientation orientation)
+QDockWidget *MainWindow::addWidget(const QString &name, QWidget *widget, dpfservice::Position pos, Qt::Orientation orientation)
 {
     if (d->dockList.contains(name)) {
         qWarning() << "dockWidget-" << name << "is already exist";
-        return;
+        return nullptr;
     }
 
     if (pos == Position::Central || pos == Position::FullWindow) {
         addWidget(name, widget, pos);
-        return;
+        return nullptr;
     }
 
     auto area = positionTodockArea(pos);
@@ -185,6 +187,7 @@ void MainWindow::addWidget(const QString &name, QWidget *widget, dpfservice::Pos
 
     //add close btn to dock`s header
     initDockHeader(dock, pos);
+    return dock;
 }
 
 void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
@@ -200,12 +203,13 @@ void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
 
     addToolBtnToDockHeader(d->dockList.key(dock), closeBtn);
 
-    connect(closeBtn, &DToolButton::clicked, dock, [=](){
+    connect(closeBtn, &DToolButton::clicked, dock, [=]() {
+        auto dockName = d->dockList.key(dock);
         if (dock->isVisible()) {
             dock->hide();
         } else {
             dock->show();
-            resizeDock(d->dockList.key(dock), QSize(300, 300));
+            resizeDock(dockName, QSize(300, 300));
         }
     });
 }
@@ -223,13 +227,11 @@ void MainWindow::resizeDock(QDockWidget *dock)
     }
 
     //(100, 30) means dockWidget havn`t init
-    if(size == QSize(100, 30))
+    if (size == QSize(100, 30))
         size = QSize(300, 300);
 
-    if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
-        resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
-    else
-        resizeDocks({ dock }, { size.height() }, Qt::Vertical);
+    resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
+    resizeDocks({ dock }, { size.height() }, Qt::Vertical);
 }
 
 void MainWindow::resizeDock(const QString &dockName, QSize size)
@@ -238,11 +240,9 @@ void MainWindow::resizeDock(const QString &dockName, QSize size)
         return;
 
     auto dock = d->dockList[dockName];
-    auto area = dockWidgetArea(dock);
-    if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
-        resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
-    else
-        resizeDocks({ dock }, { size.height() }, Qt::Vertical);
+
+    resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
+    resizeDocks({ dock }, { size.height() }, Qt::Vertical);
 }
 
 void MainWindow::replaceWidget(const QString &name, QWidget *widget, Position pos)
@@ -277,23 +277,29 @@ void MainWindow::removeWidget(Position pos)
     }
 }
 
-QString MainWindow::getCurrentDockName(dpfservice::Position pos)
+QString MainWindow::getCentralWidgetName()
+{
+    return d->centralWidgetName;
+}
+
+QStringList MainWindow::getCurrentDockName(dpfservice::Position pos)
 {
     if (pos == Position::Central || pos == Position::FullWindow)
-        return d->centralWidgetName;
+        return { d->centralWidgetName };
 
+    QStringList ret {};
     auto area = positionTodockArea(pos);
     for (auto dock : d->dockList.values()) {
         if (dockWidgetArea(dock) == area && dock->isVisible() == true)
-            return d->dockList.key(dock);
+            ret << d->dockList.key(dock);
     }
 
-    return QString();
+    return ret;
 }
 
-void MainWindow::setDockWidgetFeatures(const QString &name,QDockWidget::DockWidgetFeatures feature)
+void MainWindow::setDockWidgetFeatures(const QString &name, QDockWidget::DockWidgetFeatures feature)
 {
-    if(!d->dockList.contains(name)) {
+    if (!d->dockList.contains(name)) {
         qWarning() << name << " is not a dockWidget.";
         return;
     }
@@ -313,7 +319,9 @@ void MainWindow::removeWidget(const QString &name)
     }
 
     removeDockWidget(d->dockList[name]);
+    auto dock = d->dockList[name];
     d->dockList.remove(name);
+    delete dock;
 }
 
 void MainWindow::hideWidget(const QString &name)
@@ -341,16 +349,15 @@ void MainWindow::hideWidget(Position pos)
     }
 
     if (pos == Position::Central) {
-        if(centralWidget())
+        if (centralWidget())
             hideWidget(d->centralWidgetName);
         return;
     }
 
     auto area = positionTodockArea(pos);
     foreach (auto name, d->dockList.keys()) {
-        if (dockWidgetArea(d->dockList[name]) == area) {
+        if (dockWidgetArea(d->dockList[name]) == area)
             d->dockList[name]->hide();
-        }
     }
 }
 
@@ -370,7 +377,7 @@ void MainWindow::showWidget(const QString &name)
         //Prevent the dock widget being stretched when switching central widget
         QList<QDockWidget *> restoreDock;
         foreach (auto dock, d->dockList) {
-            if(dock->isVisible()) {
+            if (dock->isVisible()) {
                 dock->setVisible(false);
                 restoreDock.append(dock);
             }
@@ -474,15 +481,13 @@ void MainWindow::addTopToolBar()
     hl->addLayout(d->middleHlayout, 1);
     hl->addLayout(d->rightHlayout, 1);
 
-
     QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout *>(titlebar()->layout());
     titleBarLayout->insertWidget(1, d->topToolbar);
 }
 
-
 void MainWindow::setLeftTopToolWidget(DWidget *widget)
 {
-    if(!d->leftHlayout)
+    if (!d->leftHlayout)
         return;
 
     d->leftHlayout->addWidget(widget);
@@ -490,7 +495,7 @@ void MainWindow::setLeftTopToolWidget(DWidget *widget)
 
 void MainWindow::setMiddleTopToolWidget(DWidget *widget)
 {
-    if(!d->middleHlayout)
+    if (!d->middleHlayout)
         return;
 
     d->middleHlayout->addWidget(widget);
@@ -498,7 +503,7 @@ void MainWindow::setMiddleTopToolWidget(DWidget *widget)
 
 void MainWindow::setRightTopToolWidget(DWidget *widget)
 {
-    if(!d->rightHlayout)
+    if (!d->rightHlayout)
         return;
 
     d->rightHlayout->addWidget(widget);

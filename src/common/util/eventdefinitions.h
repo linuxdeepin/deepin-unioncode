@@ -86,10 +86,14 @@ OPI_OBJECT(symbol,
            )
 
 OPI_OBJECT(uiController,
+           //receivce
            OPI_INTERFACE(doSwitch, "actionText")
            OPI_INTERFACE(switchContext, "name")
            OPI_INTERFACE(switchWorkspace, "name")
+
+           //send
            OPI_INTERFACE(switchToWidget, "name")
+           OPI_INTERFACE(modeRaised, "mode")
            )
 
 OPI_OBJECT(notifyManager,

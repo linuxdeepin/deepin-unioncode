@@ -38,11 +38,11 @@ bool CodeGeex::start()
             auto codeGeex = new CodeGeeXWidget;
             auto codeGeexImpl = new AbstractWidget(codeGeex);
             windowService->registerWidget(MWNA_CODEGEEX, codeGeexImpl);
+            windowService->setDockHeaderName(MWNA_CODEGEEX, "codeGeex");
 
             connect(action, &QAction::triggered, this, [=]() {
                 windowService->raiseMode(CM_EDIT);
                 windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Left, true);
-                windowService->setDockHeaderName(MWNA_CODEGEEX, "codeGeex");
             },
                     Qt::DirectConnection);
         }
