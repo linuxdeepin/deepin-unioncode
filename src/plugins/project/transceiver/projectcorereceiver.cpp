@@ -10,10 +10,8 @@
 #include "services/window/windowelement.h"
 
 ProjectCoreReceiver::ProjectCoreReceiver(QObject *parent)
-    : dpf::EventHandler (parent)
-    , dpf::AutoEventHandlerRegister<ProjectCoreReceiver> ()
+    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<ProjectCoreReceiver>()
 {
-
 }
 
 dpf::EventHandler::Type ProjectCoreReceiver::type()
@@ -23,7 +21,7 @@ dpf::EventHandler::Type ProjectCoreReceiver::type()
 
 QStringList ProjectCoreReceiver::topics()
 {
-    return {project.topic, workspace.topic, editor.topic}; //绑定menu 事件
+    return { project.topic, workspace.topic, editor.topic, uiController.topic };   //绑定menu 事件
 }
 
 void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
@@ -68,7 +66,8 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
     } else if (event.data() == editor.switchedFile.name) {
         emit ProjectProxy::instance()->switchedFile(event.property("fileName").toString());
         ProjectKeeper::instance()->treeView()->selectProjectFile(event.property("fileName").toString());
+    } else if (event.data() == uiController.modeRaised.name) {
+        auto mode = event.property("mode").toString();
+        emit ProjectProxy::instance()->modeRaised(mode);
     }
 }
-
-
