@@ -12,7 +12,7 @@
 #include "cmakeCfgWidget/cmakepropertypage.h"
 
 #include <DTabWidget>
-#include <DPushButton>
+#include <DSuggestButton>
 #include <DFileDialog>
 #include <DStackedWidget>
 #include <DComboBox>
@@ -41,15 +41,21 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     : ConfigureWidget(parent)
     , d(new DetailPropertyWidgetPrivate())
 {
-    setBackgroundRole(QPalette::Window);
-    setFrameShape(QFrame::Shape::NoFrame);
+    setLineWidth(0);
+    DFrame *mainFrame = new DFrame(this);
+    mainFrame->setBackgroundRole(QPalette::Window);
+    mainFrame->setLineWidth(0);
 
-    d->buildStepsPane = new StepsPane(this);
-    d->cleanStepsPane = new StepsPane(this);
-    d->envWidget = new EnvironmentWidget(this);
-    d->cmakeWidget = new CMakePropertyPage(this);
+    d->buildStepsPane = new StepsPane(mainFrame);
+    d->buildStepsPane->setBackgroundRole(QPalette::Window);
+    d->cleanStepsPane = new StepsPane(mainFrame);
+    d->cleanStepsPane->setBackgroundRole(QPalette::Window);
+    d->envWidget = new EnvironmentWidget(mainFrame);
+    d->envWidget->setBackgroundRole(QPalette::Window);
+    d->cmakeWidget = new CMakePropertyPage(mainFrame);
+    d->cmakeWidget->setBackgroundRole(QPalette::Window);
 
-    DStackedWidget *stackWidget = new DStackedWidget(this);
+    DStackedWidget *stackWidget = new DStackedWidget(mainFrame);
     stackWidget->insertWidget(0, d->buildStepsPane);
     stackWidget->insertWidget(1, d->cleanStepsPane);
     stackWidget->insertWidget(2, d->envWidget);
@@ -59,19 +65,19 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     if (buildPage)
         connect(d->cmakeWidget, &CMakePropertyPage::cacheFileUpdated, buildPage, &BuildPropertyPage::cacheFileUpdated);
 
-    DButtonBoxButton *btnBuild = new DButtonBoxButton(QObject::tr("Build Steps"), this);
+    DButtonBoxButton *btnBuild = new DButtonBoxButton(QObject::tr("Build Steps"), mainFrame);
     btnBuild->setCheckable(true);
     btnBuild->setChecked(true);
-    DButtonBoxButton *btnClean = new DButtonBoxButton(QObject::tr("Clean Steps"), this);
-    DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Build Environment"), this);
-    DButtonBoxButton *btnCMake = new DButtonBoxButton(QObject::tr("CMake config"), this);
+    DButtonBoxButton *btnClean = new DButtonBoxButton(QObject::tr("Clean Steps"), mainFrame);
+    DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Build Environment"), mainFrame);
+    DButtonBoxButton *btnCMake = new DButtonBoxButton(QObject::tr("CMake config"), mainFrame);
 
-    DButtonBox *btnbox = new DButtonBox(this);
+    DButtonBox *btnbox = new DButtonBox(mainFrame);
     QList<DButtonBoxButton *> list { btnBuild, btnClean, btnEnv, btnCMake};
     btnbox->setButtonList(list, true);
 
-    auto frame = new DWidget(this);
-    auto layout = new QVBoxLayout(this);
+    auto frame = new DWidget(mainFrame);
+    auto layout = new QVBoxLayout();
     layout->setAlignment(Qt::AlignHCenter);
     layout->addWidget(btnbox);
     frame->setLayout(layout);
@@ -86,9 +92,15 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
         else if (button == btnCMake)
             stackWidget->setCurrentIndex(3);
     });
-
-    addWidget(frame);
-    addWidget(stackWidget);
+    QVBoxLayout *contentayout = new QVBoxLayout();
+    contentayout->addWidget(frame);
+    contentayout->addWidget(stackWidget);
+    contentayout->setContentsMargins(0, 0, 0, 0);
+    mainFrame->setLayout(contentayout);
+    
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(mainFrame);
+    mainLayout->setMargin(0);
 }
 
 DetailPropertyWidget::~DetailPropertyWidget()
@@ -178,6 +190,7 @@ void BuildPropertyPage::setupOverviewUI()
 
     QHBoxLayout *configureLayout = new QHBoxLayout();
     d->configureComboBox = new DComboBox(this);
+    d->configureComboBox->setFixedWidth(220);
     configureLayout->addWidget(d->configureComboBox);
     configureLayout->setSpacing(10);
     configureLayout->addStretch();
@@ -206,8 +219,10 @@ void BuildPropertyPage::setupOverviewUI()
     QHBoxLayout *hLayout = new QHBoxLayout();
     d->outputDirEdit = new DLineEdit(this);
     d->outputDirEdit->lineEdit()->setReadOnly(true);
-    auto button = new QPushButton(this);
-    button->setText(tr("Browse"));
+    auto button = new DSuggestButton(this);
+    button->setIcon(DStyle::standardIcon(style(), DStyle::SP_SelectElement));
+    button->setIconSize(QSize(24, 24));
+    button->setFixedSize(36, 36);
     connect(button, &QPushButton::clicked, [this](){
         QString outputDirectory = QFileDialog::getExistingDirectory(this, "Output directory", d->outputDirEdit->text());
         if (!outputDirectory.isEmpty()) {
@@ -228,10 +243,11 @@ void BuildPropertyPage::setupOverviewUI()
 
     overviewLayout->setSpacing(0);
     overviewLayout->setMargin(0);
-    overviewLayout->setSpacing(5);
+    overviewLayout->setSpacing(10);
 
     auto formlayout = new QFormLayout(this);
-    formlayout->setContentsMargins(0, 0, 0, 0);
+    formlayout->setSpacing(15);
+    formlayout->setContentsMargins(0, 0, 0, 10);
     formlayout->addRow(QLabel::tr("Build configuration:"), configureLayout);
     formlayout->addRow(tr("Output direcotry:"), hLayout);
 

@@ -29,7 +29,7 @@ DockHeader::DockHeader(QWidget *parent)
     d->mainLayout = new QHBoxLayout(this);
     d->mainLayout->setContentsMargins(0, 0, 0, 5);
     d->mainLayout->setAlignment(Qt::AlignRight);
-    d->mainLayout->setSpacing(2);
+    d->mainLayout->setSpacing(0);
     d->mainLayout->addWidget(d->headerName, Qt::AlignLeft);
 }
 
@@ -42,7 +42,8 @@ DockHeader::~DockHeader()
 void DockHeader::addToolButton(DToolButton *btn)
 {
     btn->setIconSize(QSize(16, 16));
-    btn->setFixedSize(QSize(24, 24));
+    btn->setFixedSize(QSize(26, 26));
+    DStyle::setFrameRadius(btn, 6);
     d->mainLayout->insertWidget(1, btn);
 }
 

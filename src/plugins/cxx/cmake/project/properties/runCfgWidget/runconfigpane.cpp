@@ -8,11 +8,11 @@
 #include "services/project/projectservice.h"
 
 #include <DFrame>
+#include <DLineEdit>
+#include <DSuggestButton>
 
 #include <QVBoxLayout>
 #include <QLabel>
-#include <DLineEdit>
-#include <QPushButton>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QTextBrowser>
@@ -75,8 +75,10 @@ void RunConfigPane::setupUi()
 
     // working directory ui.
     QHBoxLayout *browLayout = new QHBoxLayout(mainFrame);
-    auto browseBtn = new QPushButton(mainFrame);
-    browseBtn->setText(tr("Browse"));
+    DSuggestButton *btnBrowser = new DSuggestButton(mainFrame);
+    btnBrowser->setIcon(DStyle::standardIcon(style(), DStyle::SP_SelectElement));
+    btnBrowser->setIconSize(QSize(24, 24));
+    btnBrowser->setFixedSize(36, 36);
     d->workingDirLineEdit = new DLineEdit(mainFrame);
     d->workingDirLineEdit->lineEdit()->setReadOnly(true);
     connect(d->workingDirLineEdit, &DLineEdit::textChanged, [this](){
@@ -84,9 +86,9 @@ void RunConfigPane::setupUi()
             d->targetRunParam->workDirectory = d->workingDirLineEdit->text().trimmed();
     });
     browLayout->addWidget(d->workingDirLineEdit);
-    browLayout->addWidget(browseBtn);
+    browLayout->addWidget(btnBrowser);
     d->formLayout->addRow(tr("Working directory:"), browLayout);
-    connect(browseBtn, &QPushButton::clicked, [this](){
+    connect(btnBrowser, &QPushButton::clicked, [this](){
         QString outputDirectory = QFileDialog::getExistingDirectory(this, tr("Working directory"), d->workingDirLineEdit->text());
         if (!outputDirectory.isEmpty()) {
             d->workingDirLineEdit->setText(outputDirectory.toUtf8());

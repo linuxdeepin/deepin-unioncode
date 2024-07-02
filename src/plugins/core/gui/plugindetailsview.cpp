@@ -174,6 +174,7 @@ void DetailsView::setupUi()
     auto *cfgBtn = new DPushButton(this);
     cfgBtn->setIcon(QIcon::fromTheme("options_setting_black"));
     cfgBtn->setFixedSize(36, 36);
+    cfgBtn->setToolTip(tr("Settings"));
     connect(cfgBtn, &DPushButton::clicked, this, &DetailsView::showCfgWidget);
     operationLayout->addWidget(cfgBtn);
     operationLayout->setSpacing(10);

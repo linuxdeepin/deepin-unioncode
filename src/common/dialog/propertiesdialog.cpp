@@ -100,8 +100,9 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     DFrame *contentFrame = new DFrame();
     contentFrame->setLineWidth(0);
 
-    auto contentlayout = new QHBoxLayout(contentFrame);
-    contentlayout->setContentsMargins(0, 0, 0, 0);
+    auto contentLayout = new QHBoxLayout(contentFrame);
+    contentLayout->setContentsMargins(0, 0, 0, 0);
+    contentLayout->setSpacing(0);
 
     DTitlebar *titleBar = new DTitlebar(Dialog);
     titleBar->setMinimumHeight(43);
@@ -142,7 +143,8 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     box_layout->setSpacing(9);
     DVerticalLine *vLine = new DVerticalLine(this);
     vLine->setLineWidth(1);
-    box_layout->setContentsMargins(0, 10, 0, 20);
+    vLine->setFixedHeight(28);
+    box_layout->setContentsMargins(0, 0, 0, 20);
 
     auto cancelBtn = new DPushButton(tr("Cancel"), this);
     connect(cancelBtn, &DPushButton::clicked, [this] {
@@ -171,17 +173,21 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     bgGroup->setItemMargins(QMargins(0, 0, 0, 0));
     bgGroup->setBackgroundRole(QPalette::Window);
     bgGroup->setUseWidgetBackground(false);
+    bgGpLayout->setMargin(0);
 
-    QWidget *wrapperWidget = new QWidget(bgGroup);
-    QHBoxLayout *hLay = new QHBoxLayout(wrapperWidget);
-    bgGpLayout->addWidget(wrapperWidget);
+    DFrame *wrapperFrame = new DFrame(bgGroup);
+    wrapperFrame->setLineWidth(0);
+    wrapperFrame->setContentsMargins(10, 10, 10, 10);
+    QHBoxLayout *hLay = new QHBoxLayout(wrapperFrame);
+    hLay->setContentsMargins(0, 0, 0, 0);
+    bgGpLayout->addWidget(wrapperFrame);
     hLay->addLayout(rightLayout);
 
     DStyle::setFrameRadius(bgGroup, 0);
     DStyle::setFrameRadius(contentFrame, 0);
 
-    contentlayout->addLayout(leftLayout);
-    contentlayout->addWidget(bgGroup);
+    contentLayout->addLayout(leftLayout);
+    contentLayout->addWidget(bgGroup);
 
     Dialog->setFixedSize(QSize(828, 800));
 }
