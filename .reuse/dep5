@@ -68,18 +68,8 @@ Files: src/plugin/*
 Copyright: UnionTech Software Technology Co., Ltd.
 License: GPL-3.0-or-later
 
-# commom
-Files: src/common/*
-Copyright: UnionTech Software Technology Co., Ltd.
-License: GPL-3.0-or-later
-
 # tool
 Files: src/tool/*
-Copyright: UnionTech Software Technology Co., Ltd.
-License: GPL-3.0-or-later
-
-# service
-Files: src/*.service
 Copyright: UnionTech Software Technology Co., Ltd.
 License: GPL-3.0-or-later
 
