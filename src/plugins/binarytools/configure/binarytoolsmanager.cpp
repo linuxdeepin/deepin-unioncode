@@ -445,7 +445,7 @@ void BinaryToolsManager::installTool(const QString &id)
         terminalSrv = dpfGetService(TerminalService);
 
     uiController.switchContext(tr("&Console"));
-    terminalSrv->executeCommand(tool.advSettings.installCommand);
+    terminalSrv->sendCommand(tool.advSettings.installCommand);
 }
 
 void BinaryToolsManager::eventTriggered(EventType event, const QVariantList &args)

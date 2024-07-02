@@ -41,7 +41,8 @@ bool Console::start()
     auto terminalService = ctx.service<TerminalService>(TerminalService::name());
     if (terminalService) {
         using namespace std::placeholders;
-        terminalService->executeCommand = std::bind(&ConsoleManager::executeCommand, consoleManager, _1);
+        terminalService->sendCommand = std::bind(&ConsoleManager::sendCommand, consoleManager, _1);
+        terminalService->executeCommand = std::bind(&ConsoleManager::executeCommand, consoleManager, _1, _2, _3, _4);
     }
     return true;
 }

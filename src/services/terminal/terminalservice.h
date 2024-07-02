@@ -26,10 +26,11 @@ public:
     }
 
     /**
-     * @brief execute command by terminal
+     * @brief send command to terminal
      * @param command
      */
-    DPF_INTERFACE(void, executeCommand, const QString &command);
+    DPF_INTERFACE(void, sendCommand, const QString &command);
+    DPF_INTERFACE(void, executeCommand, const QString &name, const QString &program, const QStringList &args, const QString &workingDir);
 };
 
 } // namespace dpfservice
