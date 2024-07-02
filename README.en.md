@@ -113,7 +113,7 @@ We encourage you to report issues and contribute changes
 
 ## License
 
-deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
+deepin-unioncode is licensed under [LGPL-3.0-or-later](LICENSE)
 
 ## 3rdparty support
 
