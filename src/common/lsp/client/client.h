@@ -152,7 +152,7 @@ public slots:
     void symbolRequest(const QString &filePath); // yes
     void renameRequest(const QString &filePath, const lsp::Position &pos, const QString &newName); //yes
     void definitionRequest(const QString &filePath, const lsp::Position &pos); // yes
-    void completionRequest(const QString &filePath, const lsp::Position &pos); // yes
+    void completionRequest(const QString &filePath, const lsp::Position &pos, const lsp::CompletionContext &context); // yes
     void signatureHelpRequest(const QString &filePath, const lsp::Position &pos); // yes
     void referencesRequest(const QString &filePath, const lsp::Position &pos);
     void docHighlightRequest(const QString &filePath, const lsp::Position &pos);

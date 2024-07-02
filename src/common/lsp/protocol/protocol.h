@@ -35,8 +35,8 @@ extern const QString K_INITIALIZATIONOPTIONS;
 extern const QString K_PROCESSID;
 extern const QString K_ROOTPATH;
 extern const QString K_ROOTURI;
-extern const QString K_URI; // value QString from file url
-extern const QString K_VERSION; // value int
+extern const QString K_URI;   // value QString from file url
+extern const QString K_VERSION;   // value int
 extern const QString K_LANGUAGEID;
 extern const QString K_TEXT;
 extern const QString K_CONTAINERNAME;
@@ -49,16 +49,16 @@ extern const QString K_NewText;
 
 extern const QString H_CONTENT_LENGTH;
 extern const QString V_2_0;
-extern const QString V_INITIALIZE; //has request result
-extern const QString V_SHUTDOWN; //has request result
-extern const QString V_EXIT; //has request result
-extern const QString V_TEXTDOCUMENT_DIDOPEN; //no request result
-extern const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS; //server call
-extern const QString V_TEXTDOCUMENT_DIDCHANGE; //no request result, json error
-extern const QString V_TEXTDOCUMENT_DOCUMENTSYMBOL; // has request result
-extern const QString V_TEXTDOCUMENT_HOVER; // has request result
+extern const QString V_INITIALIZE;   //has request result
+extern const QString V_SHUTDOWN;   //has request result
+extern const QString V_EXIT;   //has request result
+extern const QString V_TEXTDOCUMENT_DIDOPEN;   //no request result
+extern const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS;   //server call
+extern const QString V_TEXTDOCUMENT_DIDCHANGE;   //no request result, json error
+extern const QString V_TEXTDOCUMENT_DOCUMENTSYMBOL;   // has request result
+extern const QString V_TEXTDOCUMENT_HOVER;   // has request result
 extern const QString V_TEXTDOCUMENT_RENAME;
-extern const QString V_TEXTDOCUMENT_DEFINITION ;
+extern const QString V_TEXTDOCUMENT_DEFINITION;
 extern const QString V_TEXTDOCUMENT_DIDCLOSE;
 extern const QString V_TEXTDOCUMENT_COMPLETION;
 extern const QString V_TEXTDOCUMENT_SIGNATUREHELP;
@@ -68,9 +68,9 @@ extern const QString V_TEXTDOCUMENT_SEMANTICTOKENS;
 extern const QString V_TEXTDOCUMENT_SEMANTICTOKENS_FULL;
 extern const QString V_TEXTDOCUMENT_SEMANTICTOKENS_RANGE;
 extern const QString V_TEXTDOCUMENT_SWITCHHEADERSOURCE;
-inline static QString V_TEXTDOCUMENT_DOCUMENTCOLOR{"textDocument/documentColor"};
-inline static QString V_TEXTDOCUMENT_FORMATTING{"textDocument/formatting"};
-inline static QString V_TEXTDOCUMENT_RANGEFORMATTING{"textDocument/rangeFormatting"};
+inline static QString V_TEXTDOCUMENT_DOCUMENTCOLOR { "textDocument/documentColor" };
+inline static QString V_TEXTDOCUMENT_FORMATTING { "textDocument/formatting" };
+inline static QString V_TEXTDOCUMENT_RANGEFORMATTING { "textDocument/rangeFormatting" };
 extern const QString K_WORKSPACEFOLDERS;
 
 extern const QString K_CONTENTCHANGES;
@@ -117,8 +117,8 @@ enum_def(SemanticTokenType, QString)
 
 enum_def(SemanticTokenModifier, QString)
 {
-    enum_exp Declaration = "declaration"; //声明
-    enum_exp Definition = "declaration";  //定义
+    enum_exp Declaration = "declaration";   //声明
+    enum_exp Definition = "definition";   //定义
     enum_exp Readonly = "readonly";
     enum_exp Static = "static";
     enum_exp Deprecated = "deprecated";
@@ -148,7 +148,9 @@ struct Location
     Range range;
     QUrl fileUrl;
 };
-struct Locations :public QList<Location>{};
+struct Locations : public QList<Location>
+{
+};
 
 struct DiagnosticRelatedInformation
 {
@@ -158,7 +160,7 @@ struct DiagnosticRelatedInformation
 
 struct Diagnostic
 {
-    enum Severity{
+    enum Severity {
         Unkown = 0,
         Error = 1,
         Warning = 2,
@@ -172,7 +174,9 @@ struct Diagnostic
     Severity severity;
     QString source;
 };
-struct Diagnostics : QVector<Diagnostic>{};
+struct Diagnostics : QVector<Diagnostic>
+{
+};
 
 struct DiagnosticsParams
 {
@@ -190,8 +194,7 @@ struct Symbol
 };
 typedef QList<Symbol> Symbols;
 
-enum InsertTextFormat
-{
+enum InsertTextFormat {
     PlainText = 1,
     Snippet = 2,
 };
@@ -202,12 +205,26 @@ struct TextEdit
     Range range;
 };
 
-struct AdditionalTextEdits:QList<TextEdit>{};
+struct AdditionalTextEdits : QList<TextEdit>
+{
+};
 
 struct Documentation
 {
-    QString kind; // markdown or plaintext
+    QString kind;   // markdown or plaintext
     QString value;
+};
+
+enum CompletionTriggerKind {
+    Invoked = 1,
+    TriggerCharacter = 2,
+    TriggerForIncompleteCompletions = 3
+};
+
+struct CompletionContext
+{
+    CompletionTriggerKind kind = CompletionTriggerKind::Invoked;
+    std::optional<QString> triggerCharacter;
 };
 
 struct CompletionItem
@@ -246,12 +263,15 @@ struct CompletionItem
     InsertTextFormat insertTextFormat;
     CompletionItem::Kind kind;
     QString label;
+    QString detail;
     double score;
     QString sortText;
     TextEdit textEdit;
 };
 
-struct CompletionItems : public QList<CompletionItem>{};
+struct CompletionItems : public QList<CompletionItem>
+{
+};
 
 struct CompletionProvider
 {
@@ -259,13 +279,16 @@ struct CompletionProvider
     CompletionItems items;
 };
 
-struct SignatureHelp //暂时留空
+struct SignatureHelp   //暂时留空
 {
-
 };
-struct SignatureHelps : QList<SignatureHelp>{};
+struct SignatureHelps : QList<SignatureHelp>
+{
+};
 
-struct DefinitionProvider : public Locations{};
+struct DefinitionProvider : public Locations
+{
+};
 
 struct Contents
 {
@@ -273,7 +296,7 @@ struct Contents
     QString value;
 };
 
-struct Hover //暂时留空
+struct Hover   //暂时留空
 {
     Contents contents;
     Range range;
@@ -292,7 +315,7 @@ struct DocumentHighlight
 };
 typedef QList<DocumentHighlight> DocumentHighlights;
 
-struct Data //from result key "data"
+struct Data   //from result key "data"
 {
     Position start;
     int length;
@@ -302,8 +325,12 @@ struct Data //from result key "data"
 
 struct SemanticTokensProvider
 {
-    struct Full{bool delta;};
-    struct Legend{
+    struct Full
+    {
+        bool delta;
+    };
+    struct Legend
+    {
         QStringList tokenTypes;
         QStringList tokenModifiers;
     };
@@ -312,8 +339,7 @@ struct SemanticTokensProvider
     bool range;
 };
 
-enum TextDocumentSyncKind
-{
+enum TextDocumentSyncKind {
     None = 0,
     Full = 1,
     Incremental = 2
@@ -330,7 +356,7 @@ struct TextDocumentIdentifier
     QUrl documentUri;
 };
 
-struct VersionedTextDocumentIdentifier: public TextDocumentIdentifier
+struct VersionedTextDocumentIdentifier : public TextDocumentIdentifier
 {
     int version;
 };
@@ -367,22 +393,25 @@ struct RenameChange : public TextDocumentIdentifier
     AdditionalTextEdits edits;
 };
 
-struct References : public Locations{};
+struct References : public Locations
+{
+};
 
-namespace new_initialize{
+namespace new_initialize {
 
 }
 
-typedef QVariant ProgressToken; // integer | string;
+typedef QVariant ProgressToken;   // integer | string;
 struct WorkDoneProgressParams
 {
     ProgressToken token;
-    std::any value;  // any
+    std::any value;   // any
 };
 
 struct WorkspaceEditClientCapabilities
 {
-    struct changeAnnotationSupport{
+    struct changeAnnotationSupport
+    {
         /**
          * Whether the client groups edits with equal labels into tree nodes,
          * for instance all edits labelled with "Changes in Strings" would
@@ -417,7 +446,7 @@ QJsonObject didClose(const QString &filePath);
 QJsonObject hover(const QString &filePath, const Position &pos);
 QJsonObject symbol(const QString &filePath);
 QJsonObject rename(const QString &filePath, const Position &pos, const QString &newName);
-QJsonObject completion(const QString &filePath, const Position &pos);
+QJsonObject completion(const QString &filePath, const Position &pos, const CompletionContext &context);
 QJsonObject definition(const QString &filePath, const Position &pos);
 QJsonObject signatureHelp(const QString &filePath, const Position &pos);
 QJsonObject references(const QString &filePath, const Position &pos);
@@ -431,10 +460,8 @@ QJsonObject exit();
 bool isRequestResult(const QJsonObject &object);
 bool isRequestError(const QJsonObject &object);
 
-
-} // namespace lsp
-
+}   // namespace lsp
 
 Q_DECLARE_METATYPE(lsp::Range)
 
-#endif // LANGUAGESERVERPROTOCOL_H
+#endif   // LANGUAGESERVERPROTOCOL_H

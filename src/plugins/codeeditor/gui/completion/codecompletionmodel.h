@@ -34,12 +34,14 @@ public:
         NameRole,
         InsertTextRole,
         KindRole,
-        SortTextRole
+        SortTextRole,
+        FilterTextRole
     };
 
     void clear();
     void completionInvoked(TextEditor *editor, int position);
     lsp::Range range() const;
+    lsp::CompletionItem *item(const QModelIndex &index) const;
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;

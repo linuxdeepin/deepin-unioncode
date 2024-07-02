@@ -366,9 +366,9 @@ void Client::definitionRequest(const QString &filePath, const lsp::Position &pos
     d->callMethod(lsp::V_TEXTDOCUMENT_DEFINITION, lsp::definition(filePath, pos), filePath);
 }
 
-void Client::completionRequest(const QString &filePath, const lsp::Position &pos)
+void Client::completionRequest(const QString &filePath, const lsp::Position &pos, const lsp::CompletionContext &context)
 {
-    d->callMethod(lsp::V_TEXTDOCUMENT_COMPLETION, lsp::completion(filePath, pos), filePath);
+    d->callMethod(lsp::V_TEXTDOCUMENT_COMPLETION, lsp::completion(filePath, pos, context), filePath);
 }
 
 void Client::signatureHelpRequest(const QString &filePath, const lsp::Position &pos)
@@ -875,6 +875,7 @@ bool ClientPrivate::completionResult(const QJsonObject &jsonObj)
                 (lsp::InsertTextFormat)itemObj.value("insertTextFormat").toInt(),
                 (lsp::CompletionItem::Kind)(itemObj.value("kind").toInt()),
                 itemObj.value("label").toString(),
+                itemObj.value("detail").toString(),
                 itemObj.value("score").toDouble(),
                 itemObj.value("sortText").toString(),
                 textEdit

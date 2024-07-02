@@ -175,8 +175,11 @@ bool LanguageClientHandlerPrivate::shouldStartCompletion(const QString &inserted
 int LanguageClientHandlerPrivate::wordPostion()
 {
     int pos = editor->cursorPosition();
-    if (editor->hasSelectedText())
-        return editor->wordStartPositoin(pos);
+    if (editor->hasSelectedText()) {
+        int startPos = editor->wordStartPositoin(pos);
+        int endPos = editor->wordEndPosition(pos);
+        return (startPos + endPos) / 2;
+    }
 
     return pos;
 }
@@ -392,7 +395,7 @@ void LanguageClientHandlerPrivate::delayPositionChanged()
         return;
 
     lsp::Position pos;
-    editor->lineIndexFromPosition(editor->cursorPosition(), &pos.line, &pos.character);
+    editor->lineIndexFromPosition(wordPostion(), &pos.line, &pos.character);
     getClient()->docHighlightRequest(editor->getFile(), pos);
 }
 
@@ -636,8 +639,25 @@ void LanguageClientHandler::requestCompletion(int line, int column)
     if (!d->getClient())
         return;
 
+    lsp::CompletionContext context;
+    if (d->editor->lexer()) {
+        int pos = d->editor->positionFromLineIndex(line, column);
+        if (pos > 0) {
+            char ch = d->editor->SendScintilla(TextEditor::SCI_GETCHARAT, --pos);
+            auto spList = d->editor->lexer()->autoCompletionWordSeparators();
+            auto iter = std::find_if(spList.begin(), spList.end(),
+                                     [&ch](const QString &sp) {
+                                         return sp.endsWith(ch);
+                                     });
+            if (iter != spList.end()) {
+                context.kind = lsp::CompletionTriggerKind::TriggerCharacter;
+                context.triggerCharacter = ch;
+            }
+        }
+    }
+
     lsp::Position pos { line, column };
-    d->getClient()->completionRequest(d->editor->getFile(), pos);
+    d->getClient()->completionRequest(d->editor->getFile(), pos, context);
 }
 
 void LanguageClientHandler::updateTokens()
