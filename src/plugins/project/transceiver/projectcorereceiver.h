@@ -35,6 +35,7 @@ public:
         return &ins;
     }
 signals:
+    void modeRaised(const QString &mode);
     void projectActivated(const dpfservice::ProjectInfo prjInfo);
     void switchedFile(const QString &file);
 };

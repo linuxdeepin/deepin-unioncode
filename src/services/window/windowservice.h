@@ -74,6 +74,7 @@ public:
     DPF_INTERFACE(void, insertWidget, const QString &name, Position pos, Qt::Orientation orientation);
 
     DPF_INTERFACE(void, hideWidget, const QString &name);
+
     /*!
      * \brief register Widget to mode, when switch to this mode, automatically show widget.
      * \param widget name
@@ -92,7 +93,9 @@ public:
      */
     DPF_INTERFACE(void, registerWidget, const QString &name, AbstractWidget *abstractWidget);
     DPF_INTERFACE(void, showWidgetAtPosition, const QString &name, Position pos, bool replace);
-    DPF_INTERFACE(QString, getCurrentDockName, Position pos);
+    DPF_INTERFACE(QString, getCentralWidgetName);
+    DPF_INTERFACE(QStringList, getCurrentDockName, Position pos);
+    DPF_INTERFACE(void, resizeDocks, const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation);
 
     /*!
      * \brief split two windows in the specified direction

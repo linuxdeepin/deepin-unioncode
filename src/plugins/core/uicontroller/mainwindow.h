@@ -26,8 +26,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     //dockWidget
-    void addWidget(const QString &name, QWidget *widget, Position pos = Position::FullWindow);
-    void addWidget(const QString &name, QWidget *widget, Position pos, Qt::Orientation orientation);
+    QDockWidget *addWidget(const QString &name, QWidget *widget, Position pos = Position::FullWindow);
+    QDockWidget *addWidget(const QString &name, QWidget *widget, Position pos, Qt::Orientation orientation);
 
     void replaceWidget(const QString &name, QWidget *widget, Position pos = Position::FullWindow);
 
@@ -42,14 +42,14 @@ public:
     void removeWidget(const QString &name);
     void removeWidget(Position pos);
 
-    QString getCurrentDockName(Position pos);
+    QString getCentralWidgetName();
+    QStringList getCurrentDockName(Position pos);
 
     void setDockHeadername(const QString &dockName, const QString &headerName);
     void deleteDockHeader(const QString &name);
     void addToolBtnToDockHeader(const QString &dockName, DToolButton *btn);
     void setDockWidgetFeatures(const QString &name, QDockWidget::DockWidgetFeatures feature);
-    //size(width,heigt) width used for widget in Left and Right.
-    //heigth used for widget in top and bottom
+
     void resizeDock(const QString &dockName, QSize size);
     //only work for dockWidget,can`t work for centralWidget
     void splitWidgetOrientation(const QString &first, const QString &second, Qt::Orientation orientation);

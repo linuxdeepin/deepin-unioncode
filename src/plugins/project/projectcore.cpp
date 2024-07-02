@@ -25,6 +25,9 @@
 #include <QTreeView>
 
 using namespace dpfservice;
+static const QString openFilesWidgetName = "openFilesWidget";
+static bool openFileWidgetInited = false;
+
 void ProjectCore::initialize()
 {
     qInfo() << __FUNCTION__;
@@ -56,7 +59,7 @@ bool ProjectCore::start()
             addProjectProperty(windowService, projectProperty);
 
             windowService->registerToolBtnToWorkspaceWidget(focusFile, MWCWT_PROJECTS);
-			windowService->registerToolBtnToWorkspaceWidget(autoFocusSwitcher, MWCWT_PROJECTS);
+            windowService->registerToolBtnToWorkspaceWidget(autoFocusSwitcher, MWCWT_PROJECTS);
             windowService->registerToolBtnToWorkspaceWidget(projectProperty, MWCWT_PROJECTS);
         }
     }
@@ -74,26 +77,52 @@ void ProjectCore::addRecentOpenWidget(WindowService *windowService)
 {
     RecentOpenWidget *openedWidget = new RecentOpenWidget();
     auto editSrv = dpfGetService(EditorService);
-    connect(ProjectProxy::instance(), &ProjectProxy::switchedFile, this, [=](const QString &file){
+    connect(ProjectProxy::instance(), &ProjectProxy::switchedFile, this, [=](const QString &file) {
         openedWidget->setOpenedFiles(editSrv->openedFiles().toVector());
         openedWidget->setListViewSelection(file);
-    }, Qt::DirectConnection);
-    connect(openedWidget, &RecentOpenWidget::triggered, [=](const QModelIndex &index){
+    },
+            Qt::DirectConnection);
+    connect(openedWidget, &RecentOpenWidget::triggered, [=](const QModelIndex &index) {
         QFileInfo info(index.data(RecentOpenWidget::RecentOpenedUserRole::FilePathRole).toString());
         if (info.exists() && info.isFile()) {
             editor.openFile(QString(), info.filePath());
         }
     });
-    connect(openedWidget, &RecentOpenWidget::closePage, [=](const QModelIndex &index){
+    connect(openedWidget, &RecentOpenWidget::closePage, [=](const QModelIndex &index) {
         QFileInfo info(index.data(RecentOpenWidget::RecentOpenedUserRole::FilePathRole).toString());
         if (info.exists() && info.isFile()) {
             editor.closeFile(info.filePath());
         }
     });
+    connect(ProjectProxy::instance(), &ProjectProxy::modeRaised, this, [=](const QString &mode) {
+        if (mode != CM_EDIT || openFileWidgetInited)
+            return;
 
+        QStringList allLeftDocks = windowService->getCurrentDockName(Position::Left);
+        auto dockCount = allLeftDocks.size();
+
+        if (!allLeftDocks.contains(openFilesWidgetName) || dockCount <= 1)
+            return;
+
+        allLeftDocks.removeOne(openFilesWidgetName);
+
+        QStringList docks { openFilesWidgetName };
+        // Set the height of the widget to 25% of the total height.
+        QList<int> sizes { 25 };
+        auto size = 75 / (dockCount - 1);
+        for (auto dock : allLeftDocks) {
+            sizes.append(size);
+            docks.append(dock);
+        }
+
+        windowService->resizeDocks(docks, sizes, Qt::Vertical);
+
+        openFileWidgetInited = true;
+    },
+            Qt::DirectConnection);
     auto openFilesWidget = new AbstractWidget(openedWidget);
-    windowService->registerWidgetToMode("openFilesWidget", openFilesWidget, CM_EDIT, Position::Left, false, true);
-    windowService->setDockHeaderName("openFilesWidget", tr("Opened Files"));
+    windowService->registerWidgetToMode(openFilesWidgetName, openFilesWidget, CM_EDIT, Position::Left, false, true);
+    windowService->setDockHeaderName(openFilesWidgetName, tr("Opened Files"));
 }
 
 void ProjectCore::addAutoFocusSwitcher(WindowService *windowService, DToolButton *autoFocusSwitcher, DToolButton *focusFile)
@@ -106,12 +135,13 @@ void ProjectCore::addAutoFocusSwitcher(WindowService *windowService, DToolButton
     focusFile->setToolTip(tr("Focus File"));
     focusFile->setIcon(QIcon::fromTheme("focus"));
 
-    connect(focusFile, &DToolButton::clicked, this, [](){
+    connect(focusFile, &DToolButton::clicked, this, []() {
         ProjectKeeper::instance()->treeView()->focusCurrentFile();
-    }, Qt::DirectConnection);
+    },
+            Qt::DirectConnection);
     focusFile->hide();
 
-    connect(autoFocusSwitcher, &DToolButton::clicked, this, [=](){
+    connect(autoFocusSwitcher, &DToolButton::clicked, this, [=]() {
         bool state = ProjectKeeper::instance()->treeView()->getAutoFocusState();
         ProjectKeeper::instance()->treeView()->setAutoFocusState(!state);
         if (state) {
@@ -119,27 +149,30 @@ void ProjectCore::addAutoFocusSwitcher(WindowService *windowService, DToolButton
         } else {
             focusFile->hide();
         }
-    }, Qt::DirectConnection);
+    },
+            Qt::DirectConnection);
 }
 
 void ProjectCore::addProjectProperty(WindowService *windowService, DToolButton *projectProperty)
 {
     projectProperty->setIcon(QIcon::fromTheme("settings"));
     projectProperty->setToolTip(tr("Open activted project`s property dialog"));
-    
-    connect(projectProperty, &DToolButton::clicked, this, [=](){
+
+    connect(projectProperty, &DToolButton::clicked, this, [=]() {
         project.openProjectPropertys(ProjectKeeper::instance()->treeView()->getActiveProjectInfo());
-    }, Qt::DirectConnection);
+    },
+            Qt::DirectConnection);
     // todo(zta :temp only supprt cmake project  do other kit later
-    connect(ProjectProxy::instance(), &ProjectProxy::projectActivated, this, [=](const ProjectInfo &prjInfo){
+    connect(ProjectProxy::instance(), &ProjectProxy::projectActivated, this, [=](const ProjectInfo &prjInfo) {
         if (prjInfo.kitName() != "cmake")
             projectProperty->setEnabled(false);
         else
             projectProperty->setEnabled(true);
-    }, Qt::DirectConnection);
+    },
+            Qt::DirectConnection);
 }
 
-void ProjectCore::initLocator(dpf::PluginServiceContext& ctx)
+void ProjectCore::initLocator(dpf::PluginServiceContext &ctx)
 {
     LocatorService *locatorService = ctx.service<LocatorService>(LocatorService::name());
     AllProjectFileLocator *allProjectFileLocator = new AllProjectFileLocator(this);
@@ -148,7 +181,7 @@ void ProjectCore::initLocator(dpf::PluginServiceContext& ctx)
     locatorService->registerLocator(currentProjectLocator);
 }
 
-void ProjectCore::initProject(dpf::PluginServiceContext& ctx)
+void ProjectCore::initProject(dpf::PluginServiceContext &ctx)
 {
     using namespace std::placeholders;
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
