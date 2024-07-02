@@ -7,7 +7,7 @@
 
 #include "framework/framework_global.h"
 
-#include <QString>
+#include <QStringList>
 
 DPF_BEGIN_NAMESPACE
 
@@ -36,9 +36,30 @@ private:
     PluginDepend();
 };
 
+class PluginInstallDepend final
+{
+    friend class PluginManager;
+    friend class PluginManagerPrivate;
+    friend class PluginMetaObject;
+    friend Q_CORE_EXPORT QDebug operator<<(QDebug, const PluginDepend &);
+
+    QString installerName;
+    QStringList packageList;
+
+public:
+    PluginInstallDepend(const PluginInstallDepend &depend);
+    PluginInstallDepend &operator=(const PluginInstallDepend &depend);
+    QString installer() const { return installerName; }
+    QStringList packages() const { return packageList; }
+
+private:
+    PluginInstallDepend();
+};
+
 QT_BEGIN_NAMESPACE
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<< (QDebug, const DPF_NAMESPACE::PluginDepend &);
+Q_CORE_EXPORT QDebug operator<< (QDebug, const DPF_NAMESPACE::PluginInstallDepend &);
 #endif //QT_NO_DEBUG_STREAM
 QT_END_NAMESPACE
 

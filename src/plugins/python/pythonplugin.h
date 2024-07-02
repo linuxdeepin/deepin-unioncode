@@ -16,8 +16,6 @@ public:
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
 
-signals:
-
 private:
     void registEditorService();
 };

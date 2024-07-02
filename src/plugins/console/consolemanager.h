@@ -15,16 +15,13 @@ public:
     ConsoleManager(QWidget *parent = nullptr);
     ~ConsoleManager();
 
-    QTermWidget *getCurrentConsole();
-    void executeCommand(const QString &text);
+    QTermWidget *currentConsole();
+    QTermWidget *findConsole(const QString &id);
+    QTermWidget *createConsole(const QString &name);
+    void sendCommand(const QString &text);
+    void executeCommand(const QString &name, const QString &program, const QStringList &args, const QString &workingDir);
 
 private:
-    void initDefaultConsole();
-    void initUI();
-    void initConnection();
-    void appendConsole();
-    void removeConsole();
-    void switchConsole(const QModelIndex &index);
     void showEvent(QShowEvent *event) override;
 
     ConsoleManagerPrivate *d;

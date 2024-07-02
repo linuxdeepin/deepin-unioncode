@@ -96,6 +96,7 @@ public:
     QString description() const;
     QString urlLink() const;
     QList<PluginDepend> depends() const;
+    QList<PluginInstallDepend> installDepends() const;
     State pluginState() const;
     QSharedPointer<Plugin> plugin();
     bool isEnabledBySettings();
