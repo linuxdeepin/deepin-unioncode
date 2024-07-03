@@ -286,6 +286,7 @@ void LocatorManager::initShortCut()
     shortCut->setKey(Qt::Modifier::CTRL | Qt::Key::Key_K);
     connect(shortCut, &QShortcut::activated, inputEdit, [=]() {
         inputEdit->setFocus();
+        inputEdit->lineEdit()->selectAll();
     });
 
     QAction *action = new QAction(this);
