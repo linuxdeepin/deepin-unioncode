@@ -278,7 +278,11 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
     }
 
     tempInfo.setSourceFiles(commonFiles + cmakeFiles);
-    tempInfo.setExePrograms(TargetsManager::instance()->getExeTargetNamesList());
+    auto exePrograms = TargetsManager::instance()->getExeTargetNamesList();
+    qSort(exePrograms.begin(), exePrograms.end(), [](const QString &s1, const QString &s2){
+        return s1 < s2;
+    });
+    tempInfo.setExePrograms(exePrograms);
     tempInfo.setCurrentProgram(TargetsManager::instance()->getActivedTargetByTargetType(TargetType::kActiveExecTarget).name);
     ProjectInfo::set(rootItem, tempInfo);
     emit parseProjectEnd({ rootItem, true });
