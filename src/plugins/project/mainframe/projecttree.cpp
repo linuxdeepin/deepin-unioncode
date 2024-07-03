@@ -717,7 +717,13 @@ void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)
 
     QModelIndex index = d->itemModel->indexFromItem(menuItem);
     QFileInfo fileInfo(index.data(Qt::ToolTipRole).toString());
-    QString dirPath = fileInfo.dir().path();
+
+    QString dirPath;
+    if (fileInfo.isFile())
+        dirPath = fileInfo.dir().path();
+    else if (fileInfo.isDir())
+        dirPath = fileInfo.filePath();
+
     auto terminalService = dpfGetService(TerminalService);
     if (terminalService) {
         terminalService->executeCommand(QString("cd %1\n").arg(dirPath));
