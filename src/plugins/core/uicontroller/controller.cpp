@@ -38,7 +38,7 @@
 
 static Controller *ins { nullptr };
 
-//WN = window name
+// WN = window name
 inline const QString WN_CONTEXTWIDGET = "contextWidget";
 inline const QString WN_LOADINGWIDGET = "loadingWidget";
 inline const QString WN_WORKSPACE = "workspaceWidget";
@@ -59,10 +59,17 @@ struct WidgetInfo
     DWidget *widget { nullptr };
     QDockWidget *dockWidget { nullptr };
     QString headerName;
-    Position defaultPos;   //set position after create dock
-    bool replace { false };   //hide current position`s dock before show
+    Position defaultPos;   // set position after create dock
+    bool replace { false };   // hide current position`s dock before show
     bool defaultVisible { true };
-    bool created { false };   //has already create dock
+    bool created { false };   // has already create dock
+
+    bool operator==(const WidgetInfo &info)
+    {
+        if (name == info.name && widget == info.widget)
+            return true;
+        return false;
+    };
 };
 
 class ControllerPrivate
@@ -93,7 +100,7 @@ class ControllerPrivate
 
     QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT };
     QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
-    QString mode { "" };   //mode: CM_EDIT/CM_DEBUG/CM_RECENT
+    QString mode { "" };   // mode: CM_EDIT/CM_DEBUG/CM_RECENT
     QMap<QString, QList<WidgetInfo>> modeInfo;
     QString currentNavigation { "" };
 
@@ -309,7 +316,7 @@ void Controller::raiseMode(const QString &mode)
         if (widgetInfo.replace)
             d->mainWindow->hideWidget(widgetInfo.defaultPos);
         d->mainWindow->showWidget(widgetInfo.name);
-        //widget in mainWindow is Dock(widget), show dock and hide widget
+        // widget in mainWindow is Dock(widget), show dock and hide widget
         if (!widgetInfo.defaultVisible)
             widgetInfo.widget->hide();
     }
@@ -320,12 +327,13 @@ void Controller::raiseMode(const QString &mode)
         return;
     }
 
+    showStatusBar();
+
     if (mode == CM_EDIT)
         showWorkspace();
 
     showTopToolBar();
     showContextWidget();
-    showStatusBar();
 
     d->mode = mode;
     uiController.modeRaised(mode);
@@ -367,7 +375,15 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
     }
 
     if (d->allWidgets.contains(name)) {
-        qWarning() << "widget named: " << name << "has alreay registed";
+        auto &info = d->allWidgets[name];
+
+        if (!d->modeInfo[mode].contains(info)) {
+            if (info.defaultPos != pos)
+                qWarning() << "widget named: " << name << "has registed to another position";
+            d->modeInfo[mode].append(info);
+        } else {
+            qWarning() << "Widget named: " << name << "has alreay registed";
+        }
         return;
     }
 
@@ -384,7 +400,7 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
 
     createDockWidget(widgetInfo);
     d->mainWindow->hideWidget(name);
-    
+
     d->allWidgets.insert(name, widgetInfo);
     d->modeInfo[mode].append(widgetInfo);
 }
@@ -434,9 +450,9 @@ void Controller::resizeDocks(const QList<QString> &docks, const QList<int> &size
         else
             qWarning() << "Dock named: " << dockName << "has not created!";
     }
-    
+
     d->mainWindow->resizeDocks(dockWidgets, sizes, orientation);
-    QApplication::processEvents(); // process layout update
+    QApplication::processEvents();   // process layout update
 }
 
 void Controller::setDockHeaderName(const QString &dockName, const QString &headerName)
@@ -448,7 +464,7 @@ void Controller::setDockHeaderName(const QString &dockName, const QString &heade
 
     auto &info = d->allWidgets[dockName];
     info.headerName = headerName;
-    
+
     if (info.created)
         d->mainWindow->setDockHeadername(dockName, headerName);
 }
@@ -488,7 +504,7 @@ void Controller::switchWidgetNavigation(const QString &navName)
         raiseMode(d->modePluginMap.key(navName));
     d->navigationActions[navName]->trigger();
 
-    //send event
+    // send event
     uiController.switchToWidget(navName);
 }
 
@@ -572,7 +588,7 @@ void Controller::addChildMenu(AbstractMenu *abstractMenu)
         }
     }
 
-    //make the `helper` menu at the last
+    // make the `helper` menu at the last
     for (QAction *action : d->menu->actions()) {
         if (action->text() == MWM_TOOLS) {
             d->menu->insertMenu(action, inputMenu);
@@ -580,7 +596,7 @@ void Controller::addChildMenu(AbstractMenu *abstractMenu)
         }
     }
 
-    //add menu to last
+    // add menu to last
     d->menu->addMenu(inputMenu);
 }
 
@@ -705,7 +721,7 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSepa
         hlayout = qobject_cast<QHBoxLayout *>(d->leftTopToolBar->layout());
     }
 
-    //sort
+    // sort
     auto index = 0;
     widget->setProperty("toptool_priority", priority);
     for (; index < hlayout->count(); index++) {
@@ -952,7 +968,7 @@ void Controller::initContextWidget()
     contextVLayout->addWidget(d->stackContextWidget);
     d->contextWidget->setLayout(contextVLayout);
 
-    //add contextWidget after add centralWidget or it`s height is incorrect
+    // add contextWidget after add centralWidget or it`s height is incorrect
     WidgetInfo info;
     info.name = WN_CONTEXTWIDGET;
     info.widget = d->contextWidget;
