@@ -118,6 +118,7 @@ RunCommandInfo MavenGenerator::getRunArguments(const ProjectInfo &projectInfo, c
     runCommandInfo.program = "java";
     runCommandInfo.arguments << JavaUtil::getMainClass(mainClassPath, packageDirName);
     runCommandInfo.workingDir = JavaUtil::getPackageDir(mainClassPath, packageDirName);
+    runCommandInfo.runInTerminal = false; // todo : config "run in terminal"
 
     return runCommandInfo;
 }

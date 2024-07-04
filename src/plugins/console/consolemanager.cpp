@@ -175,10 +175,10 @@ QTermWidget *ConsoleManager::findConsole(const QString &id)
     return d->consoleMap.value(id, nullptr);
 }
 
-QTermWidget *ConsoleManager::createConsole(const QString &name)
+QTermWidget *ConsoleManager::createConsole(const QString &name, bool startNow)
 {
     auto id = QUuid::createUuid().toString();
-    ConsoleWidget *console = new ConsoleWidget(this);
+    ConsoleWidget *console = new ConsoleWidget(this, startNow);
     d->consoleMap.insert(id, console);
     d->consoleStackedWidget->addWidget(console);
 
@@ -198,9 +198,15 @@ void ConsoleManager::sendCommand(const QString &text)
     currentConsole()->sendText(text);
 }
 
-void ConsoleManager::executeCommand(const QString &name, const QString &program, const QStringList &args, const QString &workingDir)
+void ConsoleManager::executeCommand(const QString &name, const QString &program, const QStringList &args, const QString &workingDir, const QStringList &env)
 {
-    auto console = createConsole(name);
+    auto startNow = env.isEmpty(); // console start after set environment
+    auto console = createConsole(name, startNow);
+    if (!env.isEmpty()) {
+        console->setEnvironment(env);
+        console->startShellProgram();
+    }
+
     auto dir = workingDir;
     if (!dir.isEmpty() && QFile::exists(dir)) {
         console->changeDir(dir);

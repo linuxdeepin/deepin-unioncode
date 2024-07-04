@@ -122,6 +122,7 @@ dpfservice::RunCommandInfo GradleGenerator::getRunArguments(const dpfservice::Pr
     runCommandInfo.program = "java";
     runCommandInfo.arguments << JavaUtil::getMainClass(mainClassPath, packageDirName);
     runCommandInfo.workingDir = JavaUtil::getPackageDir(mainClassPath, packageDirName);
+    runCommandInfo.runInTerminal = false; // todo : config "run in terminal"
 
     return runCommandInfo;
 }

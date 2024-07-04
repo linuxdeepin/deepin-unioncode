@@ -88,6 +88,7 @@ void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
     info.setWorkspaceFolder(param->projectPath);
     info.setBuildFolder(param->projectPath);
     info.setBuildProgram(param->pythonVersion.path);
+    info.setRunInTerminal(param->runInTerminal);
     info.setCurrentProgram(param->executeFile == ExecuteFile::CURRENTFILE ? exeCurrent : exeEntry);
 }
 

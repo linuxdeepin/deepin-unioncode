@@ -56,6 +56,8 @@ public:
     inline QString runWorkspaceDir() const {return data["RunWorkspaceDir"].toString();}
     inline void setRunEnvironment(const QStringList &envs) {data["RunEnvironment"] = envs;}
     inline QStringList runEnvironment() const {return data["RunEnvironment"].toStringList();}
+    inline void setRunInTerminal(bool isRunInTerminal) {data["RunInTerminal"] = isRunInTerminal;}
+    inline bool runInTerminal() const {return data["RunInTerminal"].toBool();}
 
     bool operator == (const ProjectInfo &other) const {return data == other.data;}
     bool isEmpty() const {return data.isEmpty();}

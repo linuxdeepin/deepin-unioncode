@@ -559,7 +559,11 @@ void Controller::hideContextWidget()
 
 void Controller::switchContextWidget(const QString &title)
 {
-    qInfo() << __FUNCTION__;
+    if (!d->contextWidgets.contains(title)) {
+        qWarning() << "No ContextWidget named: " << title;
+        return;
+    }
+
     d->stackContextWidget->setCurrentWidget(d->contextWidgets[title]);
     if (d->stackContextWidget->isHidden()) {
         d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
