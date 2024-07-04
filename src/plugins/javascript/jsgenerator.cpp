@@ -131,5 +131,5 @@ RunCommandInfo JSGenerator::getRunArguments(const ProjectInfo &projectInfo, cons
     if (!QFile::exists(currentFile)) {
         OutputPane::instance()->appendText(tr("Please open a JS file in editor!"), OutputPane::ErrorMessage);
     }
-    return {"node", {currentFile}, ""};
+    return {"node", {currentFile}, "", {}, false};
 }

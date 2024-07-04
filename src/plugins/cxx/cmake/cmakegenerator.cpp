@@ -99,10 +99,12 @@ RunCommandInfo CMakeGenerator::getRunArguments(const ProjectInfo &projectInfo, c
 {
     Q_UNUSED(currentFile)
 
-    RunCommandInfo runCommaindInfo;
-    runCommaindInfo.program = projectInfo.runProgram();
-    runCommaindInfo.arguments = projectInfo.runCustomArgs();
-    runCommaindInfo.workingDir = projectInfo.runWorkspaceDir();
-    runCommaindInfo.envs = projectInfo.runEnvironment();
-    return runCommaindInfo;
+    RunCommandInfo runCommandInfo;
+    runCommandInfo.program = projectInfo.runProgram();
+    runCommandInfo.arguments = projectInfo.runCustomArgs();
+    runCommandInfo.workingDir = projectInfo.runWorkspaceDir();
+    runCommandInfo.envs = projectInfo.runEnvironment();
+    runCommandInfo.runInTerminal = projectInfo.runInTerminal();
+
+    return runCommandInfo;
 }

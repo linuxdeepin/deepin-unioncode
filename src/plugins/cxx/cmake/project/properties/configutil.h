@@ -122,6 +122,7 @@ struct TargetRunConfigure {
     QString arguments;
     QString workDirectory;
     EnvironmentItem env;
+    bool runInTermal;
 
     friend QDataStream &operator<<(QDataStream &stream, const TargetRunConfigure &data)
     {
@@ -130,6 +131,7 @@ struct TargetRunConfigure {
         stream << data.arguments;
         stream << data.workDirectory;
         stream << data.env;
+        stream << data.runInTermal;
 
         return stream;
     }
@@ -141,6 +143,7 @@ struct TargetRunConfigure {
         stream >> data.arguments;
         stream >> data.workDirectory;
         stream >> data.env;
+        stream >> data.runInTermal;
 
         return stream;
     }

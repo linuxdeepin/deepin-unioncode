@@ -54,6 +54,7 @@ struct ProjectConfigure {
     QString projectPath;
     ItemInfo pythonVersion;
     ExecuteFile executeFile;
+    bool runInTerminal;
 
     friend QDataStream &operator<<(QDataStream &stream, const ProjectConfigure &data)
     {
@@ -62,6 +63,7 @@ struct ProjectConfigure {
         stream << data.projectPath;
         stream << data.pythonVersion;
         stream << static_cast<qint8>(data.executeFile);
+        stream << data.runInTerminal;
 
         return stream;
     }
@@ -75,6 +77,7 @@ struct ProjectConfigure {
         qint8 temp;
         stream >> temp;
         data.executeFile = static_cast<ExecuteFile>(temp);
+        stream >> data.runInTerminal;
 
         return stream;
     }

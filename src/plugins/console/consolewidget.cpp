@@ -23,8 +23,8 @@ public:
     ProjectService *prjService = nullptr;
 };
 
-ConsoleWidget::ConsoleWidget(QWidget *parent)
-    : QTermWidget(parent),
+ConsoleWidget::ConsoleWidget(QWidget *parent, bool startNow)
+    : QTermWidget(startNow, parent),
      d(new ConsoleWidgetPrivate())
 {
     setMargin(0);

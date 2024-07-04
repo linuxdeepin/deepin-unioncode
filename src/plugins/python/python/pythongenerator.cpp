@@ -141,6 +141,7 @@ RunCommandInfo PythonGenerator::getRunArguments(const ProjectInfo &projectInfo, 
         }
     }
     runCommandInfo.arguments << runFilePath;
+    runCommandInfo.runInTerminal = ConfigUtil::instance()->getConfigureParamPointer()->runInTerminal;
 
     return runCommandInfo;
 }

@@ -43,5 +43,5 @@ void APTInstaller::install(const InstallInfo &info)
          << info.packageList;
 
     uiController.switchContext(tr("&Console"));
-    termSrv->executeCommand(info.plugin.isEmpty() ? "APTInstall" : info.plugin, "sudo apt", args, "");
+    termSrv->executeCommand(info.plugin.isEmpty() ? "APTInstall" : info.plugin, "sudo apt", args, "", QStringList());
 }

@@ -18,7 +18,7 @@ class ConsoleWidget : public QTermWidget
 {
     Q_OBJECT
 public:
-    explicit ConsoleWidget(QWidget *parent = nullptr);
+    explicit ConsoleWidget(QWidget *parent = nullptr, bool startNow = true);
     virtual ~ConsoleWidget();
 
 protected:
