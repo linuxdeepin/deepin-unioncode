@@ -144,6 +144,7 @@ QDockWidget *MainWindow::addWidget(const QString &name, QWidget *widget, Positio
         if (!d->centralWidgetName.isEmpty() && centralWidget())
             hideWidget(d->centralWidgetName);
 
+        widget->show();
         setCentralWidget(widget);
         d->centralWidgetName = name;
         d->centralWidgets.insert(name, widget);
