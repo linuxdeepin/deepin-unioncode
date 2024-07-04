@@ -103,6 +103,7 @@ RunCommandInfo NinjaGenerator::getRunArguments(const ProjectInfo &projectInfo, c
     runCommandInfo.program = targetPath;
     runCommandInfo.arguments = projectInfo.runCustomArgs();
     runCommandInfo.workingDir = workspace;
+    runCommandInfo.runInTerminal = false; // todo : config "run in terminal"
 
     return runCommandInfo;
 }

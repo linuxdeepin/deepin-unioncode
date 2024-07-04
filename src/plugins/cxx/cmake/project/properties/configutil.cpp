@@ -240,6 +240,7 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
                     info.setRunCustomArgs(arguments);
                     info.setRunWorkspaceDir(iterRun->workDirectory);
                     info.setCurrentProgram(iterRun->targetName);
+                    info.setRunInTerminal(iterRun->runInTermal);
 
                     TargetsManager::instance()->updateActiveExceTarget(iterRun->targetName);
                     break;

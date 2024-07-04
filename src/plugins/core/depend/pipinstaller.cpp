@@ -42,5 +42,5 @@ void PIPInstaller::install(const InstallInfo &info)
          << info.packageList;
 
     uiController.switchContext(tr("&Console"));
-    termSrv->executeCommand(info.plugin.isEmpty() ? "PIPInstaller" : info.plugin, "pip3", args, "");
+    termSrv->executeCommand(info.plugin.isEmpty() ? "PIPInstaller" : info.plugin, "pip3", args, "", QStringList());
 }

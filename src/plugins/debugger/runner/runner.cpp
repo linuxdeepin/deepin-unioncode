@@ -14,6 +14,7 @@
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
 #include "services/editor/editorservice.h"
+#include "services/terminal/terminalservice.h"
 
 #include <DComboBox>
 #include <DGuiApplicationHelper>
@@ -149,7 +150,6 @@ void Runner::running()
         return;
     }
 
-    uiController.switchContext(tr("&Application Output"));
 
     LanguageService *service = dpfGetService(LanguageService);
     if (service) {
@@ -157,9 +157,18 @@ void Runner::running()
         if (generator) {
             dpfservice::ProjectInfo activeProjInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
             RunCommandInfo args = generator->getRunArguments(activeProjInfo, d->currentOpenedFilePath);
-            QtConcurrent::run([=](){
-               execCommand(args);
-            });
+            if (!args.runInTerminal) {
+                uiController.switchContext(tr("&Application Output"));
+
+                QtConcurrent::run([=]() {
+                    execCommand(args);
+                });
+            } else {
+                uiController.switchContext(tr("&Console"));
+
+                auto terminalService = dpfGetService(TerminalService);
+                terminalService->executeCommand(args.program, args.program, args.arguments, args.workingDir, args.envs);
+            }
         }
     }
 }
