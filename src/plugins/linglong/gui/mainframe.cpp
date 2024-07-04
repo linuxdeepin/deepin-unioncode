@@ -76,6 +76,7 @@ MainFrame::~MainFrame()
 
 void MainFrame::initUi()
 {
+    setLineWidth(0);
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
@@ -85,6 +86,7 @@ void MainFrame::initUi()
     d->generateBtn->setFixedWidth(80);
 
     DFrame *topWidget = new DFrame(this);
+    topWidget->setLineWidth(0);
     DStyle::setFrameRadius(topWidget, 0);
     auto topLayout = new QHBoxLayout(topWidget);
     topLayout->setContentsMargins(18, 18, 18, 18);
