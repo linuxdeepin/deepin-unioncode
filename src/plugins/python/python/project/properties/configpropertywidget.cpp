@@ -11,6 +11,7 @@
 
 #include <DComboBox>
 #include <DLabel>
+#include <DCheckBox>
 
 #include <QVBoxLayout>
 
@@ -20,6 +21,8 @@ class DetailPropertyWidgetPrivate
     friend class DetailPropertyWidget;
     DComboBox *pyVersionComboBox { nullptr };
     DComboBox *executeFileComboBox { nullptr };
+    DCheckBox *runInTerminal {nullptr};
+
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -57,6 +60,14 @@ void DetailPropertyWidget::setupUI()
     d->executeFileComboBox->setEnabled(false);
     hLayout->addWidget(label);
     hLayout->addWidget(d->executeFileComboBox);
+    vLayout->addLayout(hLayout);
+
+    hLayout = new QHBoxLayout;
+    label = new DLabel(tr("Run in terminal: "), this);
+    label->setFixedWidth(120);
+    d->runInTerminal = new DCheckBox(this);
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->runInTerminal);
     vLayout->addLayout(hLayout);
 
     vLayout->addStretch(10);
@@ -161,6 +172,8 @@ void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
             d->executeFileComboBox->setCurrentIndex(1);
         }
     }
+
+    d->runInTerminal->setChecked(param->runInTerminal);
 }
 
 void DetailPropertyWidget::getValues(config::ProjectConfigure *param)
@@ -182,6 +195,8 @@ void DetailPropertyWidget::getValues(config::ProjectConfigure *param)
     } else if (index == 1) {   //Entry file
         param->executeFile = ExecuteFile::ENTRYFILE;
     }
+
+    param->runInTerminal = d->runInTerminal->isChecked();
 }
 
 class ConfigPropertyWidgetPrivate

@@ -84,5 +84,7 @@ RunCommandInfo LLGenerator::getRunArguments(const ProjectInfo &projectInfo, cons
     info.program = "ll-builder";
     info.arguments.append("run");
     info.workingDir = projectInfo.workspaceFolder();
+    info.runInTerminal = false;
+
     return info;
 }

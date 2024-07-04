@@ -10,6 +10,7 @@
 #include <DFrame>
 #include <DLineEdit>
 #include <DSuggestButton>
+#include <DCheckBox>
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -27,6 +28,7 @@ class RunConfigPanePrivate
     DLineEdit *cmdArgsLineEdit{nullptr};
     DLineEdit *workingDirLineEdit{nullptr};
     DLineEdit *executableEdit{nullptr};
+    DCheckBox *runInTerminal {nullptr};
     QFormLayout *formLayout{nullptr};
 
     EnvironmentWidget *environmentWidget{nullptr};
@@ -95,6 +97,13 @@ void RunConfigPane::setupUi()
         }
     });
 
+    d->runInTerminal = new DCheckBox(this);
+    d->formLayout->addRow(tr("Run in terminal:"), d->runInTerminal);
+    connect(d->runInTerminal, &DCheckBox::stateChanged, this, [this](int state){
+        Q_UNUSED(state);
+        d->targetRunParam->runInTermal = d->runInTerminal->isChecked();
+    });
+
     mainFrame->setLayout(d->formLayout);
 
     d->environmentWidget = new EnvironmentWidget(this, EnvType::RunCfg);
@@ -114,6 +123,7 @@ void RunConfigPane::updateUi()
     d->workingDirLineEdit->setText(d->targetRunParam->workDirectory);
     d->currentTargetName = d->targetRunParam->targetName;
     d->executableEdit->setText(d->targetRunParam->targetPath);
+    d->runInTerminal->setChecked(d->targetRunParam->runInTermal);
 }
 
 void RunConfigPane::setTargetRunParam(config::TargetRunConfigure *targetRunParam)

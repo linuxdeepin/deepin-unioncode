@@ -70,7 +70,6 @@ void OutputPane::initUI()
     mainLayout->setSpacing(0);
 
     d->outputEdit = new DPlainTextEdit(this);
-    d->outputEdit->setReadOnly(true);
     d->outputEdit->setLineWidth(0);
     d->outputEdit->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
