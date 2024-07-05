@@ -336,7 +336,7 @@ void TextEditor::showTips(const QString &tips)
 
 void TextEditor::showTips(int pos, const QString &tips)
 {
-    if (!hasFocus())
+    if (!hasFocus() || !d->tipsDisplayable)
         return;
 
     auto point = pointFromPosition(pos);
@@ -806,12 +806,14 @@ void TextEditor::contextMenuEvent(QContextMenuEvent *event)
     if (!contextMenuNeeded(event->pos().x(), event->pos().y()))
         return;
 
+    d->tipsDisplayable = false;
     int xPos = event->pos().x();
     if (xPos <= d->marginsWidth()) {
         d->showMarginMenu();
     } else {
         d->showContextMenu();
     }
+    d->tipsDisplayable = true;
 }
 
 void TextEditor::dropEvent(QDropEvent *event)

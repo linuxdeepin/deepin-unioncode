@@ -386,16 +386,16 @@ QColor SciLexerCPP::defaultPaper(int style) const
 const char *SciLexerCPP::keywords(int set) const
 {
     if (set == 1)
-        return "and and_eq asm auto bitand bitor bool break case "
-               "catch char class compl const const_cast continue "
-               "default delete do double dynamic_cast else enum "
-               "explicit export extern false float for friend goto if "
-               "inline int long mutable namespace new not not_eq "
-               "operator or or_eq private protected public register "
-               "reinterpret_cast return short signed sizeof static "
-               "static_cast struct switch template this throw true "
-               "try typedef typeid typename union unsigned using "
-               "virtual void volatile wchar_t while xor xor_eq";
+        return "and and_eq asm auto bitand bitor bool break case catch "
+               "char class compl const const_cast continue default "
+               "delete do double dynamic_cast else enum explicit export "
+               "extern false farcall float for friend goto if inline int "
+               "long mutable namespace new not not_eq nullptr null out "
+               "operator or or_eq private protected public println register "
+               "reinterpret_cast return short signed sizeof static system "
+               "static_cast struct switch template this throw true try typedef "
+               "typeid typename union unsigned using virtual void volatile "
+               "wchar_t while xor xor_eq";
 
     if (set == 3)
         return "a addindex addtogroup anchor arg attention author b "
