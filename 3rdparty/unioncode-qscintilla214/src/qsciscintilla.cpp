@@ -919,6 +919,8 @@ int QsciScintilla::blockIndent(int line)
             }
             else if (line == l)
                 ind += ind_width;
+            else
+                ind = indentation(l + 1);
 
             return ind;
         }
