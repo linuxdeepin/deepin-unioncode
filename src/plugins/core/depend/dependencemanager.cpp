@@ -8,6 +8,8 @@
 #include <QMap>
 #include <QTimer>
 #include <QDebug>
+#include <QMutexLocker>
+#include <QtConcurrent>
 
 #include <functional>
 
@@ -20,8 +22,10 @@ public:
     void init();
     void notify();
     void installHander(const QString &actId, const InstallInfo &info);
+    void checkInstalled(const QString &plugin, const QString &name, const QStringList &packageList);
 
 public:
+    QMutex mutex;
     QMap<QString, AbstractInstaller *> installerMap;
     QList<InstallInfo> infoList;
     QTimer notifyTimer;
@@ -43,7 +47,9 @@ void DependenceManagerPrivate::notify()
         notifyTimer.start();
 
     QStringList actionList { CancelActionID, DependenceManager::tr("Cancel"),
-                           InstallActionID, DependenceManager::tr("Install") };
+                             InstallActionID, DependenceManager::tr("Install") };
+
+    QMutexLocker lk(&mutex);
     while (!infoList.isEmpty()) {
         const auto &info = infoList.takeFirst();
         auto cb = std::bind(&DependenceManagerPrivate::installHander, this, _1, info);
@@ -62,6 +68,29 @@ void DependenceManagerPrivate::installHander(const QString &actId, const Install
         return;
 
     installerMap[info.installer]->install(info);
+}
+
+void DependenceManagerPrivate::checkInstalled(const QString &plugin, const QString &name, const QStringList &packageList)
+{
+    QStringList list;
+    for (const auto &package : packageList) {
+        if (!installerMap[name]->checkInstalled(package))
+            list << package;
+    }
+
+    if (list.isEmpty())
+        return;
+
+    InstallInfo info;
+    info.installer = name;
+    info.plugin = plugin;
+    info.packageList = list;
+
+    QMutexLocker lk(&mutex);
+    infoList << info;
+    lk.unlock();
+
+    QMetaObject::invokeMethod(&notifyTimer, qOverload<>(&QTimer::start));
 }
 
 DependenceManager::DependenceManager(QObject *parent)
@@ -102,22 +131,7 @@ bool DependenceManager::installPackageList(const QString &plugin, const QString 
         return false;
     }
 
-    QStringList list;
-    for (const auto &package : packageList) {
-        if (!d->installerMap[name]->checkInstalled(package))
-            list << package;
-    }
-
-    if (list.isEmpty())
-        return true;
-
-    InstallInfo info;
-    info.installer = name;
-    info.plugin = plugin;
-    info.packageList = list;
-    d->infoList << info;
-
-    d->notifyTimer.start();
+    QtConcurrent::run(d, &DependenceManagerPrivate::checkInstalled, plugin, name, packageList);
     return true;
 }
 

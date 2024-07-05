@@ -14,8 +14,16 @@
 #define uniInfo(...) qInfo(__VA_ARGS__)
 #define uniWarning(...) qWarning(__VA_ARGS__)
 #define uniCritical(...) qCritical(__VA_ARGS__)
-#else    
-#define NO_DEBUG(LOG) QMessageLogger().noDebug(LOG)
+#else
+
+class NoDebug
+{
+public:
+    template<typename T>
+    inline NoDebug &operator<<(const T &) { return *this; }
+};
+
+#define NO_DEBUG(LOG) NoDebug()
 #define uniDebug(...) NO_DEBUG(__VA_ARGS__)
 #define uniInfo(...) NO_DEBUG(__VA_ARGS__)
 #define uniWarning(...) NO_DEBUG(__VA_ARGS__)
