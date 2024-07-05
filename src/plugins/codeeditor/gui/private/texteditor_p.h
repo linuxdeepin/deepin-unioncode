@@ -74,6 +74,7 @@ public:
     bool isAutoCompletionEnabled { false };
     bool isCtrlPressed { false };
 
+    bool tipsDisplayable { true };
     bool contentsChanged { false };
     bool lastCursorNeedRecord { true };
     bool postionChangedByGoto { false };
