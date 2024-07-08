@@ -16,6 +16,7 @@
 #include <QHBoxLayout>
 #include <QClipboard>
 #include <QGuiApplication>
+#include <QDesktopServices>
 
 DWIDGET_USE_NAMESPACE
 
@@ -157,10 +158,10 @@ void TabBarPrivate::showMenu(QPoint pos)
     });
 
     menu.addSeparator();
-    menu.addAction(tr("Open File Location"), [=]() {
+    menu.addAction(tr("Show Containing Folder"), [=]() {
         auto file = tabBar->tabToolTip(curIndex);
-        QString openCommand = "xdg-open " + QFileInfo(file).dir().path();
-        QProcess::startDetached(openCommand);
+        QFileInfo info(file);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(info.absolutePath()));
     });
 
     menu.exec(QCursor::pos());
