@@ -104,9 +104,10 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     contentLayout->setContentsMargins(0, 0, 0, 0);
     contentLayout->setSpacing(0);
 
-    DTitlebar *titleBar = new DTitlebar(Dialog);
+    titleBar = new DTitlebar(Dialog);
     titleBar->setMinimumHeight(43);
     titleBar->setMenuVisible(false);
+
     titleBar->setTitle(tr("Project Properties"));
     titleBar->setIcon(QIcon::fromTheme("ide"));
     vLayout->addWidget(titleBar);
@@ -203,6 +204,11 @@ void PropertiesDialog::saveAllConfig()
     }
 
     accept();
+}
+
+void PropertiesDialog::setCurrentTitle(const QString &title)
+{
+    titleBar->setTitle(title);
 }
 
 void PropertiesDialog::saveSingleConfig()

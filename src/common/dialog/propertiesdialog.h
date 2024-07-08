@@ -10,6 +10,7 @@
 #include <DLineEdit>
 #include <DListView>
 #include <DLabel>
+#include <DTitlebar>
 #include <DStackedWidget>
 
 #include <QtWidgets/QDialog>
@@ -35,6 +36,7 @@ public:
 
     bool insertPropertyPanel(const QString &itemName, PageWidget *panel);
     void showPropertyPanel(const QString &itemName, const QString &tabName);
+    void setCurrentTitle(const QString &title);
 signals:
 
 public slots:
@@ -57,6 +59,7 @@ private:
     DStackedWidget *stackWidget = nullptr;
 
     QStringList leftBarValues;
+    DTitlebar *titleBar = nullptr;
 };
 
 #endif // PROPERTIESDIALOG_H
