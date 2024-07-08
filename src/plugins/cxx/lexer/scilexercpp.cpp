@@ -391,7 +391,7 @@ const char *SciLexerCPP::keywords(int set) const
                "delete do double dynamic_cast else enum explicit export "
                "extern false farcall float for friend goto if inline int "
                "long mutable namespace new not not_eq nullptr null out "
-               "operator or or_eq private protected public println register "
+               "operator or or_eq override private protected public println register "
                "reinterpret_cast return short signed sizeof static system "
                "static_cast struct switch template this throw true try typedef "
                "typeid typename union unsigned using virtual void volatile "

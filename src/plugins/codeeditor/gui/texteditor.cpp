@@ -342,6 +342,10 @@ void TextEditor::showTips(int pos, const QString &tips)
     if (!hasFocus() || !d->tipsDisplayable)
         return;
 
+    bool isCtrlPressed = qApp->queryKeyboardModifiers().testFlag(Qt::ControlModifier);
+    if (isCtrlPressed)
+        return;
+
     auto point = pointFromPosition(pos);
     QToolTip::showText(mapToGlobal(point), tips, this);
 }
@@ -760,8 +764,8 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 
 void TextEditor::focusOutEvent(QFocusEvent *event)
 {
-    d->isCtrlPressed = false;
-    emit focusOut();
+    Q_EMIT focusOut();
+    Q_EMIT followTypeEnd();
     QsciScintilla::focusOutEvent(event);
 }
 
@@ -775,7 +779,8 @@ void TextEditor::keyPressEvent(QKeyEvent *event)
 
 void TextEditor::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->isCtrlPressed) {
+    bool isCtrlPressed = qApp->queryKeyboardModifiers().testFlag(Qt::ControlModifier);
+    if (isCtrlPressed) {
         auto point = event->pos();
         auto pos = positionFromPoint(point.x(), point.y());
         Q_EMIT requestFollowType(pos);
@@ -795,8 +800,8 @@ bool TextEditor::event(QEvent *event)
     if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
         auto keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent) {
-            d->isCtrlPressed = keyEvent->modifiers().testFlag(Qt::ControlModifier);
-            if (!d->isCtrlPressed)
+            bool isCtrlPressed = keyEvent->modifiers().testFlag(Qt::ControlModifier);
+            if (!isCtrlPressed)
                 Q_EMIT followTypeEnd();
         }
     }

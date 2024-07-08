@@ -518,7 +518,7 @@ void LanguageClientHandlerPrivate::handleShowContextMenu(QMenu *menu)
     act = menu->addAction(tr("Find Usages"), q, &LanguageClientHandler::findUsagesActionTriggered);
     menu->insertAction(actionList.first(), act);
 
-    act = menu->addAction(tr("Range Formatting"), q, &LanguageClientHandler::formatSelections);
+    act = menu->addAction(tr("Format Selection"), q, &LanguageClientHandler::formatSelections);
     menu->insertAction(actionList.first(), act);
     menu->insertSeparator(actionList.first());
 }
