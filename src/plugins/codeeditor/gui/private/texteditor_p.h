@@ -74,7 +74,6 @@ public:
     
     LanguageClientHandler *languageClient { nullptr };
     bool isAutoCompletionEnabled { false };
-    bool isCtrlPressed { false };
 
     bool tipsDisplayable { true };
     bool contentsChanged { false };

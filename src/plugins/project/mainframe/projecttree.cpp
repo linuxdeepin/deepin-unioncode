@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QUrl>
 #include <QClipboard>
+#include <QDesktopServices>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -233,12 +234,11 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
 
     // add action that show contain folder.
     menu->addSeparator();
-    QAction *showContainFolder = new QAction(tr("Show Contain Folder"), this);
+    QAction *showContainFolder = new QAction(tr("Show Containing Folder"), this);
     connect(showContainFolder, &QAction::triggered, [=](){
         QString filePath = item->toolTip();
-        QFileInfo fileInfo(filePath);
-        QString openCommand = "xdg-open " + fileInfo.dir().path();
-        QProcess::startDetached(openCommand);
+        QFileInfo info(filePath);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(info.absolutePath()));
     });
     menu->addAction(showContainFolder);
 
