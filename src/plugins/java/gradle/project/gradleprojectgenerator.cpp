@@ -346,6 +346,7 @@ void GradleProjectGenerator::doGradleTaskActionTriggered()
 void GradleProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
+    dlg.setCurrentTitle(info.currentProgram() + " - " + tr("Project Properties"));
     GradleConfigPropertyWidget *property = new GradleConfigPropertyWidget(info, item);
     dlg.insertPropertyPanel("Config", property);
     dlg.exec();
