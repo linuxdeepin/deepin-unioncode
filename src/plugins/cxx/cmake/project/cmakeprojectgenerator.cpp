@@ -533,6 +533,7 @@ void CmakeProjectGenerator::runCMake(QStandardItem *root, const QPair<QString, Q
 void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
+    dlg.setCurrentTitle(info.currentProgram() + " - " + tr("Project Properties"));
 
     //update config by current project(not activated project
     ProjectConfigure *projectConfigure = ConfigUtil::instance()->getConfigureParamPointer();
