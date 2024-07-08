@@ -214,6 +214,7 @@ void MavenProjectGenerator::doActionTriggered()
 void MavenProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
+    dlg.setCurrentTitle(info.currentProgram() + " - " + tr("Project Properties"));
     MavenConfigPropertyWidget *property = new MavenConfigPropertyWidget(info, item);
     dlg.insertPropertyPanel("Config", property);
     dlg.exec();
