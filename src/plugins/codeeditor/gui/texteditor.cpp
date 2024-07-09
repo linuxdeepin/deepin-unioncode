@@ -123,7 +123,8 @@ void TextEditor::reload()
 {
     int line = 0, index = 0;
     getCursorPosition(&line, &index);
-
+    const auto &markers = d->allMarkers();
+    
     QString text;
     QFile file(d->fileName);
     if (file.open(QFile::OpenModeFlag::ReadOnly)) {
@@ -133,6 +134,7 @@ void TextEditor::reload()
     setText(text.toUtf8());
     setModified(false);
 
+    d->setMarkers(markers);
     setCursorPosition(line, index);
 }
 
@@ -143,10 +145,11 @@ void TextEditor::addBreakpoint(int line, bool enabled)
 
     if (enabled) {
         markerAdd(line, TextEditorPrivate::Breakpoint);
-        editor.breakpointAdded(d->fileName, line + 1);
     } else {
         markerAdd(line, TextEditorPrivate::BreakpointDisabled);
     }
+    
+    editor.breakpointAdded(d->fileName, line + 1, enabled);
 }
 
 void TextEditor::removeBreakpoint(int line)
