@@ -59,6 +59,7 @@ struct WidgetInfo
     DWidget *widget { nullptr };
     QDockWidget *dockWidget { nullptr };
     QString headerName;
+    QList<QAction *> headerList;
     Position defaultPos;   // set position after create dock
     bool replace { false };   // hide current position`s dock before show
     bool defaultVisible { true };
@@ -177,6 +178,9 @@ void Controller::registerService()
     }
     if (!windowService->setDockHeaderName) {
         windowService->setDockHeaderName = std::bind(&Controller::setDockHeaderName, this, _1, _2);
+    }
+    if (!windowService->setDockHeaderList) {
+        windowService->setDockHeaderList = std::bind(&Controller::setDockHeaderList, this, _1, _2);
     }
     if (!windowService->deleteDockHeader) {
         windowService->deleteDockHeader = std::bind(&MainWindow::deleteDockHeader, d->mainWindow, _1);
@@ -301,7 +305,9 @@ void Controller::createDockWidget(WidgetInfo &info)
     info.created = true;
 
     if (!info.headerName.isEmpty())
-        d->mainWindow->setDockHeadername(info.name, info.headerName);
+        d->mainWindow->setDockHeaderName(info.name, info.headerName);
+    else if (!info.headerList.isEmpty())
+        d->mainWindow->setDockHeaderList(info.name, info.headerList);
 }
 
 void Controller::raiseMode(const QString &mode)
@@ -466,7 +472,22 @@ void Controller::setDockHeaderName(const QString &dockName, const QString &heade
     info.headerName = headerName;
 
     if (info.created)
-        d->mainWindow->setDockHeadername(dockName, headerName);
+        d->mainWindow->setDockHeaderName(dockName, headerName);
+}
+
+void Controller::setDockHeaderList(const QString &dockName, const QList<QAction *> &actions)
+{
+    if (!d->allWidgets.contains(dockName)) {
+        qWarning() << "No widget named: " << dockName;
+        return;
+    }
+
+    auto &info = d->allWidgets[dockName];
+    info.headerName = "";
+    info.headerList = actions;
+
+    if (info.created)
+        d->mainWindow->setDockHeaderList(dockName, actions);
 }
 
 void Controller::addNavigationItem(AbstractAction *action, quint8 priority)
@@ -1110,13 +1131,19 @@ void Controller::showWorkspace()
         expandAll->setVisible(d->workspace->getCurrentExpandState());
         foldAll->setVisible(d->workspace->getCurrentExpandState());
 
-        setDockHeaderName(WN_WORKSPACE, d->workspace->getCurrentTitle());
+        auto titles = d->workspace->allWidgetTitles();
+        QList<QAction *> headers;
+        for (auto title : titles) {
+            QAction *action = new QAction(title, d->workspace);
+            connect(action, &QAction::triggered, this, [=](){d->workspace->switchWidgetWorkspace(title);});
+            headers.append(action);
+        }
+        d->mainWindow->setDockHeaderList(WN_WORKSPACE, headers);
+        d->mainWindow->setDockHeaderName(WN_WORKSPACE, d->workspace->currentTitle());
+
         connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand) {
             expandAll->setVisible(canExpand);
             foldAll->setVisible(canExpand);
-        });
-        connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title) {
-            setDockHeaderName(WN_WORKSPACE, title);
         });
 
         d->workspace->addedToController = true;
