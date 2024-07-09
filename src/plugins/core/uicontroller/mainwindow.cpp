@@ -92,7 +92,7 @@ DDockWidget *MainWindow::createDockWidget(DWidget *widget)
     return dock;
 }
 
-void MainWindow::setDockHeadername(const QString &dockName, const QString &headerName)
+void MainWindow::setDockHeaderName(const QString &dockName, const QString &headerName)
 {
     if (!d->dockList.contains(dockName))
         return;
@@ -102,6 +102,18 @@ void MainWindow::setDockHeadername(const QString &dockName, const QString &heade
 
     if (titleBar)
         titleBar->setHeaderName(headerName);
+}
+
+void MainWindow::setDockHeaderList(const QString &dockName, const QList<QAction *> &actions)
+{
+    if (!d->dockList.contains(dockName))
+        return;
+
+    auto dock = d->dockList[dockName];
+    auto titleBar = qobject_cast<DockHeader *>(dock->titleBarWidget());
+
+    if (titleBar)
+        titleBar->setHeaderNames(actions);
 }
 
 void MainWindow::deleteDockHeader(const QString &name)
@@ -404,25 +416,6 @@ void MainWindow::showWidget(const QString &name)
     }
 
     d->dockList[name]->setVisible(true);
-}
-
-void MainWindow::showWidget(Position pos)
-{
-    if (pos == Position::FullWindow) {
-        hideAllWidget();
-    }
-
-    if ((pos == Position::Central || pos == Position::FullWindow) && centralWidget()) {
-        showWidget(d->centralWidgetName);
-        return;
-    }
-
-    auto area = positionTodockArea(pos);
-    foreach (auto name, d->dockList.keys()) {
-        if (dockWidgetArea(d->dockList[name]) == area) {
-            d->dockList[name]->show();
-        }
-    }
 }
 
 void MainWindow::showAllWidget()
