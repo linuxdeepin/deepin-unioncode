@@ -5,6 +5,8 @@
 #ifndef PROPERTIESDIALOG_H
 #define PROPERTIESDIALOG_H
 
+#include "common/common_global.h"
+
 #include <DAbstractDialog>
 #include <DDialog>
 #include <DLineEdit>
@@ -28,7 +30,7 @@ class QStringListModel;
 class QStackedWidget;
 class PageWidget;
 
-class PropertiesDialog : public DAbstractDialog
+class COMMON_EXPORT PropertiesDialog : public DAbstractDialog
 {
     Q_OBJECT
 public:

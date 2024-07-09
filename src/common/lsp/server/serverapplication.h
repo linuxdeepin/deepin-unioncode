@@ -5,6 +5,7 @@
 #ifndef SERVERAPPLICATION_H
 #define SERVERAPPLICATION_H
 
+#include "common/common_global.h"
 #include "common/lsp/server/servercmdparse.h"
 #include "common/lsp/server/stdinjsonrpcparser.h"
 
@@ -16,7 +17,7 @@
 namespace newlsp {
 
 class ServerApplicationPrivate;
-class ServerApplication : public QObject, ServerCmdParse
+class COMMON_EXPORT ServerApplication : public QObject, ServerCmdParse
 {
     Q_OBJECT
     ServerApplicationPrivate *const d;

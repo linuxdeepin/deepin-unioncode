@@ -5,9 +5,10 @@
 #ifndef OPTIONUTILS_H
 #define OPTIONUTILS_H
 
+#include "services/services_global.h"
 #include <QObject>
 
-class OptionUtils : public QObject
+class SERVICE_EXPORT OptionUtils : public QObject
 {
     Q_OBJECT
 public:

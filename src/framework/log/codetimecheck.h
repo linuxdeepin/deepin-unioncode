@@ -30,7 +30,7 @@ DPF_BEGIN_NAMESPACE
  *  代码埋点时间检查模块，可加编译参数进行屏蔽
  *  DPF_NO_CHECK_TIME (cmake -DDPF_NO_CHECK_TIME)
  */
-class CodeCheckTime final
+class DPF_EXPORT CodeCheckTime final
 {
 public:
     explicit CodeCheckTime() = delete;

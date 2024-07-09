@@ -5,6 +5,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "common/common_global.h"
 #include "common/lsp/protocol/protocol.h"
 #include "common/lsp/protocol/newprotocol.h"
 
@@ -13,7 +14,7 @@
 namespace newlsp {
 
 class ClientPrivate;
-class Client : public QProcess
+class COMMON_EXPORT Client : public QProcess
 {
     Q_OBJECT
     ClientPrivate *const d;

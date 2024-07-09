@@ -6,12 +6,13 @@
 #define OPTIONGENERATOR_H
 
 #include "common/common.h"
+#include "services/services_global.h"
 
 #include <QWidget>
 
 namespace dpfservice {
 
-class OptionGenerator : public Generator
+class SERVICE_EXPORT OptionGenerator : public Generator
 {
     Q_OBJECT
 public:

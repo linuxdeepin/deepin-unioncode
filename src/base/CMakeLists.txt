@@ -7,7 +7,7 @@ FILE(GLOB_RECURSE PROJECT_SOURCES
 
 add_library(
     ${PROJECT_NAME}
-    SHARED
+    STATIC
     ${PROJECT_SOURCES}
 )
 

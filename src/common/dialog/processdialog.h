@@ -5,6 +5,8 @@
 #ifndef PROCESSDIALOG_H
 #define PROCESSDIALOG_H
 
+#include "common/common_global.h"
+
 #include <DAbstractDialog>
 #include <DProgressBar>
 #include <DTextBrowser>
@@ -14,7 +16,7 @@
 
 DWIDGET_USE_NAMESPACE
 
-class ProcessDialog : public DAbstractDialog
+class COMMON_EXPORT ProcessDialog : public DAbstractDialog
 {
     Q_OBJECT
 public:

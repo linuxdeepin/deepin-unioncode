@@ -7,10 +7,11 @@
 
 #include "languagegenerator.h"
 #include <framework/framework.h>
+#include "services/services_global.h"
 
 namespace dpfservice {
 
-class LanguageService final : public dpf::PluginService,
+class SERVICE_EXPORT LanguageService final : public dpf::PluginService,
         dpf::AutoServiceRegister<LanguageService>,
         dpf::QtClassFactory<LanguageGenerator>,
         dpf::QtClassManager<LanguageGenerator>

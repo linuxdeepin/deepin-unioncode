@@ -5,11 +5,13 @@
 #ifndef EDITORSTYLE_H
 #define EDITORSTYLE_H
 
+#include "common/common_global.h"
+
 #include <QString>
 
 namespace support_file {
 
-struct EditorStyle
+struct COMMON_EXPORT EditorStyle
 {
     static QString globalPath(const QString &languageID);
     static QString userPath(const QString &languageID);
