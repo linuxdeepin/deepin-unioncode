@@ -5,6 +5,8 @@
 #ifndef TOOLCHAINDATA_H
 #define TOOLCHAINDATA_H
 
+#include "services/services_global.h"
+
 #include <QSet>
 #include <QMap>
 #include <QMetaType>
@@ -25,7 +27,7 @@ static const QString kNameItem{"name"};
 static const QString kPathItem{"path"};
 }
 
-class ToolChainData
+class SERVICE_EXPORT ToolChainData
 {
 public:
     struct ToolChainParam

@@ -5,6 +5,8 @@
 #ifndef DAPCONFIG_H
 #define DAPCONFIG_H
 
+#include "common_global.h"
+
 #include <QString>
 
 namespace support_file {
@@ -17,7 +19,7 @@ struct JavaDapPluginConfig {
     QString jreExecute;
 };
 
-class DapSupportConfig final
+class COMMON_EXPORT DapSupportConfig final
 {
 public:
     static QString globalPath();

@@ -53,7 +53,7 @@ enum TargetType {
     kActiveExecTarget
 };
 
-class ProjectService final : public dpf::PluginService,
+class SERVICE_EXPORT ProjectService final : public dpf::PluginService,
         dpf::AutoServiceRegister<ProjectService>,
         dpf::QtClassFactory<ProjectGenerator>,
         dpf::QtClassManager<ProjectGenerator>

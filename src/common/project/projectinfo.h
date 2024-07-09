@@ -5,6 +5,8 @@
 #ifndef PROJECTINFO_H
 #define PROJECTINFO_H
 
+#include "common/common_global.h"
+
 #include <QSet>
 #include <QVariantHash>
 #include <QStandardItem>
@@ -16,7 +18,7 @@ enum
     ProjectInfoRole = Qt::ItemDataRole::UserRole,
 };
 
-class ProjectInfo
+class COMMON_EXPORT ProjectInfo
 {
 public:
     ProjectInfo() : data({}) {}

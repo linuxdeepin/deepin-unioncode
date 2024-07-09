@@ -6,6 +6,7 @@
 #define LANGUAGESERVERPROTOCOL_H
 
 #include "common/type/menuext.h"
+#include "common/common_global.h"
 
 #include <QUrl>
 #include <QString>
@@ -408,7 +409,7 @@ struct WorkDoneProgressParams
     std::any value;   // any
 };
 
-struct WorkspaceEditClientCapabilities
+struct COMMON_EXPORT WorkspaceEditClientCapabilities
 {
     struct changeAnnotationSupport
     {

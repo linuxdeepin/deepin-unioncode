@@ -7,6 +7,7 @@
 
 #include "common/common.h"
 #include "dap/protocol.h"
+#include "services/services_global.h"
 
 namespace dpfservice {
 
@@ -18,7 +19,7 @@ struct RunCommandInfo {
     bool runInTerminal;
 };
 
-class LanguageGenerator : public Generator
+class SERVICE_EXPORT LanguageGenerator : public Generator
 {
     Q_OBJECT
 public:

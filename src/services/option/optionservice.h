@@ -8,12 +8,12 @@
 #include "optiongenerator.h"
 
 #include "base/abstractwidget.h"
-
+#include "services/services_global.h"
 #include "framework/framework.h"
 
 namespace dpfservice {
 
-class OptionService final : public dpf::PluginService,
+class SERVICE_EXPORT OptionService final : public dpf::PluginService,
         dpf::AutoServiceRegister<OptionService>,
         dpf::QtClassFactory<OptionGenerator>,
         dpf::QtClassManager<OptionGenerator>

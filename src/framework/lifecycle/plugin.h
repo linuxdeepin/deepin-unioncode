@@ -33,7 +33,7 @@ class PluginContext;
  * Q_PLUGIN_METADATA 可参阅Qt宏定义
  * PLUGIN_INTERFACE
  */
-class Plugin : public QObject
+class DPF_EXPORT Plugin : public QObject
 {
     Q_OBJECT
 public:

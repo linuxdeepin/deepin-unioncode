@@ -5,13 +5,15 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+#include "common/common_global.h"
+
 #include <QObject>
 #include <QKeySequence>
 
 class QAction;
 class QKeySequence;
 class ActionPrivate;
-class Command : public QObject
+class COMMON_EXPORT Command : public QObject
 {
     Q_OBJECT
 public:

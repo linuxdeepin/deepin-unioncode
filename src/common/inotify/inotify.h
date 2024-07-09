@@ -5,10 +5,12 @@
 #ifndef INOTIFY_H
 #define INOTIFY_H
 
+#include "common/common_global.h"
+
 #include <QObject>
 
 class InotifyPrivate;
-class Inotify : public QObject
+class COMMON_EXPORT Inotify : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(Inotify)

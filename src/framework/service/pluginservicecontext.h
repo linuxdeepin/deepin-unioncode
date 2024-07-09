@@ -14,7 +14,7 @@
 
 DPF_BEGIN_NAMESPACE
 
-class PluginServiceContext final : public QObject,
+class DPF_EXPORT PluginServiceContext final : public QObject,
         public QtClassFactory<PluginService>,
         public QtClassManager<PluginService>
 {
@@ -41,7 +41,7 @@ private:
 
 // auto register all services
 template <typename T>
-class AutoServiceRegister
+class DPF_EXPORT AutoServiceRegister
 {
 public:
     AutoServiceRegister()

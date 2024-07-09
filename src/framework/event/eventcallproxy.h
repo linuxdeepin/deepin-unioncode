@@ -18,7 +18,7 @@
 
 
 DPF_BEGIN_NAMESPACE
-class EventCallProxy final
+class DPF_EXPORT EventCallProxy final
 {
     template <typename T>
     friend class AutoEventHandlerRegister;

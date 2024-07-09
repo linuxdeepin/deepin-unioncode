@@ -12,7 +12,7 @@
 
 DPF_BEGIN_NAMESPACE
 
-class LogUtils final
+class DPF_EXPORT LogUtils final
 {
 public:
     explicit LogUtils() = delete;
