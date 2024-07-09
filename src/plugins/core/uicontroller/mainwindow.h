@@ -36,7 +36,6 @@ public:
     void hideAllWidget();
 
     void showWidget(const QString &name);
-    void showWidget(Position pos);
     void showAllWidget();
 
     void removeWidget(const QString &name);
@@ -45,7 +44,8 @@ public:
     QString getCentralWidgetName();
     QStringList getCurrentDockName(Position pos);
 
-    void setDockHeadername(const QString &dockName, const QString &headerName);
+    void setDockHeaderName(const QString &dockName, const QString &headerName);
+    void setDockHeaderList(const QString &dockName, const QList<QAction *> &actions);
     void deleteDockHeader(const QString &name);
     void addToolBtnToDockHeader(const QString &dockName, DToolButton *btn);
     void setDockWidgetFeatures(const QString &name, QDockWidget::DockWidgetFeatures feature);

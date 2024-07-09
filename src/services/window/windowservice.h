@@ -108,6 +108,7 @@ public:
     DPF_INTERFACE(void, setDockWidgetFeatures, const QString &name, QDockWidget::DockWidgetFeatures feature);
 
     DPF_INTERFACE(void, setDockHeaderName, const QString &dockName, const QString &headerName);
+    DPF_INTERFACE(void, setDockHeaderList, const QString &dockName, const QList<QAction *> &headers);
     DPF_INTERFACE(void, deleteDockHeader, const QString &name);
     DPF_INTERFACE(void, addToolBtnToDockHeader, const QString &name, DTK_WIDGET_NAMESPACE::DToolButton *btn);
     /*!
