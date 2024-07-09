@@ -15,7 +15,7 @@
 
 DPF_BEGIN_NAMESPACE
 
-class LifeCycle final : public QObject
+class DPF_EXPORT LifeCycle final : public QObject
 {
     Q_OBJECT
 public:

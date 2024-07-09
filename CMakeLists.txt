@@ -15,13 +15,11 @@ if (NOT VERSION)
 endif()
 
 message(STATUS "build version ${VERSION}")
+option(ENABLE_SANITIZE_CHECK "Enable Sanitize Check " OFF) 
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-if ((NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
-        AND (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64")
-        AND (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
-        AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+if (ENABLE_SANITIZE_CHECK AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
     message("debug type open sanitize check")
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")

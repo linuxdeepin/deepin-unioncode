@@ -20,7 +20,7 @@ DPF_BEGIN_NAMESPACE
  * @tparam 传入插件对象接口例如 Plugin
  */
 template <class T>
-class PluginMetaT1 : public QSharedData
+class DPF_EXPORT PluginMetaT1 : public QSharedData
 {
     Q_DISABLE_COPY(PluginMetaT1)
 public:
@@ -59,7 +59,7 @@ class PluginService;
  * @details 该类与SharedPointer配套使用时是线程安全的
  */
 class PluginMetaObjectPrivate;
-class PluginMetaObject final : public PluginMetaT1<Plugin>
+class DPF_EXPORT PluginMetaObject final : public PluginMetaT1<Plugin>
 {
     QSharedPointer<PluginMetaObjectPrivate> d;
 

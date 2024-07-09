@@ -5,9 +5,10 @@
 #ifndef WGETDIALOG_H
 #define WGETDIALOG_H
 
+#include "common/common_global.h"
 #include "processdialog.h"
 
-class WGetDialog : public ProcessDialog
+class COMMON_EXPORT WGetDialog : public ProcessDialog
 {
     Q_OBJECT
 public:

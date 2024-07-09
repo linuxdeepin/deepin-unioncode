@@ -6,11 +6,13 @@
 #define OPTIONMANAGER_H
 
 #include "optiondatastruct.h"
+#include "services/services_global.h"
+
 #include <QObject>
 #include <QVariant>
 
 class OptionManagerPrivate;
-class OptionManager : public QObject
+class SERVICE_EXPORT OptionManager : public QObject
 {
     Q_OBJECT
 public:

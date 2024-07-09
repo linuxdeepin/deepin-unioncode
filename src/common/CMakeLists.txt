@@ -9,6 +9,10 @@ find_package(Qt5Network)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_definitions(
+    -DCOMMON_LIBRARY
+    )
+
 FILE(GLOB COMMON_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -27,6 +31,11 @@ add_library(
     ${COMMON_FILES}
     resource/common.qrc
     )
+    
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 target_link_libraries(
     ${PROJECT_NAME}

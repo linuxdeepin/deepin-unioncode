@@ -6,12 +6,12 @@
 #define LOCATORSERVICE_H
 
 #include "base/abstractlocator.h"
-
+#include "services/services_global.h"
 #include <framework/framework.h>
 
 namespace dpfservice {
 
-class LocatorService final : public dpf::PluginService,
+class SERVICE_EXPORT LocatorService final : public dpf::PluginService,
         dpf::AutoServiceRegister<LocatorService>
 {
     Q_OBJECT

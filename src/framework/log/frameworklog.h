@@ -50,7 +50,7 @@ DPF_BEGIN_NAMESPACE
  * @brief The FrameworkLog class
  *  框架日志打印模块，内部封装输出重定向与日志格式化
  */
-class FrameworkLog final
+class DPF_EXPORT FrameworkLog final
 {
 public:
     explicit FrameworkLog() = delete;

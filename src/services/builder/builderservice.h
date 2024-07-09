@@ -7,11 +7,13 @@
 
 #include "buildergenerator.h"
 #include "builderglobals.h"
+#include "services/services_global.h"
+
 #include <framework/framework.h>
 
 namespace dpfservice {
 
-class BuilderService final : public dpf::PluginService,
+class SERVICE_EXPORT BuilderService final : public dpf::PluginService,
         dpf::AutoServiceRegister<BuilderService>,
         dpf::QtClassFactory<BuilderGenerator>,
         dpf::QtClassManager<BuilderGenerator>

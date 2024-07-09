@@ -21,7 +21,7 @@ class EventPrivate;
  *  事件数据源，只能当做类使用不可继承
  *  禁止被继承
  */
-class Event final
+class DPF_EXPORT Event final
 {
     EventPrivate *d;
     friend Q_CORE_EXPORT QDebug operator <<(QDebug, const Event &);

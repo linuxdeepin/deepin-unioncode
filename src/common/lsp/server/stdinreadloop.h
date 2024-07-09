@@ -5,10 +5,12 @@
 #ifndef STDINREADLOOP_H
 #define STDINREADLOOP_H
 
+#include "common/common_global.h"
+
 #include <QThread>
 
 class StdinReadLoopPrivate;
-class StdinReadLoop : public QThread
+class COMMON_EXPORT StdinReadLoop : public QThread
 {
     Q_OBJECT
     StdinReadLoopPrivate *const d;

@@ -5,13 +5,14 @@
 #ifndef ACTIONMANAGER_H
 #define ACTIONMANAGER_H
 
+#include "common/common_global.h"
 #include "command.h"
 
 #include <QObject>
 #include <QHash>
 
 class ActionManagerPrivate;
-class ActionManager : public QObject
+class COMMON_EXPORT ActionManager : public QObject
 {
     Q_OBJECT
 public:

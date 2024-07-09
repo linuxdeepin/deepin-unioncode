@@ -5,6 +5,8 @@
 #ifndef SERVERCMDPARSE_H
 #define SERVERCMDPARSE_H
 
+#include "common/common_global.h"
+
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <optional>
@@ -18,7 +20,7 @@ extern const QString tcp;
 extern const QString portDefault;
 extern const QString parentPidDefault;
 class ServerCmdParsePrivate;
-class ServerCmdParse : QCommandLineParser
+class COMMON_EXPORT ServerCmdParse : QCommandLineParser
 {
     ServerCmdParsePrivate *const d;
 public:

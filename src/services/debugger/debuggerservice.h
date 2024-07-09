@@ -7,10 +7,11 @@
 
 #include <framework/framework.h>
 #include "base/abstractdebugger.h"
+#include "services/services_global.h"
 
 namespace dpfservice {
 
-class DebuggerService final : public dpf::PluginService,
+class SERVICE_EXPORT DebuggerService final : public dpf::PluginService,
         dpf::AutoServiceRegister<DebuggerService>
 {
     Q_OBJECT
