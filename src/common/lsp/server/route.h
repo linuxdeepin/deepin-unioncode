@@ -6,12 +6,13 @@
 #define ROUTE_H
 
 #include "common/lsp/protocol/newprotocol.h"
+#include "common/common_global.h"
 
 #include <QObject>
 #include <QProcess>
 
 namespace newlsp {
-class Route : public QObject
+class COMMON_EXPORT Route : public QObject
 {
     Q_OBJECT
 public:

@@ -5,11 +5,12 @@
 #ifndef OUTPUTDOCUMENTFIND_H
 #define OUTPUTDOCUMENTFIND_H
 
+#include "common/common_global.h"
 #include "abstractdocumentfind.h"
 
 class OutputPane;
 class OutputDocumentFindPrivate;
-class OutputDocumentFind : public AbstractDocumentFind
+class COMMON_EXPORT OutputDocumentFind : public AbstractDocumentFind
 {
     Q_OBJECT
 public:

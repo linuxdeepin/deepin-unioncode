@@ -5,12 +5,14 @@
 #ifndef STDOUTJSONRPCPARSER_H
 #define STDOUTJSONRPCPARSER_H
 
+#include "common_global.h"
+
 #include <QThread>
 
 namespace newlsp {
 
 class JsonRpcParser;
-class StdoutJsonRpcParser : public QObject
+class COMMON_EXPORT StdoutJsonRpcParser : public QObject
 {
     Q_OBJECT
     JsonRpcParser *const d;

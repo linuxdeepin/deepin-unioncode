@@ -5,9 +5,11 @@
 #ifndef ABSTRACTDOCUMENTFIND_H
 #define ABSTRACTDOCUMENTFIND_H
 
+#include "common/common_global.h"
+
 #include <QObject>
 
-class AbstractDocumentFind : public QObject
+class COMMON_EXPORT AbstractDocumentFind : public QObject
 {
     Q_OBJECT
 public:

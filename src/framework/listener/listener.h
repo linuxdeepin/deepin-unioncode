@@ -12,7 +12,7 @@
 DPF_BEGIN_NAMESPACE
 
 class ListenerPrivate;
-class Listener final : public QObject
+class DPF_EXPORT Listener final : public QObject
 {
     Q_OBJECT
     friend class ListenerPrivate;

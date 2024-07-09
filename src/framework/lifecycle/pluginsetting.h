@@ -18,7 +18,7 @@ const char ENABLED[] = "enabled";
 const char DISABLED_PLUGINS[] = "Plugins/Disabled";
 const char ENABLED_PLUGINS[] = "Plugins/Enabled";
 
-class PluginSetting final : public QSettings
+class DPF_EXPORT PluginSetting final : public QSettings
 {
     Q_OBJECT
 public:

@@ -8,6 +8,7 @@
 #include "common/common.h"
 
 #include <framework/framework.h>
+#include "services/services_global.h"
 
 #include <QStandardItem>
 #include <QMenu>
@@ -15,7 +16,7 @@
 class QFileDialog;
 namespace dpfservice {
 
-class ProjectGenerator : public Generator
+class SERVICE_EXPORT ProjectGenerator : public Generator
 {
     Q_OBJECT
 public:

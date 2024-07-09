@@ -5,11 +5,12 @@
 #ifndef TERMINALSERVICE_H
 #define TERMINALSERVICE_H
 
+#include "services/services_global.h"
 #include <framework/framework.h>
 
 namespace dpfservice {
 // service interface
-class TerminalService final : public dpf::PluginService, dpf::AutoServiceRegister<TerminalService>
+class SERVICE_EXPORT TerminalService final : public dpf::PluginService, dpf::AutoServiceRegister<TerminalService>
 {
     Q_OBJECT
     Q_DISABLE_COPY(TerminalService)

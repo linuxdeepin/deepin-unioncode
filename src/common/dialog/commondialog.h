@@ -6,6 +6,7 @@
 #define COMMONDIALOG_H
 
 #include "common/widget/singlechoicebox.h"
+#include "common/common_global.h"
 
 #include <DMessageBox>
 
@@ -18,7 +19,7 @@
 
 DWIDGET_USE_NAMESPACE
 
-class CommonDialog final
+class COMMON_EXPORT CommonDialog final
 {
     Q_DISABLE_COPY(CommonDialog)
     CommonDialog() = delete;

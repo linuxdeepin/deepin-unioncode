@@ -8,12 +8,13 @@
 #include "builderglobals.h"
 #include "common/common.h"
 #include "base/abstractoutputparser.h"
+#include "services/services_global.h"
 
 #include <QWidget>
 #include <QMenu>
 
 namespace dpfservice {
-class BuilderGenerator : public Generator
+class SERVICE_EXPORT BuilderGenerator : public Generator
 {
     Q_OBJECT
 public:

@@ -6,8 +6,9 @@
 #define PIP3DIALOG_H
 
 #include "processdialog.h"
+#include "common/common_global.h"
 
-class Pip3Dialog : public ProcessDialog
+class COMMON_EXPORT Pip3Dialog : public ProcessDialog
 {
     Q_OBJECT
 public:
