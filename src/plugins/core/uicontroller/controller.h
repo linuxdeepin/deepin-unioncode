@@ -43,6 +43,7 @@ public slots:
     void showWidgetAtPosition(const QString &name, Position pos, bool replace = true);
     void resizeDocks(const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation);
     void setDockHeaderName(const QString &dockName, const QString &headerName);
+    void setDockHeaderList(const QString &dockName, const QList<QAction *> &actions);
 
     void addNavigationItem(AbstractAction *action, quint8 priority);
     void addNavigationItemToBottom(AbstractAction *action, quint8 priority);

@@ -25,28 +25,13 @@ void WorkspaceWidget::initUi()
 
     setMinimumWidth(kMinimumWidth);
 
-    editWorkspaceWidget = new DFrame(this);
-    editWorkspaceWidget->setLineWidth(0);
-    DStyle::setFrameRadius(editWorkspaceWidget, 0);
     stackEditWorkspaceWidget = new DStackedWidget(this);
-    workspaceTabBar = new DFrame(this);
-    workspaceTabBar->setLineWidth(0);
-    DStyle::setFrameRadius(workspaceTabBar, 0);
-
-    QHBoxLayout *workspaceTabLayout = new QHBoxLayout(workspaceTabBar);
-    workspaceTabLayout->setContentsMargins(0, 0, 0, 0);
-    QVBoxLayout *workspaceVLayout = new QVBoxLayout();
-    workspaceVLayout->setContentsMargins(0, 0, 0, 0);
-    workspaceVLayout->setSpacing(0);
-    workspaceVLayout->addWidget(stackEditWorkspaceWidget);
-    workspaceVLayout->addWidget(workspaceTabBar);
-    editWorkspaceWidget->setLayout(workspaceVLayout);
-
-    mainLayout->addWidget(editWorkspaceWidget);
+    mainLayout->addWidget(stackEditWorkspaceWidget);
 }
 
 void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *treeWidget, const QString &iconName)
 {
+    Q_UNUSED(iconName);
     auto qTreeWidget = static_cast<DWidget *>(treeWidget->qWidget());
 
     qTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -54,22 +39,6 @@ void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *t
     editWorkspaceWidgets.insert(title, qTreeWidget);
     stackEditWorkspaceWidget->addWidget(qTreeWidget);
 
-    DToolButton *tabBtn = new DToolButton;
-    tabBtn->setCheckable(true);
-    tabBtn->setChecked(false);
-    tabBtn->setToolTip(title);
-    tabBtn->setIcon(QIcon::fromTheme(iconName));
-    tabBtn->setMinimumSize(QSize(24, 24));
-    tabBtn->setIconSize(QSize(16, 16));
-    tabBtn->setFocusPolicy(Qt::NoFocus);
-
-    QHBoxLayout *btnLayout = static_cast<QHBoxLayout*>(workspaceTabBar->layout());
-    btnLayout->addWidget(tabBtn);
-
-    connect(tabBtn, &DPushButton::clicked, qTreeWidget, [=]{
-        switchWidgetWorkspace(title);
-    });
-    workspaceTabButtons.insert(title, tabBtn);
     switchWidgetWorkspace(title);
 }
 
@@ -93,14 +62,9 @@ QList<DToolButton *> WorkspaceWidget::getToolBtnByTitle(const QString &title)
 
 void WorkspaceWidget::switchWidgetWorkspace(const QString &title)
 {
-    auto lastTitle = getCurrentTitle();
+    auto lastTitle = currentTitle();
     auto widget = editWorkspaceWidgets[title];
     stackEditWorkspaceWidget->setCurrentWidget(widget);
-    for (auto it = workspaceTabButtons.begin(); it != workspaceTabButtons.end(); ++it) {
-        it.value()->setChecked(false);
-        if (it.key() == title)
-            it.value()->setChecked(true);
-    }
 
     emit expandStateChange(widget->property("canExpand").toBool());
 
@@ -126,7 +90,12 @@ bool WorkspaceWidget::getCurrentExpandState()
     return stackEditWorkspaceWidget->currentWidget()->property("canExpand").toBool();
 }
 
-QString WorkspaceWidget::getCurrentTitle() const
+QStringList WorkspaceWidget::allWidgetTitles() const
+{
+    return editWorkspaceWidgets.keys();
+}
+
+QString WorkspaceWidget::currentTitle() const
 {
     auto currentWidget = stackEditWorkspaceWidget->currentWidget();
     return editWorkspaceWidgets.key(currentWidget);

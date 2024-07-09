@@ -5,6 +5,8 @@
 #include "dockheader.h"
 
 #include <DStyle>
+#include <DPushButton>
+#include <DMenu>
 
 #include <QHBoxLayout>
 #include <QDebug>
@@ -12,11 +14,13 @@
 
 DWIDGET_USE_NAMESPACE
 
-class DockHeaderPrivate{
+class DockHeaderPrivate
+{
     friend class DockHeader;
 
     QHBoxLayout *mainLayout { nullptr };
     QLabel *headerName { nullptr };
+    DPushButton *select { nullptr };
 };
 
 DockHeader::DockHeader(QWidget *parent)
@@ -25,12 +29,27 @@ DockHeader::DockHeader(QWidget *parent)
     setAutoFillBackground(true);
     setBackgroundRole(DPalette::Base);
     d->headerName = new QLabel(this);
+    d->headerName->setContentsMargins(0, 0, 0, 0);
+
+    d->select = new DPushButton(this);
+    d->select->setFlat(true);
+    d->select->setIcon(QIcon::fromTheme("go-down"));
+    d->select->setFixedSize(16, 16);
+    d->select->setIconSize(QSize(12, 12));
+    d->select->hide();
 
     d->mainLayout = new QHBoxLayout(this);
     d->mainLayout->setContentsMargins(0, 0, 0, 5);
-    d->mainLayout->setAlignment(Qt::AlignRight);
     d->mainLayout->setSpacing(0);
-    d->mainLayout->addWidget(d->headerName, Qt::AlignLeft);
+    d->mainLayout->setAlignment(Qt::AlignRight);
+
+    auto nameLayout = new QHBoxLayout;
+    nameLayout->setSpacing(4);
+    nameLayout->addWidget(d->headerName);
+    nameLayout->addWidget(d->select);
+
+    d->mainLayout->addLayout(nameLayout, 1);
+    d->mainLayout->setAlignment(nameLayout, Qt::AlignLeft);
 }
 
 DockHeader::~DockHeader()
@@ -53,4 +72,17 @@ void DockHeader::setHeaderName(const QString &headerName)
     QFont font = d->headerName->font();
     font.setWeight(QFont::Bold);
     d->headerName->setFont(font);
+}
+
+void DockHeader::setHeaderNames(const QList<QAction *> &headers)
+{
+    setHeaderName(headers.first()->text());
+    DMenu *menu = new DMenu(this);
+    menu->addActions(headers);
+    d->select->show();
+    connect(d->select, &DPushButton::clicked, this, [=]() {
+        auto action = menu->exec(mapToGlobal(geometry().bottomLeft()));
+        if (action)
+            setHeaderName(action->text());
+    }, Qt::UniqueConnection);
 }

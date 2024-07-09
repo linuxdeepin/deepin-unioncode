@@ -27,7 +27,8 @@ public:
     QList<DToolButton *> getToolBtnByTitle(const QString &title);
     void switchWidgetWorkspace(const QString &title);
     bool getCurrentExpandState();
-    QString getCurrentTitle() const;
+    QStringList allWidgetTitles() const;
+    QString currentTitle() const;
 
     bool addedToController { false };
 
@@ -41,14 +42,12 @@ private:
     QVBoxLayout *mainLayout { nullptr };
 
     QMap<QString, DWidget *> workspaceWidgets;
-    DFrame *editWorkspaceWidget { nullptr };
 
     QMap<QString, DWidget *> editWorkspaceWidgets;
     QMap<QString, DToolButton *> workspaceTabButtons;
     QMultiMap<QString, DToolButton *> toolBtnOfWidget;
     QMap<DToolButton *, bool> toolBtnState;
     DStackedWidget *stackEditWorkspaceWidget { nullptr };
-    DFrame *workspaceTabBar { nullptr };
 };
 
 #endif   // WORKSPACEWIDGET_H
