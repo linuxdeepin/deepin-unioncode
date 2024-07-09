@@ -430,6 +430,33 @@ void TextEditorPrivate::adjustScrollBar()
     scrollbar->setValue(scrollbar->value() + currentLine - halfEditorLines);
 }
 
+QMap<int, int> TextEditorPrivate::allMarkers()
+{
+    QMap<int, int> markers;
+    for (int line = 0; line < q->lines(); ++line) {
+        int mask = static_cast<int>(q->markersAtLine(line));
+        if (mask != 0)
+            markers.insert(line, mask);
+    }
+    
+    return markers;
+}
+
+void TextEditorPrivate::setMarkers(const QMap<int, int> &maskMap)
+{
+    int totalLine = q->lines();
+    for (auto iter = maskMap.begin(); iter != maskMap.end(); ++iter) {
+        if (iter.key() >= totalLine)
+            break;
+        
+        if (iter.value() & (1 << Breakpoint)) {
+            q->addBreakpoint(iter.key(), true);
+        } else if (iter.value() & (1 << BreakpointDisabled)) {
+            q->addBreakpoint(iter.key(), false);
+        }
+    }
+}
+
 void TextEditorPrivate::resetThemeColor()
 {
     if (q->lexer()) {
@@ -476,6 +503,12 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
     contentsChanged = true;
     if (isAutoCompletionEnabled && !text.isEmpty())
         editor.textChanged();
+    
+    if (added != 0) {
+        int line = 0, index = 0;
+        q->lineIndexFromPosition(pos, &line, &index);
+        editor.lineChanged(fileName, line + 1, added);
+    }
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {
         emit q->textAdded(pos, len, added, text, line);
