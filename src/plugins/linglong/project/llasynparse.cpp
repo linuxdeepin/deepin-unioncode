@@ -4,12 +4,9 @@
 
 #include "llasynparse.h"
 
-#include <QtXml>
-
 class LLAsynParsePrivate
 {
     friend class LLAsynParse;
-    QDomDocument xmlDoc;
     QThread *thread { nullptr };
     QString rootPath;
     QSet<QString> fileList {};
