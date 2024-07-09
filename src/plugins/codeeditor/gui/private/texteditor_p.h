@@ -53,6 +53,8 @@ public:
     void gotoPreviousMark(uint mask);
     QsciStyle createAnnotationStyle(int type);
     void adjustScrollBar();
+    QMap<int, int> allMarkers();
+    void setMarkers(const QMap<int, int> &maskMap);
 
 public slots:
     void resetThemeColor();

@@ -63,11 +63,12 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(setBreakpointEnabled, "fileName", "line", "enabled")
            OPI_INTERFACE(clearAllBreakpoint)
            // out
+           OPI_INTERFACE(lineChanged, "fileName", "startLine", "added")
            OPI_INTERFACE(fileOpened, "fileName")
            OPI_INTERFACE(fileClosed, "fileName")
            OPI_INTERFACE(fileSaved, "fileName")
            OPI_INTERFACE(switchedFile, "fileName")
-           OPI_INTERFACE(breakpointAdded, "fileName", "line")
+           OPI_INTERFACE(breakpointAdded, "fileName", "line", "enabled")
            OPI_INTERFACE(breakpointRemoved, "fileName", "line")
            OPI_INTERFACE(breakpointStatusChanged, "fileName", "line", "enabled")
            OPI_INTERFACE(textChanged)
