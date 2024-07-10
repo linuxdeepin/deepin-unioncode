@@ -32,13 +32,14 @@ bool CodeGeex::start()
         if (windowService->addNavigationItem) {
             QAction *action = new QAction(MWNA_CODEGEEX, this);
             action->setIcon(QIcon::fromTheme("codegeex-navigation"));
-
-            windowService->addNavigationItem(new AbstractAction(action), Priority::medium);
+            auto actionImpl = new AbstractAction(action);
+            windowService->addNavigationItem(actionImpl, Priority::medium);
 
             auto codeGeex = new CodeGeeXWidget;
             auto codeGeexImpl = new AbstractWidget(codeGeex);
             windowService->registerWidget(MWNA_CODEGEEX, codeGeexImpl);
             windowService->setDockHeaderName(MWNA_CODEGEEX, "codeGeex");
+            windowService->bindWidgetToNavigation(MWNA_CODEGEEX, actionImpl);
 
             connect(action, &QAction::triggered, this, [=]() {
                 windowService->raiseMode(CM_EDIT);

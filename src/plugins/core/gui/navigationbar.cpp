@@ -75,6 +75,21 @@ void NavigationBar::addNavItem(QAction *action, itemPositioin pos, quint8 priori
         auto btn = createToolBtn(action, false);
         bottomBtnsByPriority[priority].append(btn);
     }
+    updateUi();
+}
+
+void NavigationBar::addNavButton(DToolButton *btn, itemPositioin pos, quint8 priority)
+{
+    if (!btn)
+        return;
+
+    btn->setFixedSize(QSize(36, 36));
+    btn->setIconSize(QSize(22, 22));
+
+    if (pos == top)
+        topBtnsByPriority[priority].append(btn);
+    else
+        bottomBtnsByPriority[priority].append(btn);
 
     updateUi();
 }
@@ -103,6 +118,7 @@ DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem
         connect(action, &QAction::triggered, this, [=](){
             setNavActionChecked(action->text(), true);
         });
+
         return navBtn;
     }
 

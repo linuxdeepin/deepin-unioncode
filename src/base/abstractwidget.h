@@ -5,6 +5,8 @@
 #ifndef ABSTRACTWIDGET_H
 #define ABSTRACTWIDGET_H
 
+#include <QIcon>
+
 class AbstractWidgetPrivate;
 class AbstractWidget
 {
@@ -13,6 +15,10 @@ public:
     AbstractWidget(void *qWidget);
     virtual ~AbstractWidget();
     void* qWidget();
+    void setDisplayIcon(QIcon icon) { displayIcon = icon; }
+    QIcon getDisplayIcon() { return displayIcon; }
+private:
+    QIcon displayIcon;
 };
 
 #endif // ABSTRACTWIDGET_H

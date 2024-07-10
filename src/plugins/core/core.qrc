@@ -19,6 +19,9 @@
         <file>builtin/texts/collapse_all_16px.svg</file>
         <file>builtin/texts/expand_all_16px.svg</file>
         <file>builtin/texts/hide_dock_16px.svg</file>
+        <file>builtin/texts/docks_manager_16px.svg</file>
+        <file>builtin/texts/context_widget_16px.svg</file>
+        <file>builtin/texts/default_dock_16px.svg</file>
         <file>builtin/light/icons/notification_info_20px.svg</file>
         <file>builtin/light/icons/notification_warning_20px.svg</file>
         <file>builtin/light/icons/notification_error_20px.svg</file>
