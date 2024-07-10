@@ -48,6 +48,9 @@ public slots:
     void addNavigationItem(AbstractAction *action, quint8 priority);
     void addNavigationItemToBottom(AbstractAction *action, quint8 priority);
     void switchWidgetNavigation(const QString &navName);
+    void bindWidgetToNavigation(const QString &dockName, AbstractAction *action);
+
+    void registerToolBtnToWidget(const QString &dockName, DToolButton *btn);
 
     //bottom contextWidget
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible);
@@ -81,11 +84,15 @@ public slots:
     //workspace
     void switchWorkspace(const QString &titleName);
 
+    void showCurrentDocksManager();
+
 private:
     ControllerPrivate *d;
 
     void registerService();
     void createDockWidget(WidgetInfo &info);
+    bool checkDocksManager();
+    DToolButton *createDockButton(const WidgetInfo &info);  // dock`s status switcher
 
     //show loadingwidget
     void loading();
@@ -98,6 +105,7 @@ private:
     void initWorkspaceWidget();
     void initTopToolBar();
     void initModules();
+    void initDocksManager();
 
     //menu
     void createHelpActions();
@@ -112,7 +120,7 @@ private:
 
     void showWorkspace();
 
-    DToolButton *createIconButton(QAction *action);
+    DToolButton *createIconButton(QAction *action);  // top tool
 };
 
 #endif   // CONTROLLER_H

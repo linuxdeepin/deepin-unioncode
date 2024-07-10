@@ -205,11 +205,7 @@ QDockWidget *MainWindow::addWidget(const QString &name, QWidget *widget, dpfserv
 
 void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
 {
-    if (pos != Position::Left)
-        return;
-
     auto closeBtn = new DToolButton(dock);
-    closeBtn->setCheckable(true);
     closeBtn->setIcon(QIcon::fromTheme("hide_dock"));
     closeBtn->setToolTip(tr("Hide Dock Widget"));
     closeBtn->setCheckable(false);
@@ -220,10 +216,8 @@ void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
         auto dockName = d->dockList.key(dock);
         if (dock->isVisible()) {
             dock->hide();
-        } else {
-            dock->show();
-            resizeDock(dockName, QSize(300, 300));
         }
+        emit dockHidden(dockName);
     });
 }
 
@@ -515,4 +509,26 @@ void MainWindow::hideTopTollBar()
     d->topToolbar->hide();
 
     titlebar()->setTitle(QString("Deepin Union Code"));
+}
+
+Position MainWindow::positionOfDock(const QString &dockName)
+{
+    if (!d->dockList.contains(dockName)) {
+        qWarning() << "no dockWidget named: " << dockName;
+        return Position::FullWindow;
+    }
+
+    auto area = dockWidgetArea(d->dockList[dockName]);
+    switch (area) {
+    case Qt::LeftDockWidgetArea:
+        return Position::Left;
+    case Qt::RightDockWidgetArea:
+        return Position::Right;
+    case Qt::TopDockWidgetArea:
+        return Position::Top;
+    case Qt::BottomDockWidgetArea:
+        return Position::Bottom;
+    default:
+        return Position::Left;
+    }
 }

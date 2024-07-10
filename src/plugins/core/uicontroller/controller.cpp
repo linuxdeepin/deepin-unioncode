@@ -38,10 +38,7 @@
 
 static Controller *ins { nullptr };
 
-// WN = window name
-inline const QString WN_CONTEXTWIDGET = "contextWidget";
 inline const QString WN_LOADINGWIDGET = "loadingWidget";
-inline const QString WN_WORKSPACE = "workspaceWidget";
 
 // MW = MainWindow
 inline constexpr int MW_WIDTH { 1280 };
@@ -60,10 +57,14 @@ struct WidgetInfo
     QDockWidget *dockWidget { nullptr };
     QString headerName;
     QList<QAction *> headerList;
+    QList<DToolButton *> headerBtn;   // set button to header after create dock
+    QIcon icon;
+
     Position defaultPos;   // set position after create dock
     bool replace { false };   // hide current position`s dock before show
     bool defaultVisible { true };
     bool created { false };   // has already create dock
+    bool hiddenByManual { false };
 
     bool operator==(const WidgetInfo &info)
     {
@@ -71,6 +72,23 @@ struct WidgetInfo
             return true;
         return false;
     };
+};
+
+class DocksManagerButton : public DToolButton
+{
+public:
+    explicit DocksManagerButton(QWidget *parent, Controller *con)
+        : DToolButton(parent), controller(con) { setMouseTracking(true); }
+
+protected:
+    void mouseMoveEvent(QMouseEvent *event) override
+    {
+        if (controller)
+            controller->showCurrentDocksManager();
+    }
+
+private:
+    Controller *controller { nullptr };
 };
 
 class ControllerPrivate
@@ -82,11 +100,14 @@ class ControllerPrivate
     DWidget *navigationToolBar { nullptr };
     NavigationBar *navigationBar { nullptr };
     QMap<QString, QAction *> navigationActions;
+    QMap<QString, QAction *> widgetBindToNavigation;
+    DocksManagerButton *docksManager { nullptr };
 
     DWidget *leftTopToolBar { nullptr };
     DSearchEdit *locatorBar { nullptr };
     DWidget *rightTopToolBar { nullptr };
     QMap<QAction *, DToolButton *> topToolBtn;
+    QMap<QString, DToolButton *> dockButtons;
 
     QMap<QString, DWidget *> contextWidgets;
     QMap<QString, DPushButton *> tabButtons;
@@ -102,11 +123,12 @@ class ControllerPrivate
     QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT };
     QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
     QString mode { "" };   // mode: CM_EDIT/CM_DEBUG/CM_RECENT
-    QMap<QString, QList<WidgetInfo>> modeInfo;
+    QMap<QString, QStringList> modeInfo;
     QString currentNavigation { "" };
 
     QMap<QString, AbstractModule *> modules;
     QMap<QString, WidgetInfo> allWidgets;
+    QList<QString> currentDocks;
 
     friend class Controller;
 };
@@ -135,10 +157,11 @@ Controller::Controller(QObject *parent)
 {
     initMainWindow();
     initNavigationBar();
-    initContextWidget();
     initStatusBar();
+    initContextWidget();
     initWorkspaceWidget();
     initTopToolBar();
+    initDocksManager();
     registerService();
 
     registerModule("pluginManagerModule", new PluginManagerModule());
@@ -202,6 +225,9 @@ void Controller::registerService()
     }
     if (!windowService->switchWidgetNavigation) {
         windowService->switchWidgetNavigation = std::bind(&Controller::switchWidgetNavigation, this, _1);
+    }
+    if (!windowService->bindWidgetToNavigation) {
+        windowService->bindWidgetToNavigation = std::bind(&Controller::bindWidgetToNavigation, this, _1, _2);
     }
     if (!windowService->getAllNavigationItemName) {
         windowService->getAllNavigationItemName = std::bind(&NavigationBar::getAllNavigationItemName, d->navigationBar);
@@ -272,6 +298,9 @@ void Controller::registerService()
     if (!windowService->registerToolBtnToWorkspaceWidget) {
         windowService->registerToolBtnToWorkspaceWidget = std::bind(&WorkspaceWidget::registerToolBtnToWidget, d->workspace, _1, _2);
     }
+    if (!windowService->registerToolBtnToWidget) {
+        windowService->registerToolBtnToWidget = std::bind(&Controller::registerToolBtnToWidget, this, _1, _2);
+    }
     if (!windowService->createFindPlaceHolder) {
         windowService->createFindPlaceHolder = std::bind(&PlaceHolderManager::createPlaceHolder, PlaceHolderManager::instance(), _1, _2);
     }
@@ -308,6 +337,14 @@ void Controller::createDockWidget(WidgetInfo &info)
         d->mainWindow->setDockHeaderName(info.name, info.headerName);
     else if (!info.headerList.isEmpty())
         d->mainWindow->setDockHeaderList(info.name, info.headerList);
+
+    if (!info.headerBtn.isEmpty()) {
+        for (auto btn : info.headerBtn)
+            d->mainWindow->addToolBtnToDockHeader(info.name, btn);
+    }
+
+    if (info.icon.isNull())
+        info.icon = QIcon::fromTheme("default_dock");
 }
 
 void Controller::raiseMode(const QString &mode)
@@ -317,15 +354,20 @@ void Controller::raiseMode(const QString &mode)
         return;
     }
 
-    auto widgetInfoList = d->modeInfo[mode];
-    foreach (auto widgetInfo, widgetInfoList) {
+    auto widgetList = d->modeInfo[mode];
+    foreach (auto widgetName, widgetList) {
+        auto &widgetInfo = d->allWidgets[widgetName];
         if (widgetInfo.replace)
             d->mainWindow->hideWidget(widgetInfo.defaultPos);
-        d->mainWindow->showWidget(widgetInfo.name);
+        if (!widgetInfo.hiddenByManual)
+            d->mainWindow->showWidget(widgetInfo.name);
         // widget in mainWindow is Dock(widget), show dock and hide widget
-        if (!widgetInfo.defaultVisible)
-            widgetInfo.widget->hide();
+        widgetInfo.widget->setVisible(widgetInfo.defaultVisible);
+        if (widgetInfo.dockWidget)
+            d->currentDocks.append(widgetInfo.name);
     }
+
+    checkDocksManager();
 
     if (mode == CM_RECENT) {
         d->mode = mode;
@@ -382,11 +424,10 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
 
     if (d->allWidgets.contains(name)) {
         auto &info = d->allWidgets[name];
-
-        if (!d->modeInfo[mode].contains(info)) {
+        if (!d->modeInfo[mode].contains(name)) {
             if (info.defaultPos != pos)
                 qWarning() << "widget named: " << name << "has registed to another position";
-            d->modeInfo[mode].append(info);
+            d->modeInfo[mode].append(name);
         } else {
             qWarning() << "Widget named: " << name << "has alreay registed";
         }
@@ -403,12 +444,13 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
     widgetInfo.replace = replace;
     widgetInfo.widget = qWidget;
     widgetInfo.defaultVisible = isVisible;
+    widgetInfo.icon = abstractWidget->getDisplayIcon();
 
     createDockWidget(widgetInfo);
     d->mainWindow->hideWidget(name);
 
     d->allWidgets.insert(name, widgetInfo);
-    d->modeInfo[mode].append(widgetInfo);
+    d->modeInfo[mode].append(name);
 }
 
 void Controller::registerWidget(const QString &name, AbstractWidget *abstractWidget)
@@ -423,6 +465,7 @@ void Controller::registerWidget(const QString &name, AbstractWidget *abstractWid
     WidgetInfo widgetInfo;
     widgetInfo.name = name;
     widgetInfo.widget = widget;
+    widgetInfo.icon = abstractWidget->getDisplayIcon();
 
     d->allWidgets.insert(name, widgetInfo);
 }
@@ -442,9 +485,22 @@ void Controller::showWidgetAtPosition(const QString &name, Position pos, bool re
         info.defaultPos = pos;
         info.replace = replace;
         createDockWidget(info);
-    } else {
+    } else if (!info.hiddenByManual || d->widgetBindToNavigation.contains(name)) {
         d->mainWindow->showWidget(name);
+        info.hiddenByManual = false;
     }
+
+    if (pos != Position::Central && pos != Position::FullWindow) {
+        if (replace) {
+            for (auto name : d->currentDocks) {
+                if (d->mainWindow->positionOfDock(name) == pos)
+                    d->currentDocks.removeOne(name);
+            }
+        }
+        d->currentDocks.append(name);
+    }
+
+    checkDocksManager();
 }
 
 void Controller::resizeDocks(const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation)
@@ -513,13 +569,26 @@ void Controller::addNavigationItemToBottom(AbstractAction *action, quint8 priori
 void Controller::switchWidgetNavigation(const QString &navName)
 {
     d->navigationBar->setNavActionChecked(navName, true);
-    if (d->currentNavigation == navName)
+    if (d->currentNavigation == navName) {
+        auto action = d->navigationActions[navName];
+        if (d->widgetBindToNavigation.values().contains(action)) {
+            auto dockName = d->widgetBindToNavigation.key(action);
+            auto &info = d->allWidgets[dockName];
+            if (info.hiddenByManual)
+                d->mainWindow->showWidget(dockName);
+            info.hiddenByManual = false;
+        }
         return;
+    }
     d->currentNavigation = navName;
 
     d->mainWindow->hideAllWidget();
     d->mainWindow->hideTopTollBar();
     hideStatusBar();
+
+    d->currentDocks.clear();
+    for (auto btn : d->dockButtons.values())
+        btn->hide();
 
     if (d->modePluginMap.values().contains(navName))
         raiseMode(d->modePluginMap.key(navName));
@@ -527,6 +596,35 @@ void Controller::switchWidgetNavigation(const QString &navName)
 
     // send event
     uiController.switchToWidget(navName);
+}
+
+void Controller::bindWidgetToNavigation(const QString &dockName, AbstractAction *abstractAction)
+{
+    auto action = abstractAction->qAction();
+    if (!action || d->widgetBindToNavigation.values().contains(action)) {
+        qWarning() << action->text() << " Navigation has already bind to a widget or action invalid";
+        return;
+    }
+
+    if (!d->allWidgets.contains(dockName)) {
+        qWarning() << "no widget named: " << dockName;
+        return;
+    }
+
+    d->widgetBindToNavigation.insert(dockName, action);
+}
+
+void Controller::registerToolBtnToWidget(const QString &dockName, DToolButton *btn)
+{
+    if (!d->allWidgets.contains(dockName)) {
+        qWarning() << "No widget named: " << dockName;
+        return;
+    }
+
+    auto &info = d->allWidgets[dockName];
+    if (info.created)
+        d->mainWindow->addToolBtnToDockHeader(dockName, btn);
+    info.headerBtn.append(btn);
 }
 
 void Controller::addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible)
@@ -560,12 +658,14 @@ void Controller::addContextWidget(const QString &title, AbstractWidget *contextW
 
 void Controller::showContextWidget()
 {
-    if (!d->allWidgets[WN_CONTEXTWIDGET].created) {
+    auto contextInfo = d->allWidgets[WN_CONTEXTWIDGET];
+    if (!contextInfo.created) {
         createDockWidget(d->allWidgets[WN_CONTEXTWIDGET]);
         d->mainWindow->deleteDockHeader(WN_CONTEXTWIDGET);
-    } else {
+    } else if (!contextInfo.hiddenByManual) {
         d->mainWindow->showWidget(WN_CONTEXTWIDGET);
     }
+    d->currentDocks.append(WN_CONTEXTWIDGET);
 }
 
 bool Controller::hasContextWidget(const QString &title)
@@ -852,6 +952,15 @@ void Controller::initMainWindow()
             int screenHeight = screenRect.height();
             d->mainWindow->move((screenWidth - d->mainWindow->width()) / 2, (screenHeight - d->mainWindow->height()) / 2);
         }
+
+        connect(d->mainWindow, &MainWindow::dockHidden, this, [=](const QString &dockName) {
+            if (d->allWidgets.contains(dockName)) {
+                auto &info = d->allWidgets[dockName];
+                info.hiddenByManual = true;
+                if (d->widgetBindToNavigation.contains(dockName))
+                    d->navigationBar->setNavActionChecked(d->widgetBindToNavigation[dockName]->text(), false);
+            }
+        });
     }
 }
 
@@ -864,6 +973,7 @@ void Controller::initNavigationBar()
     auto vLayout = new QVBoxLayout(d->navigationToolBar);
     d->navigationBar = new NavigationBar(d->mainWindow);
     d->navigationToolBar->hide();
+
     vLayout->addWidget(d->navigationBar);
     vLayout->setContentsMargins(0, 0, 2, 0);
 }
@@ -998,6 +1108,14 @@ void Controller::initContextWidget()
     info.name = WN_CONTEXTWIDGET;
     info.widget = d->contextWidget;
     info.defaultPos = Position::Bottom;
+    info.icon = QIcon::fromTheme("context_widget");
+
+    if (d->statusBar) {
+        auto btn = createDockButton(info);
+        btn->setChecked(true);
+        d->statusBar->insertPermanentWidget(0, btn);
+    }
+
     d->allWidgets.insert(WN_CONTEXTWIDGET, info);
 }
 
@@ -1055,6 +1173,21 @@ void Controller::initModules()
     }
 }
 
+void Controller::initDocksManager()
+{
+    d->docksManager = new DocksManagerButton(d->navigationToolBar, this);
+    d->docksManager ->setIcon(QIcon::fromTheme("docks_manager"));
+    d->docksManager ->setFocusPolicy(Qt::NoFocus);
+    d->docksManager ->setToolTip(tr("Show docks in this view"));
+    d->docksManager->hide();
+    d->navigationBar->addNavButton(d->docksManager , NavigationBar::bottom, Priority::low);
+
+    connect(d->navigationBar, &NavigationBar::leave, this, [=]() {
+        for (auto btn : d->dockButtons.values())
+            btn->hide();
+    });
+}
+
 void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)
 {
     QKeySequence key = keySequence;
@@ -1108,7 +1241,8 @@ void Controller::registerActionShortCut(AbstractAction *action)
 
 void Controller::showWorkspace()
 {
-    if (!d->allWidgets[WN_WORKSPACE].created) {
+    auto &workSpaceInfo = d->allWidgets[WN_WORKSPACE];
+    if (!workSpaceInfo.created) {
         createDockWidget(d->allWidgets[WN_WORKSPACE]);
         d->mainWindow->showWidget(WN_WORKSPACE);
         d->mainWindow->resizeDock(WN_WORKSPACE, QSize(300, 300));
@@ -1135,7 +1269,7 @@ void Controller::showWorkspace()
         QList<QAction *> headers;
         for (auto title : titles) {
             QAction *action = new QAction(title, d->workspace);
-            connect(action, &QAction::triggered, this, [=](){d->workspace->switchWidgetWorkspace(title);});
+            connect(action, &QAction::triggered, this, [=]() { d->workspace->switchWidgetWorkspace(title); });
             headers.append(action);
         }
         d->mainWindow->setDockHeaderList(WN_WORKSPACE, headers);
@@ -1147,9 +1281,11 @@ void Controller::showWorkspace()
         });
 
         d->workspace->addedToController = true;
+        bindWidgetToNavigation(WN_WORKSPACE, new AbstractAction(d->navigationActions[MWNA_EDIT]));
     } else {
         d->mainWindow->showWidget(WN_WORKSPACE);
     }
+    d->currentDocks.append(WN_WORKSPACE);
 }
 
 DToolButton *Controller::createIconButton(QAction *action)
@@ -1168,4 +1304,61 @@ void Controller::removeTopToolItem(AbstractAction *action)
 
     delete iconBtn;
     d->topToolBtn.remove(action->qAction());
+}
+
+bool Controller::checkDocksManager()
+{
+    for (auto dock : d->currentDocks) {
+        auto &dockInfo = d->allWidgets[dock];
+        if (!dockInfo.dockWidget || d->widgetBindToNavigation.contains(dock) || dockInfo.name == WN_CONTEXTWIDGET)
+            continue;
+
+        if (!d->dockButtons.contains(dock)) {
+            auto btn = createDockButton(dockInfo);
+            btn->hide();
+            d->navigationBar->addNavButton(btn, NavigationBar::bottom, Priority::high);
+            d->dockButtons.insert(dockInfo.name, btn);
+        }
+
+        d->docksManager->show();
+        return true;
+    }
+
+    d->docksManager->hide();
+    return false;
+}
+
+void Controller::showCurrentDocksManager()
+{
+    for (auto dock : d->currentDocks) {
+        auto &dockInfo = d->allWidgets[dock];
+        if (!d->dockButtons.contains(dockInfo.name))
+            continue;
+
+        auto btn = d->dockButtons[dockInfo.name];
+        btn->show();
+        btn->setChecked(dockInfo.dockWidget->isVisible());
+    }
+}
+
+DToolButton *Controller::createDockButton(const WidgetInfo &info)
+{
+    DToolButton *btn = new DToolButton(d->navigationToolBar);
+    btn->setIcon(info.icon);
+    btn->setToolTip(info.name);
+    btn->setCheckable(true);
+    connect(btn, &DToolButton::clicked, this, [=]() {
+        auto &dockInfo = d->allWidgets[info.name];
+        if (dockInfo.dockWidget->isVisible()) {
+            d->mainWindow->hideWidget(dockInfo.name);
+            btn->setChecked(false);
+            dockInfo.hiddenByManual = true;
+        } else {
+            d->mainWindow->showWidget(dockInfo.name);
+            btn->setChecked(true);
+            dockInfo.hiddenByManual = false;
+        }
+    },
+            Qt::UniqueConnection);
+    return btn;
 }

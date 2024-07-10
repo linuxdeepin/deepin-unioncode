@@ -8,6 +8,7 @@
         <file>texts/debugger_stepout_16px.svg</file>
         <file>texts/debugger_stepover_16px.svg</file>
         <file>texts/restart_debug_16px.svg</file>
+        <file>texts/variable_watchers_16px.svg</file>
         <file>light/icons/breakpoint_14px.svg</file>
         <file>light/icons/disabled_breakpoint_14px.svg</file>
         <file>light/icons/debugger_start_16px.svg</file>
