@@ -54,6 +54,8 @@ const char userSeparator = '\x04';
 // The default fold margin width.
 static const int defaultFoldMarginWidth = 14;
 
+static const int MinFontZoomSize = 5;
+
 // The default set of characters that make up a word.
 static const char *defaultWordChars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -1727,10 +1729,15 @@ void QsciScintilla::zoomOut(int range)
     zoomTo(SendScintilla(SCI_GETZOOM) - range);
 }
 
-
 // Zoom out a single point.
 void QsciScintilla::zoomOut()
 {
+    int value = SendScintilla(SCI_GETZOOM);
+    auto font = lex ? lex->defaultFont() : this->font();
+    auto fontSize = font.pointSize() * (100 + 10 * value) / 100;
+    if (fontSize < MinFontZoomSize)
+        return;
+    
     SendScintilla(SCI_ZOOMOUT);
 }
 
