@@ -16,6 +16,7 @@
 const char DefaultFontFamily[] { "Noto Mono" };
 const int DefaultFontSize { 10 };
 const int DefaultFontZoom { 100 };
+const int FontMiniZoomSize { 5 };
 
 DWIDGET_USE_NAMESPACE
 
@@ -30,6 +31,7 @@ public:
 
     QList<int> pointSizesForSelectedFont() const;
     void updatePointSizes();
+    void updateZoomRange(int fontSize);
 
     FontColorWidget *q;
     DFontComboBox *fontComboBox { nullptr };
@@ -58,7 +60,7 @@ void FontColorWidgetPrivate::initUI()
 
     zoomSpinBox = new DSpinBox(q);
     zoomSpinBox->setSuffix("%");
-    zoomSpinBox->setRange(10, 3000);
+    zoomSpinBox->setRange(10, 300);
     zoomSpinBox->setSingleStep(10);
 
     QHBoxLayout *itemLayout = new QHBoxLayout;
@@ -127,6 +129,14 @@ void FontColorWidgetPrivate::updatePointSizes()
         fontSizeComboBox->setCurrentIndex(idx);
 }
 
+void FontColorWidgetPrivate::updateZoomRange(int fontSize)
+{
+    auto ratio =  (double)FontMiniZoomSize / fontSize;
+    int zoomMiniValue = qRound(ratio * 10) * 10;
+    
+    zoomSpinBox->setRange(zoomMiniValue, 300);
+}
+
 FontColorWidget::FontColorWidget(QWidget *parent)
     : PageWidget(parent),
       d(new FontColorWidgetPrivate(this))
@@ -179,6 +189,8 @@ void FontColorWidget::fontSizeSelected(int index)
     const auto sizeStr = d->fontSizeComboBox->itemText(index);
     bool ok = true;
     const int size = sizeStr.toInt(&ok);
-    if (ok)
+    if (ok) {
         d->fontSize = size;
+        d->updateZoomRange(size);
+    }
 }
