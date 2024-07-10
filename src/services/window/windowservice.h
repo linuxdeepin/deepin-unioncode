@@ -119,6 +119,7 @@ public:
     DPF_INTERFACE(void, addNavigationItem, AbstractAction *action, quint8 priority);
     DPF_INTERFACE(void, addNavigationItemToBottom, AbstractAction *action, quint8 priority);
     DPF_INTERFACE(void, switchWidgetNavigation, const QString &navName);
+    DPF_INTERFACE(void, bindWidgetToNavigation, const QString &dockName, AbstractAction *action);
     DPF_INTERFACE(QStringList, getAllNavigationItemName);
     DPF_INTERFACE(quint8, getPriorityOfNavigationItem, const QString &itemName);
 
@@ -192,6 +193,7 @@ public:
      * \param widget
      */
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
+    DPF_INTERFACE(void, registerToolBtnToWidget,const QString &dockName, Dtk::Widget::DToolButton *btn);
     DPF_INTERFACE(void, registerToolBtnToWorkspaceWidget, Dtk::Widget::DToolButton *btn, const QString &title);
 
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);

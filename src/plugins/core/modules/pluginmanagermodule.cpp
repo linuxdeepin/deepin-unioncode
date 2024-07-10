@@ -48,6 +48,7 @@ void PluginManagerModule::initialize(Controller *_uiController)
 
     uiController->registerWidget("pluginDetail", detailViewImpl);
     uiController->registerWidget(MWMTA_PLUGINS, storeWidgetImpl);
+    uiController->bindWidgetToNavigation(MWMTA_PLUGINS, actionOptionsImpl);
 
     QObject::connect(pluginManagerAction, &QAction::triggered, this, [this]() {
         uiController->showWidgetAtPosition("pluginDetail", Position::Central);

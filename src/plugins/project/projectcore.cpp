@@ -97,30 +97,11 @@ void ProjectCore::addRecentOpenWidget(WindowService *windowService)
     connect(ProjectProxy::instance(), &ProjectProxy::modeRaised, this, [=](const QString &mode) {
         if (mode != CM_EDIT || openFileWidgetInited)
             return;
-
-        QStringList allLeftDocks = windowService->getCurrentDockName(Position::Left);
-        auto dockCount = allLeftDocks.size();
-
-        if (!allLeftDocks.contains(openFilesWidgetName) || dockCount <= 1)
-            return;
-
-        allLeftDocks.removeOne(openFilesWidgetName);
-
-        QStringList docks { openFilesWidgetName };
-        // Set the height of the widget to 25% of the total height.
-        QList<int> sizes { 25 };
-        auto size = 75 / (dockCount - 1);
-        for (auto dock : allLeftDocks) {
-            sizes.append(size);
-            docks.append(dock);
-        }
-
-        windowService->resizeDocks(docks, sizes, Qt::Vertical);
-
-        openFileWidgetInited = true;
+        initOpenFilesWidget(windowService);
     },
             Qt::DirectConnection);
     auto openFilesWidget = new AbstractWidget(openedWidget);
+    openFilesWidget->setDisplayIcon(QIcon::fromTheme("opened_files"));
     windowService->registerWidgetToMode(openFilesWidgetName, openFilesWidget, CM_EDIT, Position::Left, false, true);
     windowService->setDockHeaderName(openFilesWidgetName, tr("Opened Files"));
 }
@@ -247,4 +228,31 @@ void ProjectCore::pluginsStartedMain()
             }
         }
     }
+}
+
+void ProjectCore::initOpenFilesWidget(dpfservice::WindowService *windowService)
+{
+    // adjust position
+    windowService->splitWidgetOrientation(WN_WORKSPACE, openFilesWidgetName, Qt::Vertical);
+
+    QStringList allLeftDocks = windowService->getCurrentDockName(Position::Left);
+    auto dockCount = allLeftDocks.size();
+
+    if (!allLeftDocks.contains(openFilesWidgetName) || dockCount <= 1)
+        return;
+
+    allLeftDocks.removeOne(openFilesWidgetName);
+
+    QStringList docks { openFilesWidgetName };
+    // Set the height of the widget to 25% of the total height.
+    QList<int> sizes { 25 };
+    auto size = 75 / (dockCount - 1);
+    for (auto dock : allLeftDocks) {
+        sizes.append(size);
+        docks.append(dock);
+    }
+
+    windowService->resizeDocks(docks, sizes, Qt::Vertical);
+
+    openFileWidgetInited = true;
 }

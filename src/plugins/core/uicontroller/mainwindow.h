@@ -65,6 +65,10 @@ public:
     void setRightTopToolWidget(DWidget *widget);
 
     static Qt::DockWidgetArea positionTodockArea(Position pos);
+    Position positionOfDock(const QString &dockName);
+
+signals:
+    void dockHidden(const QString &dockName);
 
 private:
     MainWindowPrivate *d;
