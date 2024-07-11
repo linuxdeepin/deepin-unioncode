@@ -1,0 +1,13 @@
+name: debianCheck
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  debian-check:
+    uses: linuxdeepin/.github/.github/workflows/debian-check.yml@master
+    secrets: inherit

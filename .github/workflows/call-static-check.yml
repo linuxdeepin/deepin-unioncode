@@ -1,0 +1,13 @@
+name: staticCheck
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-check:
+    uses: linuxdeepin/.github/.github/workflows/static-check.yml@master
+    secrets: inherit
