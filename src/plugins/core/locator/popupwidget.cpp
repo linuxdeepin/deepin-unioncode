@@ -85,6 +85,7 @@ PopupWidget::PopupWidget(QWidget *parent)
     tree->setUniformRowHeights(true);
     tree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     tree->header()->setStretchLastSection(true);
+    tree->setIconSize(QSize(16, 16));
 
     connect(tree, &QTreeView::activated, this, [this](const QModelIndex &index) {
         emit this->selectIndex(index);
