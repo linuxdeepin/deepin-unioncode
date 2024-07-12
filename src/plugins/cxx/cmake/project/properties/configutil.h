@@ -104,7 +104,7 @@ struct TargetRunConfigure {
     QString arguments;
     QString workDirectory;
     EnvironmentItem env;
-    bool runInTermal;
+    bool runInTermal { false };
 
     friend QDataStream &operator<<(QDataStream &stream, const TargetRunConfigure &data)
     {
