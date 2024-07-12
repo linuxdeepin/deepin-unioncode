@@ -66,9 +66,6 @@ public:
 signals:
     void envUpdated();
 
-private slots:
-    void onEnableQDebugLevel();
-
 private:
     EnvironmentWidgetPrivate *const d;
 };

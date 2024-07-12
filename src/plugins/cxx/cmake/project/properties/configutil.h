@@ -58,18 +58,6 @@ struct EnvironmentItem {
     bool enable = true;
     QMap<QString, QString> environments;
 
-    void setQDebugLevel(bool enable)
-    {
-        enableQDebugLevel = enable;
-        QString loggingValue = enableQDebugLevel ? "*.debug=true" : "*.debug=false";
-        environments.insert("QT_LOGGING_RULES", loggingValue);
-    }
-
-    bool isQDebugLevelEnable() const
-    {
-        return enableQDebugLevel;
-    }
-
     EnvironmentItem() {
         initEnvironments();
     }
@@ -91,13 +79,11 @@ struct EnvironmentItem {
         foreach (auto key, env.keys()) {
             environments.insert(key, env.value(key));
         }
-        setQDebugLevel(enableQDebugLevel);
     }
 
     friend QDataStream &operator<<(QDataStream &stream, const EnvironmentItem &data)
     {
         stream << data.enable;
-        stream << data.enableQDebugLevel;
         stream << data.environments;
 
         return stream;
@@ -106,14 +92,10 @@ struct EnvironmentItem {
     friend QDataStream &operator>>(QDataStream &stream, EnvironmentItem &data)
     {
         stream >> data.enable;
-        stream >> data.enableQDebugLevel;
         stream >> data.environments;
 
         return stream;
     }
-
-private:
-    bool enableQDebugLevel = true;
 };
 
 struct TargetRunConfigure {
