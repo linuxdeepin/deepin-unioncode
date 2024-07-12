@@ -4,11 +4,13 @@
 
 #include "mainwindow.h"
 #include "common/util/eventdefinitions.h"
+#include "common/util/custompaths.h"
 
 #include <DTitlebar>
 #include <DStatusBar>
 #include <DToolBar>
 
+#include <QDataStream>
 #include <QHBoxLayout>
 using dpfservice::Position;
 
@@ -72,6 +74,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    QString initFile = CustomPaths::user(CustomPaths::Configures) + "/mainwindow.ini";
+    QFile file(initFile);
+    if (file.open(QFile::WriteOnly)) {
+        QDataStream outFile(&file);
+        outFile << saveGeometry();
+    }
+
     delete d;
 }
 

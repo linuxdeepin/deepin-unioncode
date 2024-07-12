@@ -833,14 +833,26 @@ void Controller::initMainWindow()
     if (!d->mainWindow) {
         d->mainWindow = new MainWindow;
         d->mainWindow->setMinimumSize(MW_MIN_WIDTH, MW_MIN_HEIGHT);
-        d->mainWindow->resize(MW_WIDTH, MW_HEIGHT);
+
+        QString initFile = CustomPaths::user(CustomPaths::Configures) + "/mainwindow.ini";
+        QFile file(initFile);
+        if (file.open(QFile::ReadOnly)) {
+            QByteArray ba;
+            QDataStream inFile(&file);
+            inFile >> ba;
+            d->mainWindow->restoreGeometry(ba);
+            d->mainWindow->show();
+        } else {
+            d->mainWindow->resize(MW_WIDTH, MW_HEIGHT);
+            d->mainWindow->showMaximized();
+        }
+
+        if (CommandParser::instance().getModel() == CommandParser::CommandLine) {
+            d->mainWindow->hide();
+        }
 
         initMenu();
-
-        if (CommandParser::instance().getModel() != CommandParser::CommandLine) {
-            d->mainWindow->showMaximized();
-            loading();
-        }
+        loading();
 
         auto desktop = QApplication::desktop();
         int currentScreenIndex = desktop->screenNumber(d->mainWindow);
