@@ -11,6 +11,7 @@
 
 #include <QApplication>
 #include <QStyleFactory>
+#include <QSurfaceFormat>
 
 DWIDGET_USE_NAMESPACE
 
@@ -99,6 +100,13 @@ void voidMessageOutput(QtMsgType type, const QMessageLogContext &context, const 
 
 int main(int argc, char *argv[])
 {
+    // some platform opengl drive with wrong，so use OpenGLES instead.
+    if (QSysInfo::currentCpuArchitecture().contains("arm")) {
+        QSurfaceFormat format;
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setDefaultFormat(format);
+    }
+    
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     DApplication a(argc, argv);
