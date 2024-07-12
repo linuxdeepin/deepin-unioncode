@@ -38,13 +38,7 @@ BuildCommandInfo CMakeBuilderGenerator::getMenuCommand(const BuildMenuType build
     if (buildMenuType == Build) {
         info.arguments = projectInfo.buildCustomArgs();
     } else if (buildMenuType == Clean) {
-        // TODO(Mozart):cleanCustomArgs not fill correct, modify it later.
-//        info.arguments = projectInfo.cleanCustomArgs();
-        info.arguments.clear();
-        info.arguments << "--build";
-        info.arguments << ".";
-        info.arguments << "--target";
-        info.arguments << "clean";
+        info.arguments = projectInfo.cleanCustomArgs();
     }
 
     info.program = projectInfo.buildProgram();
