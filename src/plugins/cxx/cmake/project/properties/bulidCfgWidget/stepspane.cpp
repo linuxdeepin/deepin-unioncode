@@ -279,8 +279,12 @@ void StepsPane::setValues(const config::StepItem &item)
     d->toolArguments->setText(item.buildArguments.join(" "));
 
     QMap<QString, bool> data;
-    foreach (auto targetName, item.allTargetNames) {
-        data.insert(targetName, targetName == item.activeTargetName ? true : false);
+    if (item.type == config::StepType::Build) {
+        foreach (auto targetName, item.allTargetNames) {
+            data.insert(targetName, targetName == item.activeTargetName ? true : false);
+        }
+    } else if (item.type == config::StepType::Clean) {
+        data.insert("clean", true);
     }
 
     d->model->setData(data);
