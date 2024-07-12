@@ -212,7 +212,7 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
                 } else if (iterStep->type == StepType::Clean) {
                     QString cleanTarget = iterStep->activeTargetName;
                     if (cleanTarget.isEmpty()) {
-                        cleanTarget = "all";
+                        cleanTarget = "clean";
                     }
                     TargetsManager::instance()->updateActivedCleanTarget(cleanTarget);
                     arguments << cleanTarget;
