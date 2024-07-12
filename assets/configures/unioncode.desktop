@@ -2,7 +2,7 @@
 Categories=Utility;TextEditor;Development;IDE;
 Comment=Code Editing. Redefined.
 Exec=/usr/bin/deepin-unioncode
-GenericName=Text Editor
+GenericName=Deepin Union Code
 Icon=/usr/share/deepin-unioncode/configures/icons/ide.svg
 Keywords=deepin-unioncode;
 MimeType=text/plain;application/x-code-workspace;
