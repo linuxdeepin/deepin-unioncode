@@ -41,7 +41,8 @@ public:
 
     static OutputPane* instance();
 
-    void addApplicationOutPane();
+    void updateFilter(const QString &filterText, bool caseSensitive = false, bool isRegexp = false); // support all param later
+    void filterContent(bool caseSensitive = false, bool isRegexp = false);
 protected:
     void contextMenuEvent(QContextMenuEvent * event) override;
 
