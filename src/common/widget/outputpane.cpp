@@ -12,6 +12,8 @@
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QTextBlock>
+#include <QRegularExpression>
 
 /**
  * @brief Output text color.
@@ -45,6 +47,9 @@ public:
 
     QList<Output> outputList;
     QTimer outputTimer;
+
+    QString filterText;
+    int lastBlockNumber = -1;
 };
 
 OutputPane::OutputPane(QWidget *parent)
@@ -190,6 +195,9 @@ void OutputPane::appendCustomText(const QString &textIn, AppendMode mode, const 
         d->cursor.insertText(doNewlineEnforcement(tr("Additional output omitted") + QLatin1Char('\n')), tmp);
     }
 
+    if (!d->filterText.isEmpty())
+        filterContent(false, false);
+
     scrollToBottom();
 }
 
@@ -270,4 +278,43 @@ QList<QAction *> OutputPane::actionFactory()
     }
 
     return list;
+}
+
+void OutputPane::updateFilter(const QString &filterText, bool caseSensitive, bool isRegexp)
+{
+    d->outputEdit->setReadOnly(!filterText.isEmpty());
+
+    d->filterText = filterText;
+    d->lastBlockNumber = -1;
+    filterContent(caseSensitive, isRegexp);
+}
+
+void OutputPane::filterContent(bool caseSensitive, bool isRegexp)
+{
+    auto document = d->outputEdit->document();
+    auto lastBlock = document->findBlockByLineNumber(d->lastBlockNumber);
+    if (!lastBlock.isValid())
+        lastBlock = document->begin();
+
+    if (isRegexp) {
+        QRegularExpression regExp(d->filterText);
+        if (!caseSensitive)
+            regExp.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+
+        for (; lastBlock != document->end(); lastBlock = lastBlock.next())
+            lastBlock.setVisible(d->filterText.isEmpty() || regExp.match(lastBlock.text()).hasMatch());
+    } else {
+        if (caseSensitive) {
+            for (; lastBlock != document->end(); lastBlock = lastBlock.next())
+                lastBlock.setVisible(d->filterText.isEmpty() || lastBlock.text().contains(d->filterText));
+        } else {
+            for (; lastBlock != document->end(); lastBlock = lastBlock.next())
+                lastBlock.setVisible(d->filterText.isEmpty() || lastBlock.text().toLower().contains(d->filterText.toLower()));
+        }
+    }
+
+    d->lastBlockNumber = d->outputEdit->document()->lastBlock().blockNumber();
+    d->outputEdit->setDocument(this->document());
+
+    scrollToBottom();
 }
