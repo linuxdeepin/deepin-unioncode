@@ -12,6 +12,7 @@
 #include <DComboBox>
 #include <DGuiApplicationHelper>
 #include <DStyle>
+#include <DLineEdit>
 
 #include <QVBoxLayout>
 #include <QProcess>
@@ -35,8 +36,10 @@ public:
     DWidget *tabbar { nullptr };
     DFrame *hLine { nullptr };
     DComboBox *tabChosser { nullptr };
+    QHBoxLayout *toolLayout { nullptr };
     DToolButton *closeProcessBtn { nullptr };
     DToolButton *closePaneBtn { nullptr };
+    DLineEdit *filterEdit { nullptr };
     QMap<QString, DWidget*> toolBars;
     QMap<QString, OutputPane*> toolBarBindsToPane;
 
@@ -129,9 +132,19 @@ void AppOutputPane::initTabWidget()
     d->closePaneBtn->setToolTip(tr("Close OutputPane"));
     d->closePaneBtn->setEnabled(false);
 
-    tabLayout->addWidget(d->tabChosser);
-    tabLayout->addWidget(d->closePaneBtn);
-    tabLayout->addWidget(d->closeProcessBtn);
+    d->toolLayout = new QHBoxLayout;
+    d->toolLayout->addWidget(d->tabChosser);
+    d->toolLayout->addWidget(d->closePaneBtn);
+    d->toolLayout->addWidget(d->closeProcessBtn);
+
+    d->filterEdit = new DLineEdit(d->tabbar);
+    d->filterEdit->setPlaceholderText(tr("Filter"));
+    d->filterEdit->setFixedSize(120, 28);
+
+    tabLayout->addLayout(d->toolLayout);
+    tabLayout->addSpacing(20);
+    tabLayout->addWidget(d->filterEdit);
+    tabLayout->addStretch(1);
     d->tabbar->hide();
 
     connect(d->tabChosser, QOverload<int>::of(&DComboBox::currentIndexChanged), this, [=](int index) {
@@ -152,8 +165,11 @@ void AppOutputPane::initTabWidget()
             else
                 d->toolBars[toolbarName]->setVisible(false);
         }
+
+        if (pane)
+            pane->updateFilter(d->filterEdit->text(), false, false);
     });
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=](){
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=]() {
         auto pal = d->tabChosser->palette();
         pal.setColor(QPalette::Light, pal.color(QPalette::Base));
         pal.setColor(QPalette::Dark, pal.color(QPalette::Base));
@@ -166,6 +182,11 @@ void AppOutputPane::initTabWidget()
         d->closeProcessBtn->setEnabled(false);
     });
     connect(d->closePaneBtn, &DToolButton::clicked, this, &AppOutputPane::slotCloseOutputPane);
+    connect(d->filterEdit, &DLineEdit::textChanged, this, [=](const QString &text) {
+        auto outputPane = qobject_cast<OutputPane *>(d->stackWidget->currentWidget());
+        if (outputPane)
+            outputPane->updateFilter(text, false, false);
+    });
 }
 
 void AppOutputPane::stop(const QString &id)
@@ -317,7 +338,7 @@ void AppOutputPane::registerItemToToolBar(const QString& toolbarName, QAction *a
 
     auto toolBtn = utils::createIconButton(action, d->tabbar);
     toolBtn->setFixedSize(26, 26);
-    
+
     if (addSeparator) {
         DVerticalLine *line = new DVerticalLine(d->tabbar);
         line->setFixedHeight(20);
@@ -338,9 +359,8 @@ void AppOutputPane::bindToolBarToPane(const QString &toolbarName, OutputPane *pa
     }
 
     d->toolBarBindsToPane.insert(toolbarName, pane);
-    auto layout = qobject_cast<QHBoxLayout *>(d->tabbar->layout());
     auto toolbar = d->toolBars[toolbarName];
-    layout->addWidget(toolbar);
+    d->toolLayout->addWidget(toolbar);
     if (d->stackWidget->currentWidget() == pane) {
         toolbar->setVisible(true);
     }
