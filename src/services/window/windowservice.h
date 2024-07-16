@@ -193,7 +193,7 @@ public:
      * \param widget
      */
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
-    DPF_INTERFACE(void, registerToolBtnToWidget,const QString &dockName, Dtk::Widget::DToolButton *btn);
+    DPF_INTERFACE(void, registerWidgetToDockHeader,const QString &dockName, QWidget *widget);
     DPF_INTERFACE(void, registerToolBtnToWorkspaceWidget, Dtk::Widget::DToolButton *btn, const QString &title);
 
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
