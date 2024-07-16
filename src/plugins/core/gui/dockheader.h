@@ -18,7 +18,7 @@ public:
 
     void setHeaderName(const QString &headerName);
     void setHeaderNames(const QList<QAction *> &headers);
-    void addToolButton(DTK_WIDGET_NAMESPACE::DToolButton *btn);
+    void addWidget(QWidget *widget);
 
 private:
     DockHeaderPrivate *d;

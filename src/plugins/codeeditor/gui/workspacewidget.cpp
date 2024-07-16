@@ -759,6 +759,13 @@ void WorkspaceWidget::replaceAll(const QString &fileName, const QString &oldText
     }
 }
 
+void WorkspaceWidget::replaceRange(const QString &fileName, int line, int index, int length, const QString &after)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        tabWidget->replaceRange(fileName, line, index, length, after);
+    }
+}
+
 TabWidget *WorkspaceWidget::currentTabWidget() const
 {
     return d->currentTabWidget();

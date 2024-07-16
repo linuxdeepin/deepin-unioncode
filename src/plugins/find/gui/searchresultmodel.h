@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef SEARCHRESULTTREEVIEW_H
-#define SEARCHRESULTTREEVIEW_H
+#ifndef SEARCHRESULTMODEL_H
+#define SEARCHRESULTMODEL_H
 
 #include "constants.h"
 
-#include <DTreeView>
+#include <QAbstractItemModel>
 
 class SearchResultModel : public QAbstractItemModel
 {
@@ -23,34 +23,28 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     void clear();
+    void setReplaceText(const QString &text, bool regex);
     FindItem *findItem(const QModelIndex &index) const;
     QString findGroup(const QModelIndex &index) const;
     void appendResult(const FindItemList &list);
-    QStringList fileList() const;
+    QMap<QString, FindItemList> allResult() const;
+    QMap<QString, FindItemList> findResult(const QModelIndex &index) const;
+    void remove(const QModelIndex &index);
+
+Q_SIGNALS:
+    void requestReplace(const QModelIndex &index);
 
 private:
     void addGroup(const QString &group);
     void addItem(const QString &group, const FindItemList &itemList);
+    void removeGroup(const QString &group);
+    void removeItem(const QString &group, const FindItem &item);
     QVariant data(const FindItem &item, int role = Qt::DisplayRole) const;
     QVariant data(const QString &group, int role = Qt::DisplayRole) const;
 
     QMap<QString, FindItemList> resultData;
+    QString replaceText;
+    bool enableRegex { false };
 };
 
-class SearchResultTreeViewPrivate;
-class SearchResultTreeView : public DTK_WIDGET_NAMESPACE::DTreeView
-{
-    Q_OBJECT
-public:
-    explicit SearchResultTreeView(QWidget *parent = nullptr);
-    ~SearchResultTreeView();
-
-    void appendData(const FindItemList &itemList);
-    void clearData();
-    QStringList resultFileList() const;
-
-private:
-    SearchResultTreeViewPrivate *const d;
-};
-
-#endif   // SEARCHRESULTTREEVIEW_H
+#endif   // SEARCHRESULTMODEL_H

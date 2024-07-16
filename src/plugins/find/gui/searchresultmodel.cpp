@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "searchresulttreeview.h"
-
-#include "common/util/eventdefinitions.h"
+#include "searchresultmodel.h"
 
 #include <DFileIconProvider>
+
+#include <QRegularExpression>
 
 DWIDGET_USE_NAMESPACE
 
@@ -90,6 +90,12 @@ void SearchResultModel::clear()
     endResetModel();
 }
 
+void SearchResultModel::setReplaceText(const QString &text, bool regex)
+{
+    replaceText = text;
+    enableRegex = regex;
+}
+
 FindItem *SearchResultModel::findItem(const QModelIndex &index) const
 {
     auto item = static_cast<FindItem *>(index.internalPointer());
@@ -127,9 +133,39 @@ void SearchResultModel::appendResult(const FindItemList &list)
         addItem(iter.key(), iter.value());
 }
 
-QStringList SearchResultModel::fileList() const
+QMap<QString, FindItemList> SearchResultModel::allResult() const
 {
-    return resultData.keys();
+    return resultData;
+}
+
+QMap<QString, FindItemList> SearchResultModel::findResult(const QModelIndex &index) const
+{
+    QMap<QString, FindItemList> resultMap;
+    if (hasChildren(index)) {
+        const auto &group = findGroup(index);
+        resultMap.insert(group, resultData[group]);
+    } else {
+        auto item = findItem(index);
+        if (!item)
+            return {};
+
+        resultMap.insert(item->filePathName, { *item });
+    }
+
+    return resultMap;
+}
+
+void SearchResultModel::remove(const QModelIndex &index)
+{
+    if (hasChildren(index)) {
+        const auto &group = findGroup(index);
+        removeGroup(group);
+    } else {
+        auto item = findItem(index);
+        if (!item)
+            return;
+        removeItem(item->filePathName, *item);
+    }
 }
 
 void SearchResultModel::addGroup(const QString &group)
@@ -146,12 +182,41 @@ void SearchResultModel::addGroup(const QString &group)
 
 void SearchResultModel::addItem(const QString &group, const FindItemList &itemList)
 {
-    int pos = resultData.keys().indexOf(group);
-    auto parent = index(pos, 0);
+    int row = resultData.keys().indexOf(group);
+    auto parent = index(row, 0);
+    int pos = resultData[group].count();
 
     beginInsertRows(parent, pos, pos + itemList.size());
     resultData[group].append(itemList);
     endInsertRows();
+}
+
+void SearchResultModel::removeGroup(const QString &group)
+{
+    if (!resultData.contains(group))
+        return;
+
+    int pos = resultData.keys().indexOf(group);
+    beginRemoveRows(QModelIndex(), pos, pos);
+    resultData.remove(group);
+    endRemoveRows();
+}
+
+void SearchResultModel::removeItem(const QString &group, const FindItem &item)
+{
+    if (!resultData.contains(group) || !resultData[group].contains(item))
+        return;
+
+    if (resultData[group].count() == 1)
+        return removeGroup(group);
+
+    int row = resultData.keys().indexOf(group);
+    auto parent = index(row, 0);
+    int pos = resultData[group].indexOf(item);
+
+    beginRemoveRows(parent, pos, pos);
+    resultData[group].removeOne(item);
+    endRemoveRows();
 }
 
 QVariant SearchResultModel::data(const FindItem &item, int role) const
@@ -166,6 +231,12 @@ QVariant SearchResultModel::data(const FindItem &item, int role) const
         return item.column;
     case KeywordRole:
         return item.keyword;
+    case MatchedTextRole:
+        return item.matchedText;
+    case ReplaceTextRole:
+        if (!item.capturedTexts.isEmpty())
+            return Utils::expandRegExpReplacement(replaceText, item.capturedTexts);
+        return replaceText;
     default:
         break;
     }
@@ -176,8 +247,10 @@ QVariant SearchResultModel::data(const FindItem &item, int role) const
 QVariant SearchResultModel::data(const QString &group, int role) const
 {
     switch (role) {
-    case Qt::ToolTipRole:
     case Qt::DisplayRole:
+        return QFileInfo(group).fileName();
+    case FilePathRole:
+    case Qt::ToolTipRole:
         return group;
     case Qt::DecorationRole:
         return DFileIconProvider::globalProvider()->icon(QFileInfo(group));
@@ -186,54 +259,4 @@ QVariant SearchResultModel::data(const QString &group, int role) const
     }
 
     return QVariant();
-}
-
-class SearchResultTreeViewPrivate
-{
-    SearchResultTreeViewPrivate() {}
-    ~SearchResultTreeViewPrivate();
-
-    SearchResultModel model;
-    friend class SearchResultTreeView;
-};
-
-SearchResultTreeViewPrivate::~SearchResultTreeViewPrivate()
-{
-}
-
-SearchResultTreeView::SearchResultTreeView(QWidget *parent)
-    : DTreeView(parent), d(new SearchResultTreeViewPrivate())
-{
-    setModel(&d->model);
-    auto font = this->font();
-    font.setFamily("Noto Mono");
-    setFont(font);
-
-    connect(this, &DTreeView::doubleClicked, this, [=](const QModelIndex &index) {
-        auto item = d->model.findItem(index);
-        if (!item)
-            return;
-
-        editor.gotoPosition(item->filePathName, item->line, item->column);
-    });
-}
-
-SearchResultTreeView::~SearchResultTreeView()
-{
-    delete d;
-}
-
-void SearchResultTreeView::appendData(const FindItemList &itemList)
-{
-    d->model.appendResult(itemList);
-}
-
-void SearchResultTreeView::clearData()
-{
-    d->model.clear();
-}
-
-QStringList SearchResultTreeView::resultFileList() const
-{
-    return d->model.fileList();
 }

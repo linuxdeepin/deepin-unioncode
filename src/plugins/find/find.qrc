@@ -2,8 +2,15 @@
     <qresource prefix="/icons/deepin/builtin"/>
     <qresource prefix="/">
         <file>icons/deepin/builtin/icons/find_noResults_96px.png</file>
-        <file>icons/deepin/builtin/texts/find_matchComplete_16px.svg</file>
-        <file>icons/deepin/builtin/texts/search-find_16px.svg</file>
         <file>icons/deepin/builtin/texts/match_case_16px.svg</file>
+        <file>icons/deepin/builtin/texts/refresh_16px.svg</file>
+        <file>icons/deepin/builtin/texts/delete_16px.svg</file>
+        <file>icons/deepin/builtin/texts/option_16px.svg</file>
+        <file>icons/deepin/builtin/texts/regex_16px.svg</file>
+        <file>icons/deepin/builtin/texts/replace_16px.svg</file>
+        <file>icons/deepin/builtin/texts/replace_all_16px.svg</file>
+        <file>icons/deepin/builtin/texts/search_22px.svg</file>
+        <file>icons/deepin/builtin/texts/stop_search_16px.svg</file>
+        <file>icons/deepin/builtin/texts/whole_word_16px.svg</file>
     </qresource>
 </RCC>

@@ -139,7 +139,7 @@ void MainWindow::deleteDockHeader(const QString &name)
     dock->setTitleBarWidget(new QWidget());
 }
 
-void MainWindow::addToolBtnToDockHeader(const QString &dockName, DToolButton *btn)
+void MainWindow::addWidgetToDockHeader(const QString &dockName, QWidget *widget)
 {
     if (!d->dockList.contains(dockName))
         return;
@@ -148,7 +148,7 @@ void MainWindow::addToolBtnToDockHeader(const QString &dockName, DToolButton *bt
     auto titleBar = qobject_cast<DockHeader *>(dock->titleBarWidget());
 
     if (titleBar)
-        titleBar->addToolButton(btn);
+        titleBar->addWidget(widget);
 }
 
 QDockWidget *MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
@@ -219,7 +219,7 @@ void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
     closeBtn->setToolTip(tr("Hide Dock Widget"));
     closeBtn->setCheckable(false);
 
-    addToolBtnToDockHeader(d->dockList.key(dock), closeBtn);
+    addWidgetToDockHeader(d->dockList.key(dock), closeBtn);
 
     connect(closeBtn, &DToolButton::clicked, dock, [=]() {
         auto dockName = d->dockList.key(dock);
