@@ -47,7 +47,7 @@ public:
     void setDockHeaderName(const QString &dockName, const QString &headerName);
     void setDockHeaderList(const QString &dockName, const QList<QAction *> &actions);
     void deleteDockHeader(const QString &name);
-    void addToolBtnToDockHeader(const QString &dockName, DToolButton *btn);
+    void addWidgetToDockHeader(const QString &dockName, QWidget *widget);
     void setDockWidgetFeatures(const QString &name, QDockWidget::DockWidgetFeatures feature);
 
     void resizeDock(const QString &dockName, QSize size);

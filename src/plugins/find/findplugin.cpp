@@ -5,8 +5,9 @@
 #include "findplugin.h"
 
 #include "services/window/windowservice.h"
-#include "gui/findtoolwindow.h"
-#include "gui/searchresultwindow.h"
+#include "services/editor/editorservice.h"
+#include "gui/advancedsearchwidget.h"
+
 #include "common/common.h"
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
@@ -32,34 +33,50 @@ bool FindPlugin::start()
         abort();
     }
 
-    DMenu *editMenu = new DMenu(QMenu::tr("&Edit"));
-    AbstractMenu *menuImpl = new AbstractMenu(editMenu);
-
-    QAction *advancedFindAction = new QAction(this);
-    auto advancedFindActionImpl = new AbstractAction(advancedFindAction);
-    advancedFindActionImpl->setShortCutInfo("Edit.Advanced.Find",
-                                            tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F));
-    connect(advancedFindAction, &QAction::triggered, [=] {
-        uiController.switchContext(tr("Advanced &Search"));
-    });
-
-    menuImpl->addAction(advancedFindActionImpl);
-
-    windowService->addChildMenu(menuImpl);
-
-    AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
-    windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, true);
+    registerShortcut();
+    registerToSidebar();
 
     return true;
 }
 
-void FindPlugin::sendSwitchSearchResult()
+void FindPlugin::switchToSearch()
 {
-    uiController.switchContext(tr("Advanced &Search"));
+    windowService->raiseMode(CM_EDIT);
+    windowService->showWidgetAtPosition(MWNA_ADVANCEDSEARCH, Position::Left, true);
+}
+
+void FindPlugin::registerShortcut()
+{
+    QAction *advancedFindAction = new QAction(this);
+    auto advancedFindActionImpl = new AbstractAction(advancedFindAction);
+    advancedFindActionImpl->setShortCutInfo("Edit.Advanced.Find",
+                                            tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F));
+    connect(advancedFindAction, &QAction::triggered, qApp, [=] {
+        auto editSrv = dpfGetService(EditorService);
+        const auto &selectedText = editSrv->getSelectedText();
+        if (!selectedText.isEmpty())
+            advSearchWidget->setSearchText(selectedText);
+        windowService->switchWidgetNavigation(MWNA_ADVANCEDSEARCH);
+    });
+    windowService->addAction("&Edit", advancedFindActionImpl);
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()
 {
     qInfo() << __FUNCTION__;
     return Sync;
+}
+
+void FindPlugin::registerToSidebar()
+{
+    QAction *action = new QAction(MWNA_ADVANCEDSEARCH, this);
+    action->setIcon(QIcon::fromTheme("search"));
+    windowService->addNavigationItem(new AbstractAction(action), Priority::highest);
+
+    advSearchWidget = new AdvancedSearchWidget;
+    windowService->registerWidget(MWNA_ADVANCEDSEARCH, new AbstractWidget(advSearchWidget));
+    windowService->setDockHeaderName(MWNA_ADVANCEDSEARCH, tr("ADVANCED SEARCH"));
+    advSearchWidget->initOperator();
+
+    connect(action, &QAction::triggered, this, &FindPlugin::switchToSearch, Qt::DirectConnection);
 }

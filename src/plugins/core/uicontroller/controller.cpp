@@ -57,7 +57,7 @@ struct WidgetInfo
     QDockWidget *dockWidget { nullptr };
     QString headerName;
     QList<QAction *> headerList;
-    QList<DToolButton *> headerBtn;   // set button to header after create dock
+    QList<QWidget *> headerWidget;   // set button to header after create dock
     QIcon icon;
 
     Position defaultPos;   // set position after create dock
@@ -209,7 +209,7 @@ void Controller::registerService()
         windowService->deleteDockHeader = std::bind(&MainWindow::deleteDockHeader, d->mainWindow, _1);
     }
     if (!windowService->addToolBtnToDockHeader) {
-        windowService->addToolBtnToDockHeader = std::bind(&MainWindow::addToolBtnToDockHeader, d->mainWindow, _1, _2);
+        windowService->addToolBtnToDockHeader = std::bind(&MainWindow::addWidgetToDockHeader, d->mainWindow, _1, _2);
     }
     if (!windowService->setDockWidgetFeatures) {
         windowService->setDockWidgetFeatures = std::bind(&MainWindow::setDockWidgetFeatures, d->mainWindow, _1, _2);
@@ -298,8 +298,8 @@ void Controller::registerService()
     if (!windowService->registerToolBtnToWorkspaceWidget) {
         windowService->registerToolBtnToWorkspaceWidget = std::bind(&WorkspaceWidget::registerToolBtnToWidget, d->workspace, _1, _2);
     }
-    if (!windowService->registerToolBtnToWidget) {
-        windowService->registerToolBtnToWidget = std::bind(&Controller::registerToolBtnToWidget, this, _1, _2);
+    if (!windowService->registerWidgetToDockHeader) {
+        windowService->registerWidgetToDockHeader = std::bind(&Controller::registerWidgetToDockHeader, this, _1, _2);
     }
     if (!windowService->createFindPlaceHolder) {
         windowService->createFindPlaceHolder = std::bind(&PlaceHolderManager::createPlaceHolder, PlaceHolderManager::instance(), _1, _2);
@@ -338,9 +338,9 @@ void Controller::createDockWidget(WidgetInfo &info)
     else if (!info.headerList.isEmpty())
         d->mainWindow->setDockHeaderList(info.name, info.headerList);
 
-    if (!info.headerBtn.isEmpty()) {
-        for (auto btn : info.headerBtn)
-            d->mainWindow->addToolBtnToDockHeader(info.name, btn);
+    if (!info.headerWidget.isEmpty()) {
+        for (auto btn : info.headerWidget)
+            d->mainWindow->addWidgetToDockHeader(info.name, btn);
     }
 
     if (info.icon.isNull())
@@ -614,7 +614,7 @@ void Controller::bindWidgetToNavigation(const QString &dockName, AbstractAction 
     d->widgetBindToNavigation.insert(dockName, action);
 }
 
-void Controller::registerToolBtnToWidget(const QString &dockName, DToolButton *btn)
+void Controller::registerWidgetToDockHeader(const QString &dockName, QWidget *widget)
 {
     if (!d->allWidgets.contains(dockName)) {
         qWarning() << "No widget named: " << dockName;
@@ -623,8 +623,8 @@ void Controller::registerToolBtnToWidget(const QString &dockName, DToolButton *b
 
     auto &info = d->allWidgets[dockName];
     if (info.created)
-        d->mainWindow->addToolBtnToDockHeader(dockName, btn);
-    info.headerBtn.append(btn);
+        d->mainWindow->addWidgetToDockHeader(dockName, widget);
+    info.headerWidget.append(widget);
 }
 
 void Controller::addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible)
@@ -1260,18 +1260,18 @@ void Controller::showWorkspace()
         d->mainWindow->resizeDock(WN_WORKSPACE, QSize(300, 300));
 
         for (auto btn : d->workspace->getAllToolBtn())
-            d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, btn);
+            d->mainWindow->addWidgetToDockHeader(WN_WORKSPACE, btn);
 
         DToolButton *expandAll = new DToolButton(d->workspace);
         expandAll->setToolTip(tr("Expand All"));
         expandAll->setIcon(QIcon::fromTheme("expand_all"));
-        d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, expandAll);
+        d->mainWindow->addWidgetToDockHeader(WN_WORKSPACE, expandAll);
         connect(expandAll, &DToolButton::clicked, this, []() { workspace.expandAll(); });
 
         DToolButton *foldAll = new DToolButton(d->workspace);
         foldAll->setToolTip(tr("Fold All"));
         foldAll->setIcon(QIcon::fromTheme("collapse_all"));
-        d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, foldAll);
+        d->mainWindow->addWidgetToDockHeader(WN_WORKSPACE, foldAll);
         connect(foldAll, &DToolButton::clicked, this, []() { workspace.foldAll(); });
 
         expandAll->setVisible(d->workspace->getCurrentExpandState());

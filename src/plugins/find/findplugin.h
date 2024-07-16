@@ -8,9 +8,9 @@
 #include <framework/framework.h>
 
 namespace dpfservice {
-    class WindowService;
+class WindowService;
 }
-
+class AdvancedSearchWidget;
 class FindPlugin : public dpf::Plugin
 {
     Q_OBJECT
@@ -20,13 +20,13 @@ public:
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
 
-signals:
-    void asyncStopFinished();
-    void onFindActionTriggered();
-
 private:
-    void sendSwitchSearchResult();
+    void switchToSearch();
+    void registerShortcut();
+    void registerToSidebar();
+
+    AdvancedSearchWidget *advSearchWidget = nullptr;
     dpfservice::WindowService *windowService = nullptr;
 };
 
-#endif // FINDPLUGIN_H
+#endif   // FINDPLUGIN_H

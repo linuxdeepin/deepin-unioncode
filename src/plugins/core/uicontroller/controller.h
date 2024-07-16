@@ -50,7 +50,7 @@ public slots:
     void switchWidgetNavigation(const QString &navName);
     void bindWidgetToNavigation(const QString &dockName, AbstractAction *action);
 
-    void registerToolBtnToWidget(const QString &dockName, DToolButton *btn);
+    void registerWidgetToDockHeader(const QString &dockName, QWidget *widget);
 
     //bottom contextWidget
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible);

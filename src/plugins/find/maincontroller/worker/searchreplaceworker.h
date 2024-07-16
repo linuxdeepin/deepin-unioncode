@@ -17,22 +17,21 @@ public:
     explicit SearchReplaceWorker(QObject *parent = nullptr);
     ~SearchReplaceWorker();
 
-    void stop();
-
-    FindItemList getResults();
+    bool hasItem() const;
+    FindItemList takeAll();
 
 public Q_SLOTS:
-    void addSearchTask(const SearchParams &params);
-    void addReplaceTask(const ReplaceParams &params);
+    void stop();
+    void search(const SearchParams &params);
+    void replace(const ReplaceParams &params);
 
 Q_SIGNALS:
     void matched();
-    void searchFinished();
-    void replaceFinished(int result);
+    void finished();
 
 private Q_SLOTS:
-    void handleReadSearchResult(const QString &keyword, bool caseSensitive, bool wholeWords);
-    void processDone(int jobType);
+    void handleReadSearchResult(const QString &keyword, SearchFlags flags);
+    void processDone();
 
 private:
     friend class SearchReplaceWorkerPrivate;

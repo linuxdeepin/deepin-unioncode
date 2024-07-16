@@ -13,44 +13,30 @@ class SearchReplaceWorkerPrivate : public QObject
 {
     Q_OBJECT
 public:
-    enum JobType {
-        SearchJob,
-        ReplaceJob
-    };
-
     struct Job
     {
-        JobType type;
         QString cmd;
         QString channelData;
         QString keyword;
-        bool caseSensitive = false;
-        bool wholeWords = false;
+        SearchFlags flags;
     };
 
     explicit SearchReplaceWorkerPrivate(SearchReplaceWorker *qq);
-    ~SearchReplaceWorkerPrivate();
 
     void startAll();
     void startNextJob();
 
     void createSearchJob(const SearchParams &params);
-    void createReplaceJob(const ReplaceParams &params);
     Job buildSearchJob(const QStringList &fileList,
                        const QStringList &includeList,
                        const QStringList &excludeList,
                        const QString &keyword,
                        SearchFlags flags,
                        bool isOpenedFile);
-    Job buildReplaceJob(const QStringList &fileList,
-                        const QString &oldText,
-                        const QString &newText,
-                        SearchFlags flags,
-                        bool isOpenedFile);
 
     void processWorkingFiles(QStringList &baseFiles, QStringList &openedFiles);
-    Q_INVOKABLE void replaceOpenedFile(const QString &fileName, const QString &oldText,
-                                       const QString &newText, bool caseSensitive, bool wholeWords);
+    void replaceLocalFile(const QString &fileName, const QString &replacement, const FindItemList &itemList);
+    Q_INVOKABLE void replaceOpenedFile(const QString &fileName, const QString &replacement, const FindItemList &itemList);
 
 public:
     SearchReplaceWorker *q;
@@ -60,8 +46,10 @@ public:
     FindItemList searchResults;
     std::unique_ptr<QProcess> process { nullptr };
 
+    QAtomicInteger<bool> isStop { false };
     QList<Job> jobList;
     int currentJob = 0;
+    int resultCount = 0;
 };
 
 #endif   // SEARCHREPLACEWORKER_P_H

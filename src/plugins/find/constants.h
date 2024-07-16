@@ -11,7 +11,10 @@
 enum ResultRole {
     LineRole = Qt::UserRole + 1,
     ColumnRole,
-    KeywordRole
+    KeywordRole,
+    MatchedTextRole,
+    FilePathRole,
+    ReplaceTextRole
 };
 
 enum SearchScope {
@@ -23,31 +26,14 @@ enum SearchScope {
 enum SearchFlag {
     SearchNoFlag = 0,
     SearchCaseSensitive = 1,
-    SearchWholeWord = 1 << 1
+    SearchWholeWord = 1 << 1,
+    SearchRegularExpression = 1 << 2
 };
 Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
 
-struct BaseParams
-{
-    QStringList baseFileList;
-    QStringList openedFileList;
-    QString keyword;
-};
-
-struct SearchParams
-{
-    BaseParams baseParams;
-    QStringList includeList;
-    QStringList excludeList;
-    SearchFlags flags = SearchNoFlag;
-    SearchScope scope = AllProjects;
-};
-
-struct ReplaceParams
-{
-    BaseParams baseParams;
-    QString replaceText;
-    SearchFlags flags = SearchNoFlag;
+enum MessageType {
+    Information,
+    Warning
 };
 
 struct FindItem
@@ -56,6 +42,8 @@ struct FindItem
     int line = -1;
     int column = -1;
     QString keyword;
+    QString matchedText;
+    QStringList capturedTexts;
     QString context;
 
     inline bool operator==(const FindItem &other)
@@ -66,6 +54,31 @@ struct FindItem
 };
 
 using FindItemList = QList<FindItem>;
+
+struct SearchParams
+{
+    QString keyword;
+    QStringList projectFileList;
+    QStringList editFileList;
+    QStringList includeList;
+    QStringList excludeList;
+    SearchFlags flags = SearchNoFlag;
+    SearchScope scope = AllProjects;
+};
+
+struct ReplaceParams
+{
+    QStringList editFileList;
+    QMap<QString, FindItemList> resultMap;
+    QString replaceText;
+    SearchFlags flags = SearchNoFlag;
+};
+
+class Utils
+{
+public:
+    static QString expandRegExpReplacement(const QString &replaceText, const QStringList &capturedTexts);
+};
 
 Q_DECLARE_METATYPE(SearchParams)
 Q_DECLARE_METATYPE(ReplaceParams)
