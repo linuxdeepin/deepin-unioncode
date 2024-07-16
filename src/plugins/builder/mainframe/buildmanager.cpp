@@ -128,8 +128,11 @@ void BuildManager::addMenu()
 
     d->cancelAction = new QAction(MWMBA_CANCEL, this);
     d->cancelAction->setIcon(QIcon::fromTheme("cancel"));
-    ActionManager::getInstance()->registerAction(d->cancelAction, "Build.Cancel", MWMBA_CANCEL,
-                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace));
+    auto cancelActionImpl = actionInit(d->cancelAction, "Build.Cancel",
+                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                "cancel");
+    windowService->addTopToolItem(cancelActionImpl, false, Priority::low);
+    windowService->switchTopToolItemVisible(cancelActionImpl, false);
 
     d->rebuildAction = new QAction(MWMBA_REBUILD, this);
     d->rebuildAction->setIcon(QIcon::fromTheme("rebuild"));
@@ -575,10 +578,13 @@ void BuildManager::outBuildState(const BuildState &buildState)
 void BuildManager::slotBuildState(const BuildState &buildState)
 {
     d->currentState = buildState;
+    auto windowService = dpfGetService(WindowService);
 
     switch (buildState) {
     case BuildState::kNoBuild:
     case BuildState::kBuildFailed:
+        windowService->switchTopToolItemVisible(new AbstractAction(d->buildAction), true);
+        windowService->switchTopToolItemVisible(new AbstractAction(d->cancelAction), false);
         d->buildAction->setEnabled(true);
         d->buildActionNoIcon->setEnabled(true);
         d->rebuildAction->setEnabled(true);
@@ -586,6 +592,8 @@ void BuildManager::slotBuildState(const BuildState &buildState)
         d->cancelAction->setEnabled(false);
         break;
     case BuildState::kBuilding:
+        windowService->switchTopToolItemVisible(new AbstractAction(d->buildAction), false);
+        windowService->switchTopToolItemVisible(new AbstractAction(d->cancelAction), true);
         d->buildAction->setEnabled(false);
         d->buildActionNoIcon->setEnabled(true);
         d->rebuildAction->setEnabled(false);

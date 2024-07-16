@@ -274,6 +274,9 @@ void Controller::registerService()
     if (!windowService->addTopToolItemToRight) {
         windowService->addTopToolItemToRight = std::bind(&Controller::addTopToolItemToRight, this, _1, _2, _3);
     }
+    if (!windowService->switchTopToolItemVisible) {
+        windowService->switchTopToolItemVisible = std::bind(&Controller::switchTopToolItemVisible, this, _1, _2);
+    }
     if (!windowService->showTopToolBar) {
         windowService->showTopToolBar = std::bind(&Controller::showTopToolBar, this);
     }
@@ -1373,4 +1376,13 @@ DToolButton *Controller::createDockButton(const WidgetInfo &info)
     },
             Qt::UniqueConnection);
     return btn;
+}
+
+void Controller::switchTopToolItemVisible(AbstractAction *action, bool visible)
+{
+    if (!action || !action->qAction())
+        return;
+
+    auto iconBtn = d->topToolBtn.value(action->qAction());
+    iconBtn->setVisible(visible);
 }
