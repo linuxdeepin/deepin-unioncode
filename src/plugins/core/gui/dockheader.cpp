@@ -58,12 +58,11 @@ DockHeader::~DockHeader()
         delete d;
 }
 
-void DockHeader::addToolButton(DToolButton *btn)
+void DockHeader::addWidget(QWidget *widget)
 {
-    btn->setIconSize(QSize(16, 16));
-    btn->setFixedSize(QSize(26, 26));
-    DStyle::setFrameRadius(btn, 6);
-    d->mainLayout->insertWidget(1, btn);
+    widget->setFixedSize(QSize(26, 26));
+    DStyle::setFrameRadius(widget, 6);
+    d->mainLayout->insertWidget(1, widget);
 }
 
 void DockHeader::setHeaderName(const QString &headerName)

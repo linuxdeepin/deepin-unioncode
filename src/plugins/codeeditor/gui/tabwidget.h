@@ -28,6 +28,7 @@ public:
     QString fileText(const QString &fileName, bool *success = nullptr);
     void replaceAll(const QString &fileName, const QString &oldText,
                     const QString &newText, bool caseSensitive, bool wholeWords);
+    void replaceRange(const QString &fileName, int line, int index, int length, const QString &after);
     void saveAll() const;
     bool saveAs(const QString &from, const QString &to);
     void reloadFile(const QString &fileName);

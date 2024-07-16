@@ -174,6 +174,7 @@ void CodeEditor::initEditorService()
     editorService->openedFiles = std::bind(&WorkspaceWidget::openedFiles, workspaceWidget);
     editorService->fileText = std::bind(&WorkspaceWidget::fileText, workspaceWidget, _1);
     editorService->replaceAll = std::bind(&WorkspaceWidget::replaceAll, workspaceWidget, _1, _2, _3, _4, _5);
+    editorService->replaceRange = std::bind(&WorkspaceWidget::replaceRange, workspaceWidget, _1, _2, _3, _4, _5);
 
     LexerManager::instance()->init(editorService);
 }

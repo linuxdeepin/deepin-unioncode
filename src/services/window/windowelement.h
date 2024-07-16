@@ -21,6 +21,7 @@ inline const QString MWNA_GIT { QObject::tr("Git") };
 inline const QString MWNA_SVN { QObject::tr("Svn") };
 inline const QString MWNA_RUNTIME { QObject::tr("Runtime") };
 inline const QString MWNA_CODEGEEX { QObject::tr("CodeGeeX") };
+inline const QString MWNA_ADVANCEDSEARCH { QObject::tr("Advanced Search") };
 
 // MWTG = MainWindow TopTool group
 inline const QString MWTG_EDIT { "Edit" };

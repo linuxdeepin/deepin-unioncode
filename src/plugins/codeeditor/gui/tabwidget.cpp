@@ -611,6 +611,12 @@ void TabWidget::replaceAll(const QString &fileName, const QString &oldText,
         d->docFind->replaceAll(editor, oldText, newText, caseSensitive, wholeWords);
 }
 
+void TabWidget::replaceRange(const QString &fileName, int line, int index, int length, const QString &after)
+{
+    if (auto editor = d->findEditor(fileName))
+        editor->replaceRange(line, index, line, index + length, after);
+}
+
 void TabWidget::saveAll() const
 {
     for (auto editor : d->editorMng.values()) {
