@@ -65,7 +65,10 @@ int locatorModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return ColumnCount;
+    for (auto item : items)
+        if (!item.extraInfo.isEmpty())
+            return ColumnCount;
+    return 1;
 }
 
 PopupWidget::PopupWidget(QWidget *parent)
@@ -80,10 +83,11 @@ PopupWidget::PopupWidget(QWidget *parent)
     layout->setSpacing(0);
     layout->addWidget(tree);
 
+    tree->setMinimumWidth(500);
     tree->setHeaderHidden(true);
     tree->setRootIsDecorated(false);
     tree->setUniformRowHeights(true);
-    tree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    tree->header()->setSectionResizeMode(QHeaderView::Stretch);
     tree->header()->setStretchLastSection(true);
     tree->setIconSize(QSize(16, 16));
 
