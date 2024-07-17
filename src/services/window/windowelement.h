@@ -83,7 +83,7 @@ inline const QString MWM_HELP_DOCUMENTS { QAction::tr("Help Documents") };
 inline const QString MWM_ABOUT_PLUGINS { QAction::tr("About Plugins")};
 
 // Others
-inline const QString CONSOLE_TAB_TEXT { QTabWidget::tr("&Console") };
+inline const QString TERMINAL_TAB_TEXT { QTabWidget::tr("&Terminal") };
 // MWCWT = MW CodeEditor Window Title
 inline const QString MWCWT_SYMBOL {QTabWidget::tr("Symbol")};
 
