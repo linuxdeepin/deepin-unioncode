@@ -51,7 +51,7 @@ inline const QString MWM_BUILD { QMenu::tr("&Build") };
 inline const QString MWMBA_BUILD { QAction::tr("Build") };
 inline const QString MWMBA_REBUILD { QAction::tr("Rebuild") };
 inline const QString MWMBA_CLEAN { QAction::tr("Clean Cache") };
-inline const QString MWMBA_CANCEL { QAction::tr("Cancel") };
+inline const QString MWMBA_CANCEL { QAction::tr("Cancel Build") };
 
 // MWMDA = MWM Debug Action
 inline const QString MWM_DEBUG { QMenu::tr("&Debug") };
