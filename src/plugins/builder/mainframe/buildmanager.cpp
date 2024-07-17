@@ -263,11 +263,15 @@ void BuildManager::initCompileOutput()
     hOutputTopLayout->setContentsMargins(0, 0, 5, 0);
     hOutputTopLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
 
+    auto createVLine = [this]{
+        DVerticalLine *vLine = new DVerticalLine(d->compileWidget);
+        vLine->setFixedHeight(20);
+        return vLine;
+    };
+
     // init toolButton
-    DVerticalLine *vLine = new DVerticalLine(d->compileWidget);
-    vLine->setFixedHeight(20);
     hOutputTopLayout->addSpacing(10);
-    hOutputTopLayout->addWidget(vLine);
+    hOutputTopLayout->addWidget(createVLine());
     hOutputTopLayout->addSpacing(10);
 
     auto btn = utils::createIconButton(d->cancelAction, d->compileWidget);
@@ -279,6 +283,15 @@ void BuildManager::initCompileOutput()
     btn = utils::createIconButton(d->cleanAction, d->compileWidget);
     btn->setFixedSize(QSize(26, 26));
     hOutputTopLayout->addWidget(btn);
+
+    DToolButton *clearLogBtn = new DToolButton(d->compileWidget);
+    clearLogBtn->setIconSize({ 16, 16 });
+    clearLogBtn->setFixedSize({ 26, 26});
+    clearLogBtn->setIcon(QIcon::fromTheme("clear_log"));
+    clearLogBtn->setToolTip(tr("Clear Output"));
+    connect(clearLogBtn, &DToolButton::clicked, d->compileOutputPane, &CompileOutputPane::clearContents);
+    hOutputTopLayout->addWidget(createVLine());
+    hOutputTopLayout->addWidget(clearLogBtn);
 
     DFrame *OutputTopWidget = new DFrame(d->compileWidget);
     DStyle::setFrameRadius(OutputTopWidget, 0);
