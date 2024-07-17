@@ -39,6 +39,7 @@ public:
     QHBoxLayout *toolLayout { nullptr };
     DToolButton *closeProcessBtn { nullptr };
     DToolButton *closePaneBtn { nullptr };
+    DToolButton *clearLogBtn { nullptr };
     DLineEdit *filterEdit { nullptr };
     QMap<QString, DWidget*> toolBars;
     QMap<QString, OutputPane*> toolBarBindsToPane;
@@ -102,6 +103,12 @@ void AppOutputPane::initUi()
 
 void AppOutputPane::initTabWidget()
 {
+    auto createVLine = [this]{
+        DVerticalLine *vLine = new DVerticalLine(this);
+        vLine->setFixedHeight(20);
+        return vLine;
+    };
+
     d->tabbar = new DWidget(this);
     d->tabbar->setFixedHeight(38);
     d->tabbar->setAutoFillBackground(true);
@@ -132,6 +139,12 @@ void AppOutputPane::initTabWidget()
     d->closePaneBtn->setToolTip(tr("Close OutputPane"));
     d->closePaneBtn->setEnabled(false);
 
+    d->clearLogBtn = new DToolButton(d->tabbar);
+    d->clearLogBtn->setIconSize({ 16, 16 });
+    d->clearLogBtn->setFixedSize({ 26, 26});
+    d->clearLogBtn->setIcon(QIcon::fromTheme("clear_log"));
+    d->clearLogBtn->setToolTip(tr("Clear Output"));
+
     d->toolLayout = new QHBoxLayout;
     d->toolLayout->addWidget(d->tabChosser);
     d->toolLayout->addWidget(d->closePaneBtn);
@@ -142,8 +155,12 @@ void AppOutputPane::initTabWidget()
     d->filterEdit->setFixedSize(120, 28);
 
     tabLayout->addLayout(d->toolLayout);
-    tabLayout->addSpacing(20);
+    tabLayout->addWidget(createVLine());
+    tabLayout->addSpacing(2);
     tabLayout->addWidget(d->filterEdit);
+    tabLayout->addSpacing(2);
+    tabLayout->addWidget(createVLine());
+    tabLayout->addWidget(d->clearLogBtn);
     tabLayout->addStretch(1);
     d->tabbar->hide();
 
@@ -186,6 +203,11 @@ void AppOutputPane::initTabWidget()
         auto outputPane = qobject_cast<OutputPane *>(d->stackWidget->currentWidget());
         if (outputPane)
             outputPane->updateFilter(text, false, false);
+    });
+    connect(d->clearLogBtn, &DToolButton::clicked, this, [this] {
+        auto outputPane = qobject_cast<OutputPane *>(d->stackWidget->currentWidget());
+        if (outputPane)
+            outputPane->clearContents();
     });
 }
 
