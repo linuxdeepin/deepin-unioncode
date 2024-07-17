@@ -728,7 +728,7 @@ void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)
     if (terminalService) {
         terminalService->sendCommand(QString("cd %1\n").arg(dirPath));
         terminalService->sendCommand(QString("clear\n"));
-        uiController.switchContext(CONSOLE_TAB_TEXT);
+        uiController.switchContext(TERMINAL_TAB_TEXT);
     }
 }
 

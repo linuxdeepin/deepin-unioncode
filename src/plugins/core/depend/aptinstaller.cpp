@@ -6,6 +6,7 @@
 
 #include "common/util/eventdefinitions.h"
 #include "services/terminal/terminalservice.h"
+#include "services/window/windowelement.h"
 
 #include <QProcess>
 
@@ -42,6 +43,6 @@ void APTInstaller::install(const InstallInfo &info)
     args << "install"
          << info.packageList;
 
-    uiController.switchContext(tr("&Console"));
+    uiController.switchContext(TERMINAL_TAB_TEXT);
     termSrv->executeCommand(info.plugin.isEmpty() ? "APTInstall" : info.plugin, "sudo apt", args, "", QStringList());
 }

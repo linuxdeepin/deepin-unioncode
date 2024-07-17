@@ -444,7 +444,7 @@ void BinaryToolsManager::installTool(const QString &id)
     if (!terminalSrv)
         terminalSrv = dpfGetService(TerminalService);
 
-    uiController.switchContext(tr("&Console"));
+    uiController.switchContext(TERMINAL_TAB_TEXT);
     terminalSrv->sendCommand(tool.advSettings.installCommand);
 }
 
