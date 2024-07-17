@@ -933,6 +933,7 @@ void Controller::initMainWindow()
     if (!d->mainWindow) {
         d->mainWindow = new MainWindow;
         d->mainWindow->setMinimumSize(MW_MIN_WIDTH, MW_MIN_HEIGHT);
+        initMenu();
 
         QString initFile = CustomPaths::user(CustomPaths::Configures) + "/mainwindow.ini";
         QFile file(initFile);
@@ -951,7 +952,6 @@ void Controller::initMainWindow()
             d->mainWindow->hide();
         }
 
-        initMenu();
         loading();
 
         auto desktop = QApplication::desktop();
