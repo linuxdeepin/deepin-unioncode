@@ -108,12 +108,12 @@ void ConsoleManagerPrivate::initConnection()
 
 void ConsoleManagerPrivate::createDefaultConsole()
 {
-    q->createConsole(ConsoleManager::tr("Console"));
+    q->createConsole(ConsoleManager::tr("Terminal"));
 }
 
 void ConsoleManagerPrivate::appendConsole()
 {
-    q->createConsole(ConsoleManager::tr("New Console"));
+    q->createConsole(ConsoleManager::tr("New Terminal"));
 }
 
 void ConsoleManagerPrivate::removeConsole()
