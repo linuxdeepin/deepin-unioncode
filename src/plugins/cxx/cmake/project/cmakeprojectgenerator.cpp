@@ -220,7 +220,8 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
             // display root item before everything is done.
             // check if run cmake to a existed project by project root path
             auto newRoot = ProjectGenerator::createRootItem(projInfo);
-            if (!rootItem || (rootItem->data(Qt::DisplayRole) != newRoot->data(Qt::DisplayRole)))
+            auto isOpend = ProjectGenerator::isOpenedProject(projInfo.kitName(), projInfo.language(), projInfo.workspaceFolder());
+            if (!rootItem || (rootItem->data(Qt::DisplayRole) != newRoot->data(Qt::DisplayRole)) || !isOpend)
                 d->reConfigure = false;
             else {
                 d->reConfigure = true;
@@ -304,6 +305,9 @@ void CmakeProjectGenerator::removeRootItem(QStandardItem *root)
         delete threadPoll;
         d->asynItemThreadPolls.remove(root);
     }
+
+    if (d->reloadCmakeFileItems.contains(root))
+        d->reloadCmakeFileItems.removeOne(root);
 
     if (rootItem == root)
         rootItem = nullptr;
@@ -453,8 +457,7 @@ void CmakeProjectGenerator::setRootItemToView(QStandardItem *root)
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService || !projectService)
+    if (!projectService)
         return;
 
     if (root) {

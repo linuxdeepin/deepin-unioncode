@@ -34,9 +34,13 @@ void BuilderReceiver::eventProcess(const dpf::Event &event)
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         BuildManager::instance()->setActivatedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
     } else if (event.data() == project.deletedProject.name) {
+        auto builder = BuildManager::instance();
         QVariant proInfoVar = event.property(project.deletedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-        BuildManager::instance()->clearActivatedProjectInfo();
+        if (builder->isActivatedProject(projectInfo)) {
+            builder->clearActivatedProjectInfo();
+            builder->cancelBuild();
+        }
     } else if (event.data() == symbol.parseDone.name) {
         bool bSuccess = event.property("success").toBool();
         if(!bSuccess) {

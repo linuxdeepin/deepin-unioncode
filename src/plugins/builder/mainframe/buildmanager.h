@@ -35,6 +35,7 @@ public:
 
     void setActivatedProjectInfo(const QString &kitName, const QString &workingDir);
     void clearActivatedProjectInfo();
+    bool isActivatedProject(const dpfservice::ProjectInfo &info);
 
     bool handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
 

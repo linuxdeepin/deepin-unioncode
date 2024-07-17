@@ -17,6 +17,7 @@ public:
     ~ProjectDelegate() override;
     void setActiveProject(const QModelIndex &root);
     const QModelIndex &getActiveProject() const;
+    void hideSpinner();
 
 protected:
     void paint(QPainter *painter,
