@@ -252,6 +252,8 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
     auto parse = new CmakeAsynParse;
     auto fileWatcher = new QFileSystemWatcher(this);
     d->projectWatchers.insert(rootItem, fileWatcher);
+    auto thisProject = rootItem;
+    d->projectsWaitingUpdate.append(thisProject);
 
     // asyn free parse, that .project file parse
     QObject::connect(parse, &CmakeAsynParse::parseProjectEnd,
@@ -260,6 +262,8 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
                          // active after everything done.
                          project.activeProject(info.kitName(), info.language(), info.workspaceFolder());
                          delete parse;
+
+                         d->projectsWaitingUpdate.removeOne(thisProject);
 
                          if (!d->reConfigure)
                              return;
@@ -280,7 +284,6 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
             fileWatcher->addPath(path);
     });
 
-    auto thisProject = rootItem;
     connect(fileWatcher, &QFileSystemWatcher::directoryChanged, this, [=](const QString &path){
         if (d->projectsWaitingUpdate.contains(thisProject))
             return;
@@ -313,11 +316,7 @@ void CmakeProjectGenerator::removeRootItem(QStandardItem *root)
         rootItem = nullptr;
     d->cmakeItems.remove(root);
 
-    auto watcher = d->projectWatchers[root];
-    if (watcher)
-        delete watcher;
-    if (d->projectsWaitingUpdate.contains(root))
-        d->projectsWaitingUpdate.removeOne(root);
+    removeWatcher(root);
 
     recursionRemoveItem(root);
 }
@@ -529,6 +528,8 @@ void CmakeProjectGenerator::runCMake(QStandardItem *root, const QPair<QString, Q
     // cache the reload item
     d->reloadCmakeFileItems.append(root);
 
+    removeWatcher(root);
+
     // reconfigure project info
     configure(proInfo);
 }
@@ -639,4 +640,14 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
     addBuildMenu("Build.RunCMake");
     addBuildMenu("Build.ClearCMake");
     menu->addSeparator();
+}
+
+void CmakeProjectGenerator::removeWatcher(QStandardItem *root)
+{
+    auto watcher = d->projectWatchers[root];
+    if (watcher)
+        delete watcher;
+    d->projectWatchers.remove(root);
+    if (d->projectsWaitingUpdate.contains(root))
+        d->projectsWaitingUpdate.removeOne(root);
 }
