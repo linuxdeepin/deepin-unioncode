@@ -420,6 +420,13 @@ void BuildManager::clearActivatedProjectInfo()
     d->activedWorkingDir.clear();
 }
 
+bool BuildManager::isActivatedProject(const ProjectInfo &info)
+{
+    if (info.kitName() == d->activedKitName && info.workspaceFolder() == d->activedWorkingDir)
+        return true;
+    return false;
+}
+
 bool BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
 {
     if(!canStartBuild()) {

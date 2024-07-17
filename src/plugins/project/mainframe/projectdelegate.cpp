@@ -71,3 +71,9 @@ QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
     Q_UNUSED(index)
     return { option.rect.width(), 24 };
 }
+
+void ProjectDelegate::hideSpinner()
+{
+    d->spinner->hide();
+    d->spinner->stop();
+}
