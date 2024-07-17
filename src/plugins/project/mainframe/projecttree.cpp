@@ -34,9 +34,9 @@ using namespace dpfservice;
 class ProjectTreePrivate
 {
     friend class ProjectTree;
-    ProjectModel *itemModel {nullptr};
-    ProjectSelectionModel *sectionModel {nullptr};
-    ProjectDelegate *delegate {nullptr};
+    ProjectModel *itemModel { nullptr };
+    ProjectSelectionModel *sectionModel { nullptr };
+    ProjectDelegate *delegate { nullptr };
     DDialog *messDialog = nullptr;
     QPoint startPos;
     QString currentFile = "";
@@ -47,23 +47,22 @@ class ProjectTreePrivate
         const QStandardItem *current = item;
         while (current->parent()) {
             current = current->parent();
-            depth ++;
+            depth++;
         }
         return depth;
     }
 };
 
 ProjectTree::ProjectTree(QWidget *parent)
-    : DTreeView (parent)
-    , d(new ProjectTreePrivate)
+    : DTreeView(parent), d(new ProjectTreePrivate)
 {
     setLineWidth(0);
     setContentsMargins(0, 0, 0, 0);
     DStyle::setFrameRadius(this, 0);
 
-    setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
-    setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行
-    setSelectionMode(DTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
+    setEditTriggers(DTreeView::NoEditTriggers);   //节点不能编辑
+    setSelectionBehavior(DTreeView::SelectRows);   //一次选中整行
+    setSelectionMode(DTreeView::SingleSelection);   //单选，配合上面的整行就是一次选单行
     this->header()->hide();
 
     d->itemModel = new ProjectModel(this);
@@ -78,10 +77,10 @@ ProjectTree::ProjectTree(QWidget *parent)
                      this, &ProjectTree::doDoubleClicked);
 
     QObject::connect(this, &ProjectTree::expanded,
-                     this, [=](const QModelIndex &index){SendEvents::projectNodeExpanded(index);});
+                     this, [=](const QModelIndex &index) { SendEvents::projectNodeExpanded(index); });
 
     QObject::connect(this, &ProjectTree::collapsed,
-                     this, [=](const QModelIndex &index){SendEvents::projectNodeCollapsed(index);});
+                     this, [=](const QModelIndex &index) { SendEvents::projectNodeCollapsed(index); });
 
     d->sectionModel = new ProjectSelectionModel(d->itemModel);
     setSelectionModel(d->sectionModel);
@@ -103,13 +102,13 @@ ProjectTree::~ProjectTree()
 void ProjectTree::activeProjectInfo(const ProjectInfo &info)
 {
     int rowCount = d->itemModel->rowCount();
-    for (int currRow = 0; currRow < rowCount; currRow ++) {
+    for (int currRow = 0; currRow < rowCount; currRow++) {
         auto currItem = d->itemModel->item(currRow, 0);
         if (currItem) {
             auto currInfo = ProjectInfo::get(ProjectGenerator::root(currItem));
             if (currInfo.language() == info.language()
-                    && currInfo.workspaceFolder() == info.workspaceFolder()
-                    && currInfo.kitName() == info.kitName()) {
+                && currInfo.workspaceFolder() == info.workspaceFolder()
+                && currInfo.kitName() == info.kitName()) {
                 doActiveProject(currItem);
             }
         }
@@ -121,13 +120,13 @@ void ProjectTree::activeProjectInfo(const QString &kitName,
                                     const QString &workspace)
 {
     int rowCount = d->itemModel->rowCount();
-    for (int currRow = 0; currRow < rowCount; currRow ++) {
+    for (int currRow = 0; currRow < rowCount; currRow++) {
         auto currItem = d->itemModel->item(currRow, 0);
         if (currItem) {
             auto currInfo = ProjectInfo::get(ProjectGenerator::root(currItem));
             if (currInfo.language() == language
-                    && currInfo.workspaceFolder() == workspace
-                    && currInfo.kitName() == kitName) {
+                && currInfo.workspaceFolder() == workspace
+                && currInfo.kitName() == kitName) {
                 doActiveProject(currItem);
             }
         }
@@ -144,11 +143,11 @@ void ProjectTree::appendRootItem(QStandardItem *root)
     auto info = ProjectInfo::get(ProjectGenerator::root(root));
 
     // 添加工程节点
-    QStandardItemModel *model = static_cast<QStandardItemModel*>(DTreeView::model());
+    QStandardItemModel *model = static_cast<QStandardItemModel *>(DTreeView::model());
     if (model)
         model->appendRow(root);
 
-    if (root->data(Parsing_State_Role).value<ParsingState>() != ParsingState::Done) //avoid appent root item after complete parse
+    if (root->data(Parsing_State_Role).value<ParsingState>() != ParsingState::Done)   //avoid appent root item after complete parse
         root->setData(ParsingState::Wait, Parsing_State_Role);
 
     // 发送工程节点已创建信号
@@ -183,7 +182,7 @@ void ProjectTree::removeRootItem(QStandardItem *root)
 
     // 始终保持首选项
     int rowCount = d->itemModel->rowCount();
-    if (0 < rowCount) { // 存在其他工程时
+    if (0 < rowCount) {   // 存在其他工程时
         auto index = d->itemModel->index(0, 0);
         doActiveProject(d->itemModel->itemFromIndex(index));
     }
@@ -196,11 +195,15 @@ void ProjectTree::takeRootItem(QStandardItem *root)
     // 从展示的模型中删除
     QModelIndex index = d->itemModel->indexFromItem(root);
     d->itemModel->takeRow(index.row());
+    emit itemDeleted(root);
+
+    if (d->itemModel->rowCount() == 0)
+        d->delegate->hideSpinner();
 }
 
 void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
 {
-    if(!item)
+    if (!item)
         return;
 
     auto rootItem = ProjectGenerator::root(item);
@@ -218,11 +221,11 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
         if (info.isDir()) {
             menu->addSeparator();
             QAction *newDocAction = new QAction(tr("New Document"), this);
-            QObject::connect(newDocAction, &QAction::triggered, this, [=](){
+            QObject::connect(newDocAction, &QAction::triggered, this, [=]() {
                 actionNewDocument(item);
             });
             QAction *newDirAction = new QAction(tr("New Directory"), this);
-            QObject::connect(newDirAction, &QAction::triggered, this, [=](){
+            QObject::connect(newDirAction, &QAction::triggered, this, [=]() {
                 actionNewDirectory(item);
             });
             menu->addAction(newDocAction);
@@ -235,12 +238,17 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
     // add action that show contain folder.
     menu->addSeparator();
     QAction *showContainFolder = new QAction(tr("Show Containing Folder"), this);
-    connect(showContainFolder, &QAction::triggered, [=](){
+    connect(showContainFolder, &QAction::triggered, [=]() {
         QString filePath = item->toolTip();
         QFileInfo info(filePath);
         QDesktopServices::openUrl(QUrl::fromLocalFile(info.absolutePath()));
     });
     menu->addAction(showContainFolder);
+
+    connect(this, &ProjectTree::itemDeleted, menu, [=](QStandardItem *deletedItem) {
+        if (item == deletedItem || ProjectGenerator::root(item) == deletedItem)
+            menu->close();
+    });
 
     if (menu) {
         menu->move(event->globalPos());
@@ -254,10 +262,10 @@ void ProjectTree::expandedProjectDepth(const QStandardItem *root, int depth)
     if (!root)
         return;
 
-    if (d->itemDepth(root) < depth) { //满足深度
+    if (d->itemDepth(root) < depth) {   //满足深度
         expand(d->itemModel->indexFromItem(root));
-        for(int i = 0; i < root->rowCount(); i++) {
-            QStandardItem * childitem = root->child(i);
+        for (int i = 0; i < root->rowCount(); i++) {
+            QStandardItem *childitem = root->child(i);
             if (root->hasChildren()) {
                 expandedProjectDepth(childitem, depth);
             }
@@ -272,8 +280,8 @@ void ProjectTree::expandedProjectAll(const QStandardItem *root)
 
     expand(d->itemModel->indexFromItem(root));
     if (root->hasChildren()) {
-        for(int i = 0; i < root->rowCount(); i++) {
-            QStandardItem * childitem = root->child(i);
+        for (int i = 0; i < root->rowCount(); i++) {
+            QStandardItem *childitem = root->child(i);
             expandedProjectAll(childitem);
         }
     }
@@ -328,7 +336,7 @@ void ProjectTree::setAutoFocusState(bool state)
 
 bool ProjectTree::getAutoFocusState() const
 {
-	return d->autoFocusState;
+    return d->autoFocusState;
 }
 
 QList<dpfservice::ProjectInfo> ProjectTree::getAllProjectInfo()
@@ -336,7 +344,7 @@ QList<dpfservice::ProjectInfo> ProjectTree::getAllProjectInfo()
     using namespace dpfservice;
     QList<ProjectInfo> result;
     for (int row = 0; row < d->itemModel->rowCount(); row++) {
-        result <<  ProjectInfo::get(d->itemModel->index(row, 0));
+        result << ProjectInfo::get(d->itemModel->index(row, 0));
     }
     return result;
 }
@@ -358,7 +366,7 @@ ProjectInfo ProjectTree::getActiveProjectInfo() const
 {
     ProjectInfo projectInfo;
     auto activeProject = d->delegate->getActiveProject();
-    if(activeProject.isValid()) {
+    if (activeProject.isValid()) {
         projectInfo = ProjectInfo::get(activeProject);
     }
     return projectInfo;
@@ -380,8 +388,8 @@ bool ProjectTree::updateProjectInfo(ProjectInfo &projectInfo)
 
 bool ProjectTree::hasProjectInfo(const ProjectInfo &info) const
 {
-     ProjectInfo projectInfo = getProjectInfo(info.kitName(), info.workspaceFolder());
-     return !projectInfo.isEmpty();
+    ProjectInfo projectInfo = getProjectInfo(info.kitName(), info.workspaceFolder());
+    return !projectInfo.isEmpty();
 }
 
 void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
@@ -424,17 +432,17 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
         menu = new DMenu();
 
     QAction *newDirAction = new QAction(tr("New Directory"), this);
-    QObject::connect(newDirAction, &QAction::triggered, this, [=](){
+    QObject::connect(newDirAction, &QAction::triggered, this, [=]() {
         actionNewDirectory(childItem);
     });
 
     QAction *newDocAction = new QAction(tr("New Document"), this);
-    QObject::connect(newDocAction, &QAction::triggered, this, [=](){
+    QObject::connect(newDocAction, &QAction::triggered, this, [=]() {
         actionNewDocument(childItem);
     });
 
     QAction *renameDocAction = new QAction(tr("Rename"), this);
-    QObject::connect(renameDocAction, &QAction::triggered, this, [=](){
+    QObject::connect(renameDocAction, &QAction::triggered, this, [=]() {
         actionRenameDocument(childItem);
     });
 
@@ -444,7 +452,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
     // add open in terminal menu item.
     QAction *openInTerminal = new QAction(tr("Open In Terminal"), this);
     menu->addAction(openInTerminal);
-    connect(openInTerminal, &QAction::triggered, [=](){
+    connect(openInTerminal, &QAction::triggered, [=]() {
         actionOpenInTerminal(childItem);
     });
 
@@ -457,7 +465,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
         newDocAction->setEnabled(false);
         // add delete file menu item.
         QAction *deleteDocAction = new QAction(tr("Delete Document"), this);
-        QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
+        QObject::connect(deleteDocAction, &QAction::triggered, this, [=]() {
             actionDeleteDocument(childItem);
         });
         deleteDocAction->setEnabled(true);
@@ -471,7 +479,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
 
 QMenu *ProjectTree::rootMenu(QStandardItem *root)
 {
-    DMenu * menu = nullptr;
+    DMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
     // 获取支持右键菜单生成器
     auto &ctx = dpfInstance.serviceContext();
@@ -482,12 +490,12 @@ QMenu *ProjectTree::rootMenu(QStandardItem *root)
     if (!menu)
         menu = new DMenu();
 
-    QAction* activeProjectAction = new QAction(QAction::tr("Project Active"), menu);
-    QAction* closeAction = new QAction(QAction::tr("Project Close"), menu);
-    QAction* propertyAction = new QAction(QAction::tr("Project Info"), menu);
-    QObject::connect(activeProjectAction, &QAction::triggered, activeProjectAction, [=](){doActiveProject(root);});
-    QObject::connect(closeAction, &QAction::triggered, closeAction, [=](){doCloseProject(root);});
-    QObject::connect(propertyAction, &QAction::triggered, propertyAction, [=](){doShowProjectInfo(root);});
+    QAction *activeProjectAction = new QAction(QAction::tr("Project Active"), menu);
+    QAction *closeAction = new QAction(QAction::tr("Project Close"), menu);
+    QAction *propertyAction = new QAction(QAction::tr("Project Info"), menu);
+    QObject::connect(activeProjectAction, &QAction::triggered, activeProjectAction, [=]() { doActiveProject(root); });
+    QObject::connect(closeAction, &QAction::triggered, closeAction, [=]() { doCloseProject(root); });
+    QObject::connect(propertyAction, &QAction::triggered, propertyAction, [=]() { doShowProjectInfo(root); });
     menu->insertAction(nullptr, activeProjectAction);
     menu->insertAction(nullptr, closeAction);
     menu->insertAction(nullptr, propertyAction);
@@ -540,7 +548,7 @@ void ProjectTree::doCloseProject(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;
-    auto info = ProjectInfo::get(root);
+
     this->removeRootItem(root);
 }
 
@@ -566,7 +574,7 @@ void ProjectTree::actionRenameDocument(const QStandardItem *item)
     dialog->addContent(inputEdit);
     dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
 
-    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=]() {
         if (!inputEdit->text().isEmpty()) {
             renameDocument(item, inputEdit->text());
         }
@@ -608,12 +616,11 @@ void ProjectTree::renameDocument(const QStandardItem *item, const QString &newFi
             d->messDialog->insertButton(0, tr("Cancel"));
             d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
         }
-        
 
         connect(d->messDialog, &DDialog::buttonClicked, [=](int index) {
-            if (index == 0){
+            if (index == 0) {
                 d->messDialog->reject();
-            } else if (index == 1){
+            } else if (index == 1) {
                 okCallBack();
                 QFile::remove(newFilePath);
                 d->messDialog->accept();
@@ -644,7 +651,7 @@ void ProjectTree::actionNewDirectory(const QStandardItem *item)
     dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
     dialog->setOnButtonClickedClose(false);
 
-    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=]() {
         auto ret = false;
         if (!inputEdit->text().isEmpty()) {
             ret = createNewDirectory(item, inputEdit->text());
@@ -671,7 +678,7 @@ void ProjectTree::actionNewDocument(const QStandardItem *item)
     dialog->addContent(inputEdit);
     dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
 
-    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=]() {
         if (!inputEdit->text().isEmpty()) {
             creatNewDocument(item, inputEdit->text());
         }
@@ -794,9 +801,9 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
         d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
 
         connect(d->messDialog, &DDialog::buttonClicked, [=](int index) {
-            if (index == 0){
+            if (index == 0) {
                 d->messDialog->reject();
-            } else if (index == 1){
+            } else if (index == 1) {
                 okCallBack();
                 QFile::remove(filePath);
                 d->messDialog->accept();

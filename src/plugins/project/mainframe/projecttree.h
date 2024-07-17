@@ -42,6 +42,7 @@ public:
 
 Q_SIGNALS:
     void itemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
+    void itemDeleted(QStandardItem *item);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
