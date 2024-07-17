@@ -18,7 +18,7 @@ loadingWidget::loadingWidget(QWidget *parent)
     setLogo();
 
     loadingText = new DLabel(this);
-    loadingText->setText(tr("loading···"));
+    loadingText->setText(tr("loading..."));
     loadingText->setAlignment(Qt::AlignCenter);
 
     vlayout->addWidget(backgroundLogo);

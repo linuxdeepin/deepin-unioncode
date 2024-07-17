@@ -164,7 +164,7 @@ void Runner::running()
                     execCommand(args);
                 });
             } else {
-                uiController.switchContext(tr("&Console"));
+                uiController.switchContext(TERMINAL_TAB_TEXT);
 
                 auto terminalService = dpfGetService(TerminalService);
                 terminalService->executeCommand(args.program, args.program, args.arguments, args.workingDir, args.envs);

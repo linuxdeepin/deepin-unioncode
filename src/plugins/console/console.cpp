@@ -34,7 +34,7 @@ bool Console::start()
     auto consoleManager = new ConsoleManager;
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(consoleManager), true);
+        windowService->addContextWidget(TERMINAL_TAB_TEXT, new AbstractWidget(consoleManager), true);
     }
 
     // bind service.
