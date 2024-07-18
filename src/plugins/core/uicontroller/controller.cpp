@@ -1033,7 +1033,7 @@ void Controller::createHelpActions()
         QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/issues"));
     });
     QAction::connect(actionHelpDoc, &QAction::triggered, this, [=]() {
-        QDesktopServices::openUrl(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
+        QDesktopServices::openUrl(QUrl("https://uosdn.uniontech.com/#document2?dirid=656d40a9bd766615b0b02e5e"));
     });
 }
 
