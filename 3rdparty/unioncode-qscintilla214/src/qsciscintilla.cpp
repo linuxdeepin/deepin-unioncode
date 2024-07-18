@@ -921,8 +921,11 @@ int QsciScintilla::blockIndent(int line)
             }
             else if (line == l)
                 ind += ind_width;
-            else
-                ind = indentation(l + 1);
+            else {
+                const auto &lineText = text(l).trimmed();
+                if (lineText.size() > 1 && lineText.endsWith(":"))
+                    ind += ind_width;
+            }
 
             return ind;
         }
