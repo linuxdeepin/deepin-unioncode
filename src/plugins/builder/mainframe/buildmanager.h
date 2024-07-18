@@ -50,6 +50,7 @@ public slots:
     void slotOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
     void slotOutputProblemInfo(const QString &content);
     void addOutput(const QString &content, const OutputPane::OutputFormat format);
+    void buildCancelProject();
     void buildProject();
     void rebuildProject();
     void cleanProject();
