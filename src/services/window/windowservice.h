@@ -179,6 +179,7 @@ public:
     DPF_INTERFACE(void, addTopToolItem, AbstractAction *action, bool addSeparator, quint8 priority);
     DPF_INTERFACE(void, addTopToolItemToRight, AbstractAction *action, bool addSeparator, quint8 priority);
     DPF_INTERFACE(void, removeTopToolItem, AbstractAction *action);
+    DPF_INTERFACE(void, setTopToolItemVisible, AbstractAction *action, bool visible);
 
     DPF_INTERFACE(void, showTopToolBar);
     DPF_INTERFACE(void, hideTopToolBar);

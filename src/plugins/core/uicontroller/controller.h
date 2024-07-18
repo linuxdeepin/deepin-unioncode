@@ -73,6 +73,7 @@ public slots:
     void addTopToolItemToRight(AbstractAction *action, bool addSeparator, quint8 priority);
     void showTopToolBar();
     void removeTopToolItem(AbstractAction *action);
+    void setTopToolItemVisible(AbstractAction *action, bool visible);
 
     void openFileDialog();
 
