@@ -9,7 +9,7 @@
     ],
     "Category" : "Utils",
     "Description" : "With git and svn verison control tool",
-    "UrlLink" : "https://usdn.uniontech.com/#document3?dirid=656d40c5bd766615b0b02e64&id=656d4164bd766615b0b02e7a",
+    "UrlLink" : "https://uosdn.uniontech.com/#document3?dirid=656d40c5bd766615b0b02e64&id=656d4164bd766615b0b02e7a",
     "Depends" : [
         {"Name" : "core"}
     ]

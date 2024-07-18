@@ -9,7 +9,7 @@
     ],
     "Category" : "Core Plugins",
     "Description" : "The core plugin for the unioncode.",
-    "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=656d40c5bd766615b0b02e64&id=656d415bbd766615b0b02e78",
+    "UrlLink" : "https://uosdn.uniontech.com/#document2?dirid=656d40a9bd766615b0b02e5e",
     "Depends" : [
         {"Name" : "core"}
     ]
