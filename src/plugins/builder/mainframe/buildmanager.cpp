@@ -36,7 +36,7 @@ class BuildManagerPrivate
 {
     friend class BuildManager;
 
-    QAction* buildAction;
+    QAction* buildCancelAction;
     QAction* buildActionNoIcon;
     QAction* rebuildAction;
     QAction* cleanAction;
@@ -111,8 +111,8 @@ void BuildManager::addMenu()
         return inputAction;
     };
 
-    d->buildAction = new QAction(MWMBA_BUILD, this);
-    windowService->addTopToolItem(actionInit(d->buildAction, "Build.Build",
+    d->buildCancelAction = new QAction(MWMBA_BUILD, this);
+    windowService->addTopToolItem(actionInit(d->buildCancelAction, "Build.Build",
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                                 "build"), true, Priority::low);
 
@@ -143,8 +143,8 @@ void BuildManager::addMenu()
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
 
 
-    QObject::connect(d->buildAction, &QAction::triggered,
-                     this, &BuildManager::buildProject, Qt::DirectConnection);
+    QObject::connect(d->buildCancelAction, &QAction::triggered,
+                     this, &BuildManager::buildCancelProject, Qt::DirectConnection);
     QObject::connect(d->buildActionNoIcon, &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);
     QObject::connect(d->rebuildAction, &QAction::triggered,
@@ -316,6 +316,14 @@ QWidget *BuildManager::createFindPlaceHolder()
 
     auto docFind = new OutputDocumentFind(d->compileOutputPane);
     return windowService->createFindPlaceHolder(d->compileOutputPane, docFind);
+}
+
+void BuildManager::buildCancelProject()
+{
+    if (d->currentState == BuildState::kBuilding)
+        cancelBuild();
+    else
+        buildProject();
 }
 
 void BuildManager::buildProject()
@@ -599,14 +607,18 @@ void BuildManager::slotBuildState(const BuildState &buildState)
     switch (buildState) {
     case BuildState::kNoBuild:
     case BuildState::kBuildFailed:
-        d->buildAction->setEnabled(true);
+        d->buildCancelAction->setIcon(QIcon::fromTheme("build"));
+        d->buildCancelAction->setText(MWMBA_BUILD);
+        d->buildCancelAction->setShortcut(ActionManager::getInstance()->command("Build.Build")->keySequence());
         d->buildActionNoIcon->setEnabled(true);
         d->rebuildAction->setEnabled(true);
         d->cleanAction->setEnabled(true);
         d->cancelAction->setEnabled(false);
         break;
     case BuildState::kBuilding:
-        d->buildAction->setEnabled(false);
+        d->buildCancelAction->setIcon(QIcon::fromTheme("cancel"));
+        d->buildCancelAction->setText(MWMBA_CANCEL);
+        d->buildCancelAction->setShortcut(d->cancelAction->shortcut());
         d->buildActionNoIcon->setEnabled(true);
         d->rebuildAction->setEnabled(false);
         d->cleanAction->setEnabled(false);
