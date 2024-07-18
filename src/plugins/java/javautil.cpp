@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "javautil.h"
+#include "services/window/windowservice.h"
 
 #include <QProcess>
 #include <QDebug>
+#include <QStandardPaths>
 
 QString JavaUtil::getMainClassPath(const QDir &dir)
 {
@@ -25,6 +27,12 @@ QString JavaUtil::getMainClassPath(const QDir &dir)
             //If the file is not a folder, then check if it has the .class extension
             if (entry.suffix().toLower() == "class") {
                 qInfo() << entry.fileName();
+
+                if (QStandardPaths::findExecutable("javap").isEmpty()) {
+                    auto winSrv = dpfGetService(dpfservice::WindowService);
+                    winSrv->notify(2, "Java", tr("Unable to find the javap application. Please install openjdk-11-jdk or another version first."), {});
+                    return {};
+                }
 
                 QProcess process;
                 auto temp = entry.filePath();
