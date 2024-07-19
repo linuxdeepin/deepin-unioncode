@@ -10,6 +10,7 @@
 class GenerateDialogPrivate;
 class GenerateDialog : public DTK_WIDGET_NAMESPACE::DDialog
 {
+    Q_OBJECT
 public:
     GenerateDialog(QWidget *parent = nullptr);
 
