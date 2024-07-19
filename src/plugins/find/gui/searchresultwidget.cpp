@@ -14,6 +14,8 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include <QClipboard>
+#include <QApplication>
+#include <QGuiApplication>
 
 DWIDGET_USE_NAMESPACE
 
