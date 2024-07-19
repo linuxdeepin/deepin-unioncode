@@ -20,168 +20,165 @@
 <context>
     <name>AdvancedSearchWidget</name>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="152"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="151"/>
         <source>Collapse All</source>
         <translation>折叠所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="155"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="154"/>
         <source>Expand All</source>
         <translation>展开所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="158"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="157"/>
         <source>Clear Search Results</source>
         <translation>清空搜索结果</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="161"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="160"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="164"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="163"/>
         <source>Stop Search</source>
         <translation>停止搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="195"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="194"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="196"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="195"/>
         <source>Match Case</source>
         <translation>区分大小写</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="196"/>
         <source>Match Whole Word</source>
         <translation>匹配整段字符</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="198"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="197"/>
         <source>Use Regular Expression</source>
         <translation>使用正则表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="201"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="200"/>
         <source>Replace</source>
         <translation>替换</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="202"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="201"/>
         <source>Replace All</source>
         <translation>替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="215"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="214"/>
         <source>All Projects</source>
         <translation>所有工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="215"/>
         <source>Current Project</source>
         <translation>当前工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="218"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
         <source>Toggle Search Details</source>
         <translation>切换搜索详情</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="229"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="228"/>
         <source>Scope:</source>
         <translation>范围：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="243"/>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="246"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="242"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="245"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation>例如.*.ts,src/**/include</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="248"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="247"/>
         <source>Files To Include:</source>
         <translation>包含文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="250"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="249"/>
         <source>Files To Exclude:</source>
         <translation>不包含文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="331"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="330"/>
         <source>All projects path is empty, please import!</source>
         <translation>所有项目路径均为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="337"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="336"/>
         <source>Current projects path is empty, please import!</source>
         <translation>当前工程路径为空，请先导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="343"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="342"/>
         <source>No files are currently open, please open!</source>
         <translation>目前没有打开任何文件，请打开！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="435"/>
-        <source>No results found.</source>
-        <translation>没有匹配的结果.</translation>
-    </message>
-</context>
-<context>
-    <name>AdvancedSearchWidgetPrivate</name>
-    <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="358"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="357"/>
         <source>Advance Search</source>
         <translation>高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="361"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="360"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="362"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="361"/>
         <source>Continue</source>
         <comment>button</comment>
         <translation>继续</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="450"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="434"/>
+        <source>No results found.</source>
+        <translation>没有匹配的结果.</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="449"/>
         <source>Replace 1 occurence across 1 file?</source>
         <translation>替换1个文件中的1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="451"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="450"/>
         <source>Replace 1 occurence across 1 file with %1?</source>
         <translation>使用 %1 替换1个文件中的1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="454"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="453"/>
         <source>Replace %1 occurences across 1 file?</source>
         <translation>替换1个文件中的%1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="455"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="454"/>
         <source>Replace %1 occurences across 1 file with %2?</source>
         <translation>使用 %2 替换1个文件中的%1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="458"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="457"/>
         <source>Replace %1 occurences across %2 files?</source>
         <translation>替换%2个文件中的%1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="459"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="458"/>
         <source>Replace %1 occurences across %2 files with %3?</source>
         <translation>使用 %3 替换%2个文件中的%1个结果？</translation>
     </message>
@@ -509,19 +506,6 @@
         <translation>高级设置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="244"/>
-        <source>Tool icon:</source>
-        <translation>工具图标：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="215"/>
-        <source>Working directory:</source>
-        <translation>工作目录：</translation>
-    </message>
-</context>
-<context>
-    <name>BinaryToolsConfigViewPrivate</name>
-    <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="414"/>
         <source>Select Executabel Path</source>
         <translation>选择执行路径</translation>
@@ -530,6 +514,16 @@
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="424"/>
         <source>Select Working Directory</source>
         <translation>选择工作目录</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="244"/>
+        <source>Tool icon:</source>
+        <translation>工具图标：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="215"/>
+        <source>Working directory:</source>
+        <translation>工作目录：</translation>
     </message>
 </context>
 <context>
@@ -560,94 +554,94 @@
 <context>
     <name>BinaryToolsManager</name>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="142"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="141"/>
         <source>Default Group</source>
         <translation>默认分组</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="378"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="377"/>
         <source>Start execute tool &quot;%1&quot;.
 </source>
         <translation>开始执行工具 “%1”。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="384"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="383"/>
         <source>The tool is running. Please stop it before running.
 </source>
         <translation>这个工具正在运行。请将其停止后再运行。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="543"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="542"/>
         <source>The tool (%1) execution program does not exist. Install and run it again</source>
         <translation>工具 (%1) 执行程序不存在，请安装并重试</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="545"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="544"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="427"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="426"/>
         <source>Configure...</source>
         <translation>配置...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="479"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="478"/>
         <source>The tool &quot;%1&quot; exited normally.
 </source>
         <translation>工具 &quot;%1&quot; 正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="484"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="483"/>
         <source>The tool &quot;%1&quot; exited with code %2.
 </source>
         <translation>工具 &quot;%1&quot; 以code %2 结束。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="486"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="485"/>
         <source>The tool &quot;%1&quot; crashed.
 </source>
         <translation>工具 &quot;%1&quot; 崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="491"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="490"/>
         <source>Execute tool &quot;%1&quot; finished.
 </source>
         <translation>工具 &quot;%1&quot; 执行完成。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="549"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="548"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="551"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="550"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="655"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="654"/>
         <source>The tool has set the working directory, but the working directory parsing is empty. Please check and try again.
 </source>
         <translation>这个工具设置了工作目录，但是工具目录解析为空。请检测后重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="664"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="663"/>
         <source>The tool has set the channel data, but the channel data parsing is empty. Please check and try again.
 </source>
         <translation>这个工具设置了管道数据，但是管道数据解析为空。请检测后重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="380"/>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="489"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="379"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="488"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
@@ -1058,14 +1052,14 @@ storage: %2
     </message>
 </context>
 <context>
-    <name>CodeCompletionExtendWidgetPrivate</name>
+    <name>CodeCompletionExtendWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/completion/codecompletionextendwidget.cpp" line="120"/>
+        <location filename="../../src/plugins/codeeditor/gui/completion/codecompletionextendwidget.cpp" line="119"/>
         <source>From:</source>
-        <translation>从:</translation>
+        <translation>来自于：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/completion/codecompletionextendwidget.cpp" line="125"/>
+        <location filename="../../src/plugins/codeeditor/gui/completion/codecompletionextendwidget.cpp" line="124"/>
         <source>Shortcut:</source>
         <translation>快捷键:</translation>
     </message>
@@ -2843,32 +2837,32 @@ need to manually copy the source code to this path</source>
 <context>
     <name>LanguageClientHandlerPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="504"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="505"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="506"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="507"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="512"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="513"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="515"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="516"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="518"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="519"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="521"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="522"/>
         <source>Format Selection</source>
         <translation>格式化选中部分</translation>
     </message>
@@ -5241,41 +5235,38 @@ not exists support files: %0</source>
 <context>
     <name>SearchResultWidget</name>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="95"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="94"/>
         <source>Replace All</source>
         <translation>替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="96"/>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="105"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="95"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="104"/>
         <source>Dismiss</source>
         <translation>放弃</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="98"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="97"/>
         <source>Copy Path</source>
         <translation>复制路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="104"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="103"/>
         <source>Replace</source>
         <translation>替换</translation>
     </message>
-</context>
-<context>
-    <name>SearchResultWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="127"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="126"/>
         <source>&lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; result in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
         <translation>&lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; 个结果在 &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; 个文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="129"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="128"/>
         <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
         <translation>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; 个结果在 &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; 个文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="131"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="130"/>
         <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;%2&lt;/font&gt; files</source>
         <translation>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; 个结果在 &lt;font color=&apos;blue&apos;&gt;%2&lt;/font&gt; 个文件中</translation>
     </message>
@@ -5494,7 +5485,7 @@ not exists support files: %0</source>
 <context>
     <name>SymbolLocator</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/symbol/symbollocator.cpp" line="204"/>
+        <location filename="../../src/plugins/codeeditor/symbol/symbollocator.cpp" line="86"/>
         <source>Symbols in Current Document</source>
         <translation>当前文档的符号</translation>
     </message>
@@ -5563,7 +5554,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="186"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="188"/>
         <source>File Operation</source>
         <translation>文件操作</translation>
     </message>
