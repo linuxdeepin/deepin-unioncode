@@ -15,6 +15,7 @@
 #include <QPainter>
 #include <QTreeView>
 #include <QToolTip>
+#include <QApplication>
 
 DWIDGET_USE_NAMESPACE
 
