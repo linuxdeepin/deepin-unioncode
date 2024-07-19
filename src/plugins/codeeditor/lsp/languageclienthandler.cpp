@@ -10,6 +10,7 @@
 #include "lspclientmanager.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "codelens/codelens.h"
+#include "symbol/symbolmanager.h"
 
 #include "services/project/projectservice.h"
 
@@ -573,7 +574,7 @@ void LanguageClientHandlerPrivate::handleDocumentSymbolResult(const QList<newlsp
     if (!editor || editor->getFile() != filePath)
         return;
 
-    docSymbolList = docSymbols;
+    SymbolManager::instance()->setDocumentSymbols(filePath, docSymbols);
 }
 
 void LanguageClientHandlerPrivate::handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos,
@@ -582,7 +583,7 @@ void LanguageClientHandlerPrivate::handleSymbolInfomationResult(const QList<newl
     if (!editor || editor->getFile() != filePath)
         return;
 
-    symbolInfoList = symbolInfos;
+    SymbolManager::instance()->setSymbolInformations(filePath, symbolInfos);
 }
 
 void LanguageClientHandlerPrivate::handleDocumentHighlight(const QList<newlsp::DocumentHighlight> &docHighlightList,
@@ -667,16 +668,6 @@ void LanguageClientHandler::updateTokens()
         client->docSemanticTokensFull(d->editor->getFile());
         client->symbolRequest(d->editor->getFile());
     }
-}
-
-QList<newlsp::DocumentSymbol> LanguageClientHandler::documentSymbolList() const
-{
-    return d->docSymbolList;
-}
-
-QList<newlsp::SymbolInformation> LanguageClientHandler::symbolInformationList() const
-{
-    return d->symbolInfoList;
 }
 
 lsp::SemanticTokenType::type_value LanguageClientHandler::tokenToDefine(int token)
