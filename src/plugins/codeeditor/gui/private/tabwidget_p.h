@@ -10,6 +10,7 @@
 #include "gui/texteditor.h"
 #include "gui/recent/recentopenwidget.h"
 #include "find/editordocumentfind.h"
+#include "symbol/symbolbar.h"
 
 #include "common/util/eventdefinitions.h"
 
@@ -67,6 +68,7 @@ public:
 
     QStackedLayout *editorLayout { nullptr };
     TabBar *tabBar { nullptr };
+    SymbolBar *symbolBar { nullptr };
     QHash<QString, TextEditor *> editorMng;
 
     PosRecord curPosRecord;

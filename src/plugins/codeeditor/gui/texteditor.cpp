@@ -672,22 +672,6 @@ bool TextEditor::isAutomaticInvocationEnabled() const
     return d->isAutoCompletionEnabled;
 }
 
-QList<newlsp::DocumentSymbol> TextEditor::documentSymbolList() const
-{
-    if (!d->languageClient)
-        return {};
-    
-    return d->languageClient->documentSymbolList();
-}
-
-QList<newlsp::SymbolInformation> TextEditor::symbolInfoList() const
-{
-    if (!d->languageClient)
-        return {};
-    
-    return d->languageClient->symbolInformationList();
-}
-
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
 {
     Q_UNUSED(state)

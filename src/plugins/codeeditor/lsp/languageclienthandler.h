@@ -21,8 +21,6 @@ public:
     void requestCompletion(int line, int column);
     void updateTokens();
     void refreshTokens();
-    QList<newlsp::DocumentSymbol> documentSymbolList() const;
-    QList<newlsp::SymbolInformation> symbolInformationList() const;
     lsp::SemanticTokenType::type_value tokenToDefine(int token);
     QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
                             QList<lsp::SemanticTokenType::type_index> modifier);

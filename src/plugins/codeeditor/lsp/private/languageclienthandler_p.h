@@ -220,8 +220,6 @@ public:
     QList<DiagnosticCache> diagnosticCache;
     QString diagnosticFormat;
     newlsp::ProjectKey prjectKey;
-    QList<newlsp::SymbolInformation> symbolInfoList;
-    QList<newlsp::DocumentSymbol> docSymbolList;
 
     QTimer textChangedTimer;
     QTimer positionChangedTimer;

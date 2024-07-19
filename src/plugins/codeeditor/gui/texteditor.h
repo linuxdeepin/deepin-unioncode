@@ -103,9 +103,6 @@ public:
     void setAutomaticInvocationEnabled(bool enabled);
     bool isAutomaticInvocationEnabled() const;
 
-    QList<newlsp::DocumentSymbol> documentSymbolList() const;
-    QList<newlsp::SymbolInformation> symbolInfoList() const;
-
 public slots:
     void onMarginClicked(int margin, int line, Qt::KeyboardModifiers state);
     void updateLineNumberWidth(bool isDynamicWidth);
