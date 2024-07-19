@@ -12,6 +12,7 @@
 class MainFramePrivate;
 class MainFrame : public DTK_WIDGET_NAMESPACE::DFrame
 {
+    Q_OBJECT
 public:
     MainFrame(QWidget *parent = nullptr);
     ~MainFrame();

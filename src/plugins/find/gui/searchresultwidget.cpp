@@ -19,6 +19,7 @@ DWIDGET_USE_NAMESPACE
 
 class SearchResultWidgetPrivate : public QObject
 {
+    Q_OBJECT
 public:
     explicit SearchResultWidgetPrivate(SearchResultWidget *qq);
 
@@ -205,3 +206,5 @@ void SearchResultWidget::showMessage(const QString &msg, MessageType type)
 
     d->msgLabel->setText(msg);
 }
+
+#include "searchresultwidget.moc"
