@@ -120,8 +120,10 @@ void TabWidgetPrivate::initUI()
     editorLayout->addWidget(spaceWidget);
 
     tabBar = new TabBar(q);
+    symbolBar = new SymbolBar(q);
 
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
+    mainLayout->addWidget(symbolBar, 0, Qt::AlignTop);
     mainLayout->addLayout(editorLayout);
 
     openedWidget = new RecentOpenWidget(q);
@@ -236,6 +238,7 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
     connect(editor, &TextEditor::cursorRecordChanged, this, &TabWidgetPrivate::onCursorRecordChanged);
     connect(editor, &TextEditor::fileSaved, tabBar, &TabBar::onFileSaved);
     connect(editor, &TextEditor::requestOpenFiles, this, &TabWidgetPrivate::handleOpenFiles);
+    connect(editor, &TextEditor::cursorPositionChanged, symbolBar, &SymbolBar::updateSymbol);
 
     editor->setFile(fileName);
     editor->setCursorPosition(0, 0);
@@ -359,6 +362,7 @@ void TabWidgetPrivate::onTabSwitched(const QString &fileName)
     if (!editorMng.contains(fileName))
         return;
 
+    symbolBar->setPath(fileName);
     editorLayout->setCurrentWidget(editorMng[fileName]);
     recentOpenedFiles.removeOne(fileName);
     recentOpenedFiles.prepend(fileName);
@@ -382,6 +386,7 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
     editor->deleteLater();
 
     if (editorMng.isEmpty()) {
+        symbolBar->clear();
         q->setSplitButtonVisible(false);
         emit q->closeRequested();
     }
@@ -881,6 +886,7 @@ void TabWidget::openFile(const QString &fileName)
     // add file monitor
     Inotify::globalInstance()->addPath(fileName);
 
+    d->symbolBar->setPath(fileName);
     d->tabBar->setFileName(fileName);
     TextEditor *editor = d->createEditor(fileName);
 

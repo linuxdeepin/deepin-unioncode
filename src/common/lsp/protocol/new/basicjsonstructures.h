@@ -24,7 +24,7 @@ extern const QString K_PARAMS;
 extern const QString H_CONTENT_LENGTH;
 extern const QString H_CONTENT_TYPE;
 extern const QString H_CHARSET;
-extern const QString RK_CONTENT_LENGTH; // RegExp Key
+extern const QString RK_CONTENT_LENGTH;   // RegExp Key
 extern const QString RK_CONTENT_TYPE;
 extern const QString RK_CHARSET;
 
@@ -49,8 +49,7 @@ std::string toJsonValueStr(const std::string &value);
 std::string toJsonValueStr(const std::vector<int> &vecInt);
 std::string toJsonValueStr(const std::vector<std::string> &vecString);
 
-namespace json
-{
+namespace json {
 std::string addScope(const std::string &src);
 std::string delScope(const std::string &obj);
 std::string mergeObjs(const std::vector<std::string> &objs);
@@ -65,17 +64,17 @@ struct KV
     typedef T type_second;
     KV() = delete;
     KV(const std::string &key, const T &value)
-        : key(key), value(value){}
+        : key(key), value(value) {}
 };
 
-template <class T>
+template<class T>
 std::string addValue(const std::string &src, const KV<T> &kv)
 {
     std::string temp;
     if (kv.key.empty())
         return temp;
 
-    temp = formatKey(kv.key) + ":"  + toJsonValueStr(kv.value);
+    temp = formatKey(kv.key) + ":" + toJsonValueStr(kv.value);
 
     if (!src.empty())
         return src + "," + temp;
@@ -83,17 +82,17 @@ std::string addValue(const std::string &src, const KV<T> &kv)
         return temp;
 }
 
-template <class T>
+template<class T>
 std::string addValue(const std::string &src, const KV<std::optional<T>> &kv)
 {
     std::string ret = src;
     if (kv.value) {
-        ret = addValue(src, json::KV{kv.key, kv.value.value()});
+        ret = addValue(src, json::KV { kv.key, kv.value.value() });
     }
     return ret;
 }
 
-template <class T>
+template<class T>
 std::string addValue(const std::string &src, const KV<std::vector<T>> &kv)
 {
     std::string temp;
@@ -118,12 +117,12 @@ std::string addValue(const std::string &src, const KV<std::vector<T>> &kv)
         return temp;
 }
 
-template <class T>
+template<class T>
 std::string addValue(const std::string &src, const KV<std::optional<std::vector<T>>> &kv)
 {
     std::string ret;
     if (kv.value) {
-        ret = addValue(src, json::KV{kv.key, kv.value.value()});
+        ret = addValue(src, json::KV { kv.key, kv.value.value() });
     }
     return ret;
 }
@@ -312,7 +311,6 @@ enum_def(SemanticTokenTypes, std::string)
     enum_exp Decorator = "decorator";
 };
 
-
 enum_def(SemanticTokenModifiers, std::string)
 {
     enum_exp Declaration = "declaration";
@@ -341,13 +339,15 @@ enum_def(DiagnosticSeverity, int)
     enum_exp Hint = 4;
 };
 
-enum_def(CompletionTriggerKind, int) {
+enum_def(CompletionTriggerKind, int)
+{
     enum_exp Invoked = 1;
     enum_exp TriggerCharacter = 2;
     enum_exp TriggerForIncompleteCompletions = 3;
 };
 
-enum_def(InsertTextFormat, int) {
+enum_def(InsertTextFormat, int)
+{
     enum_exp PlainText = 1;
     enum_exp Snippet = 2;
 };
@@ -358,13 +358,15 @@ enum_def(InlayHintKind, int)
     enum_exp Parameter = 2;
 };
 
-enum_def(MonikerKind, std::string){
+enum_def(MonikerKind, std::string)
+{
     enum_exp Import = "import";
-    enum_exp Export = "export"; // source export, conflict with native grammar
+    enum_exp Export = "export";   // source export, conflict with native grammar
     enum_exp Local = "local";
 };
 
-enum_def(UniquenessLevel, std::string) {
+enum_def(UniquenessLevel, std::string)
+{
     enum_exp document = "document";
     enum_exp project = "project";
     enum_exp group = "group";
@@ -399,7 +401,8 @@ enum_def(NotebookCellKind, int)
     enum_exp Code = 2;
 };
 
-enum_def(DocumentHighlightKind, int){
+enum_def(DocumentHighlightKind, int)
+{
     enum_exp Text = 1;
     enum_exp Read = 2;
     enum_exp Write = 3;
@@ -411,15 +414,17 @@ enum_def(CodeActionTriggerKind, int)
     enum_exp Automatic = 2;
 };
 
-} // BasicEnum
+}   // BasicEnum
 
 typedef std::string DocumentUri;
-typedef std::string URI ;
+typedef std::string URI;
 
 struct ProgressToken : std::any
 {
-    ProgressToken(int val) : std::any(val){}
-    ProgressToken(const std::string &val) : std::any(val){}
+    ProgressToken(int val)
+        : std::any(val) {}
+    ProgressToken(const std::string &val)
+        : std::any(val) {}
 };
 std::string toJsonValueStr(const ProgressToken &val);
 
@@ -429,7 +434,7 @@ struct Position
     int character;
     Position() = default;
     Position(int line, int character)
-        : line(line), character(character){}
+        : line(line), character(character) {}
 };
 std::string toJsonValueStr(const Position &val);
 
@@ -439,7 +444,19 @@ struct Range
     Position end;
     Range() = default;
     Range(const Position &start, const Position &end)
-        : start(start), end(end){}
+        : start(start), end(end) {}
+    inline bool contains(const Position &pos) const
+    {
+        if (pos.line > start.line && pos.line < end.line) {
+            return true;
+        } else if (pos.line == start.line && pos.character >= start.character) {
+            return !(pos.line == end.line && pos.character > end.character);
+        } else if (pos.line == end.line && pos.character <= end.character) {
+            return true;
+        }
+
+        return false;
+    }
 };
 
 std::string toJsonValueStr(const Range &val);
@@ -485,7 +502,7 @@ struct DocumentFilter
 };
 std::string toJsonValueStr(const DocumentFilter &val);
 
-struct DocumentSelector: std::vector<DocumentFilter>
+struct DocumentSelector : std::vector<DocumentFilter>
 {
 };
 std::string toJsonValueStr(const DocumentSelector &val);
@@ -515,10 +532,13 @@ std::string toJsonValueStr(const AnnotatedTextEdit &val);
 
 struct TextDocumentEdit
 {
-    struct Edits : std::vector<AnnotatedTextEdit>, std::vector<TextEdit> {
+    struct Edits : std::vector<AnnotatedTextEdit>, std::vector<TextEdit>
+    {
         Edits() = default;
-        Edits(const std::vector<AnnotatedTextEdit> &val) : std::vector<AnnotatedTextEdit>(val){}
-        Edits(const std::vector<TextEdit> &val) : std::vector<TextEdit>(val){}
+        Edits(const std::vector<AnnotatedTextEdit> &val)
+            : std::vector<AnnotatedTextEdit>(val) {}
+        Edits(const std::vector<TextEdit> &val)
+            : std::vector<TextEdit>(val) {}
     };
     OptionalVersionedTextDocumentIdentifier textDocument;
     Edits edits;
@@ -558,13 +578,13 @@ struct Diagnostic
 {
     Range range;
     std::optional<Enum::DiagnosticSeverity::type_value> severity;
-    std::optional<std::any> code; // int or string
+    std::optional<std::any> code;   // int or string
     std::optional<CodeDescription> codeDescription;
     std::optional<std::string> source;
     std::optional<std::string> message;
     std::optional<std::vector<Enum::DiagnosticTag::type_value>> tags;
     std::optional<std::vector<DiagnosticRelatedInformation>> relatedInformation;
-    std::optional<std::string> data; // unknown;
+    std::optional<std::string> data;   // unknown;
 };
 std::string toJsonValueStr(const Diagnostic &val);
 
@@ -591,7 +611,7 @@ std::string toJsonValueStr(const CreateFileOptions &val);
 
 struct CreateFile
 {
-    const std::string kind{"create"};
+    const std::string kind { "create" };
     DocumentUri uri;
     std::optional<CreateFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
@@ -607,7 +627,7 @@ std::string toJsonValueStr(const RenameFileOptions &val);
 
 struct RenameFile
 {
-    const std::string kind{"rename"};
+    const std::string kind { "rename" };
     DocumentUri oldUri;
     DocumentUri newUri;
     std::optional<RenameFileOptions> options;
@@ -624,24 +644,34 @@ std::string toJsonValueStr(const DeleteFileOptions &val);
 
 struct DeleteFile
 {
-    const std::string kind{"delete"};
+    const std::string kind { "delete" };
     DocumentUri uri;
     std::optional<DeleteFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
 };
-std::string toJsonValueStr(const DeleteFile &val);;
+std::string toJsonValueStr(const DeleteFile &val);
+;
 
 struct WorkspaceEdit
 {
     // { [uri: DocumentUri]: TextEdit[]; };
-    struct Changes : std::map<DocumentUri, std::vector<TextEdit>> {};
-    struct ChangeAnnotations : std::map<std::string, ChangeAnnotation> {};
-    struct DocumentChanges : std::any {
+    struct Changes : std::map<DocumentUri, std::vector<TextEdit>>
+    {
+    };
+    struct ChangeAnnotations : std::map<std::string, ChangeAnnotation>
+    {
+    };
+    struct DocumentChanges : std::any
+    {
         DocumentChanges() = default;
-        DocumentChanges(const std::vector<TextDocumentEdit> &val) : std::any(val){}
-        DocumentChanges(const std::vector<CreateFile> &val) : std::any(val){}
-        DocumentChanges(const std::vector<RenameFile> &val) : std::any(val){}
-        DocumentChanges(const std::vector<DeleteFile> &val) : std::any(val){}
+        DocumentChanges(const std::vector<TextDocumentEdit> &val)
+            : std::any(val) {}
+        DocumentChanges(const std::vector<CreateFile> &val)
+            : std::any(val) {}
+        DocumentChanges(const std::vector<RenameFile> &val)
+            : std::any(val) {}
+        DocumentChanges(const std::vector<DeleteFile> &val)
+            : std::any(val) {}
     };
     std::optional<Changes> changes;
     // ( TextDocumentEdit[] | (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]);
@@ -655,7 +685,7 @@ std::string toJsonValueStr(const WorkspaceEdit &val);
 
 struct WorkDoneProgressBegin
 {
-    const std::string kind {"begin"};
+    const std::string kind { "begin" };
     std::string title;
     std::optional<bool> boolean;
     std::optional<std::string> message;
@@ -664,7 +694,7 @@ struct WorkDoneProgressBegin
 
 struct WorkDoneProgressReport
 {
-    const std::string kind {"report"};
+    const std::string kind { "report" };
     std::optional<bool> cancellable;
     std::optional<std::string> message;
     std::optional<unsigned int> percentage;
@@ -672,7 +702,7 @@ struct WorkDoneProgressReport
 
 struct WorkDoneProgressEnd
 {
-    const std::string kind {"end"};
+    const std::string kind { "end" };
     std::optional<std::string> message;
 };
 
@@ -694,6 +724,6 @@ struct PartialResultParams
 };
 std::string toJsonValueStr(const PartialResultParams &params);
 
-} // lsp
+}   // lsp
 
-#endif // BASICJSONSTRUCTURES_H
+#endif   // BASICJSONSTRUCTURES_H
