@@ -24,8 +24,9 @@
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
 
-    class AdvancedSearchWidgetPrivate : public QObject
+class AdvancedSearchWidgetPrivate : public QObject
 {
+    Q_OBJECT
 public:
     explicit AdvancedSearchWidgetPrivate(AdvancedSearchWidget *qq);
 
@@ -504,3 +505,5 @@ void AdvancedSearchWidget::showEvent(QShowEvent *e)
     d->searchEdit->lineEdit()->selectAll();
     QWidget::showEvent(e);
 }
+
+#include "advancedsearchwidget.moc"
