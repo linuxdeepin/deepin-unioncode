@@ -22,6 +22,7 @@ public:
     CurmbType curmbType() const;
     void setText(const QString &text);
     void setSelected(bool selected);
+    bool isSelected() const;
     bool isRoot() const;
     void setUserData(const QVariant &data);
     QVariant userData() const;
@@ -39,7 +40,7 @@ private:
     QString displayText;
     int index { 0 };
     int spacing { 5 };
-    bool isSelected { false };
+    bool hasSelected { false };
     bool isHover { false };
     QVariant data;
     CurmbType type;
@@ -58,6 +59,7 @@ public:
 public Q_SLOTS:
     void updateSymbol(int line, int index);
     void curmbItemClicked();
+    void resetCurmbItemState();
 
 private:
     CurmbItem *symbolItem { nullptr };
