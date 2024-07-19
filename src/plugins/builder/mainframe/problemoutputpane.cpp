@@ -14,7 +14,7 @@ ProblemOutputPane::ProblemOutputPane(QWidget *parent)
     : DWidget (parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(1, 1, 1, 1);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(TaskManager::instance()->getView());
 }
 

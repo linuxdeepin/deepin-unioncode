@@ -8,6 +8,8 @@
 CompileOutputPane::CompileOutputPane(QWidget *parent)
     : OutputPane(parent)
 {
+    setAutoFillBackground(true);
+    setBackgroundRole(DPalette::Base);
 }
 
 // Add more future here when you need.

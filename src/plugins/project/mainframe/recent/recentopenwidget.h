@@ -5,8 +5,8 @@
 #ifndef RECENTOPENWIDGET_H
 #define RECENTOPENWIDGET_H
 
-#include "recentopenlistview.h"
-#include "recentopenlistdelegate.h"
+#include "recentopenview.h"
+#include "recentopenitemdelegate.h"
 
 #include <DFrame>
 
@@ -19,12 +19,12 @@ class RecentOpenWidget : public Dtk::Widget::DFrame
     Q_OBJECT
 
 public:
-    enum RecentOpenedUserRole{
+    enum RecentOpenedUserRole {
         FilePathRole = Qt::UserRole + 1
     };
     explicit RecentOpenWidget(QWidget *parent = nullptr);
     ~RecentOpenWidget();
-    
+
     void initUI();
     void setOpenedFiles(const QVector<QString> &list);
     void setListViewSelection(int index);
@@ -36,10 +36,10 @@ signals:
     void closePage(const QModelIndex &index);
 
 private:
-    RecentOpenListView *listView = nullptr;
+    RecentOpenView *listView = nullptr;
     QStandardItemModel *model = nullptr;
     QSortFilterProxyModel *proxyModel = nullptr;
-    RecentOpenListDelegate *delegate = nullptr;
+    RecentOpenItemDelegate *delegate = nullptr;
 };
 
-#endif // RECENTOPENWIDGET_H
+#endif   // RECENTOPENWIDGET_H
