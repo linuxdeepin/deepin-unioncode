@@ -58,8 +58,13 @@ QVariant CurmbItem::userData() const
 
 void CurmbItem::setSelected(bool selected)
 {
-    isSelected = selected;
+    hasSelected = selected;
     update();
+}
+
+bool CurmbItem::isSelected() const
+{
+    return hasSelected;
 }
 
 bool CurmbItem::isRoot() const
@@ -104,7 +109,7 @@ void CurmbItem::paintEvent(QPaintEvent *event)
 
     // draw text
     auto palette = this->palette();
-    if (isSelected)
+    if (hasSelected)
         p.setPen(palette.color(QPalette::Highlight));
     else if (isHover)
         p.setPen(palette.color(QPalette::BrightText));
@@ -210,7 +215,7 @@ void SymbolBar::curmbItemClicked()
 
     if (!symbolView) {
         symbolView = new SymbolView(this);
-        connect(symbolView, &SymbolView::hidden, this, [item] { item->setSelected(false); });
+        connect(symbolView, &SymbolView::hidden, this, &SymbolBar::resetCurmbItemState);
     }
 
     auto rect = item->geometry();
@@ -229,5 +234,19 @@ void SymbolBar::curmbItemClicked()
         else
             item->setSelected(false);
     } break;
+    }
+}
+
+void SymbolBar::resetCurmbItemState()
+{
+    auto layout = qobject_cast<QHBoxLayout *>(this->layout());
+    for (int i = 0; i < layout->count(); ++i) {
+        auto item = layout->itemAt(i);
+        if (!item)
+            continue;
+
+        auto curmb = qobject_cast<CurmbItem *>(item->widget());
+        if (curmb && curmb->isSelected())
+            curmb->setSelected(false);
     }
 }
