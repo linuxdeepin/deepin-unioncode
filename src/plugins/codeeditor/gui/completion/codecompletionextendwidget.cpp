@@ -102,7 +102,6 @@ public:
 
 public:
     CodeCompletionExtendWidget *q;
-
     TextEditor *editor { nullptr };
     QKeySequence shortcutKey;
     DIconButton *iconButton { nullptr };
@@ -117,12 +116,12 @@ CodeCompletionExtendWidgetPrivate::CodeCompletionExtendWidgetPrivate(CodeComplet
 
 void CodeCompletionExtendWidgetPrivate::initUI()
 {
-    auto fromLabel = new QLabel(q->tr("From:"), q);
+    auto fromLabel = new QLabel(CodeCompletionExtendWidget::tr("From:"), q);
     iconButton = new DIconButton(q);
     iconButton->setIconSize({ 24, 24 });
     iconButton->setFlat(true);
 
-    auto shortcutLabel = new QLabel(q->tr("Shortcut:"), q);
+    auto shortcutLabel = new QLabel(CodeCompletionExtendWidget::tr("Shortcut:"), q);
     shortcutKeyLabel = new KeyLabel("", q);
 
     messageEdit = new QPlainTextEdit(q);
