@@ -26,7 +26,6 @@ DWIDGET_USE_NAMESPACE
 
 class AdvancedSearchWidgetPrivate : public QObject
 {
-    Q_OBJECT
 public:
     explicit AdvancedSearchWidgetPrivate(AdvancedSearchWidget *qq);
 
@@ -355,11 +354,11 @@ int AdvancedSearchWidgetPrivate::showMessage(const QString &msg)
 {
     DDialog dlg;
     dlg.setMessage(msg);
-    dlg.setWindowTitle(tr("Advance Search"));
+    dlg.setWindowTitle(AdvancedSearchWidget::tr("Advance Search"));
     dlg.setIcon(QIcon::fromTheme("dialog-warning"));
     dlg.setWordWrapMessage(true);
-    dlg.addButton(tr("Cancel", "button"));
-    dlg.addButton(tr("Continue", "button"), true, DDialog::ButtonWarning);
+    dlg.addButton(AdvancedSearchWidget::tr("Cancel", "button"));
+    dlg.addButton(AdvancedSearchWidget::tr("Continue", "button"), true, DDialog::ButtonWarning);
     return dlg.exec();
 }
 
@@ -447,16 +446,16 @@ void AdvancedSearchWidgetPrivate::handleReplaceAll()
     QString msg;
     if (totalFiles == 1 && totalResults == 1) {
         msg = replaceText.isEmpty()
-                ? tr("Replace 1 occurence across 1 file?")
-                : tr("Replace 1 occurence across 1 file with %1?").arg(replaceText);
+                ? AdvancedSearchWidget::tr("Replace 1 occurence across 1 file?")
+                : AdvancedSearchWidget::tr("Replace 1 occurence across 1 file with %1?").arg(replaceText);
     } else if (totalFiles == 1) {
         msg = replaceText.isEmpty()
-                ? tr("Replace %1 occurences across 1 file?").arg(totalResults)
-                : tr("Replace %1 occurences across 1 file with %2?").arg(totalResults).arg(replaceText);
+                ? AdvancedSearchWidget::tr("Replace %1 occurences across 1 file?").arg(totalResults)
+                : AdvancedSearchWidget::tr("Replace %1 occurences across 1 file with %2?").arg(totalResults).arg(replaceText);
     } else {
         msg = replaceText.isEmpty()
-                ? tr("Replace %1 occurences across %2 files?").arg(totalResults).arg(totalFiles)
-                : tr("Replace %1 occurences across %2 files with %3?").arg(totalResults).arg(totalFiles).arg(replaceText);
+                ? AdvancedSearchWidget::tr("Replace %1 occurences across %2 files?").arg(totalResults).arg(totalFiles)
+                : AdvancedSearchWidget::tr("Replace %1 occurences across %2 files with %3?").arg(totalResults).arg(totalFiles).arg(replaceText);
     }
     // 0: cancel 1:contionue
     int code = showMessage(msg);
@@ -505,5 +504,3 @@ void AdvancedSearchWidget::showEvent(QShowEvent *e)
     d->searchEdit->lineEdit()->selectAll();
     QWidget::showEvent(e);
 }
-
-#include "advancedsearchwidget.moc"

@@ -19,7 +19,6 @@ DWIDGET_USE_NAMESPACE
 
 class SearchResultWidgetPrivate : public QObject
 {
-    Q_OBJECT
 public:
     explicit SearchResultWidgetPrivate(SearchResultWidget *qq);
 
@@ -124,11 +123,11 @@ void SearchResultWidgetPrivate::updateMessage()
 
     QString msg;
     if (result.count() == 1 && result.first().count() == 1) {
-        msg = tr("<font color='blue'>1</font> result in <font color='blue'>1</font> file");
+        msg = SearchResultWidget::tr("<font color='blue'>1</font> result in <font color='blue'>1</font> file");
     } else if (result.count() == 1) {
-        msg = tr("<font color='blue'>%1</font> results in <font color='blue'>1</font> file").arg(totalResult);
+        msg = SearchResultWidget::tr("<font color='blue'>%1</font> results in <font color='blue'>1</font> file").arg(totalResult);
     } else {
-        msg = tr("<font color='blue'>%1</font> results in <font color='blue'>%2</font> files").arg(totalResult).arg(result.count());
+        msg = SearchResultWidget::tr("<font color='blue'>%1</font> results in <font color='blue'>%2</font> files").arg(totalResult).arg(result.count());
     }
 
     msgLabel->setText(msg);
@@ -206,5 +205,3 @@ void SearchResultWidget::showMessage(const QString &msg, MessageType type)
 
     d->msgLabel->setText(msg);
 }
-
-#include "searchresultwidget.moc"

@@ -411,7 +411,7 @@ void BinaryToolsConfigViewPrivate::handleRemove()
 void BinaryToolsConfigViewPrivate::handleSelectCommand()
 {
     QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString filePath = DFileDialog::getOpenFileName(q, tr("Select Executabel Path"), dir);
+    QString filePath = DFileDialog::getOpenFileName(q, BinaryToolsConfigView::tr("Select Executabel Path"), dir);
     if (filePath.isEmpty() && !QFileInfo(filePath).exists())
         return;
 
@@ -421,7 +421,7 @@ void BinaryToolsConfigViewPrivate::handleSelectCommand()
 void BinaryToolsConfigViewPrivate::handleSelectWorkingDirectory()
 {
     QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString filePath = DFileDialog::getExistingDirectory(q, tr("Select Working Directory"), dir);
+    QString filePath = DFileDialog::getExistingDirectory(q, BinaryToolsConfigView::tr("Select Working Directory"), dir);
     if (filePath.isEmpty() && !QFileInfo(filePath).exists())
         return;
 
