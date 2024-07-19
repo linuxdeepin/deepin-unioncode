@@ -9,8 +9,8 @@ set(CXX_CPP
     mainframe/projectinfodialog.cpp
     mainframe/projecttree.cpp
     mainframe/projectkeeper.cpp
-    mainframe/recent/recentopenlistdelegate.cpp
-    mainframe/recent/recentopenlistview.cpp
+    mainframe/recent/recentopenitemdelegate.cpp
+    mainframe/recent/recentopenview.cpp
     mainframe/recent/recentopenwidget.cpp
     locator/allprojectfilelocator.cpp
     locator/currentprojectlocator.cpp
@@ -27,8 +27,8 @@ set(CXX_H
     mainframe/projectinfodialog.h
     mainframe/projecttree.h
     mainframe/projectkeeper.h
-    mainframe/recent/recentopenlistdelegate.h
-    mainframe/recent/recentopenlistview.h
+    mainframe/recent/recentopenitemdelegate.h
+    mainframe/recent/recentopenview.h
     mainframe/recent/recentopenwidget.h
     transceiver/projectcorereceiver.h
     transceiver/sendevents.h
