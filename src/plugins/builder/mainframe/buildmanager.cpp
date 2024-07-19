@@ -169,7 +169,7 @@ void BuildManager::initCompileWidget()
     QSplitter *spl = new QSplitter(Qt::Horizontal);
     spl->addWidget(d->compileOutputWidget);
     spl->addWidget(d->issuesWidget);
-    spl->setHandleWidth(2);
+    spl->setHandleWidth(1);
     mainLayout->setSpacing(0);
     mainLayout->addWidget(spl);
     if (auto holder = createFindPlaceHolder())
@@ -219,10 +219,11 @@ void BuildManager::initIssueList()
 
     d->issuesWidget = new DWidget(d->compileWidget);
     QVBoxLayout *issuesListLayout = new QVBoxLayout(d->issuesWidget);
-    issuesListLayout->addWidget(issueTopWidget);
+    issuesListLayout->setSpacing(0);
     issuesListLayout->setContentsMargins(0, 0, 0, 0);
+    issuesListLayout->addWidget(issueTopWidget);
+    issuesListLayout->addWidget(new DHorizontalLine(d->issuesWidget));
     issuesListLayout->addWidget(d->problemOutputPane);
-    issuesListLayout->setSpacing(2);
 
     connect(filterMenu, &DMenu::triggered, [=](QAction *action) {
         if (action == showAllAction) {
@@ -302,9 +303,10 @@ void BuildManager::initCompileOutput()
     d->compileOutputWidget = new DWidget(d->compileWidget);
     auto outputLayout = new QVBoxLayout(d->compileOutputWidget);
     outputLayout->setContentsMargins(0, 0, 0, 0);
+    outputLayout->setSpacing(0);
     outputLayout->addWidget(OutputTopWidget);
+    outputLayout->addWidget(new DHorizontalLine(d->compileOutputWidget));
     outputLayout->addWidget(d->compileOutputPane);
-    outputLayout->setSpacing(2);
 }
 
 QWidget *BuildManager::createFindPlaceHolder()

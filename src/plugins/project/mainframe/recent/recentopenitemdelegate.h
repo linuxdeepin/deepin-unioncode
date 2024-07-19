@@ -2,20 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef RECENTOPENLISTDELEGATE_H
-#define RECENTOPENLISTDELEGATE_H
+#ifndef RECENTOPENITEMDELEGATE_H
+#define RECENTOPENITEMDELEGATE_H
 
-#include <DStyledItemDelegate>
+#include "base/baseitemdelegate.h"
+
 #include <DGuiApplicationHelper>
 
 #include <QPainter>
 #include <QFocusEvent>
 
-class RecentOpenListDelegate : public QStyledItemDelegate
+class RecentOpenItemDelegate : public BaseItemDelegate
 {
     Q_OBJECT
 public:
-    explicit RecentOpenListDelegate(QAbstractItemView *parent = nullptr);
+    explicit RecentOpenItemDelegate(QObject *parent = nullptr);
 
 signals:
     void closeBtnClicked(const QModelIndex &index);

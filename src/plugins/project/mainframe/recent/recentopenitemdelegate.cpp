@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "recentopenlistdelegate.h"
+#include "recentopenitemdelegate.h"
 
 #include <DPalette>
 
@@ -10,16 +10,14 @@
 #include <QSize>
 #include <QApplication>
 
-DWIDGET_USE_NAMESPACE
-
-RecentOpenListDelegate::RecentOpenListDelegate(QAbstractItemView *parent) :
-    QStyledItemDelegate(parent)
+RecentOpenItemDelegate::RecentOpenItemDelegate(QObject *parent) :
+    BaseItemDelegate(parent)
 {
 }
 
-void RecentOpenListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void RecentOpenItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyledItemDelegate::paint(painter, option, index);
+    BaseItemDelegate::paint(painter, option, index);
 
     if (option.state & QStyle::StateFlag::State_MouseOver) {
         const QIcon icon(QIcon::fromTheme("edit-closeBtn").pixmap(16, 16));
@@ -33,7 +31,7 @@ void RecentOpenListDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     }
 }
 
-bool RecentOpenListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
+bool RecentOpenItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     if (event->type() == QEvent::MouseButtonPress) {
@@ -53,10 +51,8 @@ bool RecentOpenListDelegate::editorEvent(QEvent *event, QAbstractItemModel *mode
     return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
-QSize RecentOpenListDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize RecentOpenItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QSize s;
-    s.setWidth(option.rect.width());
-    s.setHeight(30);
-    return s;
+    Q_UNUSED(index)
+    return { option.rect.width(), 24 };
 }
