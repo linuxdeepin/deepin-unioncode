@@ -26,12 +26,16 @@ RecentOpenWidget::~RecentOpenWidget()
 void RecentOpenWidget::initUI()
 {
     QHBoxLayout *mainLayout = new QHBoxLayout();
-    
-    listView = new RecentOpenListView(this);
-    listView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    listView->setLineWidth(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    listView = new RecentOpenView(this);
     listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    delegate = new RecentOpenListDelegate(listView);
+    listView->setLineWidth(0);
+    listView->setHeaderHidden(true);
+    listView->setContentsMargins(0, 0, 0, 0);
+    listView->setRootIsDecorated(false);
+    listView->setIconSize(QSize(16, 16));
+    delegate = new RecentOpenItemDelegate(listView);
     listView->setItemDelegate(delegate);
     listView->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -42,9 +46,9 @@ void RecentOpenWidget::initUI()
     proxyModel->sort(0);
     listView->setModel(proxyModel);
 
-    connect(listView, &RecentOpenListView::clicked, this, &RecentOpenWidget::triggered);
-    connect(listView, &RecentOpenListView::closeActivated, this, &RecentOpenWidget::closePage);
-    connect(delegate, &RecentOpenListDelegate::closeBtnClicked, this, &RecentOpenWidget::closePage);
+    connect(listView, &RecentOpenView::clicked, this, &RecentOpenWidget::triggered);
+    connect(listView, &RecentOpenView::closeActivated, this, &RecentOpenWidget::closePage);
+    connect(delegate, &RecentOpenItemDelegate::closeBtnClicked, this, &RecentOpenWidget::closePage);
 
     mainLayout->addWidget(listView);
     this->setLineWidth(0);

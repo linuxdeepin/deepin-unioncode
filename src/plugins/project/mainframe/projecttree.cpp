@@ -59,6 +59,7 @@ ProjectTree::ProjectTree(QWidget *parent)
     setLineWidth(0);
     setContentsMargins(0, 0, 0, 0);
     DStyle::setFrameRadius(this, 0);
+    setIconSize(QSize(16, 16));
 
     setEditTriggers(DTreeView::NoEditTriggers);   //节点不能编辑
     setSelectionBehavior(DTreeView::SelectRows);   //一次选中整行

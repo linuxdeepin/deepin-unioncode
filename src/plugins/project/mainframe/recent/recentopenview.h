@@ -2,17 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef RECENTOPENLISTVIEW_H
-#define RECENTOPENLISTVIEW_H
+#ifndef RECENTOPENVIEW_H
+#define RECENTOPENVIEW_H
 
-#include <DListView>
+#include <DTreeView>
 
-class RecentOpenListView : public Dtk::Widget::DListView
+class RecentOpenView : public Dtk::Widget::DTreeView
 {
     Q_OBJECT
 public:
-    explicit RecentOpenListView(QWidget *parent = nullptr);
-    ~RecentOpenListView();
+    explicit RecentOpenView(QWidget *parent = nullptr);
+    ~RecentOpenView();
 
 signals:
     void closeActivated(const QModelIndex &index);
@@ -21,4 +21,4 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 };
 
-#endif // RECENTOPENLISTVIEW_H
+#endif // RECENTOPENVIEW_H
