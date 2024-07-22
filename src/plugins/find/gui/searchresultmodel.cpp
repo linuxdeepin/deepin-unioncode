@@ -231,8 +231,8 @@ QVariant SearchResultModel::data(const FindItem &item, int role) const
         return item.column;
     case KeywordRole:
         return item.keyword;
-    case MatchedTextRole:
-        return item.matchedText;
+    case MatchedLengthRole:
+        return item.matchedLength;
     case ReplaceTextRole:
         if (!item.capturedTexts.isEmpty())
             return Utils::expandRegExpReplacement(replaceText, item.capturedTexts);
