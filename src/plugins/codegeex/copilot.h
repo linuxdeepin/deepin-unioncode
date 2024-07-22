@@ -56,6 +56,7 @@ private:
     QString locale { "zh" };
     void switchToCodegeexPage();
     bool responseValid(const QString &response);
+    QString assembleCodeByCurrentFile(const QString &code);
 
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;

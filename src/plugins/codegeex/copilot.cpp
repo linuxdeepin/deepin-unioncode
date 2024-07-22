@@ -192,7 +192,7 @@ void Copilot::translate()
 void Copilot::fixBug()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), locale, commandFixBug);
+    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandFixBug);
 
     switchToCodegeexPage();
 }
@@ -200,7 +200,7 @@ void Copilot::fixBug()
 void Copilot::explain()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), locale, commandExplain);
+    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandExplain);
 
     switchToCodegeexPage();
 }
@@ -208,7 +208,7 @@ void Copilot::explain()
 void Copilot::review()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), locale, commandReview);
+    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandReview);
 
     switchToCodegeexPage();
 }
@@ -216,7 +216,7 @@ void Copilot::review()
 void Copilot::tests()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), locale, commandTests);
+    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandTests);
 
     switchToCodegeexPage();
 }
@@ -255,4 +255,14 @@ void Copilot::switchToCodegeexPage()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService->switchWidgetNavigation)
         windowService->switchWidgetNavigation(MWNA_CODEGEEX);
+}
+
+QString Copilot::assembleCodeByCurrentFile(const QString &code)
+{
+    auto filePath = editorService->currentFile();
+    auto fileType = support_file::Language::id(filePath);
+
+    QString result;
+    result = "```" + fileType + "\n" + code + "```";
+    return result;
 }
