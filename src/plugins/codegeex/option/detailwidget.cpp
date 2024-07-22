@@ -27,12 +27,16 @@ DWIDGET_USE_NAMESPACE
 
 static const char *kCodeCompletion = "codeCompletion";
 static const char *kModel = "model";
+static const char *kGlobalLanguage = "globalLanguage";
+static const char *kCommitsLanguage = "commitsLanguage";
 
 class DetailWidgetPrivate
 {
     friend class DetailWidget;
 
     DCheckBox *cbCodeCompletion = nullptr;
+    DComboBox *globalLanguageBox = nullptr;
+    DComboBox *commitsLanguageBox = nullptr;
     DComboBox *modelBox = nullptr;
 };
 
@@ -61,6 +65,22 @@ void DetailWidget::setupUi()
     completionLayout->addWidget(completionLabel);
     completionLayout->addWidget(d->cbCodeCompletion);
 
+    QHBoxLayout *languageLayout = new QHBoxLayout;
+    DLabel *languageLabel = new DLabel(QLabel::tr("Global Language Preference:"), this);
+    d->globalLanguageBox = new DComboBox(this);
+    d->globalLanguageBox->addItem("English", CodeGeeX::En);
+    d->globalLanguageBox->addItem("简体中文", CodeGeeX::Zh);
+    languageLayout->addWidget(languageLabel);
+    languageLayout->addWidget(d->globalLanguageBox);
+
+    QHBoxLayout *commitsLanguageLayout = new QHBoxLayout;
+    DLabel *commitsLabel = new DLabel(QLabel::tr("Commits Language Preference:"), this);
+    d->commitsLanguageBox = new DComboBox(this);
+    d->commitsLanguageBox->addItem("English", CodeGeeX::En);
+    d->commitsLanguageBox->addItem("简体中文", CodeGeeX::Zh);
+    commitsLanguageLayout->addWidget(commitsLabel);
+    commitsLanguageLayout->addWidget(d->commitsLanguageBox);
+
     QHBoxLayout *modelLayout = new QHBoxLayout;
     DLabel *modelLabel = new DLabel(QLabel::tr("model"), this);
     d->modelBox = new DComboBox(this);
@@ -77,6 +97,8 @@ void DetailWidget::setupUi()
     });
 
     vLayout->addLayout(completionLayout);
+    vLayout->addLayout(languageLayout);
+    vLayout->addLayout(commitsLanguageLayout);
     vLayout->addLayout(modelLayout);
     vLayout->addStretch();
 }
@@ -86,9 +108,13 @@ bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
     CodeGeeXConfig config;
     config.codeCompletionEnabled = d->cbCodeCompletion->isChecked();
     config.model = d->modelBox->currentData().value<CodeGeeX::languageModel>();
+    config.globalLanguage = d->globalLanguageBox->currentData().value<CodeGeeX::locale>();
+    config.commitsLanguage = d->commitsLanguageBox->currentData().value<CodeGeeX::locale>();
     dataToMap(config, map);
 
     Copilot::instance()->setGenerateCodeEnabled(config.codeCompletionEnabled);
+    Copilot::instance()->setCommitsLocale(config.commitsLanguage == CodeGeeX::Zh ? "zh" : "cn");
+    CodeGeeXManager::instance()->setLocale(config.globalLanguage);
     CodeGeeXManager::instance()->setCurrentModel(config.model);
     return true;
 }
@@ -104,6 +130,9 @@ void DetailWidget::setControlValue(const QMap<QString, QVariant> &map)
         if (d->modelBox->itemData(index) == config.model)
             d->modelBox->setCurrentIndex(index);
     }
+
+    d->globalLanguageBox->setCurrentText(config.globalLanguage == CodeGeeX::Zh ? "简体中文" : "English");
+    d->commitsLanguageBox->setCurrentText(config.commitsLanguage == CodeGeeX::Zh ? "简体中文" : "English");
 }
 
 bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map)
@@ -111,6 +140,8 @@ bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVarian
     QMap<QString, QVariant> apiKey;
     apiKey.insert(kCodeCompletion, config.codeCompletionEnabled);
     apiKey.insert(kModel, config.model);
+    apiKey.insert(kGlobalLanguage, config.globalLanguage);
+    apiKey.insert(kCommitsLanguage, config.commitsLanguage);
 
     map.insert("Detail", apiKey);
 
@@ -126,6 +157,13 @@ bool DetailWidget::mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig 
     var = detail.value(kModel);
     if (var.isValid())
         config.model = var.value<CodeGeeX::languageModel>();
+    var = detail.value(kGlobalLanguage);
+    if (var.isValid())
+        config.globalLanguage = var.value<CodeGeeX::locale>();
+    var = detail.value(kCommitsLanguage);
+    if (var.isValid())
+        config.commitsLanguage = var.value<CodeGeeX::locale>();
+
 
     return true;
 }

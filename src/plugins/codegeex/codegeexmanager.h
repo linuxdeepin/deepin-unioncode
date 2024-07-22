@@ -40,6 +40,7 @@ namespace CodeGeeX {
     };
 }
 Q_DECLARE_METATYPE(CodeGeeX::languageModel)
+Q_DECLARE_METATYPE(CodeGeeX::locale)
 
 typedef QPair<QString, QString> chatRecord;
 class CodeGeeXManager : public QObject
