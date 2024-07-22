@@ -90,6 +90,9 @@ QStandardItem *SymbolViewPrivate::createSymbolItem(const QString &path, const ne
 
 void SymbolViewPrivate::handleItemClicked(const QModelIndex &index)
 {
+    if (index.model()->hasChildren(index))
+        return;
+
     auto path = index.data(QFileSystemModel::FilePathRole).toString();
     if (path.isEmpty()) {
         path = index.data(FilePathRole).toString();

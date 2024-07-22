@@ -9,12 +9,38 @@
 class SymbolManagerPrivate
 {
 public:
+    explicit SymbolManagerPrivate(SymbolManager *qq);
+
+    QPair<QString, int> findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column);
+
+public:
+    SymbolManager *q;
+
     QHash<QString, QList<newlsp::DocumentSymbol>> docSymbolHash;
     QHash<QString, QList<newlsp::SymbolInformation>> symbolInfoHash;
 };
 
+SymbolManagerPrivate::SymbolManagerPrivate(SymbolManager *qq)
+    : q(qq)
+{
+}
+
+QPair<QString, int> SymbolManagerPrivate::findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column)
+{
+    auto children = symbol.children.value_or(QList<newlsp::DocumentSymbol>());
+    for (const auto &child : children) {
+        if (child.range.contains({ line, column }))
+            return findSymbol(child, line, column);
+    }
+
+    QString name = q->displayNameFromDocumentSymbol(static_cast<SymbolManager::SymbolKind>(symbol.kind),
+                                                    symbol.name,
+                                                    symbol.detail.value_or(QString()));
+    return qMakePair(name, symbol.kind);
+}
+
 SymbolManager::SymbolManager()
-    : d(new SymbolManagerPrivate)
+    : d(new SymbolManagerPrivate(this))
 {
 }
 
@@ -49,7 +75,7 @@ QList<newlsp::SymbolInformation> SymbolManager::symbolInformations(const QString
     return d->symbolInfoHash.value(file, {});
 }
 
-QString SymbolManager::symbolName(const QString &file, int line, int column)
+QPair<QString, int> SymbolManager::findSymbol(const QString &file, int line, int column)
 {
     if (d->docSymbolHash.contains(file)) {
         const auto &symbolList = d->docSymbolHash[file];
@@ -57,23 +83,13 @@ QString SymbolManager::symbolName(const QString &file, int line, int column)
             if (!symbol.range.contains({ line, column }))
                 continue;
 
-            auto children = symbol.children.value_or(QList<newlsp::DocumentSymbol>());
-            for (const auto &child : children) {
-                if (child.range.contains({ line, column }))
-                    return displayNameFromDocumentSymbol(static_cast<SymbolManager::SymbolKind>(child.kind),
-                                                         child.name,
-                                                         child.detail.value_or(QString()));
-            }
-            return displayNameFromDocumentSymbol(static_cast<SymbolManager::SymbolKind>(symbol.kind),
-                                                 symbol.name,
-                                                 symbol.detail.value_or(QString()));
-
+            return d->findSymbol(symbol, line, column);
         }
     } else if (d->symbolInfoHash.contains(file)) {
         const auto &infoList = SymbolManager::instance()->symbolInformations(file);
         for (const auto &info : infoList) {
             if (info.location.range.contains({ line, column }))
-                return info.name;
+                return qMakePair(info.name, info.kind);
         }
     }
 
