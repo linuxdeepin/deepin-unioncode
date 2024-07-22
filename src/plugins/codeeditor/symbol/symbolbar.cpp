@@ -10,12 +10,14 @@
 #include "services/project/projectservice.h"
 
 #include <DStyle>
+#include <DFileIconProvider>
 
 #include <QHBoxLayout>
 #include <QtMath>
 #include <QDir>
 
-inline constexpr int IconSize { 12 };
+inline constexpr int IconSize { 16 };
+inline constexpr int SeparatorSize { 12 };
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
@@ -39,11 +41,19 @@ void CurmbItem::setText(const QString &text)
     auto rect = fontMetrics().boundingRect(text);
     int w = rect.width() + qCeil(font().pixelSize() / 10);
     if (!isRoot())
-        w += spacing + IconSize;
+        w += spacing + SeparatorSize;
 
     setFixedWidth(w);
     setFixedHeight(rect.height());
     update();
+}
+
+void CurmbItem::setIcon(const QIcon &icon)
+{
+    if (!icon.isNull())
+        setFixedWidth(width() + spacing + IconSize);
+
+    itemIcon = icon;
 }
 
 void CurmbItem::setUserData(const QVariant &data)
@@ -99,12 +109,22 @@ void CurmbItem::paintEvent(QPaintEvent *event)
     p.setRenderHints(QPainter::TextAntialiasing | QPainter::Antialiasing);
     p.setPen(Qt::NoPen);
 
+    int sw = 0;
     // draw seperator
     if (!isRoot()) {
-        auto rect = QRect(0, 0, IconSize, IconSize);
+        sw = spacing + SeparatorSize;
+        auto rect = QRect(0, 0, SeparatorSize, SeparatorSize);
         rect.moveTop((height() - rect.height()) / 2);
         auto icon = QIcon::fromTheme("edit-forward");
         icon.paint(&p, rect);
+    }
+
+    // draw icon
+    if (!itemIcon.isNull()) {
+        auto rect = QRect(sw, 0, IconSize, IconSize);
+        rect.moveTop((height() - rect.height()) / 2);
+        itemIcon.paint(&p, rect);
+        sw += spacing + IconSize;
     }
 
     // draw text
@@ -116,13 +136,8 @@ void CurmbItem::paintEvent(QPaintEvent *event)
     else
         p.setPen(palette.color(QPalette::Text));
 
-    QRect rect;
-    if (isRoot()) {
-        rect = this->rect();
-    } else {
-        int sw = spacing + IconSize;
-        rect = QRect(sw, 0, width() - sw, height());
-    }
+    QRect rect = this->rect();
+    rect.setLeft(rect.left() + sw);
 
     p.drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, displayText);
 }
@@ -162,6 +177,9 @@ void SymbolBar::setPath(const QString &path)
         CurmbItem *item = new CurmbItem(CurmbItem::FilePath, i, this);
         item->setText(itemList[i]);
         item->setToolTip(path);
+        if (i == itemList.size() - 1)
+            item->setIcon(DFileIconProvider::globalProvider()->icon(path));
+
         QString absolutePath = workspaceDir + QDir::separator() + itemList.mid(0, i).join(QDir::separator());
         item->setUserData(absolutePath);
         layout->addWidget(item, 0, Qt::AlignVCenter | Qt::AlignLeft);
@@ -188,8 +206,8 @@ void SymbolBar::updateSymbol(int line, int index)
     if (!editor)
         return;
 
-    auto name = SymbolManager::instance()->symbolName(editor->getFile(), line, index);
-    if (name.isEmpty())
+    auto info = SymbolManager::instance()->findSymbol(editor->getFile(), line, index);
+    if (info.first.isEmpty())
         return;
 
     if (!symbolItem) {
@@ -203,8 +221,9 @@ void SymbolBar::updateSymbol(int line, int index)
     }
 
     symbolItem->setUserData(editor->getFile());
-    symbolItem->setText(name);
-    symbolItem->setToolTip(name);
+    symbolItem->setText(info.first);
+    symbolItem->setToolTip(info.first);
+    symbolItem->setIcon(SymbolManager::instance()->iconFromKind(static_cast<SymbolManager::SymbolKind>(info.second)));
 }
 
 void SymbolBar::curmbItemClicked()

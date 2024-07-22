@@ -7,6 +7,7 @@
 
 #include <QVariant>
 #include <QWidget>
+#include <QIcon>
 
 class CurmbItem : public QWidget
 {
@@ -21,6 +22,7 @@ public:
 
     CurmbType curmbType() const;
     void setText(const QString &text);
+    void setIcon(const QIcon &icon);
     void setSelected(bool selected);
     bool isSelected() const;
     bool isRoot() const;
@@ -38,6 +40,7 @@ protected:
 
 private:
     QString displayText;
+    QIcon itemIcon;
     int index { 0 };
     int spacing { 5 };
     bool hasSelected { false };
