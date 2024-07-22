@@ -293,7 +293,7 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
         optionRect = drawOptionButton(painter, option, index);
 
     const auto &lineNumber = QString::number(index.data(LineRole).toInt());
-    const auto &matchedText = index.data(MatchedTextRole).toString();
+    const auto &matchedLength = index.data(MatchedLengthRole).toInt();
     const auto &column = index.data(ColumnRole).toInt();
     auto context = index.data(Qt::DisplayRole).toString();
     const auto &replaceText = index.data(ReplaceTextRole).toString();
@@ -319,7 +319,7 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
     if (optionRect.isValid())
         textRect.setRight(optionRect.left() - Padding);
     if (!replaceText.isEmpty()) {
-        int replaceTextOffset = column + matchedText.length();
+        int replaceTextOffset = column + matchedLength;
         context.insert(replaceTextOffset, replaceText);
         QColor matchedBackground;
         QColor replaceBackground;
@@ -334,7 +334,7 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
             replaceBackground.setNamedColor("#57965C");
             replaceBackground.setAlpha(180);
         }
-        formats << createFormatRange(opt, column, matchedText.length(), {}, matchedBackground);
+        formats << createFormatRange(opt, column, matchedLength, {}, matchedBackground);
         formats << createFormatRange(opt, replaceTextOffset, replaceText.length(), {}, replaceBackground);
     } else {
         QColor background;
@@ -345,7 +345,7 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
             background.setNamedColor("#F2C55C");
             background.setAlpha(220);
         }
-        formats << createFormatRange(opt, column, matchedText.length(), {}, background);
+        formats << createFormatRange(opt, column, matchedLength, {}, background);
     }
     drawDisplay(painter, option, textRect, context, formats);
 }

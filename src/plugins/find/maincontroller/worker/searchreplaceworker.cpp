@@ -40,7 +40,9 @@ void SearchReplaceWorkerPrivate::startNextJob()
             std::bind(&SearchReplaceWorker::handleReadSearchResult, q, job.keyword, job.flags));
     connect(process.get(), qOverload<int>(&QProcess::finished), q, &SearchReplaceWorker::processDone);
 
-    process->start(job.cmd);
+    process->setProgram(job.program);
+    process->setArguments(job.arguments);
+    process->start();
     if (!job.channelData.isEmpty()) {
         process->write(job.channelData.toUtf8());
         process->closeWriteChannel();
@@ -58,20 +60,17 @@ void SearchReplaceWorkerPrivate::createSearchJob(const SearchParams &params)
         for (const auto &file : tmpParams.editFileList) {
             const auto &job = buildSearchJob({ file }, tmpParams.includeList, tmpParams.excludeList,
                                              tmpParams.keyword, tmpParams.flags, true);
-            if (!job.cmd.isEmpty())
-                jobList << job;
+            jobList << job;
         }
 
         const auto &job = buildSearchJob(tmpParams.projectFileList, tmpParams.includeList, tmpParams.excludeList,
                                          tmpParams.keyword, tmpParams.flags, false);
-        if (!job.cmd.isEmpty())
-            jobList << job;
+        jobList << job;
     } break;
     case CurrentFile: {
         const auto &job = buildSearchJob(params.editFileList, params.includeList, params.excludeList,
                                          params.keyword, params.flags, true);
-        if (!job.cmd.isEmpty())
-            jobList << job;
+        jobList << job;
     } break;
     default:
         break;
@@ -89,41 +88,155 @@ SearchReplaceWorkerPrivate::buildSearchJob(const QStringList &fileList,
         return {};
 
     Job job;
+    job.program = "grep";
     job.keyword = keyword;
     job.flags = flags;
-    QStringList cmd;
-    cmd << "grep -Hn";
-    if (!flags.testFlag(SearchCaseSensitive))
-        cmd << "-i";
+    job.arguments << "-Hn";
+    if (!flags.testFlag(SearchCaseSensitively))
+        job.arguments << "-i";
 
-    if (flags.testFlag(SearchWholeWord)) {
-        cmd << "-w";
+    if (flags.testFlag(SearchWholeWords)) {
+        job.arguments << "-w";
     }
 
     if (flags.testFlag(SearchRegularExpression)) {
-        cmd << "-P";
+        job.arguments << "-P";
     } else {
-        cmd << "-F";
+        job.arguments << "-F";
     }
 
     if (!includeList.isEmpty())
-        cmd << "--include=" + includeList.join(" --include=");
+        job.arguments << "--include=" + includeList.join(" --include=");
     if (!excludeList.isEmpty())
-        cmd << "--exclude=" + excludeList.join(" --exclude=");
-    cmd << "\"" + keyword + "\"";
+        job.arguments << "--exclude=" + excludeList.join(" --exclude=");
+    job.arguments << keyword;
 
     if (isOpenedFile) {
         if (!editSrv)
             editSrv = dpfGetService(EditorService);
         job.channelData = editSrv->fileText(fileList.first());
-        cmd << "--label=" + fileList.first();
+        job.arguments << "--label=" + fileList.first();
     } else {
-        QString searchPath = fileList.join(' ');
-        cmd << searchPath;
+        job.arguments << fileList;
     }
 
-    job.cmd = cmd.join(' ');
     return job;
+}
+
+void SearchReplaceWorkerPrivate::parseResultWithRegExp(const QString &fileName, const QString &keyword,
+                                                       const QString &contents, int line, SearchFlags flags)
+{
+    const QString term = flags & SearchWholeWords
+            ? QString::fromLatin1("\\b%1\\b").arg(keyword)
+            : keyword;
+    const auto patternOptions = (flags & SearchCaseSensitively)
+            ? QRegularExpression::NoPatternOption
+            : QRegularExpression::CaseInsensitiveOption;
+    const QRegularExpression expression = QRegularExpression(term, patternOptions);
+    if (!expression.isValid())
+        return;
+
+    QRegularExpressionMatch match;
+    int lengthOfContents = contents.length();
+    int pos = 0;
+    while ((match = expression.match(contents, pos)).hasMatch()) {
+        pos = match.capturedStart();
+        FindItem findItem;
+        findItem.filePathName = fileName;
+        findItem.line = line;
+        findItem.keyword = keyword;
+        findItem.context = contents;
+        findItem.column = pos;
+        findItem.matchedLength = match.capturedLength();
+        findItem.capturedTexts = match.capturedTexts();
+
+        {
+            QMutexLocker lk(&mutex);
+            searchResults.append(findItem);
+        }
+        ++resultCount;
+        if (match.capturedLength() == 0)
+            break;
+        pos += match.capturedLength();
+        if (pos >= lengthOfContents)
+            break;
+    }
+}
+
+void SearchReplaceWorkerPrivate::parseResultWithoutRegExp(const QString &fileName, const QString &keyword,
+                                                          const QString &contents, int line, SearchFlags flags)
+{
+    const bool caseSensitive = (flags & SearchCaseSensitively);
+    const bool wholeWord = (flags & SearchWholeWords);
+    const QString keywordLower = keyword.toLower();
+    const QString keywordUpper = keyword.toUpper();
+    const int keywordMaxIndex = keyword.length() - 1;
+    const QChar *keywordData = keyword.constData();
+    const QChar *keywordDataLower = keywordLower.constData();
+    const QChar *keywordDataUpper = keywordUpper.constData();
+
+    const int contentsLength = contents.length();
+    const QChar *contentsPtr = contents.constData();
+    const QChar *contentsEnd = contentsPtr + contentsLength - 1;
+    for (const QChar *regionPtr = contentsPtr; regionPtr + keywordMaxIndex <= contentsEnd; ++regionPtr) {
+        const QChar *regionEnd = regionPtr + keywordMaxIndex;
+        if ((caseSensitive && *regionPtr == keywordData[0]
+             && *regionEnd == keywordData[keywordMaxIndex])
+            ||
+            // case insensitive
+            (!caseSensitive && (*regionPtr == keywordDataLower[0] || *regionPtr == keywordDataUpper[0])
+             && (*regionEnd == keywordDataLower[keywordMaxIndex]
+                 || *regionEnd == keywordDataUpper[keywordMaxIndex]))) {
+            bool equal = true;
+
+            // whole word check
+            const QChar *beforeRegion = regionPtr - 1;
+            const QChar *afterRegion = regionEnd + 1;
+            if (wholeWord
+                && (((beforeRegion >= contentsPtr)
+                     && (beforeRegion->isLetterOrNumber()
+                         || ((*beforeRegion) == QLatin1Char('_'))))
+                    || ((afterRegion <= contentsEnd)
+                        && (afterRegion->isLetterOrNumber()
+                            || ((*afterRegion) == QLatin1Char('_')))))) {
+                equal = false;
+            } else {
+                // check all chars
+                int regionIndex = 1;
+                for (const QChar *regionCursor = regionPtr + 1;
+                     regionCursor < regionEnd;
+                     ++regionCursor, ++regionIndex) {
+                    if (   // case sensitive
+                            (caseSensitive
+                             && *regionCursor != keywordData[regionIndex])
+                            ||
+                            // case insensitive
+                            (!caseSensitive
+                             && *regionCursor != keywordDataLower[regionIndex]
+                             && *regionCursor != keywordDataUpper[regionIndex])) {
+                        equal = false;
+                        break;
+                    }
+                }
+            }
+
+            if (equal) {
+                FindItem result;
+                result.filePathName = fileName;
+                result.line = line;
+                result.column = regionPtr - contentsPtr;
+                result.context = contents;
+                result.keyword = keyword;
+                result.matchedLength = keywordMaxIndex + 1;
+
+                ++resultCount;
+                regionPtr += keywordMaxIndex;
+
+                QMutexLocker lk(&mutex);
+                searchResults.append(result);
+            }
+        }
+    }
 }
 
 void SearchReplaceWorkerPrivate::processWorkingFiles(QStringList &baseFiles, QStringList &openedFiles)
@@ -170,8 +283,8 @@ void SearchReplaceWorkerPrivate::replaceLocalFile(const QString &fileName, const
             offset = 0;
 
         lastReplaceLine = realLine;
-        offset += newText.length() - item.matchedText.length();
-        lines[realLine].replace(index, item.matchedText.length(), newText);
+        offset += newText.length() - item.matchedLength;
+        lines[realLine].replace(index, item.matchedLength, newText);
     }
 
     QTextStream out(&file);
@@ -201,8 +314,8 @@ void SearchReplaceWorkerPrivate::replaceOpenedFile(const QString &fileName, cons
             offset = 0;
 
         lastReplaceLine = realLine;
-        offset += newText.length() - item.matchedText.length();
-        editSrv->replaceRange(fileName, realLine, index, item.matchedText.length(), newText);
+        offset += newText.length() - item.matchedLength;
+        editSrv->replaceRange(fileName, realLine, index, item.matchedLength, newText);
     }
 }
 
@@ -282,30 +395,8 @@ void SearchReplaceWorker::handleReadSearchResult(const QString &keyword, SearchF
             auto line = regMatch.captured(2).toInt();
             auto context = regMatch.captured(3);
 
-            QString pattern = flags.testFlag(SearchWholeWord)
-                    ? QString::fromLatin1("\\b%1\\b").arg(keyword)
-                    : keyword;
-
-            QRegularExpression regex(pattern, flags.testFlag(SearchCaseSensitive) ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption);
-            QRegularExpressionMatchIterator it = regex.globalMatch(context);
-            while (it.hasNext()) {
-                QRegularExpressionMatch match = it.next();
-                if (match.hasMatch()) {
-                    FindItem findItem;
-                    findItem.filePathName = name;
-                    findItem.line = line;
-                    findItem.keyword = keyword;
-                    findItem.context = context;
-                    findItem.column = match.capturedStart();
-                    findItem.matchedText = match.captured();
-                    if (flags.testFlag(SearchRegularExpression))
-                        findItem.capturedTexts = match.capturedTexts();
-
-                    QMutexLocker lk(&d->mutex);
-                    d->searchResults.append(findItem);
-                    ++d->resultCount;
-                }
-            }
+            flags.testFlag(SearchRegularExpression) ? d->parseResultWithRegExp(name, keyword, context, line, flags)
+                                                    : d->parseResultWithoutRegExp(name, keyword, context, line, flags);
         }
     }
 

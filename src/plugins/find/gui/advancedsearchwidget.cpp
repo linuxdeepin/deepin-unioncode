@@ -295,8 +295,8 @@ SearchParams AdvancedSearchWidgetPrivate::searchParams()
     }
 
     params.scope = static_cast<SearchScope>(scope);
-    params.flags |= caseBtn->isChecked() ? SearchCaseSensitive : SearchNoFlag;
-    params.flags |= wholeWordBtn->isChecked() ? SearchWholeWord : SearchNoFlag;
+    params.flags |= caseBtn->isChecked() ? SearchCaseSensitively : SearchNoFlag;
+    params.flags |= wholeWordBtn->isChecked() ? SearchWholeWords : SearchNoFlag;
     params.flags |= regexBtn->isChecked() ? SearchRegularExpression : SearchNoFlag;
     params.includeList = includeEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     params.excludeList = excludeEdit->text().trimmed().split(",", QString::SkipEmptyParts);
@@ -312,8 +312,8 @@ ReplaceParams AdvancedSearchWidgetPrivate::replaceParams(const QMap<QString, Fin
     params.editFileList = editSrv->openedFiles();
     params.resultMap = resultMap;
     params.replaceText = replaceEdit->text();
-    params.flags |= caseBtn->isChecked() ? SearchCaseSensitive : SearchNoFlag;
-    params.flags |= wholeWordBtn->isChecked() ? SearchWholeWord : SearchNoFlag;
+    params.flags |= caseBtn->isChecked() ? SearchCaseSensitively : SearchNoFlag;
+    params.flags |= wholeWordBtn->isChecked() ? SearchWholeWords : SearchNoFlag;
     params.flags |= regexBtn->isChecked() ? SearchRegularExpression : SearchNoFlag;
 
     return params;
