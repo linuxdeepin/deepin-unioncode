@@ -11,6 +11,8 @@
 
 struct CodeGeeXConfig{
     bool codeCompletionEnabled = true;
+    CodeGeeX::locale globalLanguage = CodeGeeX::Zh;
+    CodeGeeX::locale commitsLanguage = CodeGeeX::Zh;
     CodeGeeX::languageModel model = CodeGeeX::Lite;
 };
 

@@ -27,6 +27,7 @@ public:
     void insterText(const QString &text);
     void setGenerateCodeEnabled(bool enabled);
     void setLocale(const QString &locale);
+    void setCommitsLocale(const QString &locale);
     void setCurrentModel(CodeGeeX::languageModel model);
     void handleTextChanged();
 
@@ -54,6 +55,7 @@ private:
     explicit Copilot(QObject *parent = nullptr);
     QString selectedText() const;
     QString locale { "zh" };
+    QString commitsLocale { "zh" };
     void switchToCodegeexPage();
     bool responseValid(const QString &response);
     QString assembleCodeByCurrentFile(const QString &code);
