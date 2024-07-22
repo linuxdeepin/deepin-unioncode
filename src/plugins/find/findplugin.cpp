@@ -71,11 +71,13 @@ void FindPlugin::registerToSidebar()
 {
     QAction *action = new QAction(MWNA_ADVANCEDSEARCH, this);
     action->setIcon(QIcon::fromTheme("search"));
-    windowService->addNavigationItem(new AbstractAction(action), Priority::highest);
+    auto actionImpl = new AbstractAction(action);
+    windowService->addNavigationItem(actionImpl, Priority::highest);
 
     advSearchWidget = new AdvancedSearchWidget;
     windowService->registerWidget(MWNA_ADVANCEDSEARCH, new AbstractWidget(advSearchWidget));
     windowService->setDockHeaderName(MWNA_ADVANCEDSEARCH, tr("ADVANCED SEARCH"));
+    windowService->bindWidgetToNavigation(MWNA_ADVANCEDSEARCH, actionImpl);
     advSearchWidget->initOperator();
 
     connect(action, &QAction::triggered, this, &FindPlugin::switchToSearch, Qt::DirectConnection);

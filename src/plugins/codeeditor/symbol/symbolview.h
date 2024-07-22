@@ -25,6 +25,7 @@ Q_SIGNALS:
 
 protected:
     void hideEvent(QHideEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     SymbolViewPrivate *const d;

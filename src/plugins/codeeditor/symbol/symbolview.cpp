@@ -11,6 +11,7 @@
 #include <QFileSystemModel>
 #include <QStandardItemModel>
 #include <QVBoxLayout>
+#include <QKeyEvent>
 
 DWIDGET_USE_NAMESPACE
 
@@ -57,6 +58,8 @@ void SymbolViewPrivate::initUI()
     view->setFrameShape(QFrame::NoFrame);
     view->setEditTriggers(QTreeView::NoEditTriggers);
     view->setIconSize({ 16, 16 });
+    view->installEventFilter(q);
+    view->viewport()->installEventFilter(q);
 
     layout->addWidget(view);
 }
@@ -101,7 +104,7 @@ void SymbolViewPrivate::handleItemClicked(const QModelIndex &index)
         editor.gotoPosition(path, line + 1, col);
     } else {
         if (QFileInfo(path).isDir()) {
-            view->expand(index);
+            view->setExpanded(index, !view->isExpanded(index));
             return;
         }
 
@@ -172,4 +175,20 @@ void SymbolView::hideEvent(QHideEvent *event)
 {
     Q_EMIT hidden();
     DFrame::hideEvent(event);
+}
+
+bool SymbolView::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == d->view && event->type() == QEvent::KeyPress) {
+        auto keyEvent = dynamic_cast<QKeyEvent *>(event);
+        if (keyEvent && (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)) {
+            d->handleItemClicked(d->view->currentIndex());
+            return true;
+        }
+    }
+
+    if (watched == d->view->viewport() && event->type() == QEvent::MouseButtonDblClick)
+        return true;
+
+    return DFrame::eventFilter(watched, event);
 }
