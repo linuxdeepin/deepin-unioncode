@@ -15,7 +15,8 @@ class SearchReplaceWorkerPrivate : public QObject
 public:
     struct Job
     {
-        QString cmd;
+        QString program;
+        QStringList arguments;
         QString channelData;
         QString keyword;
         SearchFlags flags;
@@ -33,6 +34,9 @@ public:
                        const QString &keyword,
                        SearchFlags flags,
                        bool isOpenedFile);
+
+    void parseResultWithRegExp(const QString &fileName, const QString &keyword, const QString &contents, int line, SearchFlags flags);
+    void parseResultWithoutRegExp(const QString &fileName, const QString &keyword, const QString &contents, int line, SearchFlags flags);
 
     void processWorkingFiles(QStringList &baseFiles, QStringList &openedFiles);
     void replaceLocalFile(const QString &fileName, const QString &replacement, const FindItemList &itemList);

@@ -12,7 +12,7 @@ enum ResultRole {
     LineRole = Qt::UserRole + 1,
     ColumnRole,
     KeywordRole,
-    MatchedTextRole,
+    MatchedLengthRole,
     FilePathRole,
     ReplaceTextRole
 };
@@ -25,8 +25,8 @@ enum SearchScope {
 
 enum SearchFlag {
     SearchNoFlag = 0,
-    SearchCaseSensitive = 1,
-    SearchWholeWord = 1 << 1,
+    SearchCaseSensitively = 1,
+    SearchWholeWords = 1 << 1,
     SearchRegularExpression = 1 << 2
 };
 Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
@@ -42,7 +42,7 @@ struct FindItem
     int line = -1;
     int column = -1;
     QString keyword;
-    QString matchedText;
+    int matchedLength;
     QStringList capturedTexts;
     QString context;
 
