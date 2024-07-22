@@ -28,10 +28,12 @@ SymbolManagerPrivate::SymbolManagerPrivate(SymbolManager *qq)
 QPair<QString, int> SymbolManagerPrivate::findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column)
 {
     auto children = symbol.children.value_or(QList<newlsp::DocumentSymbol>());
-    for (const auto &child : children) {
-        if (child.range.contains({ line, column }))
-            return findSymbol(child, line, column);
-    }
+    auto iter = std::find_if(children.cbegin(), children.cend(),
+                             [&](const newlsp::DocumentSymbol &child) {
+                                 return child.range.contains({ line, column });
+                             });
+    if (iter != children.cend())
+        return findSymbol(*iter, line, column);
 
     QString name = q->displayNameFromDocumentSymbol(static_cast<SymbolManager::SymbolKind>(symbol.kind),
                                                     symbol.name,
@@ -79,18 +81,20 @@ QPair<QString, int> SymbolManager::findSymbol(const QString &file, int line, int
 {
     if (d->docSymbolHash.contains(file)) {
         const auto &symbolList = d->docSymbolHash[file];
-        for (const auto &symbol : symbolList) {
-            if (!symbol.range.contains({ line, column }))
-                continue;
-
-            return d->findSymbol(symbol, line, column);
-        }
+        auto iter = std::find_if(symbolList.cbegin(), symbolList.cend(),
+                                 [&](const newlsp::DocumentSymbol &symbol) {
+                                     return symbol.range.contains({ line, column });
+                                 });
+        if (iter != symbolList.cend())
+            return d->findSymbol(*iter, line, column);
     } else if (d->symbolInfoHash.contains(file)) {
         const auto &infoList = SymbolManager::instance()->symbolInformations(file);
-        for (const auto &info : infoList) {
-            if (info.location.range.contains({ line, column }))
-                return qMakePair(info.name, info.kind);
-        }
+        auto iter = std::find_if(infoList.cbegin(), infoList.cend(),
+                                 [&](const newlsp::SymbolInformation &info) {
+                                     return info.location.range.contains({ line, column });
+                                 });
+        if (iter != infoList.cend())
+            return qMakePair(iter->name, iter->kind);
     }
 
     return {};

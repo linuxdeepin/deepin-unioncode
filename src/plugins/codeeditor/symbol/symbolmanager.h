@@ -58,6 +58,7 @@ private:
     ~SymbolManager();
 
     SymbolManagerPrivate *const d;
+    friend class SymbolManagerPrivate;
 };
 
 #endif   // SYMBOLMANAGER_H
