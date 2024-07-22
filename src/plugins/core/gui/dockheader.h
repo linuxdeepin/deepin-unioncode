@@ -20,6 +20,9 @@ public:
     void setHeaderNames(const QList<QAction *> &headers);
     void addWidget(QWidget *widget);
 
+protected:
+    void mousePressEvent(QMouseEvent *event);
+
 private:
     DockHeaderPrivate *d;
 };
