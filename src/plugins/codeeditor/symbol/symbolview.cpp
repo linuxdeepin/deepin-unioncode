@@ -90,9 +90,6 @@ QStandardItem *SymbolViewPrivate::createSymbolItem(const QString &path, const ne
 
 void SymbolViewPrivate::handleItemClicked(const QModelIndex &index)
 {
-    if (index.model()->hasChildren(index))
-        return;
-
     auto path = index.data(QFileSystemModel::FilePathRole).toString();
     if (path.isEmpty()) {
         path = index.data(FilePathRole).toString();
@@ -103,6 +100,11 @@ void SymbolViewPrivate::handleItemClicked(const QModelIndex &index)
         int col = index.data(ColumnRole).toInt();
         editor.gotoPosition(path, line + 1, col);
     } else {
+        if (QFileInfo(path).isDir()) {
+            view->expand(index);
+            return;
+        }
+
         editor.openFile(QString(), path);
     }
 
