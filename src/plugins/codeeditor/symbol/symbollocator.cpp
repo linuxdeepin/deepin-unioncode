@@ -27,8 +27,8 @@ public:
     explicit SymbolLocatorPrivate(SymbolLocator *qq);
 
     TextEditor *currentEditor();
-    SymbolLocatorItem createSymbolItem(const newlsp::DocumentSymbol &symbol);
-    SymbolLocatorItem createSymbolItem(const newlsp::SymbolInformation &info);
+    void createSymbolItem(const newlsp::DocumentSymbol &symbol);
+    void createSymbolItem(const newlsp::SymbolInformation &info);
 
 public:
     SymbolLocator *q;
@@ -50,7 +50,7 @@ TextEditor *SymbolLocatorPrivate::currentEditor()
     return qobject_cast<TextEditor *>(tabWidget->currentWidget());
 }
 
-SymbolLocatorItem SymbolLocatorPrivate::createSymbolItem(const newlsp::DocumentSymbol &symbol)
+void SymbolLocatorPrivate::createSymbolItem(const newlsp::DocumentSymbol &symbol)
 {
     SymbolLocatorItem item(q);
     item.id = QUuid::createUuid().toString();
@@ -62,11 +62,15 @@ SymbolLocatorItem SymbolLocatorPrivate::createSymbolItem(const newlsp::DocumentS
     item.line = symbol.range.start.line;
     item.column = symbol.range.start.character;
     item.icon = SymbolManager::instance()->iconFromKind(static_cast<SymbolManager::SymbolKind>(symbol.kind));
+    itemList.append(item);
 
-    return item;
+    auto children = symbol.children.value_or(QList<newlsp::DocumentSymbol>());
+    for (const auto &child : children) {
+        createSymbolItem(child);
+    }
 }
 
-SymbolLocatorItem SymbolLocatorPrivate::createSymbolItem(const newlsp::SymbolInformation &info)
+void SymbolLocatorPrivate::createSymbolItem(const newlsp::SymbolInformation &info)
 {
     SymbolLocatorItem item(q);
     item.id = QUuid::createUuid().toString();
@@ -75,7 +79,7 @@ SymbolLocatorItem SymbolLocatorPrivate::createSymbolItem(const newlsp::SymbolInf
     item.column = info.location.range.start.character;
     item.icon = SymbolManager::instance()->iconFromKind(static_cast<SymbolManager::SymbolKind>(info.kind));
 
-    return item;
+    itemList.append(item);
 }
 
 SymbolLocator::SymbolLocator(QObject *parent)
@@ -109,20 +113,12 @@ void SymbolLocator::prepareSearch(const QString &searchText)
     const auto &symbolList = SymbolManager::instance()->documentSymbols(editor->getFile());
     if (!symbolList.isEmpty()) {
         for (const auto &symbol : symbolList) {
-            auto item = d->createSymbolItem(symbol);
-            d->itemList.append(item);
-
-            auto children = symbol.children.value_or(QList<newlsp::DocumentSymbol>());
-            for (const auto &child : children) {
-                auto item = d->createSymbolItem(child);
-                d->itemList.append(item);
-            }
+            d->createSymbolItem(symbol);
         }
     } else {
         const auto &infoList = SymbolManager::instance()->symbolInformations(editor->getFile());
         for (const auto &info : infoList) {
-            auto item = d->createSymbolItem(info);
-            d->itemList.append(item);
+            d->createSymbolItem(info);
         }
     }
 }
