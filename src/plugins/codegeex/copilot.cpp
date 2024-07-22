@@ -145,6 +145,11 @@ void Copilot::setLocale(const QString &locale)
     this->locale = locale;
 }
 
+void Copilot::setCommitsLocale(const QString &locale)
+{
+    this->commitsLocale = locale;
+}
+
 void Copilot::setCurrentModel(CodeGeeX::languageModel model)
 {
     copilotApi.setModel(model);
@@ -241,7 +246,7 @@ void Copilot::commits()
         auto diff = QString::fromUtf8(process.readAll());
         QString url = QString(kUrlSSEChat) + "?stream=true";
 
-        copilotApi.postCommand(url, diff, locale, commandCommits);
+        copilotApi.postCommand(url, diff, commitsLocale, commandCommits);
         switchToCodegeexPage();
     });
 
