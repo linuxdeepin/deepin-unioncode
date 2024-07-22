@@ -89,7 +89,7 @@ void DockHeader::setHeaderNames(const QList<QAction *> &headers)
 
 void DockHeader::mousePressEvent(QMouseEvent *event)
 {
-    if (event->pos().x() < d->headerName->width() && d->select->isVisible())
+    if (d->headerName->geometry().contains(event->pos()) && d->select->isVisible())
         d->select->click();
 
     DWidget::mousePressEvent(event);
