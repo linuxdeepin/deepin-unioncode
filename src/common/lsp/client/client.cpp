@@ -1055,8 +1055,13 @@ bool ClientPrivate::exitResult(const QJsonObject &jsonObj)
     if (requestSave.keys().contains(calledID)
         && requestSave.value(calledID).method == lsp::V_EXIT) {
         requestSave.remove(calledID);
+
+        auto ret = jsonObj.value(K_RESULT).toString();
+        QUrl url(ret);
+        emit q->switchHeaderSourceResult(url.toLocalFile());
         return true;
     }
+
     return false;
 }
 

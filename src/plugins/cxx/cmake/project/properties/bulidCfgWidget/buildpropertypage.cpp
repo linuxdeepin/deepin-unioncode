@@ -332,6 +332,16 @@ void BuildPropertyPage::saveConfig()
         if (detailWidget) {
             detailWidget->getValues(*iter);
         }
+        if (iter->type == param->tempSelType) {
+            auto projectInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
+            auto activeTarget = TargetsManager::instance()->getActivedTargetByTargetType(kActiveExecTarget);
+            for (auto it : iter->runConfigure.targetsRunConfigure) {
+                if (it.targetName == activeTarget.name) {
+                    projectInfo.setRunEnvironment(it.env.toList());
+                    dpfGetService(ProjectService)->updateProjectInfo(projectInfo);
+                }
+            }
+        }
 
         for (int i = 0; i < d->configureComboBox->count(); i++) {
             ConfigType type = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->itemText(i));

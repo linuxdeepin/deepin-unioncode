@@ -105,6 +105,9 @@
         <source>e.g.*.ts,src/**/include</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>BinaryToolsConfigView</name>
     <message>
         <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="247"/>
         <source>Files To Include:</source>
@@ -190,6 +193,9 @@
         <source>Advanced Settings</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>BinaryToolsConfigViewPrivate</name>
     <message>
         <location filename="../../src/plugins/binarytools/mainframe/advancedsettingsdialog.cpp" line="45"/>
         <source>Missing Hint:</source>
@@ -253,6 +259,9 @@
         <source>Stop Running Program</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>BinaryToolsModel</name>
     <message>
         <location filename="../../src/common/widget/appoutputpane.cpp" line="139"/>
         <source>Close OutputPane</source>
@@ -988,6 +997,9 @@ storage: %2
         <source>Run CMake</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>DebuggerPlugin</name>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="125"/>
         <source>Clear CMake</source>
@@ -1008,6 +1020,9 @@ storage: %2
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>DetailPropertyWidget</name>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="392"/>
         <source>Copy to Clipboard?</source>
@@ -1185,6 +1200,11 @@ storage: %2
     <message>
         <location filename="../../src/plugins/codegeex/codegeex.cpp" line="66"/>
         <source>Please login to use CodeGeeX.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="192"/>
+        <source>Enable Qt Debug Level</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1645,6 +1665,9 @@ The debugee has Terminated.
         <source>Remove This Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>NotificationItemWidget</name>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
         <source>Name</source>
@@ -1864,6 +1887,9 @@ Delete anyway?</source>
         <source>The filename can&apos;t be empty!</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>QAction</name>
     <message>
         <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="165"/>
         <source>The project can&apos;t be empty!</source>
@@ -2326,6 +2352,9 @@ need to manually copy the source code to this path</source>
         <source>Choose path</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>QMenu</name>
     <message>
         <location filename="../../src/plugins/linglong/gui/generatedialog.cpp" line="193"/>
         <source>%1 is already existed</source>
@@ -4717,6 +4746,9 @@ not exists support files: %0</source>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>QPushButton</name>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="37"/>
         <source>Comment</source>
@@ -5846,6 +5878,14 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/core/gui/loadingwidget.cpp" line="21"/>
         <source>loading...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>pathChooser</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/cmakeCfgWidget/cmakeitemdelegate.cpp" line="30"/>
+        <source>Choose path</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

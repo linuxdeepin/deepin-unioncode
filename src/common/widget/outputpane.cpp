@@ -226,6 +226,16 @@ QPlainTextEdit *OutputPane::edit() const
     return d->outputEdit;
 }
 
+QTextDocument *OutputPane::document() const
+{
+    return d->outputEdit->document();
+}
+
+QPlainTextEdit *OutputPane::edit() const
+{
+    return d->outputEdit;
+}
+
 OutputPane *OutputPane::instance()
 {
     static OutputPane *ins = new OutputPane();

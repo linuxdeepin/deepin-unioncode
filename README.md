@@ -153,3 +153,7 @@ deepin-unioncode 在 [LGPL-3.0-or-later](LICENSE)下发布。
 - AI 问答
 
   ![codegeex-answer](./docs/rc/codegeex-answer.png)
+
+访问统计:
+
+![](https://profile-counter.glitch.me/deepin-unioncode/count.svg)

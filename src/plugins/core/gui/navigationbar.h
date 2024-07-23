@@ -13,7 +13,6 @@
 
 class NavigationBar : public DTK_WIDGET_NAMESPACE::DFrame
 {
-    Q_OBJECT
 public:
     enum itemPositioin {
         top,
@@ -24,19 +23,10 @@ public:
     ~NavigationBar();
 
     void addNavItem(QAction *action, itemPositioin pos = top, quint8 priority = 10);   //priority : 0 highest, 255 lowest
-    void addNavButton(Dtk::Widget::DToolButton *button, itemPositioin pos = top, quint8 priority = 10);
     void setNavActionChecked(const QString &actionName, bool checked);
     QStringList getAllNavigationItemName();
     quint8 getPriorityOfNavigationItem(const QString &name);
     void updateUi();
-
-signals:
-    void enter();
-    void leave();
-
-protected:
-    void enterEvent(QEvent *event) override { emit enter(); }
-    void leaveEvent(QEvent *event) override { emit leave(); }
 
 private:
     QVBoxLayout *topLayout { nullptr };

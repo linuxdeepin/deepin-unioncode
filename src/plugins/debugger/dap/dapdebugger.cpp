@@ -316,6 +316,7 @@ void DAPDebugger::abortDebug()
                 }
             }
         }
+        AppOutputPane::instance()->setProcessFinished("debugPane");
     }
 
     d->currentSession->terminate();

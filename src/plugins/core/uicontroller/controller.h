@@ -17,7 +17,6 @@
 
 class ControllerPrivate;
 class AbstractModule;
-class WidgetInfo;
 class Controller : public QObject
 {
     Q_OBJECT
@@ -41,16 +40,10 @@ public slots:
     void insertWidget(const QString &name, Position pos, Qt::Orientation orientation);
     void hideWidget(const QString &name);
     void showWidgetAtPosition(const QString &name, Position pos, bool replace = true);
-    void resizeDocks(const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation);
-    void setDockHeaderName(const QString &dockName, const QString &headerName);
-    void setDockHeaderList(const QString &dockName, const QList<QAction *> &actions);
 
     void addNavigationItem(AbstractAction *action, quint8 priority);
     void addNavigationItemToBottom(AbstractAction *action, quint8 priority);
     void switchWidgetNavigation(const QString &navName);
-    void bindWidgetToNavigation(const QString &dockName, AbstractAction *action);
-
-    void registerWidgetToDockHeader(const QString &dockName, QWidget *widget);
 
     //bottom contextWidget
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible);
@@ -73,7 +66,6 @@ public slots:
     void addTopToolItemToRight(AbstractAction *action, bool addSeparator, quint8 priority);
     void showTopToolBar();
     void removeTopToolItem(AbstractAction *action);
-    void setTopToolItemVisible(AbstractAction *action, bool visible);
 
     void openFileDialog();
 
@@ -85,15 +77,10 @@ public slots:
     //workspace
     void switchWorkspace(const QString &titleName);
 
-    void showCurrentDocksManager();
-
 private:
     ControllerPrivate *d;
 
     void registerService();
-    void createDockWidget(WidgetInfo &info);
-    bool checkDocksManager();
-    DToolButton *createDockButton(const WidgetInfo &info);  // dock`s status switcher
 
     //show loadingwidget
     void loading();
@@ -106,7 +93,6 @@ private:
     void initWorkspaceWidget();
     void initTopToolBar();
     void initModules();
-    void initDocksManager();
 
     //menu
     void createHelpActions();
@@ -121,7 +107,7 @@ private:
 
     void showWorkspace();
 
-    DToolButton *createIconButton(QAction *action);  // top tool
+    DToolButton *createIconButton(QAction *action);
 };
 
 #endif   // CONTROLLER_H

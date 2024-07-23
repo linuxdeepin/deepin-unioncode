@@ -84,6 +84,7 @@ struct EnvironmentItem {
     friend QDataStream &operator<<(QDataStream &stream, const EnvironmentItem &data)
     {
         stream << data.enable;
+        stream << data.enableQDebugLevel;
         stream << data.environments;
 
         return stream;
@@ -92,10 +93,14 @@ struct EnvironmentItem {
     friend QDataStream &operator>>(QDataStream &stream, EnvironmentItem &data)
     {
         stream >> data.enable;
+        stream >> data.enableQDebugLevel;
         stream >> data.environments;
 
         return stream;
     }
+
+private:
+    bool enableQDebugLevel = true;
 };
 
 struct TargetRunConfigure {

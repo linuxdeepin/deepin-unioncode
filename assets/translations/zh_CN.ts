@@ -125,6 +125,9 @@
         <source>Current projects path is empty, please import!</source>
         <translation>当前工程路径为空，请先导入！</translation>
     </message>
+</context>
+<context>
+    <name>BinaryToolsConfigView</name>
     <message>
         <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="342"/>
         <source>No files are currently open, please open!</source>
@@ -210,6 +213,9 @@
         <source>Trigger Event:</source>
         <translation>触发事件：</translation>
     </message>
+</context>
+<context>
+    <name>BinaryToolsConfigViewPrivate</name>
     <message>
         <location filename="../../src/plugins/binarytools/mainframe/advancedsettingsdialog.cpp" line="53"/>
         <source>None</source>
@@ -696,6 +702,9 @@
         <source>Breakpoint by Function</source>
         <translation>按函数设置的断点</translation>
     </message>
+</context>
+<context>
+    <name>CommentConfigWidget</name>
     <message>
         <location filename="../../src/plugins/debugger/interface/breakpointitem.cpp" line="92"/>
         <source>Breakpoint by Address</source>
@@ -1005,6 +1014,9 @@ storage: %2
         <source>Run CMake</source>
         <translation>执行CMake</translation>
     </message>
+</context>
+<context>
+    <name>DebuggerPlugin</name>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="125"/>
         <source>Clear CMake</source>
@@ -1204,6 +1216,11 @@ storage: %2
         <source>Please login to use CodeGeeX.</source>
         <translation>请登录后使用CodeGeex.</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="192"/>
+        <source>Enable Qt Debug Level</source>
+        <translation>启用Qt Debug调试等级</translation>
+    </message>
 </context>
 <context>
     <name>CodeLens</name>
@@ -1320,6 +1337,151 @@ storage: %2
         <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigdetailwidget.cpp" line="80"/>
         <source>The group name cannot be empty</source>
         <translation>分组名不能为空</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="366"/>
+        <source>Searching, please wait...</source>
+        <translation>搜索中，请等待....</translation>
+    </message>
+</context>
+<context>
+    <name>FontColorWidget</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/settings/fontcolorwidget.cpp" line="48"/>
+        <source>Font</source>
+        <translation>字体</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/settings/fontcolorwidget.cpp" line="66"/>
+        <source>Family:</source>
+        <translation>字体族:</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/settings/fontcolorwidget.cpp" line="67"/>
+        <source>Size:</source>
+        <translation>大小:</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/settings/fontcolorwidget.cpp" line="68"/>
+        <source>Zoom:</source>
+        <translation>缩放:</translation>
+    </message>
+</context>
+<context>
+    <name>GitClientPrivate</name>
+    <message>
+        <location filename="../../src/plugins/git/client/gitclient.cpp" line="88"/>
+        <source>Failed to retrieve data.</source>
+        <translation>检索数据失败。</translation>
+    </message>
+</context>
+<context>
+    <name>GitDiffEditor</name>
+    <message numerus="yes">
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="207"/>
+        <source>Skipped %n lines...</source>
+        <translation>
+            <numerusform>跳过 %n 行...</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="209"/>
+        <source>Binary files differ</source>
+        <translation>二进制文件差异</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="210"/>
+        <source>Skipped unknown number of lines...</source>
+        <translation>跳过未知行数...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="300"/>
+        <source>[%1] %2</source>
+        <translation>[%1] %2</translation>
+    </message>
+</context>
+<context>
+    <name>GitDiffWidget</name>
+    <message>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="120"/>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="140"/>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="141"/>
+        <source>No difference.</source>
+        <translation>文件无修改。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="144"/>
+        <source>Waiting for data...</source>
+        <translation>等待数据...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="154"/>
+        <source>Retrieving data failed.</source>
+        <translation>检索数据失败。</translation>
+    </message>
+</context>
+<context>
+    <name>GitMenuManager</name>
+    <message>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="88"/>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="113"/>
+        <source>Log of &quot;%1&quot;</source>
+        <translation>Log of &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="91"/>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="119"/>
+        <source>Diff of &quot;%1&quot;</source>
+        <translation>Diff of &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="116"/>
+        <source>Blame of &quot;%1&quot;</source>
+        <translation>Blame of &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="129"/>
+        <source>Current File</source>
+        <translation>当前文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/utils/gitmenumanager.cpp" line="134"/>
+        <source>Current Project</source>
+        <translation>当前工程</translation>
+    </message>
+</context>
+<context>
+    <name>GitTabWidget</name>
+    <message>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="158"/>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="159"/>
+        <source>Git Log &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="162"/>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="163"/>
+        <source>Git Blame &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="166"/>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="167"/>
+        <source>Git Diff &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="170"/>
+        <source>Git Show &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="182"/>
+        <location filename="../../src/plugins/git/gui/gittabwidget.cpp" line="189"/>
+        <source>Working...</source>
+        <translation>处理中...</translation>
     </message>
 </context>
 <context>
@@ -1676,6 +1838,9 @@ The debugee has Terminated.
         <source>Name</source>
         <translation>名称</translation>
     </message>
+</context>
+<context>
+    <name>NotificationItemWidget</name>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
         <source>Value</source>
@@ -1894,6 +2059,9 @@ Delete anyway?</source>
         <source>The filename can&apos;t be empty!</source>
         <translation>文件名不能为空!</translation>
     </message>
+</context>
+<context>
+    <name>QAction</name>
     <message>
         <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="165"/>
         <source>The project can&apos;t be empty!</source>
@@ -2409,6 +2577,16 @@ need to manually copy the source code to this path</source>
         <location filename="../../src/plugins/git/gui/gitdiffwidget.cpp" line="300"/>
         <source>[%1] %2</source>
         <translation>[%1] %2</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="204"/>
+        <source>Save Changes</source>
+        <translation>保存更改</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="205"/>
+        <source>The file has unsaved changes, will save?</source>
+        <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
 </context>
 <context>
@@ -5308,6 +5486,42 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
+    <name>ShortCut</name>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="100"/>
+        <source>Shortcut Invalid</source>
+        <translation>快捷键不合法</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="100"/>
+        <source>Shortcut Invalid, Please enter again!</source>
+        <translation>快捷键不合法，请重新输入！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="111"/>
+        <source>Shortcut Repeated</source>
+        <translation>快捷键重复</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="111"/>
+        <source>Shortcut Repeated, Please enter again!</source>
+        <translation>快捷键重复，请重新输入！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="130"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+</context>
+<context>
+    <name>ShortCutEdit</name>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutedit.cpp" line="11"/>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+</context>
+<context>
     <name>ShortcutSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="295"/>
@@ -5891,6 +6105,14 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/core/gui/loadingwidget.cpp" line="21"/>
         <source>loading...</source>
         <translation>加载中...</translation>
+    </message>
+</context>
+<context>
+    <name>pathChooser</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/cmakeCfgWidget/cmakeitemdelegate.cpp" line="30"/>
+        <source>Choose path</source>
+        <translation>选择路径</translation>
     </message>
 </context>
 <context>

@@ -31,6 +31,11 @@ inline const QString MWTG_DEBUG { "Debug" };
 inline const QString WN_CONTEXTWIDGET = "contextWidget";
 inline const QString WN_WORKSPACE = "workspaceWidget";
 
+// MWTG = MainWindow TopTool group
+inline const QString MWTG_EDIT { "Edit" };
+inline const QString MWTG_DEBUG { "Debug" };
+
+
 // MWM = MW menu
 // MWMFA = MWM File Action
 inline const QString MWM_FILE { QMenu::tr("&File") };
