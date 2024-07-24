@@ -160,6 +160,14 @@ void CodeCompletionWidget::executeCompletionItem(const QModelIndex &index)
     if (!item)
         return;
 
+    if (!item->textEdit.newText.isEmpty())
+        executeWithTextEdit(item);
+    else
+        executeWithoutTextEdit(item);
+}
+
+void CodeCompletionWidget::executeWithTextEdit(lsp::CompletionItem *item)
+{
     int labelOpenParenOffset = item->label.indexOf('(');
     int labelClosingParenOffset = item->label.indexOf(')');
     bool isMacroCall = item->kind == lsp::CompletionItem::Text && labelOpenParenOffset != -1
@@ -202,6 +210,30 @@ void CodeCompletionWidget::executeCompletionItem(const QModelIndex &index)
         editor()->lineIndexFromPosition(editor()->cursorPosition(), &curLine, &curIndex);
         editor()->setCursorPosition(curLine, curIndex + cursorOffset);
     }
+}
+
+void CodeCompletionWidget::executeWithoutTextEdit(lsp::CompletionItem *item)
+{
+    const int pos = editor()->cursorPosition();
+    const QString textToInsert(item->insertText);
+    int length = 0;
+    for (auto it = textToInsert.crbegin(), end = textToInsert.crend(); it != end; ++it) {
+        char character = editor()->SendScintilla(TextEditor::SCI_GETCHARAT, pos - length - 1);
+        if (it->toLower() != QChar(character).toLower()) {
+            length = 0;
+            break;
+        }
+        ++length;
+    }
+
+    int line = editor()->SendScintilla(TextEditor::SCI_LINEFROMPOSITION, pos);
+    int lineStartPos = editor()->SendScintilla(TextEditor::SCI_POSITIONFROMLINE, line);
+    const auto &text = editor()->text(lineStartPos, pos);
+    static QRegularExpression identifier("[a-zA-Z_][a-zA-Z0-9_]*$");
+    QRegularExpressionMatch match = identifier.match(text);
+    int matchLength = match.hasMatch() ? match.capturedLength(0) : 0;
+    length = qMax(length, matchLength);
+    editor()->replaceRange(pos - length, pos, textToInsert);
 }
 
 void CodeCompletionWidget::modelContentChanged()

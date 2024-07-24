@@ -389,7 +389,7 @@ const char *SciLexerCPP::keywords(int set) const
         return "and and_eq asm auto bitand bitor bool break case catch "
                "char class compl const const_cast continue default "
                "delete do double dynamic_cast else enum explicit export "
-               "extern false farcall float for friend goto if inline int "
+               "extern false farcall final float for friend goto if inline int "
                "long mutable namespace new not not_eq nullptr null out "
                "operator or or_eq override private protected public println register "
                "reinterpret_cast return short signed sizeof static system "
