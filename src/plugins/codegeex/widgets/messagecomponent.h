@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -6,6 +6,7 @@
 #define MESSAGECOMPONENT_H
 
 #include "data/messagedata.h"
+#include "codegeexmanager.h"
 
 #include <DWidget>
 #include <DLabel>
@@ -42,16 +43,20 @@ private:
     void initMessageSection();
     void initConnect();
 
+    void showWebsitesRefrences();
     void createCurrentUpdateWidget();
     bool createCodeEdit(const MessageData &newData);
 
     bool waitingAnswer { false };
+    bool isConnecting { false };
+    bool finished { false };
 
     DLabel *senderHead { nullptr };
     DLabel *senderName { nullptr };
     DLabel *context { nullptr };
     DPushButton *editButton { nullptr };
     DSpinner *spinner { nullptr };
+    DLabel *searchingText { nullptr };
 
     QVBoxLayout *msgLayout { nullptr };
 
@@ -60,6 +65,8 @@ private:
 
     MessageData messageData;
     UpdateState currentUpdateState = Label;
+
+    QList<CodeGeeX::websiteReference> websites;
 };
 
 #endif   // MESSAGECOMPONENT_H
