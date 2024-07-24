@@ -61,10 +61,14 @@ ProjectTree::ProjectTree(QWidget *parent)
     DStyle::setFrameRadius(this, 0);
     setIconSize(QSize(16, 16));
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setTextElideMode(Qt::ElideNone);
     setEditTriggers(DTreeView::NoEditTriggers);   //节点不能编辑
     setSelectionBehavior(DTreeView::SelectRows);   //一次选中整行
     setSelectionMode(DTreeView::SingleSelection);   //单选，配合上面的整行就是一次选单行
-    this->header()->hide();
+    setHeaderHidden(true);
+    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header()->setStretchLastSection(false);
 
     d->itemModel = new ProjectModel(this);
     setModel(d->itemModel);
@@ -416,6 +420,15 @@ void ProjectTree::mouseMoveEvent(QMouseEvent *event)
             performDrag();
     }
     DTreeView::mouseMoveEvent(event);
+}
+
+void ProjectTree::resizeEvent(QResizeEvent *event)
+{
+    const int columns = header()->count();
+    const int minimumWidth = columns > 1 ? viewport()->width() / columns
+                                         : viewport()->width();
+    header()->setMinimumSectionSize(minimumWidth);
+    DTreeView::resizeEvent(event);
 }
 
 DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childItem)

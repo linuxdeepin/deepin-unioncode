@@ -104,7 +104,7 @@ void AdvancedSearchWidgetPrivate::initUI()
     q->setBackgroundRole(QPalette::Base);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
-    mainLayout->setContentsMargins(10, 5, 10, 0);
+    mainLayout->setContentsMargins(10, 5, 0, 0);
 
     auto widget = createSearchParamWidget();
     resultWidget = new SearchResultWidget(q);
@@ -188,7 +188,7 @@ QWidget *AdvancedSearchWidgetPrivate::createSearchParamWidget()
 {
     QWidget *widget = new QWidget(q);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 10, 0);
 
     searchEdit = new DLineEdit(q);
     searchEdit->setPlaceholderText(AdvancedSearchWidget::tr("Search"));
