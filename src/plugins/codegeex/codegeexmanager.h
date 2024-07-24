@@ -23,21 +23,21 @@ struct RecordData
 };
 
 namespace CodeGeeX {
-    static const char* chatModelLite = "codegeex-chat-lite";
-    static const char* chatModelPro = "codegeex-chat-pro";
+static const char *chatModelLite = "codegeex-chat-lite";
+static const char *chatModelPro = "codegeex-chat-pro";
 
-    static const char* completionModelLite = "codegeex-lite";
-    static const char* completionModelPro = "codegeex-pro";
+static const char *completionModelLite = "codegeex-lite";
+static const char *completionModelPro = "codegeex-pro";
 
-    enum languageModel{
-        Lite,
-        Pro
-    };
+enum languageModel {
+    Lite,
+    Pro
+};
 
-    enum locale{
-        Zh,
-        En
-    };
+enum locale {
+    Zh,
+    En
+};
 }
 Q_DECLARE_METATYPE(CodeGeeX::languageModel)
 Q_DECLARE_METATYPE(CodeGeeX::locale)
@@ -78,6 +78,11 @@ public:
     QString getTalkId() const;
     QList<RecordData> sessionRecords() const;
 
+    void connectToNetWork(bool connecting);
+    bool isConnectToNetWork() { return isConnecting; };
+    QStringList getReferenceFiles() { return referenceFiles; };
+    void setRefereceFiles(QStringList files) { referenceFiles = files; };
+
 Q_SIGNALS:
     void loginSuccessed();
     void logoutSuccessed();
@@ -85,6 +90,9 @@ Q_SIGNALS:
     void requestMessageUpdate(const MessageData &msg);
     void requestToTransCode(const QString &code);
     void chatStarted();
+    void crawledWebsite(const QString &msgID, const QList<CodeGeeX::websiteReference> &websites);
+    void searching(const QString &searchText);
+    void terminated();
     void chatFinished();
     void sessionRecordsUpdated();
     void setTextToSend(const QString &prompt);
@@ -123,6 +131,8 @@ private:
     QTimer *queryTimer { nullptr };
     bool isLogin { false };
     bool isRunning { false };
+    bool isConnecting { false };
+    QStringList referenceFiles;
 };
 
 #endif   // CODEGEEXMANAGER_H

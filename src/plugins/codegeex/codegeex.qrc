@@ -15,5 +15,7 @@
         <file>builtin/texts/codegeex_function_16px.svg</file>
         <file>builtin/texts/codegeex_send_16px.svg</file>
         <file>builtin/texts/codegeex_edit_32px.svg</file>
+        <file>builtin/texts/codegeex_internet_16px.svg</file>
+        <file>builtin/texts/codegeex_files_16px.svg</file>
     </qresource>
 </RCC>

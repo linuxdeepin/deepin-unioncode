@@ -6,6 +6,7 @@
 #include "intropage.h"
 #include "messagecomponent.h"
 #include "codegeexmanager.h"
+#include "services/editor/editorservice.h"
 
 #include <DLabel>
 #include <DLineEdit>
@@ -20,6 +21,8 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QKeyEvent>
+#include <QMenu>
+#include <QFileDialog>
 
 static const int minInputEditHeight = 36;
 static const int maxInputEditHeight = 236;
@@ -104,13 +107,6 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
     } else {
         msgComponents.value(msgData.messageID())->updateMessage(msgData);
     }
-
-    QTimer::singleShot(50, [this]() {
-        if (scrollArea->verticalScrollBar()->isVisible()) {
-            int maxValue = scrollArea->verticalScrollBar()->maximum();
-            scrollArea->verticalScrollBar()->setValue(maxValue);
-        }
-    });
 }
 
 void AskPageWidget::slotMessageSend()
@@ -144,6 +140,22 @@ void AskPageWidget::onDeleteBtnClicked()
     });
 
     confirmDialog->exec();
+}
+
+void AskPageWidget::onReferenceBtnClicked()
+{
+    referenceBtn->setChecked(true);
+    referenceMenu->exec(QCursor::pos());
+    referenceBtn->update();
+    if (selectedFiles.isEmpty())
+        referenceBtn->setChecked(false);
+
+    CodeGeeXManager::instance()->setRefereceFiles(selectedFiles);
+}
+
+void AskPageWidget::onNetWorkBtnClicked()
+{
+    CodeGeeXManager::instance()->connectToNetWork(netWorkBtn->isChecked());
 }
 
 void AskPageWidget::onHistoryBtnClicked()
@@ -208,7 +220,22 @@ void AskPageWidget::initInputWidget()
     deleteBtn->setFixedSize(30, 30);
     deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
     deleteBtn->setToolTip(tr("delete this session"));
+
+    referenceBtn = new DToolButton(this);
+    referenceBtn->setFixedSize(30, 30);
+    referenceBtn->setIcon(QIcon::fromTheme("codegeex_files"));
+    referenceBtn->setToolTip(tr("reference files"));
+    referenceBtn->setCheckable(true);
+
+    netWorkBtn = new DToolButton(this);
+    netWorkBtn->setFixedSize(30, 30);
+    netWorkBtn->setCheckable(true);
+    netWorkBtn->setIcon(QIcon::fromTheme("codegeex_internet"));
+    netWorkBtn->setToolTip(tr("connect to network"));
+
     btnLayout->addWidget(deleteBtn);
+    btnLayout->addWidget(referenceBtn);
+    btnLayout->addWidget(netWorkBtn);
 
     btnLayout->addStretch(1);
 
@@ -240,8 +267,9 @@ void AskPageWidget::initInputWidget()
     hlayout->addWidget(inputEdit);
     hlayout->setSpacing(10);
     hlayout->addWidget(sendButton);
-
     layout->addLayout(hlayout);
+
+    initReferenceMenu();
 }
 
 void AskPageWidget::initConnection()
@@ -249,11 +277,14 @@ void AskPageWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatStarted, this, &AskPageWidget::enterAnswerState);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this, &AskPageWidget::onChatFinished);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::setTextToSend, this, &AskPageWidget::setInputText);
 
     connect(sendButton, &DFloatingButton::clicked, this, &AskPageWidget::slotMessageSend);
     connect(inputEdit, &InputEdit::pressedEnter, this, &AskPageWidget::slotMessageSend);
     connect(deleteBtn, &DToolButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
+    connect(referenceBtn, &DToolButton::clicked, this, &AskPageWidget::onReferenceBtnClicked);
+    connect(netWorkBtn, &DToolButton::clicked, this, &AskPageWidget::onNetWorkBtnClicked);
     connect(historyBtn, &DToolButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DToolButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
     connect(inputEdit, &DTextEdit::textChanged, this, [this]() {
@@ -266,13 +297,65 @@ void AskPageWidget::initConnection()
     });
     connect(stopGenerate, &DPushButton::clicked, this, [this]() {
         CodeGeeXManager::instance()->stopReceiving();
-        Q_EMIT CodeGeeXManager::instance()->chatFinished();
+        Q_EMIT CodeGeeXManager::instance()->terminated();
         if (!msgComponents.values().contains(waitComponets)) {
             QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
             msgComponents.insert(stopId, waitComponets);
         }
         waitComponets->stopWaiting();
         waitingAnswer = false;
+    });
+    connect(scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged, this, [=]() {
+        if (scrollArea->verticalScrollBar()->isVisible()) {
+            int maxValue = scrollArea->verticalScrollBar()->maximum();
+            scrollArea->verticalScrollBar()->setValue(maxValue);
+        }
+    });
+}
+
+void AskPageWidget::initReferenceMenu()
+{
+    // files references menu
+    referenceMenu = new QMenu(this);
+    auto *current = new QAction(tr("Current file"), this);
+    current->setCheckable(true);
+    auto *opened = new QAction(tr("Opened files"), this);
+    opened->setCheckable(true);
+    auto *select = new QAction(tr("Select file"), this);
+    select->setCheckable(true);
+
+    auto *clear = new QAction(tr("clear"), this);
+
+    QActionGroup *group = new QActionGroup(this);
+    group->addAction(current);
+    group->addAction(opened);
+    group->addAction(select);
+
+    referenceMenu->addActions(group->actions());
+    referenceMenu->addSeparator();
+    referenceMenu->addAction(clear);
+
+    auto editorSrv = dpfGetService(dpfservice::EditorService);
+
+    connect(current, &QAction::triggered, this, [=](){
+        selectedFiles.clear();
+        auto file = editorSrv->currentFile();
+        if (!file.isEmpty())
+            selectedFiles.append(file);
+    });
+    connect(opened, &QAction::triggered, this, [=](){
+        selectedFiles.clear();
+        selectedFiles = editorSrv->openedFiles();
+    });
+    connect(select, &QAction::triggered, this, [=](){
+        selectedFiles.clear();
+        QString result = QFileDialog::getOpenFileName(this, tr("Select File"), QDir::homePath());
+        selectedFiles.append(result);
+    });
+    connect(clear, &QAction::triggered, this, [=](){
+        selectedFiles.clear();
+        referenceBtn->setChecked(false);
+        group->checkedAction()->setChecked(false);
     });
 }
 
@@ -364,6 +447,6 @@ void AskPageWidget::resetBtns()
 
 void AskPageWidget::setInputText(const QString &prompt)
 {
-    if(!waitingAnswer)
+    if (!waitingAnswer)
         inputEdit->setText(prompt);
 }

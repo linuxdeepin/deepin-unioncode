@@ -58,6 +58,8 @@ public Q_SLOTS:
     void slotMessageSend();
     void onChatFinished();
     void onDeleteBtnClicked();
+    void onReferenceBtnClicked();
+    void onNetWorkBtnClicked();
     void onHistoryBtnClicked();
     void onCreateNewBtnClicked();
     void setInputText(const QString &prompt);
@@ -66,6 +68,7 @@ private:
     void initUI();
     void initInputWidget();
     void initConnection();
+    void initReferenceMenu();
 
     void cleanWidgets();
     void setSessionPage();
@@ -84,6 +87,9 @@ private:
 
     DTK_WIDGET_NAMESPACE::DFloatingButton *sendButton { nullptr };
     DTK_WIDGET_NAMESPACE::DToolButton *deleteBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DToolButton *referenceBtn { nullptr };
+    QMenu *referenceMenu { nullptr };
+    DTK_WIDGET_NAMESPACE::DToolButton *netWorkBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DToolButton *historyBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DToolButton *createNewBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DWidget *stopWidget { nullptr };
@@ -96,6 +102,8 @@ private:
     int progressCalcNum = 0;
     PageState curState;
     bool waitingAnswer { false };
+    bool isConnecting { false };
+    QStringList selectedFiles;
 };
 
 #endif   // ASKPAGEWIDGET_H

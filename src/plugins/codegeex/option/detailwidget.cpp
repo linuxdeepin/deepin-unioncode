@@ -113,7 +113,7 @@ bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
     dataToMap(config, map);
 
     Copilot::instance()->setGenerateCodeEnabled(config.codeCompletionEnabled);
-    Copilot::instance()->setCommitsLocale(config.commitsLanguage == CodeGeeX::Zh ? "zh" : "cn");
+    Copilot::instance()->setCommitsLocale(config.commitsLanguage == CodeGeeX::Zh ? "zh" : "en");
     CodeGeeXManager::instance()->setLocale(config.globalLanguage);
     CodeGeeXManager::instance()->setCurrentModel(config.model);
     return true;

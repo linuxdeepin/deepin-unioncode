@@ -10,6 +10,19 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 namespace CodeGeeX {
+struct websiteReference {
+    QString citation;
+    QString url;
+    QString title;
+    QString status;
+};
+
+struct Entry {
+    QString type;
+    QString text;
+    QList<websiteReference> websites;
+};
+
 class AskApi : public QObject
 {
     Q_OBJECT
@@ -75,6 +88,7 @@ public:
 signals:
     void loginState(LoginState loginState);
     void response(const QString &msgID, const QString &response, const QString &event);
+    void crawledWebsite(const QString &msgID, const QList<websiteReference> &websites);
     void getSessionListResult(const QVector<SessionRecord> &records);
     void getMessageListResult(const QVector<MessageRecord> &records);
     void sessionDeleted(const QStringList &talkId, bool isSuccessful);
@@ -87,6 +101,7 @@ private:
     QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);
     QNetworkReply *getMessage(const QString &url, const QString &token);
     void processResponse(QNetworkReply *reply);
+    Entry processJsonObject(const QString &event, QJsonObject *obj);
 
     QByteArray assembleSSEChatBody(const QString &prompt,
                                    const QString &machineId,
@@ -100,6 +115,7 @@ private:
 
     QByteArray jsonToByteArray(const QJsonObject &jsonObject);
     QJsonObject toJsonOBject(QNetworkReply *reply);
+    QJsonArray parseFile(QStringList files);
 
     QNetworkAccessManager *manager = nullptr;
     QString model = "codegeex-chat-lite";
