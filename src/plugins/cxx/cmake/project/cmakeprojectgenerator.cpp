@@ -636,7 +636,6 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
     addBuildMenu("Build.Build");
     addBuildMenu("Build.Rebuild");
     addBuildMenu("Build.Clean");
-    addBuildMenu("Build.Cancel");
     addBuildMenu("Build.RunCMake");
     addBuildMenu("Build.ClearCMake");
     menu->addSeparator();
