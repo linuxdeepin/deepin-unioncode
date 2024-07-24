@@ -601,8 +601,6 @@ void CmakeProjectGenerator::targetInitialized(const QString& workspace)
 
 void CmakeProjectGenerator::createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure)
 {
-    Q_UNUSED(workDirectory)
-
     if (!runConfigure.targetsRunConfigure.isEmpty())
         return;
 
@@ -613,6 +611,8 @@ void CmakeProjectGenerator::createTargetsRunConfigure(const QString &workDirecto
         TargetRunConfigure targetRunConfigure;
         targetRunConfigure.targetName = targetName;
         targetRunConfigure.targetPath = target.output;
+        auto targetFile = QFileInfo(targetRunConfigure.targetPath);
+        targetRunConfigure.workDirectory = targetFile.exists() ? targetFile.path() : workDirectory;
 
         runConfigure.targetsRunConfigure.push_back(targetRunConfigure);
     }

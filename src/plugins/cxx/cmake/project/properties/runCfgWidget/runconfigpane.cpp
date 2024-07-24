@@ -82,7 +82,6 @@ void RunConfigPane::setupUi()
     btnBrowser->setIconSize(QSize(24, 24));
     btnBrowser->setFixedSize(36, 36);
     d->workingDirLineEdit = new DLineEdit(mainFrame);
-    d->workingDirLineEdit->lineEdit()->setReadOnly(true);
     connect(d->workingDirLineEdit, &DLineEdit::textChanged, [this](){
         if (d->targetRunParam)
             d->targetRunParam->workDirectory = d->workingDirLineEdit->text().trimmed();
