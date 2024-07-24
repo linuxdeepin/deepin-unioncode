@@ -4,14 +4,17 @@
 
 #include "messagecomponent.h"
 #include "codeeditcomponent.h"
-#include "codegeexmanager.h"
 
 #include <DLabel>
 #include <DPushButton>
+#include <DListView>
+#include <DCommandLinkButton>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
-#include <DPaletteHelper>
+#    include <DPaletteHelper>
 #endif
 
+#include <QDesktopServices>
+#include <QStringListModel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QBitmap>
@@ -56,11 +59,14 @@ void MessageComponent::updateMessage(const MessageData &msgData)
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         }
-        if (!messageData.messageLines().isEmpty() && msgData.messageLines().last()
-                != messageData.messageLines().last()) {
+        if (!messageData.messageLines().isEmpty() && msgData.messageLines().last() != messageData.messageLines().last()) {
             auto messageLine = msgData.messageLines().last();
             // TODO(Mozart): use markdown format
             messageLine.replace("`", "");
+            if (isConnecting && messageLine.contains("citation")) {
+                QRegularExpression regex("\\[\\[citation:(\\d+)\\]\\]");
+                messageLine = messageLine.replace(regex, "[\\1]");
+            }
             curUpdateLabel->setText(messageLine);
         }
         break;
@@ -151,11 +157,27 @@ void MessageComponent::initMessageSection()
 
 void MessageComponent::initConnect()
 {
-    if(!editButton)
+    if (!editButton)
         return;
-    connect(editButton, &QPushButton::clicked, this, [=](){
+    connect(editButton, &QPushButton::clicked, this, [=]() {
         CodeGeeXManager::instance()->setMessage(messageData.messageData());
     });
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::crawledWebsite, this,
+            [=](const QString &msgID, const QList<CodeGeeX::websiteReference> &websites) {
+                Q_UNUSED(msgID);
+                if (!finished)
+                    this->websites = websites;
+            });
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this,
+            [=]() {
+                if (isConnecting)
+                    showWebsitesRefrences();
+                finished = true;
+            });
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this,
+            [=]() {
+                finished = true;
+            });
 }
 
 void MessageComponent::waitForAnswer()
@@ -167,14 +189,27 @@ void MessageComponent::waitForAnswer()
     hlayout->addWidget(spinner);
     hlayout->setAlignment(Qt::AlignLeft);
 
+    if (!searchingText)
+        searchingText = new DLabel(this);
+    searchingText->setWordWrap(true);
+    hlayout->addWidget(searchingText);
     msgLayout->addLayout(hlayout);
     spinner->start();
+
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::searching, searchingText, [=](const QString &searchText) {
+        if (finished)
+            return;
+        isConnecting = true;
+        auto text = tr("online searching --- %1 ").arg(searchText);
+        searchingText->setText(text);
+    });
 }
 
 void MessageComponent::stopWaiting()
 {
     if (waitingAnswer) {
         msgLayout->removeWidget(spinner);
+        searchingText->hide();
         delete spinner;
         waitingAnswer = false;
     }
@@ -227,4 +262,49 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
     }
 
     return true;
+}
+
+void MessageComponent::showWebsitesRefrences()
+{
+    if (finished)
+        return;
+
+    auto separator = new QHBoxLayout;
+    separator->setContentsMargins(0, 0, 0, 0);
+    separator->setSpacing(0);
+    auto toggleBtn = new DCommandLinkButton(tr("References"), this);
+    separator->addWidget(toggleBtn);
+    separator->addWidget(new DHorizontalLine);
+
+    msgLayout->addLayout(separator);
+
+    int count = 0;
+    DListView *view = new DListView(this);
+    view->setItemSpacing(2);
+    view->setSelectionMode(DListView::NoSelection);
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    auto listModel = new QStringListModel(this);
+    QStringList stringList;
+    view->setModel(listModel);
+    for (auto website : websites) {
+        QString title = QString::number(++count) + "." + website.title;
+        stringList.append(title);
+    }
+    listModel->setStringList(stringList);
+    msgLayout->addWidget(view);
+
+    connect(view, &DListView::clicked, this, [=](const QModelIndex &index) {
+        auto website = websites[index.row()];
+        if (!QDesktopServices::openUrl(website.url))
+            qWarning() << "can not open url: " << website.url;
+    });
+    connect(toggleBtn, &DCommandLinkButton::clicked, this, [=](){
+        if (view->isVisible()) {
+            msgLayout->removeWidget(view);
+            view->hide();
+        } else {
+            view->show();
+            msgLayout->addWidget(view);
+        }
+    });
 }

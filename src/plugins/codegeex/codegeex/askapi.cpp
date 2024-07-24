@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "askapi.h"
+#include "codegeexmanager.h"
+#include "src/common/supportfile/language.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -10,6 +12,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QFileInfo>
 
 namespace CodeGeeX {
 
@@ -231,7 +234,6 @@ void AskApi::processResponse(QNetworkReply *reply)
         } else {
             QString replyMsg = QString::fromUtf8(reply->readAll());
             QStringList lines = replyMsg.split('\n');
-            QString data;
             QString event;
             QString id;
             for (const auto &line : lines) {
@@ -253,13 +255,60 @@ void AskApi::processResponse(QNetworkReply *reply)
                     }
 
                     QJsonObject jsonObject = jsonDocument.object();
-                    data = jsonObject.value("text").toString();
-
-                    emit response(id, data, event);
+                    auto entry = processJsonObject(event, &jsonObject);
+                    if (entry.type == "crawl")
+                        emit crawledWebsite(id, entry.websites);
+                    else
+                        emit response(id, entry.text, event);
                 }
             }
         }
     });
+}
+
+Entry AskApi::processJsonObject(const QString &event, QJsonObject *obj)
+{
+    Entry entry;
+    if (!obj || obj->isEmpty())
+        return entry;
+
+    if (event == "add") {
+        entry.type = "text";
+        entry.text = obj->value("text").toString();
+        return entry;
+    }
+
+    if (event == "processing") {
+        auto type = obj->value("type").toString();
+        entry.type = type;
+        if (type == "keyword") {
+            auto keyWords = obj->value("data").toArray();
+            QString keys;
+            for (auto key : keyWords)
+                keys = keys + key.toString() + " ";
+            entry.text = keys.trimmed();
+        } else if (type == "crawl") {
+            auto crawlObj = obj->value("data").toObject();
+            for (auto it = crawlObj.begin(); it != crawlObj.end(); ++it) {
+                websiteReference website;
+                QString citationKey = it.key();
+                QJsonObject citationObj = it.value().toObject();
+
+                website.citation = citationKey;
+                website.status = citationObj["status"].toString();
+                website.url = citationObj["url"].toString();
+                website.title = citationObj["title"].toString();
+
+                entry.websites.append(website);
+            }
+        }
+        return entry;
+    }
+
+    if (event == "finish")
+        entry.type = event;
+
+    return entry;
 }
 
 QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
@@ -268,13 +317,25 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
                                        const QString &talkId)
 {
     QJsonObject jsonObject;
+
     jsonObject.insert("prompt", prompt);
     jsonObject.insert("machineId", machineId);
     jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
     //temp  support choose to use later
     jsonObject.insert("locale", locale);
-    jsonObject.insert("model", model);
+    
+    if (!CodeGeeXManager::instance()->getReferenceFiles().isEmpty()) {
+        auto fileDatas = parseFile(CodeGeeXManager::instance()->getReferenceFiles());
+        jsonObject.insert("command", "file_augment");
+        QJsonObject files;
+        files["files"] = fileDatas;
+        jsonObject.insert("files", files);
+    } else if (CodeGeeXManager::instance()->isConnectToNetWork())
+        jsonObject.insert("command", "online_search");
+    else
+        jsonObject.insert("model", model);
+
     if(!talkId.isEmpty())
         jsonObject.insert("talkId", talkId);
 
@@ -316,4 +377,23 @@ QJsonObject AskApi::toJsonOBject(QNetworkReply *reply)
     QJsonDocument document = QJsonDocument::fromJson(response.toUtf8());
     return document.object();
 }
+
+QJsonArray AskApi::parseFile(QStringList files)
+{
+    QJsonArray result;
+
+    for (auto file : files) {
+        QJsonObject obj;
+        obj["name"] = QFileInfo(file).fileName();
+        obj["language"] = support_file::Language::id(file);
+        QFile content(file);
+        if (content.open(QIODevice::ReadOnly)) {
+            obj["content"] = QString(content.readAll());
+        }
+        result.append(obj);
+    }
+
+    return result;
+}
+
 }   // end namespace

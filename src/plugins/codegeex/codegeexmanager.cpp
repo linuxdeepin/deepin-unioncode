@@ -87,8 +87,8 @@ void CodeGeeXManager::setLocale(CodeGeeX::locale locale)
         askApi.setLocale("zh");
         Copilot::instance()->setLocale("zh");
     } else if (locale == CodeGeeX::En) {
-        askApi.setLocale("cn");
-        Copilot::instance()->setLocale("cn");
+        askApi.setLocale("en");
+        Copilot::instance()->setLocale("en");
     }
 
 }
@@ -100,6 +100,11 @@ void CodeGeeXManager::setCurrentModel(languageModel model)
         askApi.setModel(chatModelLite);
     else if (model == Pro)
         askApi.setModel(chatModelPro);
+}
+
+void CodeGeeXManager::connectToNetWork(bool connecting)
+{
+    isConnecting = connecting;
 }
 
 void CodeGeeXManager::createNewSession()
@@ -185,6 +190,8 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
             curSessionMsg[msgID].updateData(responseData);
             Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
         }
+    } else if (event == "processing") {
+        emit searching(data);
     }
 }
 
@@ -279,6 +286,7 @@ CodeGeeXManager::CodeGeeXManager(QObject *parent)
 void CodeGeeXManager::initConnections()
 {
     connect(&askApi, &AskApi::response, this, &CodeGeeXManager::onResponse);
+    connect(&askApi, &AskApi::crawledWebsite, this, &CodeGeeXManager::crawledWebsite);
     connect(&askApi, &AskApi::loginState, this, &CodeGeeXManager::recevieLoginState);
     connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
     connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
