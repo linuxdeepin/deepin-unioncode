@@ -342,6 +342,7 @@ void DapSession::registerHanlder()
             QStringList arguments;
             arguments.push_back(request.program.value().c_str());
             if (request.args.has_value()) {
+                arguments.insert(0, "--args");
                 foreach(auto arg, request.args.value()) {
                     arguments.push_back(arg.c_str());
                 }
