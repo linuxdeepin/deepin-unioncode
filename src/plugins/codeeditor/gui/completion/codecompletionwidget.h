@@ -7,6 +7,10 @@
 
 #include <QFrame>
 
+namespace lsp {
+struct CompletionItem;
+}
+
 class TextEditor;
 class CodeCompletionView;
 class CodeCompletionModel;
@@ -48,6 +52,8 @@ private:
     QString filterString();
     bool isFunctionKind(int kind);
     void executeCompletionItem(const QModelIndex &index);
+    void executeWithTextEdit(lsp::CompletionItem *item);
+    void executeWithoutTextEdit(lsp::CompletionItem *item);
 
 private slots:
     void modelContentChanged();

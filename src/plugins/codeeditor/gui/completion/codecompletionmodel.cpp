@@ -126,7 +126,11 @@ lsp::Range CodeCompletionModel::range() const
     if (d->completionDatas.isEmpty())
         return {};
 
-    return d->completionDatas.first().textEdit.range;
+    const auto &item = d->completionDatas.first();
+    if (item.textEdit.newText.isEmpty())
+        return {};
+
+    return item.textEdit.range;
 }
 
 lsp::CompletionItem *CodeCompletionModel::item(const QModelIndex &index) const
