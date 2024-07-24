@@ -42,6 +42,7 @@ void SearchResultItemDelegate::paint(QPainter *painter, const QStyleOptionViewIt
 
     QStyleOptionViewItem opt = option;
     DStyledItemDelegate::initStyleOption(&opt, index);
+    opt.rect.adjust(0, 0, -10, 0);
     painter->setRenderHint(QPainter::Antialiasing);
 
     drawBackground(painter, opt);
@@ -55,7 +56,9 @@ void SearchResultItemDelegate::paint(QPainter *painter, const QStyleOptionViewIt
 
 QSize SearchResultItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return { 1000, 24 };
+    auto size = DStyledItemDelegate::sizeHint(option, index);
+    size.setHeight(24);
+    return size;
 }
 
 bool SearchResultItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)

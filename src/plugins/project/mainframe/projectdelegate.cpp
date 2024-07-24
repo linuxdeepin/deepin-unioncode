@@ -68,8 +68,9 @@ void ProjectDelegate::paint(QPainter *painter,
 
 QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_UNUSED(index)
-    return { option.rect.width(), 24 };
+    auto size = BaseItemDelegate::sizeHint(option, index);
+    size.setHeight(24);
+    return size;
 }
 
 void ProjectDelegate::hideSpinner()
