@@ -1886,12 +1886,12 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="74"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="94"/>
         <source>Quickly Answer Questions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="76"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="96"/>
         <source>Provide More Accurate Answers to Technical Questions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2156,7 +2156,7 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="78"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="79"/>
         <source>ADVANCED SEARCH</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3260,93 +3260,93 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="224"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="440"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="677"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="228"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="453"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="690"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="228"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="435"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="232"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="448"/>
         <source>New Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="241"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="245"/>
         <source>Show Containing Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="445"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="573"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="458"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="586"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="454"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="467"/>
         <source>Open In Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="468"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="481"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="569"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="673"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="582"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="686"/>
         <source>New Document Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="576"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="618"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="652"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="680"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="705"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="763"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="802"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="589"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="631"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="665"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="693"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="718"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="776"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="815"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="645"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="658"/>
         <source>New Dirctory Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="649"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="662"/>
         <source>New Dirctory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="699"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="712"/>
         <source>Delete operation not be recoverable, delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="703"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="716"/>
         <source>Delete: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="761"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="774"/>
         <source>A directory with name %1 already exists. please reanme it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="612"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="616"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="800"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="625"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="629"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="813"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="617"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="706"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="762"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="801"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="630"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="719"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="775"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="814"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3438,17 +3438,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="494"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="507"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="495"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="508"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="496"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="509"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3704,12 +3704,22 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="59"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="63"/>
         <source>Code Completion:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="65"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="69"/>
+        <source>Global Language Preference:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="77"/>
+        <source>Commits Language Preference:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="85"/>
         <source>model</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5177,17 +5187,17 @@ not exists support files: %0</source>
 <context>
     <name>SearchResultItemDelegate</name>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="67"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="71"/>
         <source>Replace All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="67"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="71"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="69"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
         <source>Dismiss</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5195,38 +5205,38 @@ not exists support files: %0</source>
 <context>
     <name>SearchResultWidget</name>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="94"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="96"/>
         <source>Replace All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="95"/>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="104"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="97"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="106"/>
         <source>Dismiss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="97"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="99"/>
         <source>Copy Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="103"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="105"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="126"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="128"/>
         <source>&lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; result in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="130"/>
         <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="130"/>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="132"/>
         <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;%2&lt;/font&gt; files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5445,7 +5455,7 @@ not exists support files: %0</source>
 <context>
     <name>SymbolLocator</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/symbol/symbollocator.cpp" line="86"/>
+        <location filename="../../src/plugins/codeeditor/symbol/symbollocator.cpp" line="90"/>
         <source>Symbols in Current Document</source>
         <translation type="unfinished"></translation>
     </message>
