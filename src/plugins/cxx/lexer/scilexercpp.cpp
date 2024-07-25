@@ -387,7 +387,7 @@ const char *SciLexerCPP::keywords(int set) const
 {
     if (set == 1)
         return "and and_eq asm auto bitand bitor bool break case catch "
-               "char class compl const const_cast continue default "
+               "char class compl const constexpr const_cast continue default "
                "delete do double dynamic_cast else enum explicit export "
                "extern false farcall final float for friend goto if inline int "
                "long mutable namespace new not not_eq nullptr null out "
