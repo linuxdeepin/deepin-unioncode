@@ -29,10 +29,10 @@ loadingWidget::loadingWidget(QWidget *parent)
 void loadingWidget::setLogo()
 {
     backgroundLogo = new DLabel(this);
-    backgroundLogo->setPixmap(QIcon::fromTheme("backgroundLogo").pixmap(128));
+    backgroundLogo->setPixmap(QIcon::fromTheme("deepin_unioncode_backgroundLogo").pixmap(128));
 
     logo = new DLabel(backgroundLogo);
-    logo->setPixmap(QIcon::fromTheme("logo").pixmap(128));
+    logo->setPixmap(QIcon::fromTheme("deepin_unioncode_logo").pixmap(128));
 
     QHBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addWidget(logo);
