@@ -118,19 +118,15 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE)下发布。
 
 ## 三方库支持
 
-| 三方库名称    | 版本号     | 应用位置                     | 三方库协议类型 |
-| ------------- | ---------- | ---------------------------- | -------------- |
-| cppdap        | NA         | C++调试适配器协议 SDK        | Apache 2.0     |
-| googletest    | 1.11.0     | cppdap 依赖 google test      | BSD3           |
-| nlohmann/json | 3.10.4     | cppdap 依赖 nlohmann json 库 | MIT            |
-| scintilla     | 5.15       | 智能编辑器界面组件           | HPND           |
-| lexilla       | 5.14       | 智能编辑器词法分析库         | HPND           |
-| marl          | NA         | C++ 11线程/任务调度库        | Apache 2.0     |
-| qtermwidget   | 0.14.1     | 终端组件库                   | GPLV2+ BSD3    |
-| GitQlient     | tag/v1.4.3 | Git展示客户端                | LGPL-2.1+      |
-| libclang/     | > 1:7~     | 符号树模块                   | Apache  2.0    |
-| llvm          | > 1:7~     | 编译器框架                   | Apache  2.0    |
-| json-rpc-cpp  | 1.4.1      | 通信中间件                   | MIT            |
+| 三方库名称   | 版本号     | 应用位置              | 三方库协议类型 |
+| ------------ | ---------- | --------------------- | -------------- |
+| cppdap       | NA         | C++调试适配器协议 SDK | Apache 2.0     |
+| QScintilla   | 2.14       | 智能编辑器界面组件    | GPLv3          |
+| lexilla      | 5.14       | 智能编辑器词法分析库  | HPND           |
+| qtermwidget  | 0.14.1     | 终端组件库            | GPLV2+ BSD3    |
+| GitQlient    | tag/v1.4.3 | Git展示客户端         | LGPL-2.1+      |
+| json-rpc-cpp | 1.4.1      | 通信中间件            | MIT            |
+| DTK          | 5.6.8.9    | 界面显示              | LGPLv3+        |
 
 ## 界面预览
 
