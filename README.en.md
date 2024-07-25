@@ -2,7 +2,7 @@
 
 [![zh](https://img.shields.io/badge/lang-zh-red.svg)](./README.md)
 
-Deepin Union Code is a lightweight integrated development environment independently developed by Deepin Technology, featured with multilingual and cross platform compatibility.
+deepin-unioncode is a lightweight integrated development environment, featured with multilingual and cross platform compatibility.
 
 ## Build dependencies
 
