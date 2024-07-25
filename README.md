@@ -2,7 +2,7 @@
 
 [![en](https://img.shields.io/badge/lang-en-red.svg)](./README.en.md)
 
-深度集成开发环境是由深度公司自主研发，具有多语言、跨平台兼容特性的轻量级集成开发环境。
+deepin-unioncode 是一款支持多语言、跨平台兼容特性的轻量级集成开发环境。
 
 ## 构建依赖
 
