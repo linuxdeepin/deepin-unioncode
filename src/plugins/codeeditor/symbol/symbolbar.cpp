@@ -116,14 +116,20 @@ void CurmbItem::paintEvent(QPaintEvent *event)
         auto rect = QRect(0, 0, SeparatorSize, SeparatorSize);
         rect.moveTop((height() - rect.height()) / 2);
         auto icon = QIcon::fromTheme("edit-forward");
-        icon.paint(&p, rect);
+
+        auto px = icon.pixmap({ SeparatorSize, SeparatorSize });
+        px.setDevicePixelRatio(qApp->devicePixelRatio());
+        p.drawPixmap(rect, px);
     }
 
     // draw icon
     if (!itemIcon.isNull()) {
         auto rect = QRect(sw, 0, IconSize, IconSize);
         rect.moveTop((height() - rect.height()) / 2);
-        itemIcon.paint(&p, rect);
+
+        auto px = itemIcon.pixmap({ IconSize, IconSize });
+        px.setDevicePixelRatio(qApp->devicePixelRatio());
+        p.drawPixmap(rect, px);
         sw += spacing + IconSize;
     }
 
