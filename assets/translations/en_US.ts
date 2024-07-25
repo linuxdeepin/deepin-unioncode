@@ -75,110 +75,110 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="214"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="215"/>
         <source>All Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="215"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
         <source>Current Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
         <source>Current File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="218"/>
         <source>Toggle Search Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="228"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="229"/>
         <source>Scope:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="242"/>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="245"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="243"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="246"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="247"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="248"/>
         <source>Files To Include:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="249"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="250"/>
         <source>Files To Exclude:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="330"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="331"/>
         <source>All projects path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="336"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="337"/>
         <source>Current projects path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="342"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="343"/>
         <source>No files are currently open, please open!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="357"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="358"/>
         <source>Advance Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="360"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="361"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="361"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="362"/>
         <source>Continue</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="434"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="435"/>
         <source>No results found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="449"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="450"/>
         <source>Replace 1 occurence across 1 file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="450"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="451"/>
         <source>Replace 1 occurence across 1 file with %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="453"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="454"/>
         <source>Replace %1 occurences across 1 file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="454"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="455"/>
         <source>Replace %1 occurences across 1 file with %2?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="457"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="458"/>
         <source>Replace %1 occurences across %2 files?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="458"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="459"/>
         <source>Replace %1 occurences across %2 files with %3?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4653,17 +4653,17 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="101"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="100"/>
         <source>Run in terminal:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="92"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="91"/>
         <source>Working directory:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="94"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="93"/>
         <source>Working directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5226,18 +5226,18 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="128"/>
-        <source>&lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; result in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="130"/>
-        <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
+        <source>%1 result in %2 file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="132"/>
-        <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;%2&lt;/font&gt; files</source>
+        <source>%1 results in %2 file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="134"/>
+        <source>%1 results in %2 files</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

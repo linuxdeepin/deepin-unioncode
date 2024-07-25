@@ -75,110 +75,110 @@
         <translation>替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="214"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="215"/>
         <source>All Projects</source>
         <translation>所有工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="215"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
         <source>Current Project</source>
         <translation>当前工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="218"/>
         <source>Toggle Search Details</source>
         <translation>切换搜索详情</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="228"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="229"/>
         <source>Scope:</source>
         <translation>范围：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="242"/>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="245"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="243"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="246"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation>例如.*.ts,src/**/include</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="247"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="248"/>
         <source>Files To Include:</source>
         <translation>包含文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="249"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="250"/>
         <source>Files To Exclude:</source>
         <translation>不包含文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="330"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="331"/>
         <source>All projects path is empty, please import!</source>
         <translation>所有项目路径均为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="336"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="337"/>
         <source>Current projects path is empty, please import!</source>
         <translation>当前工程路径为空，请先导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="342"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="343"/>
         <source>No files are currently open, please open!</source>
         <translation>目前没有打开任何文件，请打开！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="357"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="358"/>
         <source>Advance Search</source>
         <translation>高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="360"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="361"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="361"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="362"/>
         <source>Continue</source>
         <comment>button</comment>
         <translation>继续</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="434"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="435"/>
         <source>No results found.</source>
         <translation>没有匹配的结果.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="449"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="450"/>
         <source>Replace 1 occurence across 1 file?</source>
         <translation>替换1个文件中的1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="450"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="451"/>
         <source>Replace 1 occurence across 1 file with %1?</source>
         <translation>使用 %1 替换1个文件中的1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="453"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="454"/>
         <source>Replace %1 occurences across 1 file?</source>
         <translation>替换1个文件中的%1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="454"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="455"/>
         <source>Replace %1 occurences across 1 file with %2?</source>
         <translation>使用 %2 替换1个文件中的%1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="457"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="458"/>
         <source>Replace %1 occurences across %2 files?</source>
         <translation>替换%2个文件中的%1个结果？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="458"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="459"/>
         <source>Replace %1 occurences across %2 files with %3?</source>
         <translation>使用 %3 替换%2个文件中的%1个结果？</translation>
     </message>
@@ -4687,17 +4687,17 @@ not exists support files: %0</source>
         <translation>命令行参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="101"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="100"/>
         <source>Run in terminal:</source>
         <translation>在终端中运行：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="92"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="91"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="94"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="93"/>
         <source>Working directory</source>
         <translation>工作目录</translation>
     </message>
@@ -5266,19 +5266,19 @@ not exists support files: %0</source>
         <translation>替换</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="128"/>
-        <source>&lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; result in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
-        <translation>&lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; 个结果在 &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; 个文件</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="130"/>
-        <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; file</source>
-        <translation>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; 个结果在 &lt;font color=&apos;blue&apos;&gt;1&lt;/font&gt; 个文件</translation>
+        <source>%1 result in %2 file</source>
+        <translation>在%2个文件中匹配到%1个结果</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="132"/>
-        <source>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; results in &lt;font color=&apos;blue&apos;&gt;%2&lt;/font&gt; files</source>
-        <translation>&lt;font color=&apos;blue&apos;&gt;%1&lt;/font&gt; 个结果在 &lt;font color=&apos;blue&apos;&gt;%2&lt;/font&gt; 个文件中</translation>
+        <source>%1 results in %2 file</source>
+        <translation>在%2个文件中匹配到%1个结果</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/searchresultwidget.cpp" line="134"/>
+        <source>%1 results in %2 files</source>
+        <translation>在%2个文件中匹配到%1个结果</translation>
     </message>
 </context>
 <context>
