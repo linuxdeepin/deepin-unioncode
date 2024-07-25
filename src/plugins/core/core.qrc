@@ -1,10 +1,10 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin"/>
     <qresource prefix="/icons/deepin">
-        <file>builtin/actions/backgroundLogo_128px.png</file>
+        <file>builtin/actions/deepin_unioncode_backgroundLogo_128px.png</file>
         <file>builtin/actions/default_plugin_96px.svg</file>
         <file>builtin/actions/ide_32px.svg</file>
-        <file>builtin/actions/logo_128px.png</file>
+        <file>builtin/actions/deepin_unioncode_logo_128px.png</file>
         <file>builtin/dark/icons/new_notification_16px.svg</file>
         <file>builtin/light/icons/new_notification_16px.svg</file>
         <file>builtin/texts/clear_history_16px.svg</file>
