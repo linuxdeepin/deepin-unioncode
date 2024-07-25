@@ -199,6 +199,7 @@ QWidget *AdvancedSearchWidgetPrivate::createSearchParamWidget()
     replaceEdit = new DLineEdit(q);
     replaceEdit->setPlaceholderText(AdvancedSearchWidget::tr("Replace"));
     replaceAllBtn = new DPushButton(AdvancedSearchWidget::tr("Replace All"), q);
+    replaceAllBtn->setEnabled(false);
 
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(0, 1);

@@ -124,12 +124,14 @@ void SearchResultWidgetPrivate::updateMessage()
     }
 
     QString msg;
+    auto color = q->palette().color(QPalette::Highlight).name();
+    auto colorFormat = "<font color='" + color + "'>%1</font>";
     if (result.count() == 1 && result.first().count() == 1) {
-        msg = SearchResultWidget::tr("<font color='blue'>1</font> result in <font color='blue'>1</font> file");
+        msg = SearchResultWidget::tr("%1 result in %2 file").arg(colorFormat.arg(1), colorFormat.arg(1));
     } else if (result.count() == 1) {
-        msg = SearchResultWidget::tr("<font color='blue'>%1</font> results in <font color='blue'>1</font> file").arg(totalResult);
+        msg = SearchResultWidget::tr("%1 results in %2 file").arg(colorFormat.arg(totalResult), colorFormat.arg(1));
     } else {
-        msg = SearchResultWidget::tr("<font color='blue'>%1</font> results in <font color='blue'>%2</font> files").arg(totalResult).arg(result.count());
+        msg = SearchResultWidget::tr("%1 results in %2 files").arg(colorFormat.arg(totalResult), colorFormat.arg(result.count()));
     }
 
     msgLabel->setText(msg);
