@@ -117,19 +117,15 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
 ## 3rdparty support
 
-| Third-party Name | Version    | Application location                    | License     |
-| ---------------- | ---------- | --------------------------------------- | ----------- |
-| cppdap           | NA         | C++ debug adapter protocol SDK          | Apache 2.0  |
-| googletest       | 1.11.0     | cppdap depends on google test           | BSD3        |
-| nlohmann/json    | 3.10.4     | cppdap depends on nlohmann json library | MIT         |
-| scintilla        | 5.15       | Smart Editor Interface Components       | HPND        |
-| lexilla          | 5.14       | Smart Editor Lexical Analysis Library   | HPND        |
-| marl             | NA         | C++11 Thread/Task Scheduling Library    | Apache 2.0  |
-| qtermwidget      | 0.14.1     | Terminal component library              | GPLV2+ BSD3 |
-| GitQlient        | tag/v1.4.3 | Git display client                      | LGPL-2.1+   |
-| libclang/        | > 1:7~     | Symbol tree module                      | Apache  2.0 |
-| llvm             | > 1:7~     | Compiler framework                      | Apache  2.0 |
-| json-rpc-cpp     | 1.4.1      | Communication middleware                | MIT         |
+| Third-party Name | Version    | Application location  | License     |
+| ---------------- | ---------- | --------------------- | ----------- |
+| cppdap           | NA         | C++调试适配器协议 SDK | Apache 2.0  |
+| QScintilla       | 2.14       | 智能编辑器界面组件    | GPLv3       |
+| lexilla          | 5.14       | 智能编辑器词法分析库  | HPND        |
+| qtermwidget      | 0.14.1     | 终端组件库            | GPLV2+ BSD3 |
+| GitQlient        | tag/v1.4.3 | Git展示客户端         | LGPL-2.1+   |
+| json-rpc-cpp     | 1.4.1      | 通信中间件            | MIT         |
+| DTK              | 5.6.8.9    | 界面显示              | LGPLv3+     |
 
 
 ## Preview
