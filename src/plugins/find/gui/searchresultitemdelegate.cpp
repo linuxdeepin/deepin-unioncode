@@ -50,7 +50,7 @@ void SearchResultItemDelegate::paint(QPainter *painter, const QStyleOptionViewIt
         const auto &iconRect = drawFileIcon(painter, opt, index);
         drawNameItem(painter, opt, index, iconRect);
     } else {
-        drawContextItem(painter, option, index);
+        drawContextItem(painter, opt, index);
     }
 }
 
@@ -64,9 +64,11 @@ QSize SearchResultItemDelegate::sizeHint(const QStyleOptionViewItem &option, con
 bool SearchResultItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     if (event->type() == QEvent::ToolTip) {
+        auto opt = option;
+        opt.rect.adjust(0, 0, -10, 0);
         QString toolTip;
-        QRect replaceRect = replaceButtonRect(option.rect);
-        QRect closeRect = closeButtonRect(option.rect);
+        QRect replaceRect = replaceButtonRect(opt.rect);
+        QRect closeRect = closeButtonRect(opt.rect);
         if (replaceRect.contains(event->pos())) {
             toolTip = index.model()->hasChildren(index) ? tr("Replace All") : tr("Replace");
         } else if (closeRect.contains(event->pos())) {
@@ -93,6 +95,8 @@ bool SearchResultItemDelegate::eventFilter(QObject *object, QEvent *event)
             return DStyledItemDelegate::eventFilter(object, event);
 
         auto itemRect = view()->visualRect(index);
+        itemRect.adjust(0, 0, -10, 0);
+
         auto arrowRect = this->arrowRect(iconRect(itemRect));
         if (arrowRect.contains(mouseEvent->pos())) {
             if (view()->isExpanded(index)) {

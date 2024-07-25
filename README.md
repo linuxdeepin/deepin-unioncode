@@ -114,7 +114,7 @@ $ sudo cmake --build build --target install
 
 ## 开源许可证
 
-deepin-unioncode 在 [LGPL-3.0-or-later](LICENSE)下发布。
+deepin-unioncode 在 [GPL-3.0-or-later](LICENSE)下发布。
 
 ## 三方库支持
 
