@@ -12,6 +12,7 @@
 #include <DStyle>
 #include <DFileIconProvider>
 
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QtMath>
 #include <QDir>
