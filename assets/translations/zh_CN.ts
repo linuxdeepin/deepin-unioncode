@@ -307,46 +307,81 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="135"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="131"/>
         <source>This operation will delete all the content of this session. confirm to delete it?</source>
         <translation>该操作将删除该会话的全部内容，确定删除吗?</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="136"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="132"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="137"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="133"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="180"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="192"/>
         <source>stop generate</source>
         <translation>终止生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="210"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="222"/>
         <source>delete this session</source>
         <translation>删除该会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="218"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="227"/>
+        <source>reference files</source>
+        <translation>引用文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="234"/>
+        <source>connect to network</source>
+        <translation>联网</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="245"/>
         <source>history sessions</source>
         <translation>历史会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="224"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="251"/>
         <source>create new session</source>
         <translation>创建新会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="229"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="256"/>
         <source>Ask question here, press Enter to send...</source>
         <translation>在这里提问，按Enter键发送...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="320"/>
+        <source>Current file</source>
+        <translation>当前文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="322"/>
+        <source>Opened files</source>
+        <translation>已打开文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="324"/>
+        <source>Select file</source>
+        <translation>选择文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="327"/>
+        <source>clear</source>
+        <translation>清空</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="352"/>
+        <source>Select File</source>
+        <translation>选择文件</translation>
     </message>
 </context>
 <context>
@@ -3063,9 +3098,19 @@ repos path: %0</source>
 <context>
     <name>MessageComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="124"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="130"/>
         <source>edit</source>
         <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="203"/>
+        <source>online searching --- %1 </source>
+        <translation>联网搜索 --- %1.</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="275"/>
+        <source>References</source>
+        <translation>引用</translation>
     </message>
 </context>
 <context>
@@ -3745,12 +3790,12 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="69"/>
         <source>Global Language Preference:</source>
-        <translation type="unfinished"></translation>
+        <translation>全局语言偏好：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="77"/>
         <source>Commits Language Preference:</source>
-        <translation type="unfinished"></translation>
+        <translation>Commits语言偏好：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="85"/>
@@ -5227,17 +5272,17 @@ not exists support files: %0</source>
 <context>
     <name>SearchResultItemDelegate</name>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="71"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
         <source>Replace All</source>
         <translation>替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="71"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
         <source>Replace</source>
         <translation>替换</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="75"/>
         <source>Dismiss</source>
         <translation>放弃</translation>
     </message>
