@@ -307,45 +307,80 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="135"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="131"/>
         <source>This operation will delete all the content of this session. confirm to delete it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="136"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="132"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="137"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="133"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="180"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="192"/>
         <source>stop generate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="210"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="222"/>
         <source>delete this session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="218"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="227"/>
+        <source>reference files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="234"/>
+        <source>connect to network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="245"/>
         <source>history sessions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="224"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="251"/>
         <source>create new session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="229"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="256"/>
         <source>Ask question here, press Enter to send...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="320"/>
+        <source>Current file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="322"/>
+        <source>Opened files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="324"/>
+        <source>Select file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="327"/>
+        <source>clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="352"/>
+        <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3031,8 +3066,18 @@ repos path: %0</source>
 <context>
     <name>MessageComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="124"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="130"/>
         <source>edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="203"/>
+        <source>online searching --- %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="275"/>
+        <source>References</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5187,17 +5232,17 @@ not exists support files: %0</source>
 <context>
     <name>SearchResultItemDelegate</name>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="71"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
         <source>Replace All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="71"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="73"/>
+        <location filename="../../src/plugins/find/gui/searchresultitemdelegate.cpp" line="75"/>
         <source>Dismiss</source>
         <translation type="unfinished"></translation>
     </message>
