@@ -90,6 +90,8 @@ dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ProjectConfigure *pa
             info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
             info.setBuildFolder(iter->directory);
             info.setBuildProgram(kit.cmakeTool().path);
+            info.setDebugProgram(kit.debugger().path);
+            info.setKitId(kit.id());
 
             QStringList configArguments;
             configArguments << "-S";
@@ -100,6 +102,8 @@ dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ProjectConfigure *pa
             configArguments << CDT_PROJECT_KIT::get()->CBP_GENERATOR;
             configArguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
             configArguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+            configArguments << "-DCMAKE_C_COMPILER=" + kit.ccompiler().path;
+            configArguments << "-DCMAKE_CXX_COMPILER=" + kit.cxxcompiler().path;
             info.setConfigCustomArgs(configArguments);
 
             QStringList buildArguments;
@@ -187,6 +191,8 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
             info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
             info.setBuildFolder(iter->directory);
             info.setBuildProgram(kit.cmakeTool().path);
+            info.setDebugProgram(kit.debugger().path);
+            info.setKitId(kit.id());
 
             QStringList arguments;
             arguments << "-S";
@@ -197,6 +203,8 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
             arguments << CDT_PROJECT_KIT::get()->CBP_GENERATOR;
             arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
             arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+            arguments << "-DCMAKE_C_COMPILER=" + kit.ccompiler().path;
+            arguments << "-DCMAKE_CXX_COMPILER=" + kit.cxxcompiler().path;
             info.setConfigCustomArgs(arguments);
 
             for (auto iterStep = iter->buildConfigure.steps.begin(); iterStep != iter->buildConfigure.steps.end(); ++iterStep) {

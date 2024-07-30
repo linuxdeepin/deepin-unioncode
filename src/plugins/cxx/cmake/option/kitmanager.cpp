@@ -32,7 +32,7 @@ QList<Kit> KitManager::kitList() const
 
 Kit KitManager::findKit(const QString &id)
 {
-    auto iter = std::find_if(allKit.cbegin(), allKit.cbegin(),
+    auto iter = std::find_if(allKit.cbegin(), allKit.cend(),
                              [&id](const Kit &kit) {
                                  return kit.id() == id;
                              });

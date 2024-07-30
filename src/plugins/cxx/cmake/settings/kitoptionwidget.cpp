@@ -314,8 +314,6 @@ void KitOptionWidget::setConfig(const QVariantMap &config)
         d->parseKitParamsV1(config);
     else
         d->parseKitParamsV2(config);
-
-    KitManager::instance()->setKitList(d->listModel.itemList());
 }
 
 QVariantMap KitOptionWidget::getConfig() const
@@ -329,5 +327,6 @@ QVariantMap KitOptionWidget::getConfig() const
         map.insert(item.kitName(), params);
     }
 
+    KitManager::instance()->setKitList(d->listModel.itemList());
     return map;
 }

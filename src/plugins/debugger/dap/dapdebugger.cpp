@@ -260,11 +260,13 @@ void DAPDebugger::attachDebug(const QString &processId)
 
     // only support gdb for now
     updateRunState(kStart);
-    QString debuggerTool = OptionManager::getInstance()->getCxxDebuggerToolPath();
+    auto prjInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
+    QString debuggerTool = prjInfo.debugProgram();
     if (!debuggerTool.contains("gdb")) {
         auto msg = tr("The gdb is required, please install it in console with \"sudo apt install gdb\", "
                     "and then restart the tool, reselect the CMake Debugger in Options Dialog...");
         printOutput(msg, OutputPane::OutputFormat::ErrorMessage);
+        return;
     }
 
     //todo : change signal to other debuger
@@ -273,7 +275,7 @@ void DAPDebugger::attachDebug(const QString &processId)
                                                   "getDebugPort");
     d->requestDAPPortPpid = QString(getpid());
     msg << d->requestDAPPortPpid
-        << "gdb"
+        << debuggerTool
         << processId
         << QStringList();
     bool ret = QDBusConnection::sessionBus().send(msg);

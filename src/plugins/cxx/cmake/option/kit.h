@@ -12,7 +12,7 @@ class Kit : public QObject
 {
     Q_OBJECT
 public:
-    explicit Kit(QString id = "", QObject *parent = nullptr);
+    explicit Kit(QObject *parent = nullptr);
     Kit(const Kit &other);
     ~Kit();
 
@@ -31,6 +31,7 @@ public:
     QString cmakeGenerator() const;
     void setCMakeGenerator(const QString &cg);
 
+    bool isValid() const;
     void copyFrom(const Kit &other);
     QVariantMap toVariantMap();
     static QVariantMap toVariantMap(const Kit &kit);
