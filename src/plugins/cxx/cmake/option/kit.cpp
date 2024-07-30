@@ -9,14 +9,6 @@
 class KitPrivate
 {
 public:
-    explicit KitPrivate(QString _id)
-        : id(_id)
-    {
-        if (id.isEmpty())
-            id = QUuid::createUuid().toString();
-    }
-
-public:
     QString id;
     QString kitName;
     Option ccompiler;
@@ -26,14 +18,14 @@ public:
     QString cmakeGenerator;
 };
 
-Kit::Kit(QString id, QObject *parent)
+Kit::Kit(QObject *parent)
     : QObject(parent),
-      d(new KitPrivate(id))
+      d(new KitPrivate())
 {
 }
 
 Kit::Kit(const Kit &other)
-    : d(new KitPrivate(""))
+    : d(new KitPrivate())
 {
     copyFrom(other);
 }
@@ -111,6 +103,11 @@ QString Kit::cmakeGenerator() const
 void Kit::setCMakeGenerator(const QString &cg)
 {
     d->cmakeGenerator = cg;
+}
+
+bool Kit::isValid() const
+{
+    return !d->id.isEmpty();
 }
 
 void Kit::copyFrom(const Kit &other)

@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "cmakedebug.h"
-
-#include "services/option/optionmanager.h"
 #include "services/project/projectservice.h"
 
 #include <QDBusMessage>
@@ -32,7 +30,8 @@ CMakeDebug::~CMakeDebug()
 
 bool CMakeDebug::prepareDebug(QString &retMsg)
 {
-    QString debuggerTool = OptionManager::getInstance()->getCxxDebuggerToolPath();
+    auto prjInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
+    QString debuggerTool = prjInfo.debugProgram();
     if (!debuggerTool.contains("gdb")) {
         retMsg = tr("The gdb is required, please install it in console with \"sudo apt install gdb\", "
                     "and then restart the tool, reselect the CMake Debugger in Options Dialog...");

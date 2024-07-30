@@ -28,6 +28,8 @@ public:
     inline QString language() const {return data["Language"].toString();}
     inline void setKitName(const QString &kitName) {data["KitName"] = kitName;}
     inline QString kitName() const {return data["KitName"].toString();}
+    inline void setKitId(const QString &id) {data["KitId"] = id;}
+    inline QString kitId() const {return data["KitId"].toString();}
     inline void setBuildFolder(const QString &buildPath) {data["BuildFolder"] = buildPath;}
     inline QString buildFolder() const {return data["BuildFolder"].toString();}
     inline void setWorkspaceFolder(const QString &workspaceFolder) {data["WorkspaceFolder"] = workspaceFolder;}
@@ -36,6 +38,8 @@ public:
     inline QString buildType() const {return data["BuildType"].toString();}
     inline void setBuildProgram(const QString &program) {data["BuildProgram"] = program;}
     inline QString buildProgram() const {return data["BuildProgram"].toString();}
+    inline void setDebugProgram(const QString &program) {data["DebugProgram"] = program;}
+    inline QString debugProgram() const {return data["DebugProgram"].toString();}
     inline void setConfigCustomArgs(const QStringList &args) {data["ConfigCustomArgs"] = args;}
     inline QStringList configCustomArgs() const {return data["ConfigCustomArgs"].toStringList();}
     inline void setSourceFiles(const QSet<QString> &files) {data["SourceFiles"] = QVariant::fromValue(files);}

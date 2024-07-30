@@ -9,6 +9,7 @@
 #include "properties/bulidCfgWidget/buildpropertypage.h"
 #include "properties/runCfgWidget/runpropertypage.h"
 #include "properties/configWidget/configpropertywidget.h"
+#include "properties/kitpage/kitpage.h"
 #include "properties/configutil.h"
 #include "properties/targetsmanager.h"
 #include "services/builder/builderservice.h"
@@ -530,6 +531,9 @@ void CmakeProjectGenerator::runCMake(QStandardItem *root, const QPair<QString, Q
 
     removeWatcher(root);
 
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->updateProjectInfo(proInfo, param);
+
     // reconfigure project info
     configure(proInfo);
 }
@@ -545,9 +549,11 @@ void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info
 
     BuildPropertyPage *buildWidget = new BuildPropertyPage(info);
     RunPropertyPage *runWidget = new RunPropertyPage(info, item);
+    KitPage *kitPage = new KitPage(info, item);
 
     dlg.insertPropertyPanel(tr("Build"), buildWidget);
     dlg.insertPropertyPanel(tr("Run"), runWidget);
+    dlg.insertPropertyPanel(tr("Kit"), kitPage);
 
     connect(buildWidget, &BuildPropertyPage::cacheFileUpdated, this, [=](){
         runCMake(this->rootItem, {});

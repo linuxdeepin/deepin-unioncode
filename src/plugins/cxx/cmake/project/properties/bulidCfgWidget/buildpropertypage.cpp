@@ -8,6 +8,7 @@
 #include "environmentwidget.h"
 #include "stepspane.h"
 #include "targetsmanager.h"
+#include "cmake/option/kitmanager.h"
 #include "services/project/projectservice.h"
 #include "cmakeCfgWidget/cmakepropertypage.h"
 

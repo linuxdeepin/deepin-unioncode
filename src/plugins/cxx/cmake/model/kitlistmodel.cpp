@@ -70,6 +70,7 @@ QModelIndex KitListModel::addItem()
 {
     Kit item;
     item.setKitName(tr("Unnamed"));
+    item.setId(QUuid::createUuid().toString());
 
     int pos = kitItemList.size();
     beginInsertRows(QModelIndex(), pos, pos);
