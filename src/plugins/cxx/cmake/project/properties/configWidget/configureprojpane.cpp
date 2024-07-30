@@ -67,7 +67,7 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
     setupUI();
     updateUI();
 
-    connect(ConfigUtil::instance(), QOverload<const dpfservice::ProjectInfo &>::of(&ConfigUtil::configureDone),
+    connect(ConfigUtil::instance(), QOverload<const dpfservice::ProjectInfo &>::of(&ConfigUtil::configureDone), this,
             [this](const dpfservice::ProjectInfo &info) {
                 QString propertyPath = ConfigUtil::instance()->getConfigPath(d->cfgItem->workspace);
                 config::ConfigUtil::instance()->saveConfig(propertyPath, *d->cfgItem);
@@ -129,6 +129,7 @@ void ConfigureProjPane::setupUI()
     vLayout->addLayout(hLayoutKit);
     vLayout->addLayout(hLayoutDebug);
     vLayout->addLayout(hLayoutRelease);
+    vLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vLayout);
 
     d->group = new QButtonGroup(this);

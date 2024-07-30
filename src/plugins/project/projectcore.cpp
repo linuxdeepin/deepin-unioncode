@@ -19,10 +19,16 @@
 #include "locator/currentprojectlocator.h"
 #include "base/abstractwidget.h"
 
+#include <DDialog>
+#include <DStackedWidget>
+
 #include <QProcess>
 #include <QAction>
 #include <QLabel>
 #include <QTreeView>
+#include <QFileDialog>
+#include <QWidget>
+#include <QComboBox>
 
 using namespace dpfservice;
 static const QString openFilesWidgetName = "openFilesWidget";
@@ -198,6 +204,9 @@ void ProjectCore::initProject(dpf::PluginServiceContext &ctx)
         if (!projectService->expandItemByFile) {
             projectService->expandItemByFile = std::bind(&ProjectTree::expandItemByFile, treeView, _1);
         }
+        if (!projectService->openProject) {
+            projectService->openProject = std::bind(&ProjectCore::openProject, this);
+        }
     }
 }
 
@@ -217,11 +226,6 @@ void ProjectCore::pluginsStartedMain()
         for (auto kitName : kitNames) {
             auto generator = projectService->createGenerator<ProjectGenerator>(kitName);
             if (generator) {
-                for (auto lang : generator->supportLanguages()) {
-                    auto action = generator->openProjectAction(lang, kitName);
-                    if (action)
-                        windowService->addOpenProjectAction(lang, new AbstractAction(action));
-                }
                 QObject::connect(generator, &ProjectGenerator::itemChanged,
                                  ProjectKeeper::instance()->treeView(),
                                  &ProjectTree::itemModified, Qt::UniqueConnection);
@@ -255,4 +259,89 @@ void ProjectCore::initOpenFilesWidget(dpfservice::WindowService *windowService)
     windowService->resizeDocks(docks, sizes, Qt::Vertical);
 
     openFileWidgetInited = true;
+}
+
+void ProjectCore::openProject()
+{
+    QString iniPath = CustomPaths::user(CustomPaths::Flags::Configures)
+            + QDir::separator() + QString("project_record.support");
+    QSettings setting(iniPath, QSettings::IniFormat);
+    QString lastPath = setting.value("recent_open_project").toString();
+
+    QFileDialog fileDialog;
+    fileDialog.setFileMode(QFileDialog::Directory);
+    fileDialog.setOption(QFileDialog::DontResolveSymlinks);
+    fileDialog.setWindowTitle(QFileDialog::tr("Open Project Directory"));
+    fileDialog.setDirectory(lastPath);
+    fileDialog.setWindowFlags(fileDialog.windowFlags() | Qt::WindowStaysOnTopHint);
+    if (fileDialog.exec() != QDialog::Accepted)
+        return;
+    QString projectPath = fileDialog.selectedUrls().first().path();
+    confirmProjectKit(projectPath);
+    setting.setValue("recent_open_project", projectPath); // save open history
+}
+
+void ProjectCore::confirmProjectKit(const QString &path)
+{
+    DDialog dialog;
+    dialog.setWindowTitle(tr("Config"));
+    dialog.setIcon(QIcon::fromTheme("ide"));
+    auto widget = new QWidget;
+    auto layout = new QHBoxLayout(widget);
+    layout->setAlignment(Qt::AlignLeft);
+
+    QLabel *label = new QLabel(tr("Kit:"), widget);
+    label->setFixedWidth(100);
+    QComboBox *cbBox = new QComboBox(widget);
+    layout->addWidget(label);
+    layout->addWidget(cbBox);
+    dialog.addContent(widget);
+    dialog.addButtons({tr("Cancel"), tr("Confirm")});
+    auto originalSize = dialog.size();
+
+    auto projectService = dpfGetService(ProjectService);
+    auto allKits = projectService->supportGeneratorName<ProjectGenerator>();
+    cbBox->addItems(allKits);
+    DStackedWidget *configureWidget = new DStackedWidget;
+    dialog.addContent(configureWidget);
+
+    // check defualt kit
+    for (auto kit : allKits) {
+        auto generator = projectService->createGenerator<ProjectGenerator>(kit);
+        QStringList fileNames = generator->supportFileNames();
+        if (fileNames.isEmpty())
+            continue;
+        for (auto filename : fileNames) {
+            if (QDir(path).exists(filename)) {
+                cbBox->setCurrentText(kit);
+                auto widget = generator->configureWidget(generator->supportLanguages().first(), path);
+                if (widget)
+                    configureWidget->addWidget(widget);
+                break;
+            }
+        }
+    }
+
+    // select kit
+    connect(cbBox, &QComboBox::currentTextChanged, this, [=, &dialog, &originalSize](const QString &text){
+        auto generator = projectService->createGenerator<ProjectGenerator>(text);
+        auto currentWidget = configureWidget->currentWidget();
+        if (currentWidget) {
+            configureWidget->removeWidget(currentWidget);
+            delete currentWidget;
+        }
+        auto widget = generator->configureWidget(generator->supportLanguages().first(), path);
+        if (!widget) {
+            QTimer::singleShot(20, [&](){ dialog.resize(originalSize); });
+        } else {
+            configureWidget->addWidget(widget);
+        }
+    }, Qt::DirectConnection);
+
+    if (dialog.exec() == DDialog::Accepted) {
+        auto kit = cbBox->currentText();
+        auto generator = projectService->createGenerator<ProjectGenerator>(kit);
+        if (generator->canOpenProject(kit, generator->supportLanguages().first(), path))
+            generator->acceptConfigure();
+    }
 }

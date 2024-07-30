@@ -7,23 +7,23 @@
 
 #include "common/project/projectinfo.h"
 
-#include <DDialog>
+#include <DWidget>
 
 class ConfigPropertyWidgetPrivate;
-class ConfigPropertyWidget : public DTK_WIDGET_NAMESPACE::DDialog
+class ConfigPropertyWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
     explicit ConfigPropertyWidget(const QString &language,
                                   const QString &workspace,
-                                  QDialog *parent = nullptr);
+                                  QWidget *parent = nullptr);
     virtual ~ConfigPropertyWidget();
+    void accept();
 
 signals:
     void configureDone(const dpfservice::ProjectInfo &info);
 
 private:
-    void closeWidget();
     ConfigPropertyWidgetPrivate *const d;
 };
 

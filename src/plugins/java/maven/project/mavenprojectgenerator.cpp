@@ -27,6 +27,7 @@ class MavenProjectGeneratorPrivate
     QStandardItem* configureRootItem {nullptr};
     QMenu *mavenMenu {nullptr};
     QHash<QStandardItem*, MavenAsynParse*> projectParses {};
+    ProjectInfo prjInfo;
 };
 
 MavenProjectGenerator::MavenProjectGenerator()
@@ -59,20 +60,22 @@ QStringList MavenProjectGenerator::supportFileNames()
     return {"pom.xml"};
 }
 
-QDialog *MavenProjectGenerator::configureWidget(const QString &language,
+DWidget *MavenProjectGenerator::configureWidget(const QString &language,
                                          const QString &workspace)
 {
     // get config result.
-    ProjectInfo projectInfo;
-    projectInfo.setLanguage(language);
-    projectInfo.setKitName(MavenProjectGenerator::toolKitName());
-    projectInfo.setWorkspaceFolder(workspace);
-
-    // refresh config.
-    restoreRuntimeCfg(projectInfo);
-    configure(projectInfo);
+    d->prjInfo.setLanguage(language);
+    d->prjInfo.setKitName(MavenProjectGenerator::toolKitName());
+    d->prjInfo.setWorkspaceFolder(workspace);
 
     return nullptr;
+}
+
+void MavenProjectGenerator::acceptConfigure()
+{
+    // refresh config.
+    restoreRuntimeCfg(d->prjInfo);
+    configure(d->prjInfo);
 }
 
 bool MavenProjectGenerator::configure(const dpfservice::ProjectInfo &info)

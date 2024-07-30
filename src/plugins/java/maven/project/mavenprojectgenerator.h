@@ -25,8 +25,9 @@ public:
     static QString toolKitName() { return "maven"; }
     virtual QStringList supportLanguages() override;
     virtual QStringList supportFileNames() override;
-    virtual QDialog* configureWidget(const QString &language,
+    virtual DWidget* configureWidget(const QString &language,
                                      const QString &projectPath) override;
+    virtual void acceptConfigure() override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem* root) override;

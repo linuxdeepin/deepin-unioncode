@@ -21,6 +21,7 @@ class NinjaProjectGeneratorPrivate
     QMenu *ninjaMenu {nullptr};
     QProcess *menuGenProcess {nullptr};
     QHash<QStandardItem*, NinjaAsynParse*> projectParses {};
+    dpfservice::ProjectInfo prjInfo;
 };
 
 NinjaProjectGenerator::NinjaProjectGenerator()
@@ -54,19 +55,19 @@ QStringList NinjaProjectGenerator::supportFileNames()
     return {"build.ninja"};
 }
 
-QDialog *NinjaProjectGenerator::configureWidget(const QString &language,
+DWidget *NinjaProjectGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
-    using namespace dpfservice;
-
-    ProjectInfo info;
-    info.setLanguage(language);
-    info.setKitName(NinjaProjectGenerator::toolKitName());
-    info.setWorkspaceFolder(projectPath);
-
-    configure(info);
+    d->prjInfo.setLanguage(language);
+    d->prjInfo.setKitName(NinjaProjectGenerator::toolKitName());
+    d->prjInfo.setWorkspaceFolder(projectPath);
 
     return nullptr;
+}
+
+void NinjaProjectGenerator::acceptConfigure()
+{
+    configure(d->prjInfo);
 }
 
 bool NinjaProjectGenerator::configure(const dpfservice::ProjectInfo &info)

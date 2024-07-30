@@ -217,6 +217,8 @@ public:
      * \param aitem
      */
     DPF_INTERFACE(void, expandedAll, QStandardItem *aitem);
+    
+    DPF_INTERFACE(void, openProject);
 };
 
 /* MainWindow codeediter workspace title,

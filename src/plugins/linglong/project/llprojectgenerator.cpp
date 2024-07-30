@@ -11,6 +11,7 @@ class LLProjectGeneratorPrivate
 {
     friend class LLProjectGenerator;
     QHash<QStandardItem *, LLAsynParse *> projectParses {};
+    ProjectInfo prjInfo;
 };
 
 LLProjectGenerator::LLProjectGenerator()
@@ -34,20 +35,22 @@ QStringList LLProjectGenerator::supportLanguages()
     return { LL_LANGUAGE };
 }
 
-QDialog *LLProjectGenerator::configureWidget(const QString &language,
+DWidget *LLProjectGenerator::configureWidget(const QString &language,
                                              const QString &projectPath)
 {
     using namespace dpfservice;
 
-    ProjectInfo info;
-    info.setLanguage(language);
-    info.setKitName(LLProjectGenerator::toolKitName());
-    info.setWorkspaceFolder(projectPath);
-    info.setExePrograms({ "LingLong" });
-
-    configure(info);
+    d->prjInfo.setLanguage(language);
+    d->prjInfo.setKitName(LLProjectGenerator::toolKitName());
+    d->prjInfo.setWorkspaceFolder(projectPath);
+    d->prjInfo.setExePrograms({ "LingLong" });
 
     return nullptr;
+}
+
+void LLProjectGenerator::acceptConfigure()
+{
+    configure(d->prjInfo);
 }
 
 bool LLProjectGenerator::configure(const dpfservice::ProjectInfo &projectInfo)

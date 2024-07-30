@@ -65,7 +65,6 @@ public slots:
                       AbstractAction *action);
     void addAction(const QString &menuName, AbstractAction *action);
     void removeActions(const QString &menuName);
-    void addOpenProjectAction(const QString &name, AbstractAction *action);
 
     //topToolBar
     void addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);

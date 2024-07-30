@@ -20,43 +20,20 @@ DWIDGET_USE_NAMESPACE
 class ConfigPropertyWidgetPrivate
 {
     friend class ConfigPropertyWidget;
-    ConfigureProjPane *configureProjPane{nullptr};
+    ConfigureProjPane *configureProjPane{ nullptr };
 };
 
 ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
                                            const QString &workspace,
-                                           QDialog *parent)
-    : DDialog (parent)
+                                           QWidget *parent)
+    : DWidget (parent)
     , d(new ConfigPropertyWidgetPrivate())
 {
-    setWindowTitle(tr("Config"));
-    setIcon(QIcon::fromTheme("ide"));
-
-    auto mainFrame = new DWidget(this);
-    addContent(mainFrame);
-
     // Initialize configure project widget.
-    d->configureProjPane = new ConfigureProjPane(language, workspace, mainFrame);
-    QObject::connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](const dpfservice::ProjectInfo &info) {
-        closeWidget();
-    });
+    d->configureProjPane = new ConfigureProjPane(language, workspace, this);
 
-    QVBoxLayout *layout = new QVBoxLayout(mainFrame);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(d->configureProjPane);
-    mainFrame->setLayout(layout);
-
-    QStringList buttonTexts;
-    buttonTexts.append(tr("Cancel", "button"));
-    buttonTexts.append(tr("Configure", "button"));
-    addButton(buttonTexts[0], false);
-    addButton(buttonTexts[1], false, DDialog::ButtonRecommend);
-    setDefaultButton(1);
-
-    connect(getButton(1),&QAbstractButton::clicked,this,[=](){
-        d->configureProjPane->slotConfigure();
-    });
-
-    close();
 }
 
 ConfigPropertyWidget::~ConfigPropertyWidget()
@@ -65,7 +42,7 @@ ConfigPropertyWidget::~ConfigPropertyWidget()
         delete d;
 }
 
-void ConfigPropertyWidget::closeWidget()
+void ConfigPropertyWidget::accept()
 {
-    close();
+    d->configureProjPane->slotConfigure();
 }

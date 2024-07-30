@@ -22,6 +22,7 @@ class JSProjectGeneratorPrivate
     QMenu *jsMenu {nullptr};
     QProcess *menuGenProcess {nullptr};
     QHash<QStandardItem*, JSAsynParse*> projectParses {};
+    ProjectInfo prjInfo;
 };
 
 JSProjectGenerator::JSProjectGenerator()
@@ -47,17 +48,19 @@ QStringList JSProjectGenerator::supportLanguages()
     return {"JS"};
 }
 
-QDialog *JSProjectGenerator::configureWidget(const QString &language,
+DWidget *JSProjectGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
-    ProjectInfo info;
-    info.setLanguage(language);
-    info.setKitName(JSProjectGenerator::toolKitName());
-    info.setWorkspaceFolder(projectPath);
-
-    configure(info);
+    d->prjInfo.setLanguage(language);
+    d->prjInfo.setKitName(JSProjectGenerator::toolKitName());
+    d->prjInfo.setWorkspaceFolder(projectPath);
 
     return nullptr;
+}
+
+void JSProjectGenerator::acceptConfigure()
+{
+    configure(d->prjInfo);
 }
 
 bool JSProjectGenerator::configure(const ProjectInfo &info)

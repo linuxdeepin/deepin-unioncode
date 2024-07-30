@@ -182,24 +182,34 @@ QStringList CmakeProjectGenerator::supportFileNames()
     return { "cmakelists.txt", "CMakeLists.txt" };
 }
 
-QDialog *CmakeProjectGenerator::configureWidget(const QString &language,
+DWidget *CmakeProjectGenerator::configureWidget(const QString &language,
                                          const QString &workspace)
 {
     ProjectGenerator::configureWidget(language, workspace);
+    disconnect(this);
 
     config::ProjectConfigure *param = config::ConfigUtil::instance()->getConfigureParamPointer();
     if (!config::ConfigUtil::instance()->isNeedConfig(workspace, *param)) {
-        dpfservice::ProjectInfo info;
-        if (config::ConfigUtil::instance()->updateProjectInfo(info, param)) {
-            configure(info);
-            return nullptr;
-        }
+        connect(this, &CmakeProjectGenerator::acceptedConfigure, this, [=]() {
+            dpfservice::ProjectInfo info;
+            if (config::ConfigUtil::instance()->updateProjectInfo(info, param))
+                configure(info);
+        });
+        return nullptr;
     }
 
     // show build type config pane.
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, workspace);
+    connect(this, &CmakeProjectGenerator::acceptedConfigure, configPropertyWidget, [=]() {
+        configPropertyWidget->accept();
+    });
 
     return configPropertyWidget;
+}
+
+void CmakeProjectGenerator::acceptConfigure()
+{
+    emit acceptedConfigure();
 }
 
 bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)

@@ -21,8 +21,9 @@ public:
     virtual ~JSProjectGenerator() override;
     static QString toolKitName() { return "jsdirectory"; }
     virtual QStringList supportLanguages() override;
-    virtual QDialog* configureWidget(const QString &language,
+    virtual DWidget* configureWidget(const QString &language,
                                      const QString &projectPath) override;
+    virtual void acceptConfigure() override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem* root) override;

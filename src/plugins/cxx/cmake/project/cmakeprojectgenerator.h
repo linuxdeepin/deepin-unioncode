@@ -23,13 +23,17 @@ public:
     static QString toolKitName() { return "cmake"; }
     virtual QStringList supportLanguages() override;
     virtual QStringList supportFileNames() override;
-    virtual QDialog* configureWidget(const QString &language,
+    virtual DWidget* configureWidget(const QString &language,
                                      const QString &projectPath) override;
+    void acceptConfigure() override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem* root) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
     virtual void createDocument(const QStandardItem *item, const QString &filePath) override;
+
+signals:
+    void acceptedConfigure();
 
 private slots:
     void actionTriggered();
