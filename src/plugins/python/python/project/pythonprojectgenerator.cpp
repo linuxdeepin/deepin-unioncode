@@ -23,6 +23,7 @@ class PythonProjectGeneratorPrivate
     QMenu *pythonMenu {nullptr};
     QProcess *menuGenProcess {nullptr};
     QHash<QStandardItem*, PythonAsynParse*> projectParses {};
+    dpfservice::ProjectInfo prjInfo;
 };
 
 PythonProjectGenerator::PythonProjectGenerator()
@@ -50,20 +51,22 @@ QStringList PythonProjectGenerator::supportLanguages()
     return {dpfservice::MWMFA_PYTHON};
 }
 
-QDialog *PythonProjectGenerator::configureWidget(const QString &language,
+DWidget *PythonProjectGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
     using namespace dpfservice;
 
-    ProjectInfo info;
-    info.setLanguage(language);
-    info.setKitName(PythonProjectGenerator::toolKitName());
-    info.setWorkspaceFolder(projectPath);
-    info.setExePrograms({exeCurrent, exeEntry});
-
-    configure(info);
+    d->prjInfo.setLanguage(language);
+    d->prjInfo.setKitName(PythonProjectGenerator::toolKitName());
+    d->prjInfo.setWorkspaceFolder(projectPath);
+    d->prjInfo.setExePrograms({exeCurrent, exeEntry});
 
     return nullptr;
+}
+
+void PythonProjectGenerator::acceptConfigure()
+{
+    configure(d->prjInfo);
 }
 
 bool PythonProjectGenerator::configure(const dpfservice::ProjectInfo &projectInfo)

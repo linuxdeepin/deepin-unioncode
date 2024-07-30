@@ -159,13 +159,6 @@ public:
     DPF_INTERFACE(void, removeActions, const QString &menuName);
 
     /*!
-     * \brief addOpenProjectAction 添加打開工程的Action
-     * \param name 语言分类名称 MWMFA_CXX|MWMFA_Java|MWMFA_Python
-     * \param action 實例對象
-     */
-    DPF_INTERFACE(void, addOpenProjectAction, const QString &name, AbstractAction *action);
-
-    /*!
     * \brief addWidgetToTopTool  Adding widget to a toptoolbar
     * widgets belongs to a group, you can show toptoolbar by group in swtichWidget event.
     * or you can add it to MWTG_EDIT/MWTG_DEBUG, it will automatically show shen switch to Edit/Debug mode

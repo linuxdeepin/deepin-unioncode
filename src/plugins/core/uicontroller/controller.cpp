@@ -262,9 +262,6 @@ void Controller::registerService()
     if (!windowService->removeActions) {
         windowService->removeActions = std::bind(&Controller::removeActions, this, _1);
     }
-    if (!windowService->addOpenProjectAction) {
-        windowService->addOpenProjectAction = std::bind(&Controller::addOpenProjectAction, this, _1, _2);
-    }
     if (!windowService->addWidgetToTopTool) {
         windowService->addWidgetToTopTool = std::bind(&Controller::addWidgetToTopTool, this, _1, _2, _3, _4);
     }
@@ -807,32 +804,6 @@ void Controller::removeActions(const QString &menuName)
     }
 }
 
-void Controller::addOpenProjectAction(const QString &name, AbstractAction *action)
-{
-    if (!action || !action->qAction())
-        return;
-
-    if (action->hasShortCut())
-        registerActionShortCut(action);
-
-    QAction *inputAction = action->qAction();
-
-    foreach (QAction *action, d->menu->actions()) {
-        if (action->text() == MWMFA_OPEN_PROJECT) {
-            for (auto langAction : action->menu()->menuAction()->menu()->actions()) {
-                if (name == langAction->text()) {
-                    langAction->menu()->addAction(inputAction);
-                    return;
-                }
-            }
-            auto langMenu = new DMenu(name);
-            action->menu()->addMenu(langMenu);
-            langMenu->addAction(inputAction);
-            return;
-        }
-    }
-}
-
 void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority)
 {
     if (!abstractWidget)
@@ -1068,8 +1039,12 @@ void Controller::createFileActions()
     d->menu->addAction(actionOpenFile);
     addMenuShortCut(actionOpenFile);
 
-    DMenu *menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
-    d->menu->addMenu(menuOpenProject);
+    QAction *actionOpenProject = new QAction(MWMFA_OPEN_PROJECT);
+    d->menu->addAction(actionOpenProject);
+    QAction::connect(actionOpenProject, &QAction::triggered, this, [=](){
+        auto prjService = dpfGetService(ProjectService);
+        prjService->openProject();
+    });
 }
 
 void Controller::initContextWidget()

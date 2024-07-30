@@ -16,7 +16,7 @@ public:
     explicit PythonGenerator();
     virtual ~PythonGenerator() override;
 
-    static QString toolKitName() { return "directory"; }
+    static QString toolKitName() { return "python"; }
     QString debugger() override;
 
     bool isTargetReady() override;

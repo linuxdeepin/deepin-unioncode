@@ -19,9 +19,10 @@ public:
 
     static QString toolKitName() { return LL_TOOLKIT; }
     virtual QStringList supportLanguages() override;
-    virtual QDialog *configureWidget(const QString &language,
+    virtual DWidget *configureWidget(const QString &language,
                                      const QString &projectPath) override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
+    virtual void acceptConfigure() override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &items) override;
     virtual void removeRootItem(QStandardItem *root) override;
     virtual QMenu *createItemMenu(const QStandardItem *item) override;

@@ -7,6 +7,8 @@
 #include "window/windowservice.h"
 #include "window/windowelement.h"
 
+#include <DDialog>
+
 #include <QFileDialog>
 
 /*!
@@ -29,35 +31,6 @@ QStringList dpfservice::ProjectGenerator::supportLanguages()
 QStringList dpfservice::ProjectGenerator::supportFileNames()
 {
     return {};
-}
-
-QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language,
-                                                         const QString &actionText)
-{
-    auto result = new QAction(actionText);
-    QObject::connect(result, &QAction::triggered, [=](){
-        QString iniPath = CustomPaths::user(CustomPaths::Flags::Configures)
-                + QDir::separator() + QString("project_record.support");
-        QSettings setting(iniPath, QSettings::IniFormat);
-        QString lastPath = setting.value(language + "-" + actionText).toString();
-        if (lastPath.isEmpty()) {
-            lastPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        }
-
-        QFileDialog fileDialog;
-        fileDialog.setFileMode(QFileDialog::Directory);
-        fileDialog.setOption(QFileDialog::DontResolveSymlinks);
-        fileDialog.setWindowTitle(QFileDialog::tr("Open %0 Project Directory").arg(language));
-        fileDialog.setDirectory(lastPath);
-        fileDialog.setWindowFlags(fileDialog.windowFlags() | Qt::WindowStaysOnTopHint);
-        if (fileDialog.exec() == QDialog::Accepted) {
-            QString workspace = fileDialog.selectedUrls().first().path();
-            setting.setValue(language + "-" + actionText, workspace); // save open history
-            if (canOpenProject(actionText, language, workspace))
-                doProjectOpen(language, actionText, workspace);
-        }
-    });
-    return result;
 }
 
 /*!
@@ -106,25 +79,25 @@ bool dpfservice::ProjectGenerator::isOpenedProject(const QString &kitName,
     return false;
 }
 
-void dpfservice::ProjectGenerator::doProjectOpen(const QString &language,
-                                                 const QString &actionText,
+void dpfservice::ProjectGenerator::doProjectOpen(const QString &kitName,
+                                                 const QString &language,
                                                  const QString &workspace)
 {
-    using namespace dpfservice;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-
-    if (!projectService)
+    auto widget = configureWidget(language, workspace);
+    if (!widget) {
+        acceptConfigure();
         return;
-
-    auto generator = projectService->createGenerator<ProjectGenerator>(actionText);
-    if (!generator)
-        return;
-
-    auto widget = generator->configureWidget(language, workspace);
-    if (widget) {
-        widget->exec();
     }
+
+    DDialog dialog;
+    dialog.setWindowTitle(tr("Config"));
+    dialog.setIcon(QIcon::fromTheme("ide"));
+
+    dialog.addContent(widget);
+    dialog.addButtons({tr("Cancel"), tr("Confirm")});
+
+    if (dialog.exec() == QDialog::Accepted)
+        acceptConfigure();
 }
 
 /*!
@@ -134,11 +107,15 @@ void dpfservice::ProjectGenerator::doProjectOpen(const QString &language,
  * \param projectPath 工程路径
  * \return 返回工程配置界面
  */
-QDialog *dpfservice::ProjectGenerator::configureWidget(const QString &language, const QString &workspace)
+DWidget *dpfservice::ProjectGenerator::configureWidget(const QString &language, const QString &workspace)
 {
     Q_UNUSED(language)
     Q_UNUSED(workspace)
     return nullptr;
+}
+
+void dpfservice::ProjectGenerator::acceptConfigure()
+{
 }
 
 /*!

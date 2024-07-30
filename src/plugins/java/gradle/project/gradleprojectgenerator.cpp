@@ -55,6 +55,7 @@ class GradleProjectGeneratorPrivate
     QProcess *menuGenProcess {nullptr};
     QHash<QStandardItem*, GradleAsynParse*> projectParses {};
     QSet<QString> toExpand;
+    ProjectInfo prjInfo;
 private:
 
     GradleTasks parseTasks(const QByteArray &data)
@@ -122,20 +123,21 @@ QStringList GradleProjectGenerator::supportFileNames()
     return {"build.gradle", "settings.gradle"};
 }
 
-QDialog *GradleProjectGenerator::configureWidget(const QString &language,
+DWidget *GradleProjectGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
     // get config result.
-    ProjectInfo projectInfo;
-    projectInfo.setLanguage(language);
-    projectInfo.setKitName(GradleProjectGenerator::toolKitName());
-    projectInfo.setWorkspaceFolder(projectPath);
-
-    // refresh config.
-    restoreRuntimeCfg(projectInfo);
-    configure(projectInfo);
+    d->prjInfo.setLanguage(language);
+    d->prjInfo.setKitName(GradleProjectGenerator::toolKitName());
+    d->prjInfo.setWorkspaceFolder(projectPath);
 
     return nullptr;
+}
+
+void GradleProjectGenerator::acceptConfigure()
+{
+    restoreRuntimeCfg(d->prjInfo);
+    configure(d->prjInfo);
 }
 
 bool GradleProjectGenerator::configure(const dpfservice::ProjectInfo &info)

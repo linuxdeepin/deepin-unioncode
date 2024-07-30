@@ -24,6 +24,7 @@
 #include <QListView>
 #include <QHBoxLayout>
 #include <QJsonDocument>
+#include <QComboBox>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -292,41 +293,8 @@ void RecentDisplay::btnOpenFileClicked()
 
 void RecentDisplay::btnOpenProjectClicked()
 {
-    DMenu *openProMenu = new DMenu();
-    openProMenu->setFixedWidth(d->btnOpenProject->width());
-
-    auto addOpenProject = [openProMenu] (const QString &name, QAction *action) {
-        for (auto langAction : openProMenu->actions()) {
-            if (langAction->text() == name) {
-                langAction->menu()->addAction(action);
-                return;
-            }
-        }
-        DMenu *langMenu = new DMenu(name);
-        openProMenu->addMenu(langMenu);
-        langMenu->addAction(action);
-    };
-
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    QStringList kitNames = projectService->supportGeneratorName<ProjectGenerator>();
-    for (auto kitName : kitNames) {
-        auto generator = projectService->createGenerator<ProjectGenerator>(kitName);
-        if (!generator)
-            break;
-        for(auto lang : generator->supportLanguages()) {
-            auto action = generator->openProjectAction(lang, kitName);
-            if (!action)
-                break;
-            addOpenProject(lang, action);
-        }
-    }
-
-    d->btnOpenProject->setMenu(openProMenu);
-    d->btnOpenProject->showMenu();
-
-    d->btnOpenProject->setMenu(nullptr);
-
+    auto projectService = dpfGetService(ProjectService);
+    projectService->openProject();
     d->proView->load();
 }
 
@@ -604,5 +572,6 @@ void RecentDisplay::showEvent(QShowEvent *event)
         d->nullRecentText->setVisible(true);
         d->recentOpen->setVisible(false);
     }
-
 }
+
+

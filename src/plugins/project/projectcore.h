@@ -32,6 +32,8 @@ public:
 private slots:
     void pluginsStartedMain();
     void initOpenFilesWidget(dpfservice::WindowService *windowService);
+    void openProject();
+    void confirmProjectKit(const QString &path);
 };
 
 #endif // PROJECTCORE_H
