@@ -1323,6 +1323,7 @@ void Controller::removeTopToolItem(AbstractAction *action)
 
 bool Controller::checkDocksManager()
 {
+    bool ret = false;
     for (auto dock : d->currentDocks) {
         auto &dockInfo = d->allWidgets[dock];
         if (!dockInfo.dockWidget || d->widgetBindToNavigation.contains(dock) || dockInfo.name == WN_CONTEXTWIDGET)
@@ -1336,11 +1337,12 @@ bool Controller::checkDocksManager()
         }
 
         d->docksManager->show();
-        return true;
+        ret = true;
     }
 
-    d->docksManager->hide();
-    return false;
+    if (!ret)
+        d->docksManager->hide();
+    return ret;
 }
 
 void Controller::showCurrentDocksManager()
