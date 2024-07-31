@@ -423,6 +423,29 @@
     </message>
 </context>
 <context>
+    <name>BaseOptionWidgetHelper</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/baseoptionwidgethelper.cpp" line="101"/>
+        <source>Choose Executable</source>
+        <translation>选择可执行文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/baseoptionwidgethelper.cpp" line="126"/>
+        <source>Name:</source>
+        <translation>名称：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/baseoptionwidgethelper.cpp" line="127"/>
+        <source>Path:</source>
+        <translation>路径：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/baseoptionwidgethelper.cpp" line="233"/>
+        <source>This toolchain is invalid</source>
+        <translation>该工具链无效</translation>
+    </message>
+</context>
+<context>
     <name>BehaviorWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/settings/behaviorwidget.cpp" line="39"/>
@@ -1046,42 +1069,42 @@ storage: %2
         <translation>清除CMake</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="292"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="302"/>
         <source>Files in project %1 have changed, needs to run cmake to update</source>
         <translation>项目%1中的文件已经更改，需要运行 cmake 来更新</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="366"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="376"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="388"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="398"/>
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation>文件不会自动添加到 Cmake 项目的 CmakeList.txt 文件中。将源文件的路径复制到剪贴板？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="392"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="402"/>
         <source>Copy to Clipboard?</source>
         <translation>复制到剪贴板？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="395"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="405"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="540"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="550"/>
         <source>Project Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="549"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="559"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="550"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="560"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
@@ -1403,23 +1426,33 @@ storage: %2
     </message>
 </context>
 <context>
-    <name>ConfigPropertyWidget</name>
+    <name>CompilerOptionWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configpropertywidget.cpp" line="32"/>
-        <source>Config</source>
-        <translation>配置</translation>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="52"/>
+        <source>Auto-detected</source>
+        <translation>自动检测</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configpropertywidget.cpp" line="49"/>
-        <source>Cancel</source>
-        <comment>button</comment>
-        <translation>取消</translation>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="56"/>
+        <source>Manual</source>
+        <translation>手动</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configpropertywidget.cpp" line="50"/>
-        <source>Configure</source>
-        <comment>button</comment>
-        <translation>配置</translation>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="87"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="125"/>
+        <source>New C++ Compiler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="88"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="122"/>
+        <source>New C Compiler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="197"/>
+        <source>Compilers</source>
+        <translation>编译器</translation>
     </message>
 </context>
 <context>
@@ -1468,13 +1501,13 @@ storage: %2
 <context>
     <name>ConfigureProjPane</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configureprojpane.cpp" line="97"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configureprojpane.cpp" line="96"/>
         <source>Select kit: </source>
-        <translation>选择配置工具： </translation>
+        <translation>选择套件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configureprojpane.cpp" line="109"/>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configureprojpane.cpp" line="120"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configureprojpane.cpp" line="108"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/configWidget/configureprojpane.cpp" line="119"/>
         <source>Browse</source>
         <translation>浏览</translation>
     </message>
@@ -1521,27 +1554,27 @@ storage: %2
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="912"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="883"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1096"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1071"/>
         <source>Hide ContextWidget</source>
         <translation>隐藏内容区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1196"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1171"/>
         <source>Show docks in this view</source>
         <translation>当前视图中的窗口</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1269"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1244"/>
         <source>Expand All</source>
         <translation>展开所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1275"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1250"/>
         <source>Fold All</source>
         <translation>折叠所有</translation>
     </message>
@@ -1844,6 +1877,30 @@ Delete anyway?</source>
     </message>
 </context>
 <context>
+    <name>DebuggerOptionWidget</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="42"/>
+        <source>Auto-detected</source>
+        <translation>自动检测</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="43"/>
+        <source>Manual</source>
+        <translation>手动</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="66"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="88"/>
+        <source>New Debugger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="134"/>
+        <source>Debuggers</source>
+        <translation>调试器</translation>
+    </message>
+</context>
+<context>
     <name>DebuggerPlugin</name>
     <message>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="56"/>
@@ -2015,7 +2072,7 @@ Delete anyway?</source>
 <context>
     <name>DisplayDocView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="199"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="200"/>
         <source>Documents</source>
         <translation>文件</translation>
     </message>
@@ -2023,7 +2080,7 @@ Delete anyway?</source>
 <context>
     <name>DisplayProjectView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="45"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="46"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -2597,12 +2654,12 @@ need to manually copy the source code to this path</source>
 <context>
     <name>GradleProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/gradleprojectgenerator.cpp" line="218"/>
+        <location filename="../../src/plugins/java/gradle/project/gradleprojectgenerator.cpp" line="220"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/gradleprojectgenerator.cpp" line="349"/>
+        <location filename="../../src/plugins/java/gradle/project/gradleprojectgenerator.cpp" line="351"/>
         <source>Project Properties</source>
         <translation>工程属性</translation>
     </message>
@@ -2762,7 +2819,7 @@ need to manually copy the source code to this path</source>
 <context>
     <name>JSProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/javascript/project/jsprojectgenerator.cpp" line="126"/>
+        <location filename="../../src/plugins/javascript/project/jsprojectgenerator.cpp" line="129"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
@@ -2797,42 +2854,62 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
-    <name>KitsManagerWidget</name>
+    <name>KitListModel</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="106"/>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="112"/>
-        <source>Desktop</source>
-        <translation>桌面</translation>
+        <location filename="../../src/plugins/cxx/cmake/model/kitlistmodel.cpp" line="72"/>
+        <source>Unnamed</source>
+        <translation>未命名</translation>
+    </message>
+</context>
+<context>
+    <name>KitOptionWidget</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="141"/>
+        <source>Name:</source>
+        <translation>名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="118"/>
-        <source>CMake Tool:</source>
-        <translation>CMake工具：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="125"/>
-        <source>CMake generator:</source>
-        <translation>CMake生成器:</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="140"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="142"/>
         <source>C Compiler:</source>
         <translation>C编译器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="143"/>
         <source>C++ Compiler:</source>
         <translation>C++编译器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="131"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="144"/>
         <source>Debugger:</source>
         <translation>调试器：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="137"/>
-        <source>Name:</source>
-        <translation>名称：</translation>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="145"/>
+        <source>CMake Tool:</source>
+        <translation>CMake工具：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="146"/>
+        <source>CMake generator:</source>
+        <translation>CMake生成器:</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="222"/>
+        <source>Unnamed</source>
+        <translation>未命名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="270"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="271"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="282"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="289"/>
+        <source>None</source>
+        <translation>空</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/kitoptionwidget.cpp" line="299"/>
+        <source>Kits</source>
+        <translation>套件</translation>
     </message>
 </context>
 <context>
@@ -3061,12 +3138,12 @@ repos path: %0</source>
 <context>
     <name>MavenProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/java/maven/project/mavenprojectgenerator.cpp" line="162"/>
+        <location filename="../../src/plugins/java/maven/project/mavenprojectgenerator.cpp" line="165"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/maven/project/mavenprojectgenerator.cpp" line="217"/>
+        <location filename="../../src/plugins/java/maven/project/mavenprojectgenerator.cpp" line="220"/>
         <source>Project Properties</source>
         <translation>工程属性</translation>
     </message>
@@ -3296,24 +3373,44 @@ repos path: %0</source>
 <context>
     <name>ProjectCore</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="140"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="146"/>
         <source>Open activted project`s property dialog</source>
         <translation>打开已激活的工程属性对话框</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="111"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="117"/>
         <source>Auto Focus</source>
         <translation>自动聚焦</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="106"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="112"/>
         <source>Opened Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="116"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="122"/>
         <source>Focus File</source>
         <translation>聚焦文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="287"/>
+        <source>Config</source>
+        <translation>配置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="293"/>
+        <source>Kit:</source>
+        <translation>构建工具：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <source>Confirm</source>
+        <translation>确定</translation>
     </message>
 </context>
 <context>
@@ -3472,12 +3569,12 @@ repos path: %0</source>
 <context>
     <name>PythonProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="137"/>
+        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="140"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="172"/>
+        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="175"/>
         <source>Config</source>
         <translation>配置</translation>
     </message>
@@ -3735,7 +3832,7 @@ Delete anyway?</source>
         <translation>打开路径失败，当前远程仓库不是svn子目录</translation>
     </message>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="84"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="57"/>
         <source>Cannot open the project!
 not exists support files: %0</source>
         <translation>无法打开项目！
@@ -3750,9 +3847,9 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="50"/>
-        <source>Open %0 Project Directory</source>
-        <translation>打开%0项目目录</translation>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="274"/>
+        <source>Open Project Directory</source>
+        <translation>打开工程目录</translation>
     </message>
 </context>
 <context>
@@ -4207,7 +4304,7 @@ not exists support files: %0</source>
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/services/project/projectservice.h" line="225"/>
+        <location filename="../../src/services/project/projectservice.h" line="227"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -4277,72 +4374,72 @@ not exists support files: %0</source>
 <context>
     <name>RecentDisplay</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="284"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="285"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="442"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="410"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="443"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="411"/>
         <source>Open Project</source>
         <translation>打开工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="444"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="412"/>
         <source>New File or Project</source>
         <translation>新建文件或工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="457"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="425"/>
         <source>Recent Open</source>
         <translation>最近打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="467"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="435"/>
         <source>Documents</source>
         <translation>文件</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="442"/>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="474"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="506"/>
         <source>clear all</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="478"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="446"/>
         <source>Confirm to clear the record of the opened file?</source>
         <translation>确定清空`已打开文件`记录？</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="447"/>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="479"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="511"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="448"/>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="480"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="512"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="499"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="467"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="510"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="478"/>
         <source>Confirm to clear the record of the opened project?</source>
         <translation>确定清空`已打开工程`记录？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="445"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="413"/>
         <source>No Project</source>
         <translation>无记录</translation>
     </message>
@@ -5715,6 +5812,34 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
+    <name>ToolOptionWidget</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="42"/>
+        <source>Auto-detected</source>
+        <translation>自动检测</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="43"/>
+        <source>Manual</source>
+        <translation>手动</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="66"/>
+        <source>New Tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="88"/>
+        <source>New CMake</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="134"/>
+        <source>CMake Tools</source>
+        <translation>CMake工具</translation>
+    </message>
+</context>
+<context>
     <name>Tools</name>
     <message>
         <location filename="../../src/tools/performancedapter/tools.cpp" line="1053"/>
@@ -5748,7 +5873,6 @@ not exists support files: %0</source>
 <context>
     <name>Utils::FileSaverBase</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/persistentsettings.cpp" line="334"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/persistentsettings.cpp" line="334"/>
         <source>File Error</source>
         <translation>文件错误</translation>
@@ -5938,6 +6062,24 @@ not exists support files: %0</source>
 	</source>
         <translation>Location:
 	</translation>
+    </message>
+</context>
+<context>
+    <name>dpfservice::ProjectGenerator</name>
+    <message>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="93"/>
+        <source>Config</source>
+        <translation>配置</translation>
+    </message>
+    <message>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="97"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="97"/>
+        <source>Confirm</source>
+        <translation>确定</translation>
     </message>
 </context>
 <context>
