@@ -1041,7 +1041,7 @@ void Controller::createFileActions()
 
     QAction *actionOpenProject = new QAction(MWMFA_OPEN_PROJECT);
     d->menu->addAction(actionOpenProject);
-    QAction::connect(actionOpenProject, &QAction::triggered, this, [=](){
+    QAction::connect(actionOpenProject, &QAction::triggered, this, [=]() {
         auto prjService = dpfGetService(ProjectService);
         prjService->openProject();
     });
@@ -1166,11 +1166,11 @@ void Controller::initModules()
 void Controller::initDocksManager()
 {
     d->docksManager = new DocksManagerButton(d->navigationToolBar, this);
-    d->docksManager ->setIcon(QIcon::fromTheme("docks_manager"));
-    d->docksManager ->setFocusPolicy(Qt::NoFocus);
-    d->docksManager ->setToolTip(tr("Show docks in this view"));
+    d->docksManager->setIcon(QIcon::fromTheme("docks_manager"));
+    d->docksManager->setFocusPolicy(Qt::NoFocus);
+    d->docksManager->setToolTip(tr("Show docks in this view"));
     d->docksManager->hide();
-    d->navigationBar->addNavButton(d->docksManager , NavigationBar::bottom, Priority::low);
+    d->navigationBar->addNavButton(d->docksManager, NavigationBar::bottom, Priority::low);
 
     connect(d->navigationBar, &NavigationBar::leave, this, [=]() {
         for (auto btn : d->dockButtons.values())
@@ -1337,7 +1337,7 @@ DToolButton *Controller::createDockButton(const WidgetInfo &info)
 {
     DToolButton *btn = new DToolButton(d->navigationToolBar);
     btn->setIcon(info.icon);
-    btn->setToolTip(info.name);
+    btn->setToolTip(info.headerName.isEmpty() ? info.name : info.headerName);
     btn->setCheckable(true);
     connect(btn, &DToolButton::clicked, this, [=]() {
         auto &dockInfo = d->allWidgets[info.name];
