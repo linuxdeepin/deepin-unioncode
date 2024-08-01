@@ -289,17 +289,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../src/app/main.cpp" line="115"/>
+        <location filename="../../src/app/main.cpp" line="120"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="118"/>
+        <location filename="../../src/app/main.cpp" line="123"/>
         <source>deepin-unioncode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="121"/>
+        <location filename="../../src/app/main.cpp" line="126"/>
         <source>Deepin Union Code is a lightweight integrated development environment,                                            featured with multilingual and cross platform compatibility.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1326,6 +1326,14 @@ storage: %2
     <message>
         <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="35"/>
         <source>Porting &amp;Report</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CommandParser</name>
+    <message>
+        <location filename="../../src/common/util/commandparser.cpp" line="121"/>
+        <source>Project directory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3359,42 +3367,42 @@ repos path: %0</source>
 <context>
     <name>ProjectCore</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="146"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="151"/>
         <source>Open activted project`s property dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="117"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="122"/>
         <source>Auto Focus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="112"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="117"/>
         <source>Opened Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="122"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="127"/>
         <source>Focus File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="284"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="289"/>
         <source>Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="290"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="295"/>
         <source>Kit:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="301"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="301"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3831,7 +3839,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="271"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="276"/>
         <source>Open Project Directory</source>
         <translation type="unfinished"></translation>
     </message>
