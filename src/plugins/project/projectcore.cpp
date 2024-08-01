@@ -242,18 +242,15 @@ void ProjectCore::initOpenFilesWidget(dpfservice::WindowService *windowService)
     QStringList allLeftDocks = windowService->getCurrentDockName(Position::Left);
     auto dockCount = allLeftDocks.size();
 
-    if (!allLeftDocks.contains(openFilesWidgetName) || dockCount <= 1)
-        return;
-
-    allLeftDocks.removeOne(openFilesWidgetName);
-
-    QStringList docks { openFilesWidgetName };
+    QStringList docks;
     // Set the height of the widget to 25% of the total height.
-    QList<int> sizes { 25 };
-    auto size = 75 / (dockCount - 1);
-    for (auto dock : allLeftDocks) {
-        sizes.append(size);
-        docks.append(dock);
+    QList<int> sizes;
+    for (const auto &dock : allLeftDocks) {
+        if (dock == WN_WORKSPACE)
+            sizes << 100 - (dockCount - 1) * 15;
+        else
+            sizes << 15;
+        docks << dock;
     }
 
     windowService->resizeDocks(docks, sizes, Qt::Vertical);

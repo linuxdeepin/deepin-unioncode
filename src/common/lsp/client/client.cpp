@@ -512,23 +512,21 @@ bool ClientPrivate::symbolResult(const QJsonObject &jsonObj)
         auto filePath = requestSave.value(calledID).file;
         requestSave.remove(calledID);
 
-        QList<DocumentSymbol> docSymbols;
-        QList<SymbolInformation> symbolInfos;
         auto value = jsonObj.value(K_RESULT);
         if (value.isArray()) {
             auto array = value.toArray();
             if (!array.isEmpty()) {
                 auto arrayObj = array.first().toObject();
                 if (arrayObj.contains("range")) {
-                    docSymbols = parseDocumentSymbol(array);
+                    const auto &docSymbols = parseDocumentSymbol(array);
+                    emit q->symbolResult(docSymbols, filePath);
                 } else {
-                    symbolInfos = parseDocumentSymbolInfo(array);
+                    const auto &symbolInfos = parseDocumentSymbolInfo(array);
+                    emit q->symbolResult(symbolInfos, filePath);
                 }
             }
         }
 
-        emit q->symbolResult(docSymbols, filePath);
-        emit q->symbolResult(symbolInfos, filePath);
         return true;
     }
     return false;

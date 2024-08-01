@@ -6,9 +6,8 @@
 #include "private/tabwidget_p.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
-#include "settings/settingsdefine.h"
-#include "base/abstractaction.h"
 #include "recent/recentopenwidget.h"
+#include "symbol/symbolwidget.h"
 
 #include "services/window/windowservice.h"
 
@@ -124,7 +123,7 @@ void TabWidgetPrivate::initUI()
 
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addWidget(symbolBar, 0, Qt::AlignTop);
-    mainLayout->addLayout(editorLayout);
+    mainLayout->addLayout(editorLayout, 1);
 
     openedWidget = new RecentOpenWidget(q);
     openedWidget->hide();
@@ -362,6 +361,7 @@ void TabWidgetPrivate::onTabSwitched(const QString &fileName)
     if (!editorMng.contains(fileName))
         return;
 
+    SymbolWidgetGenerator::instance()->symbolWidget()->setEditor(editorMng[fileName]);
     symbolBar->setPath(fileName);
     editorLayout->setCurrentWidget(editorMng[fileName]);
     recentOpenedFiles.removeOne(fileName);
@@ -890,6 +890,7 @@ void TabWidget::openFile(const QString &fileName)
     d->tabBar->setFileName(fileName);
     TextEditor *editor = d->createEditor(fileName);
 
+    SymbolWidgetGenerator::instance()->symbolWidget()->setEditor(editor);
     d->editorLayout->addWidget(editor);
     d->editorLayout->setCurrentWidget(editor);
     d->changeFocusProxy();

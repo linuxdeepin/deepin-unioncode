@@ -22,6 +22,7 @@ public:
 
     CurmbType curmbType() const;
     void setText(const QString &text);
+    QString text() const;
     void setIcon(const QIcon &icon);
     void setSelected(bool selected);
     bool isSelected() const;

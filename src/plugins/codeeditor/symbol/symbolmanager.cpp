@@ -41,8 +41,9 @@ QPair<QString, int> SymbolManagerPrivate::findSymbol(const newlsp::DocumentSymbo
     return qMakePair(name, symbol.kind);
 }
 
-SymbolManager::SymbolManager()
-    : d(new SymbolManagerPrivate(this))
+SymbolManager::SymbolManager(QObject *parent)
+    : QObject(parent),
+      d(new SymbolManagerPrivate(this))
 {
 }
 
@@ -60,6 +61,7 @@ SymbolManager *SymbolManager::instance()
 void SymbolManager::setDocumentSymbols(const QString &file, const QList<newlsp::DocumentSymbol> &docSymbols)
 {
     d->docSymbolHash.insert(file, docSymbols);
+    Q_EMIT symbolChanged(file);
 }
 
 QList<newlsp::DocumentSymbol> SymbolManager::documentSymbols(const QString &file) const
@@ -70,6 +72,7 @@ QList<newlsp::DocumentSymbol> SymbolManager::documentSymbols(const QString &file
 void SymbolManager::setSymbolInformations(const QString &file, const QList<newlsp::SymbolInformation> &symbolInfos)
 {
     d->symbolInfoHash.insert(file, symbolInfos);
+    Q_EMIT symbolChanged(file);
 }
 
 QList<newlsp::SymbolInformation> SymbolManager::symbolInformations(const QString &file) const
@@ -149,14 +152,19 @@ QIcon SymbolManager::iconFromKind(SymbolKind kind)
 
 QString SymbolManager::displayNameFromDocumentSymbol(SymbolKind kind, const QString &name, const QString &detail)
 {
+    QString tmpName = name;
+    int index = tmpName.indexOf("::");
+    if (index != -1)
+        tmpName = tmpName.mid(index + 2);
+
     switch (kind) {
     case SymbolKind::Constructor:
-        return name + detail;
+        return tmpName + detail;
     case SymbolKind::Method:
     case SymbolKind::Function: {
         const int lastParenIndex = detail.lastIndexOf(')');
         if (lastParenIndex == -1)
-            return name;
+            return tmpName;
         int leftParensNeeded = 1;
         int i = -1;
         for (i = lastParenIndex - 1; i >= 0; --i) {
@@ -174,16 +182,16 @@ QString SymbolManager::displayNameFromDocumentSymbol(SymbolKind kind, const QStr
                 break;
         }
         if (leftParensNeeded > 0)
-            return name;
-        return name + detail.mid(i) + " -> " + detail.left(i);
+            return tmpName;
+        return tmpName + detail.mid(i) + " -> " + detail.left(i);
     }
     case SymbolKind::Variable:
     case SymbolKind::Field:
     case SymbolKind::Constant:
         if (detail.isEmpty())
-            return name;
-        return name + " -> " + detail;
+            return tmpName;
+        return tmpName + " -> " + detail;
     default:
-        return name;
+        return tmpName;
     }
 }
