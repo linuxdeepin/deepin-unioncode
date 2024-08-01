@@ -63,7 +63,6 @@ private:
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
     QString generateResponse;
-    QTimer timer;
     QMutex mutexResponse;
     bool generateCodeEnabled = true;
 };
