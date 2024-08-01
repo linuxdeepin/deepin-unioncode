@@ -332,7 +332,7 @@ void ProjectCore::confirmProjectKit(const QString &path)
         }
         auto widget = generator->configureWidget(generator->supportLanguages().first(), path);
         if (!widget) {
-            QTimer::singleShot(20, [&](){ dialog.resize(originalSize); });
+            QTimer::singleShot(20, this, [&](){ dialog.resize(originalSize); });
         } else {
             configureWidget->addWidget(widget);
         }
