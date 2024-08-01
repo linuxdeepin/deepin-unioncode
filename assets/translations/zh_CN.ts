@@ -994,7 +994,7 @@
 <context>
     <name>BuildPropertyPage</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="252"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="253"/>
         <source>Output direcotry:</source>
         <translation>输出目录：</translation>
     </message>
@@ -1038,12 +1038,12 @@ storage: %2
 <context>
     <name>CMakeDebug</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="37"/>
+        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="36"/>
         <source>The gdb is required, please install it in console with &quot;sudo apt install gdb&quot;, and then restart the tool, reselect the CMake Debugger in Options Dialog...</source>
         <translation>gdb尚未安装，请使用“sudo apt install gdb”将其安装在控制台中，然后重新启动工具，在选项对话框中重新选择CMake调试器...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="60"/>
+        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="59"/>
         <source>Request cxx dap port failed, please retry.</source>
         <translation>请求cxx dap端口失败，请重新尝试。</translation>
     </message>
@@ -1059,54 +1059,59 @@ storage: %2
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="103"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="104"/>
         <source>Run CMake</source>
         <translation>执行CMake</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="125"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="126"/>
         <source>Clear CMake</source>
         <translation>清除CMake</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="302"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="303"/>
         <source>Files in project %1 have changed, needs to run cmake to update</source>
         <translation>项目%1中的文件已经更改，需要运行 cmake 来更新</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="376"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="377"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="398"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="399"/>
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation>文件不会自动添加到 Cmake 项目的 CmakeList.txt 文件中。将源文件的路径复制到剪贴板？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="402"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="403"/>
         <source>Copy to Clipboard?</source>
         <translation>复制到剪贴板？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="405"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="406"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="550"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="554"/>
         <source>Project Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="559"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="564"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="560"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="565"/>
         <source>Run</source>
         <translation>运行</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="566"/>
+        <source>Kit</source>
+        <translation>套件</translation>
     </message>
 </context>
 <context>
@@ -1138,77 +1143,77 @@ storage: %2
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="38"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="39"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="39"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="41"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="89"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="90"/>
         <source>backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="97"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="98"/>
         <source>forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="123"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="124"/>
         <source>Close Current Editor</source>
         <translation>关闭当前编辑器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="127"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="128"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="131"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="132"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="135"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="136"/>
         <source>Toggle Breakpoint</source>
         <translation>切换断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="139"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="140"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="143"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="144"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="232"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="235"/>
         <source>Current document</source>
         <translation>当前文档</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="235"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="238"/>
         <source>Current document content</source>
         <translation>当前文档内容</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="115"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="116"/>
         <source>Backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="119"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="120"/>
         <source>Forward</source>
         <translation>前进</translation>
     </message>
@@ -1628,8 +1633,8 @@ storage: %2
 <context>
     <name>DAPDebugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="589"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="617"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="591"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="619"/>
         <source>
 The debugee has Terminated.
 </source>
@@ -1638,31 +1643,31 @@ The debugee has Terminated.
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="607"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="609"/>
         <source>The debugee has Exited.
 </source>
         <translation>调试已退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="818"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
         <source>Input Condition Expression</source>
         <translation>输入条件表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="822"/>
         <source>Condition</source>
         <translation>条件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="821"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="823"/>
         <source>When the breakpoint is reached, it will be hit only when the expression is true</source>
         <translation>当断点到达，仅在表达式为真时触发</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="252"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="822"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1049"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="824"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1051"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -1672,117 +1677,117 @@ The debugee has Terminated.
         <translation>调试其他应用程序时不能附加到进程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="265"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="266"/>
         <source>The gdb is required, please install it in console with &quot;sudo apt install gdb&quot;, and then restart the tool, reselect the CMake Debugger in Options Dialog...</source>
         <translation>gdb尚未安装，请在控制台中使用“sudo apt install gdb”将其安装，然后重新启动工具，在选项对话框中重新选择CMake调试器...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="281"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="283"/>
         <source>Request cxx dap port failed, please retry.</source>
         <translation>请求cxx dap端口失败，请重新尝试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="823"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1050"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="825"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1052"/>
         <source>Ok</source>
         <translation>确认</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="981"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="983"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="983"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="985"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="984"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="986"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;p&gt;下位机停止，因为它收到了来自操作系统的信号。&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;信号名： &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;信号含义： &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="990"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="992"/>
         <source>Signal Received</source>
         <translation>信号已接收</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1046"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1048"/>
         <source>New Evaluator Expression</source>
         <translation>新评估表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1047"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1049"/>
         <source>Enter an expression to evaluate</source>
-        <translation type="unfinished">输入求值表达式</translation>
+        <translation>输入求值表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1089"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1091"/>
         <source>Threads:</source>
         <translation>线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1093"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1095"/>
         <source>Stack List</source>
         <translation>堆栈列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1166"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1168"/>
         <source>Add New Expression Evaluator</source>
         <translation>添加新评估表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1167"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1169"/>
         <source>Remove This Evaluator</source>
         <translation>删除评估</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
         <source>Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1124"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1126"/>
         <source>Breakpoint List</source>
         <translation>断点列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1269"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1271"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation>请先编译工程。
 编译：Ctrl + B</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1281"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1283"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation>正在加载依赖项，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1310"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1312"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation>正在获取dap端口，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1322"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1324"/>
         <source>Requesting debug port...</source>
         <translation>请求调试端口...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1384"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1386"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -1791,22 +1796,22 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1388"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1390"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1468"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1470"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1471"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1473"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1477"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1479"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
@@ -2913,6 +2918,19 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
+    <name>KitPage</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/kitpage/kitpage.cpp" line="28"/>
+        <source>Kit:</source>
+        <translation>构建工具：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/kitpage/kitpage.cpp" line="35"/>
+        <source>None</source>
+        <translation>空</translation>
+    </message>
+</context>
+<context>
     <name>KitsPane</name>
     <message>
         <location filename="../../src/plugins/template/wizard/kitspane.cpp" line="37"/>
@@ -3256,12 +3274,12 @@ repos path: %0</source>
         <translation>全局选项</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="174"/>
-        <source>OK</source>
-        <translation>确定</translation>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="172"/>
+        <source>Apply</source>
+        <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="177"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="176"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3393,22 +3411,22 @@ repos path: %0</source>
         <translation>聚焦文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="287"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="284"/>
         <source>Config</source>
         <translation>配置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="293"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="290"/>
         <source>Kit:</source>
         <translation>构建工具：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
@@ -3847,7 +3865,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="274"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="271"/>
         <source>Open Project Directory</source>
         <translation>打开工程目录</translation>
     </message>
@@ -3875,7 +3893,7 @@ not exists support files: %0</source>
         <translation>密码： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="251"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="252"/>
         <source>Build configuration:</source>
         <translation>编译配置：</translation>
     </message>
@@ -4122,22 +4140,22 @@ not exists support files: %0</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="68"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="69"/>
         <source>Build Steps</source>
         <translation>编译步骤</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="71"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="72"/>
         <source>Clean Steps</source>
         <translation>清扫步骤</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="72"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="73"/>
         <source>Build Environment</source>
         <translation>编译环境</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="73"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="74"/>
         <source>CMake config</source>
         <translation>CMake 配置</translation>
     </message>
@@ -4319,7 +4337,7 @@ not exists support files: %0</source>
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="201"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="202"/>
         <source>Search &amp;Results</source>
         <translation>查找结果(&amp;R)</translation>
     </message>
@@ -5643,6 +5661,37 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
+    <name>SymbolWidget</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="135"/>
+        <source>No symbols found in document &quot;%1&quot;</source>
+        <translation>在文档“%1”中找不到符号</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="176"/>
+        <source>Follow Cursor</source>
+        <translation>跟随光标</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="181"/>
+        <source>Expand All</source>
+        <translation>展开所有</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="184"/>
+        <source>Collapse All</source>
+        <translation>折叠所有</translation>
+    </message>
+</context>
+<context>
+    <name>SymbolWidgetGenerator</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="216"/>
+        <source>OUTLINE</source>
+        <translation>大纲</translation>
+    </message>
+</context>
+<context>
     <name>TabBarPrivate</name>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="74"/>
@@ -5706,7 +5755,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="188"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="187"/>
         <source>File Operation</source>
         <translation>文件操作</translation>
     </message>
@@ -5826,7 +5875,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="66"/>
         <source>New Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>新工具</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="88"/>
@@ -5938,96 +5987,96 @@ not exists support files: %0</source>
 <context>
     <name>WorkspaceWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="67"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="69"/>
         <source>Add/Delete Comment</source>
         <translation>添加/删除注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="71"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="73"/>
         <source>Add/Remove Comment</source>
         <translation>添加/删除注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="72"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="74"/>
         <source>&amp;Add/Remove Comment</source>
         <translation>&amp;添加/删除注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="76"/>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="80"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="78"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="82"/>
         <source>Show opened files</source>
         <translation>显示打开的文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="81"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="83"/>
         <source>&amp;Show open files</source>
         <translation>&amp;显示打开的文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="169"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="171"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been changed on disk.Do you want to reload it?</source>
         <translation>%1 被修改，是否重新加载？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="170"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="172"/>
         <source>File Has Been Changed</source>
         <translation>文件发生修改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="173"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="175"/>
         <source>Yes</source>
         <comment>button</comment>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="174"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="176"/>
         <source>Yes To All</source>
         <comment>button</comment>
         <translation>应用所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="175"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="177"/>
         <source>No</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="176"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="178"/>
         <source>No To All</source>
         <comment>button</comment>
         <translation>取消所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="177"/>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="206"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="179"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="208"/>
         <source>Close</source>
         <comment>button</comment>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="199"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been removed from disk. Do you want to save it under a different name, or close the editor?</source>
         <translation>%1 被移除，是否需要另存为，或者关闭当前编辑页？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="201"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="203"/>
         <source>File Has Been Removed</source>
         <translation>文件被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="204"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="206"/>
         <source>Save</source>
         <comment>button</comment>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="205"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="207"/>
         <source>Save As</source>
         <comment>button</comment>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="207"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="209"/>
         <source>Close All</source>
         <comment>button</comment>
         <translation>关闭所有</translation>

@@ -167,21 +167,22 @@ void OptionsDialog::setupUi()
 
     auto buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing(6);
-    auto horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    buttonLayout->setAlignment(Qt::AlignCenter);
 
-    buttonLayout->addItem(horizontalSpacer);
-
-    auto okBtn = new DSuggestButton(tr("OK"), this);
+    auto okBtn = new DSuggestButton(tr("Apply"), this);
+    okBtn->setMinimumWidth(175);
     connect(okBtn, SIGNAL(clicked()), this, SLOT(saveAllConfig()));
 
     auto cancelBtn = new DPushButton(tr("Cancel"), this);
-    connect(cancelBtn, &DPushButton::clicked, [this] {
+    cancelBtn->setMinimumWidth(175);
+    connect(cancelBtn, &DPushButton::clicked, this, [this] {
         // TODO(Mozart)
         this->close();
     });
 
-    buttonLayout->addWidget(okBtn);
     buttonLayout->addWidget(cancelBtn);
+    buttonLayout->addWidget(new DVerticalLine(this));
+    buttonLayout->addWidget(okBtn);
 
     rightLayout->addLayout(buttonLayout);
 
