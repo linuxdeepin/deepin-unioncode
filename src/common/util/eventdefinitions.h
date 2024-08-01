@@ -18,6 +18,7 @@ OPI_OBJECT(recent,
 OPI_OBJECT(project,
            // in
            OPI_INTERFACE(openProject, "kitName", "language", "workspace")
+           OPI_INTERFACE(openProjectByPath, "directory")
            OPI_INTERFACE(activeProject, "kitName", "language", "workspace")
            // out
            OPI_INTERFACE(activatedProject, "projectInfo")

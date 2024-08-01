@@ -69,5 +69,8 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
     } else if (event.data() == uiController.modeRaised.name) {
         auto mode = event.property("mode").toString();
         emit ProjectProxy::instance()->modeRaised(mode);
+    } else if (event.data() == project.openProjectByPath.name) {
+        auto directory = event.property("directory").toString();
+        emit ProjectProxy::instance()->openProject(directory);
     }
 }

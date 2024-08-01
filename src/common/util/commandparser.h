@@ -28,6 +28,7 @@ public:
 
     bool isSet(const QString &name) const;
     QString value(const QString &name) const;
+    QStringList projectDirectory() const;
     void process();
     void process(const QStringList &arguments);
     void setModel(CommandModel model);
