@@ -48,7 +48,7 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
             QStringList supportLangs = generator->supportLanguages();
             if (supportLangs.contains(language)) {
                 if (generator->canOpenProject(kitName, language, workspace)) {
-                    generator->doProjectOpen(language, kitName, workspace);
+                    generator->doProjectOpen(kitName, language, workspace);
                 } else if (generator->isOpenedProject(kitName, language, workspace)) {
                     project.activeProject(kitName, language, workspace);
                 }
