@@ -280,7 +280,7 @@ void ProjectCore::openProject()
         return;
     QString projectPath = fileDialog.selectedUrls().first().path();
     confirmProjectKit(projectPath);
-    setting.setValue("recent_open_project", projectPath); // save open history
+    setting.setValue("recent_open_project", projectPath);   // save open history
 }
 
 void ProjectCore::confirmProjectKit(const QString &path)
@@ -298,7 +298,7 @@ void ProjectCore::confirmProjectKit(const QString &path)
     layout->addWidget(label);
     layout->addWidget(cbBox);
     dialog.addContent(widget);
-    dialog.addButtons({tr("Cancel"), tr("Confirm")});
+    dialog.addButtons({ tr("Cancel"), tr("Confirm") });
     auto originalSize = dialog.size();
 
     auto projectService = dpfGetService(ProjectService);
@@ -325,7 +325,7 @@ void ProjectCore::confirmProjectKit(const QString &path)
     }
 
     // select kit
-    connect(cbBox, &QComboBox::currentTextChanged, this, [=, &dialog, &originalSize](const QString &text){
+    connect(cbBox, &QComboBox::currentTextChanged, this, [=, &dialog, &originalSize](const QString &text) {
         auto generator = projectService->createGenerator<ProjectGenerator>(text);
         auto currentWidget = configureWidget->currentWidget();
         if (currentWidget) {
@@ -334,11 +334,12 @@ void ProjectCore::confirmProjectKit(const QString &path)
         }
         auto widget = generator->configureWidget(generator->supportLanguages().first(), path);
         if (!widget) {
-            QTimer::singleShot(20, this, [&](){ dialog.resize(originalSize); });
+            QTimer::singleShot(20, &dialog, [&]() { dialog.resize(originalSize); });
         } else {
             configureWidget->addWidget(widget);
         }
-    }, Qt::DirectConnection);
+    },
+            Qt::DirectConnection);
 
     if (dialog.exec() == DDialog::Accepted) {
         auto kit = cbBox->currentText();
