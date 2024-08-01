@@ -26,6 +26,7 @@ QT_END_NAMESPACE
 class CodeEditComponent;
 class MessageComponent : public DFrame
 {
+    Q_OBJECT
     enum UpdateState : uint8_t {
         Label,
         CodeEdit

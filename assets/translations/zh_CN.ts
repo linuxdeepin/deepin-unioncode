@@ -289,17 +289,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../src/app/main.cpp" line="115"/>
+        <location filename="../../src/app/main.cpp" line="120"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation>创建于%1 %2, %3平台</translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="118"/>
+        <location filename="../../src/app/main.cpp" line="123"/>
         <source>deepin-unioncode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="121"/>
+        <location filename="../../src/app/main.cpp" line="126"/>
         <source>Deepin Union Code is a lightweight integrated development environment,                                            featured with multilingual and cross platform compatibility.</source>
         <translation>Deepin Union Code是一款具有多语言、跨平台兼容特性的轻量级集成开发环境.</translation>
     </message>
@@ -1350,6 +1350,14 @@ storage: %2
         <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="35"/>
         <source>Porting &amp;Report</source>
         <translation>迁移报告(&amp;R)</translation>
+    </message>
+</context>
+<context>
+    <name>CommandParser</name>
+    <message>
+        <location filename="../../src/common/util/commandparser.cpp" line="121"/>
+        <source>Project directory</source>
+        <translation>项目目录</translation>
     </message>
 </context>
 <context>
@@ -3391,42 +3399,42 @@ repos path: %0</source>
 <context>
     <name>ProjectCore</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="146"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="151"/>
         <source>Open activted project`s property dialog</source>
         <translation>打开已激活的工程属性对话框</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="117"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="122"/>
         <source>Auto Focus</source>
         <translation>自动聚焦</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="112"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="117"/>
         <source>Opened Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="122"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="127"/>
         <source>Focus File</source>
         <translation>聚焦文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="284"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="289"/>
         <source>Config</source>
         <translation>配置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="290"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="295"/>
         <source>Kit:</source>
         <translation>构建工具：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="301"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="301"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
@@ -3865,7 +3873,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="271"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="276"/>
         <source>Open Project Directory</source>
         <translation>打开工程目录</translation>
     </message>
