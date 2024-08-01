@@ -980,7 +980,7 @@
 <context>
     <name>BuildPropertyPage</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="252"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="253"/>
         <source>Output direcotry:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1021,12 +1021,12 @@ storage: %2
 <context>
     <name>CMakeDebug</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="37"/>
+        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="36"/>
         <source>The gdb is required, please install it in console with &quot;sudo apt install gdb&quot;, and then restart the tool, reselect the CMake Debugger in Options Dialog...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="60"/>
+        <location filename="../../src/plugins/cxx/cmake/cmakedebug.cpp" line="59"/>
         <source>Request cxx dap port failed, please retry.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1042,53 +1042,58 @@ storage: %2
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="103"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="104"/>
         <source>Run CMake</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="125"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="126"/>
         <source>Clear CMake</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="302"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="303"/>
         <source>Files in project %1 have changed, needs to run cmake to update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="376"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="377"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="398"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="399"/>
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="402"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="403"/>
         <source>Copy to Clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="405"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="406"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="550"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="554"/>
         <source>Project Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="559"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="564"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="560"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="565"/>
         <source>Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="566"/>
+        <source>Kit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1121,77 +1126,77 @@ storage: %2
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="38"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="39"/>
         <source>Save All Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="39"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
         <source>Close All Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="41"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="89"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="90"/>
         <source>backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="97"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="98"/>
         <source>forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="123"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="124"/>
         <source>Close Current Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="127"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="128"/>
         <source>Switch Header/Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="131"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="132"/>
         <source>Follow Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="135"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="136"/>
         <source>Toggle Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="139"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="140"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="143"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="144"/>
         <source>Rename Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="232"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="235"/>
         <source>Current document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="235"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="238"/>
         <source>Current document content</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="115"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="116"/>
         <source>Backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="119"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="120"/>
         <source>Forward</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1605,38 +1610,38 @@ storage: %2
 <context>
     <name>DAPDebugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="589"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="617"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="591"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="619"/>
         <source>
 The debugee has Terminated.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="607"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="609"/>
         <source>The debugee has Exited.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="818"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
         <source>Input Condition Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="822"/>
         <source>Condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="821"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="823"/>
         <source>When the breakpoint is reached, it will be hit only when the expression is true</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="252"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="822"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1049"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="824"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1051"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1646,138 +1651,138 @@ The debugee has Terminated.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="265"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="266"/>
         <source>The gdb is required, please install it in console with &quot;sudo apt install gdb&quot;, and then restart the tool, reselect the CMake Debugger in Options Dialog...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="281"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="283"/>
         <source>Request cxx dap port failed, please retry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="823"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1050"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="825"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1052"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="981"/>
-        <source>&lt;Unknown&gt;</source>
-        <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="983"/>
         <source>&lt;Unknown&gt;</source>
+        <comment>name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="985"/>
+        <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="984"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="986"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="990"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="992"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1046"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1048"/>
         <source>New Evaluator Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1047"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1049"/>
         <source>Enter an expression to evaluate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1089"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1091"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1093"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1095"/>
         <source>Stack List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1166"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1168"/>
         <source>Add New Expression Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1167"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1169"/>
         <source>Remove This Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1124"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1126"/>
         <source>Breakpoint List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1269"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1271"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1281"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1283"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1310"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1312"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1322"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1324"/>
         <source>Requesting debug port...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1384"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1386"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1388"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1390"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1468"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1470"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1471"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1473"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1477"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1479"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2882,6 +2887,19 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
+    <name>KitPage</name>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/kitpage/kitpage.cpp" line="28"/>
+        <source>Kit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/kitpage/kitpage.cpp" line="35"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>KitsPane</name>
     <message>
         <location filename="../../src/plugins/template/wizard/kitspane.cpp" line="37"/>
@@ -3224,12 +3242,12 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="174"/>
-        <source>OK</source>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="172"/>
+        <source>Apply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="177"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="176"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3361,22 +3379,22 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="287"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="284"/>
         <source>Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="293"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="290"/>
         <source>Kit:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3813,7 +3831,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="274"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="271"/>
         <source>Open Project Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3841,7 +3859,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="251"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="252"/>
         <source>Build configuration:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4088,22 +4106,22 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="68"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="69"/>
         <source>Build Steps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="71"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="72"/>
         <source>Clean Steps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="72"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="73"/>
         <source>Build Environment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="73"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="74"/>
         <source>CMake config</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4285,7 +4303,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="201"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="202"/>
         <source>Search &amp;Results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5603,6 +5621,37 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
+    <name>SymbolWidget</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="135"/>
+        <source>No symbols found in document &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="176"/>
+        <source>Follow Cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="181"/>
+        <source>Expand All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="184"/>
+        <source>Collapse All</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SymbolWidgetGenerator</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/symbol/symbolwidget.cpp" line="216"/>
+        <source>OUTLINE</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TabBarPrivate</name>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="74"/>
@@ -5666,7 +5715,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="188"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="187"/>
         <source>File Operation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5898,96 +5947,96 @@ not exists support files: %0</source>
 <context>
     <name>WorkspaceWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="67"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="69"/>
         <source>Add/Delete Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="71"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="73"/>
         <source>Add/Remove Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="72"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="74"/>
         <source>&amp;Add/Remove Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="76"/>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="80"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="78"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="82"/>
         <source>Show opened files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="81"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="83"/>
         <source>&amp;Show open files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="169"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="171"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been changed on disk.Do you want to reload it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="170"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="172"/>
         <source>File Has Been Changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="173"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="175"/>
         <source>Yes</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="174"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="176"/>
         <source>Yes To All</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="175"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="177"/>
         <source>No</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="176"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="178"/>
         <source>No To All</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="177"/>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="206"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="179"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="208"/>
         <source>Close</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="199"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been removed from disk. Do you want to save it under a different name, or close the editor?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="201"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="203"/>
         <source>File Has Been Removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="204"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="206"/>
         <source>Save</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="205"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="207"/>
         <source>Save As</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="207"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="209"/>
         <source>Close All</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
