@@ -49,6 +49,11 @@ void CurmbItem::setText(const QString &text)
     update();
 }
 
+QString CurmbItem::text() const
+{
+    return displayText;
+}
+
 void CurmbItem::setIcon(const QIcon &icon)
 {
     if (!icon.isNull())
@@ -187,8 +192,8 @@ void SymbolBar::setPath(const QString &path)
         if (i == itemList.size() - 1)
             item->setIcon(DFileIconProvider::globalProvider()->icon(path));
 
-        QString absolutePath = workspaceDir + QDir::separator() + itemList.mid(0, i).join(QDir::separator());
-        item->setUserData(absolutePath);
+        QString filePath = workspaceDir + QDir::separator() + itemList.mid(0, i + 1).join(QDir::separator());
+        item->setUserData(filePath);
         layout->addWidget(item, 0, Qt::AlignVCenter | Qt::AlignLeft);
         connect(item, &CurmbItem::clicked, this, &SymbolBar::curmbItemClicked);
     }
@@ -227,7 +232,8 @@ void SymbolBar::updateSymbol(int line, int index)
         connect(symbolItem, &CurmbItem::clicked, this, &SymbolBar::curmbItemClicked);
     }
 
-    symbolItem->setUserData(editor->getFile());
+    QVariantList list { editor->getFile(), line, index };
+    symbolItem->setUserData(list);
     symbolItem->setText(info.first);
     symbolItem->setToolTip(info.first);
     symbolItem->setIcon(SymbolManager::instance()->iconFromKind(static_cast<SymbolManager::SymbolKind>(info.second)));
@@ -240,7 +246,10 @@ void SymbolBar::curmbItemClicked()
         return;
 
     if (!symbolView) {
-        symbolView = new SymbolView(this);
+        symbolView = new SymbolView(SymbolView::Click, this);
+        symbolView->setFixedWidth(400);
+        symbolView->setWindowFlags(Qt::Popup);
+        symbolView->setClickToHide(true);
         connect(symbolView, &SymbolView::hidden, this, &SymbolBar::resetCurmbItemState);
     }
 
@@ -250,15 +259,19 @@ void SymbolBar::curmbItemClicked()
     switch (item->curmbType()) {
     case CurmbItem::FilePath: {
         const auto &path = item->userData().toString();
-        symbolView->setRootPath(path);
+        QFileInfo info(path);
+        symbolView->setRootPath(info.absolutePath());
+        symbolView->select(path);
         symbolView->show(pos);
     } break;
     case CurmbItem::Symbol: {
-        const auto &path = item->userData().toString();
-        if (symbolView->setSymbolPath(path))
+        const auto &data = item->userData().toList();
+        if (data.size() == 3 && symbolView->setSymbolPath(data[0].toString())) {
+            symbolView->selectSymbol(item->text(), data[1].toInt(), data[2].toInt());
             symbolView->show(pos);
-        else
+        } else {
             item->setSelected(false);
+        }
     } break;
     }
 }

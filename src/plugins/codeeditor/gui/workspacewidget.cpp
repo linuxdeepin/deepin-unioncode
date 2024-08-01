@@ -8,6 +8,8 @@
 #include "settings/editorsettings.h"
 #include "settings/settingsdefine.h"
 #include "base/abstractaction.h"
+#include "symbol/symbolwidget.h"
+#include "texteditor.h"
 
 #include <DDialog>
 
@@ -355,6 +357,8 @@ void WorkspaceWidgetPrivate::onCloseRequested()
     if (!tabWidgetList.isEmpty()) {
         tabWidgetList.last()->setFocus();
         editor.switchedFile(tabWidgetList.last()->currentFile());
+        auto symbolWidget = SymbolWidgetGenerator::instance()->symbolWidget();
+        symbolWidget->setEditor(qobject_cast<TextEditor *>(tabWidgetList.last()->currentWidget()));
     }
 
     if (tabWidgetList.size() == 1)
@@ -523,6 +527,8 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
 
     focusTabWidget = tabWidget;
     editor.switchedFile(focusTabWidget->currentFile());
+    auto symbolWidget = SymbolWidgetGenerator::instance()->symbolWidget();
+    symbolWidget->setEditor(qobject_cast<TextEditor *>(tabWidget->currentWidget()));
 }
 
 void WorkspaceWidgetPrivate::onZoomValueChanged()

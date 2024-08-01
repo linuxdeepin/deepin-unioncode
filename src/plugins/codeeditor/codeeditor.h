@@ -27,7 +27,7 @@ private:
     void initEditorService();
     void initWindowService();
     void initOptionService();
-    void initLocator();
+    void initSymbol();
     void registerVariables();
 
 private:

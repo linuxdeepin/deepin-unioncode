@@ -12,6 +12,7 @@
 #include "utils/editorutils.h"
 #include "status/statusinfomanager.h"
 #include "symbol/symbollocator.h"
+#include "symbol/symbolwidget.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -65,7 +66,7 @@ bool CodeEditor::start()
     initButtonBox();
     initEditorService();
     initOptionService();
-    initLocator();
+    initSymbol();
     registerVariables();
 
     return true;
@@ -215,7 +216,7 @@ void CodeEditor::initOptionService()
     optionService->implGenerator<EditorSettingsWidgetGenerator>(option::GROUP_GENERAL, EditorSettingsWidgetGenerator::kitName());
 }
 
-void CodeEditor::initLocator()
+void CodeEditor::initSymbol()
 {
     auto locatorSrv = dpfGetService(LocatorService);
     if (!locatorSrv)
@@ -224,6 +225,8 @@ void CodeEditor::initLocator()
     SymbolLocator *locator = new SymbolLocator(workspaceWidget);
     locator->setWorkspaceWidget(workspaceWidget);
     locatorSrv->registerLocator(locator);
+
+    SymbolWidgetGenerator::instance()->registerToDock(workspaceWidget);
 }
 
 void CodeEditor::registerVariables()

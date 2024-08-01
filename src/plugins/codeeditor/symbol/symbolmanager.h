@@ -10,8 +10,9 @@
 #include "common/lsp/protocol/new/languagefeatures.h"
 
 class SymbolManagerPrivate;
-class SymbolManager
+class SymbolManager : public QObject
 {
+    Q_OBJECT
 public:
     enum SymbolKind {
         File = 1,
@@ -53,8 +54,11 @@ public:
     QIcon iconFromKind(SymbolKind kind);
     QString displayNameFromDocumentSymbol(SymbolKind kind, const QString &name, const QString &detail);
 
+Q_SIGNALS:
+    void symbolChanged(const QString &file);
+
 private:
-    SymbolManager();
+    SymbolManager(QObject *parent = nullptr);
     ~SymbolManager();
 
     SymbolManagerPrivate *const d;
