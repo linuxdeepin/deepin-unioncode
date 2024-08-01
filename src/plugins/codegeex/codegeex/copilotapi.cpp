@@ -116,7 +116,7 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
     json.insert("context", context);
     json.insert("model", completionModel);
     json.insert("lang", file.second);
-    json.insert("max_new_tokens", 64);
+    json.insert("max_new_tokens", 128);
 
     QJsonDocument doc(json);
     return doc.toJson();
@@ -185,6 +185,9 @@ void CopilotApi::slotReadReply(QNetworkReply *reply)
         if (type == CopilotApi::inline_completions) {
             auto content = jsonObject.value("inline_completions").toArray().at(0).toObject();
             code = content.value("text").toString();
+            // Cut the first code segment
+            auto codeLines = code.split('\n');
+            code = codeLines.mid(0, codeLines.indexOf("")).join('\n');
             emit response(CopilotApi::inline_completions, code, "");
         } else if (type == CopilotApi::multilingual_code_translate) {
             auto codeLines = jsonObject.value("text").toString().split('\n');
