@@ -73,6 +73,11 @@ bool ProjectCore::start()
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, &ProjectCore::pluginsStartedMain, Qt::DirectConnection);
 
+    connect(ProjectProxy::instance(), &ProjectProxy::openProject, this, [=](const QString &directory) {
+        confirmProjectKit(directory);
+    },
+            Qt::DirectConnection);
+
     initProject(ctx);
     initLocator(ctx);
 

@@ -10,6 +10,7 @@
 #include <QCommandLineOption>
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
 
 #include <iostream>
 
@@ -22,6 +23,24 @@ CommandParser &CommandParser::instance()
 bool CommandParser::isSet(const QString &name) const
 {
     return commandParser->isSet(name);
+}
+
+QStringList CommandParser::projectDirectory() const
+{
+    if (positionalArguments().isEmpty())
+        return {};
+
+    QStringList projectList;
+    for (auto arg : positionalArguments()) {
+        if (arg == ".") {
+            projectList.append(QDir::currentPath());
+            continue;
+        }
+        QFileInfo fileInfo(arg);
+        if (fileInfo.exists() && fileInfo.isDir())
+            projectList.append(arg);
+    }
+    return projectList;
 }
 
 QString CommandParser::value(const QString &name) const
@@ -98,6 +117,8 @@ void CommandParser::initOptions()
     addOption(kitOption);
     addOption(argsOption);
     addOption(addTagOption);
+
+    commandParser->addPositionalArgument("address", tr("Project directory"));
 }
 
 void CommandParser::addOption(const QCommandLineOption &option)

@@ -98,6 +98,11 @@ void voidMessageOutput(QtMsgType type, const QMessageLogContext &context, const 
     // not ouput qt log when in command mode.
 }
 
+void openProject(const QString &path)
+{
+    project.openProjectByPath(path);
+}
+
 int main(int argc, char *argv[])
 {
     // some platform opengl drive with wrong，so use OpenGLES instead.
@@ -142,6 +147,13 @@ int main(int argc, char *argv[])
     if (!loadPlugins()) {
         qCritical() << "Failed, Load plugins!";
         abort();
+    }
+
+    if (!CommandParser::instance().projectDirectory().isEmpty()) {
+        auto directory = CommandParser::instance().projectDirectory().first();   // only process first argument
+        QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, &a, [directory, &a]() {
+            QTimer::singleShot(100, &a, [directory](){ openProject(directory); });
+        });
     }
 
     return a.exec();
