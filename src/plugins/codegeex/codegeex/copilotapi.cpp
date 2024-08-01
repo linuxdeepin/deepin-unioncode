@@ -151,14 +151,14 @@ QByteArray CopilotApi::assembleCommandBody(const QString &code, const QString &l
 void CopilotApi::processResponse(QNetworkReply *reply)
 {
     if (reply->property("responseType") == CopilotApi::receiving_by_stream) {
-        connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestStop, this, [=](){
+        connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestStop, this, [=]() {
             reply->close();
         });
         connect(reply, &QNetworkReply::readyRead, this, [=]() {
             slotReadReplyStream(reply);
         });
     } else {
-        connect(reply, &QNetworkReply::finished, this, [=](){
+        connect(reply, &QNetworkReply::finished, this, [=]() {
             slotReadReply(reply);
         });
     }
