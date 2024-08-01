@@ -136,8 +136,7 @@ public:
                      const QString &locale,
                      const QString &command);
 
-    enum ResponseType
-    {
+    enum ResponseType {
         inline_completions,
         multilingual_code_comment,
         multilingual_code_translate,
@@ -158,15 +157,15 @@ private:
     QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);
 
     QByteArray assembleGenerateBody(const QString &prefix,
-                             const QString &suffix);
+                                    const QString &suffix);
 
     QByteArray assembleTranslateBody(const QString &code,
-                             const QString &dst_lang,
-                             const QString &locale);
+                                     const QString &dst_lang,
+                                     const QString &locale);
 
     QByteArray assembleCommandBody(const QString &code,
-                             const QString &locale,
-                             const QString &command);
+                                   const QString &locale,
+                                   const QString &command);
 
     void processResponse(QNetworkReply *reply);
     QPair<QString, QString> getCurrentFileInfo();
@@ -174,9 +173,11 @@ private:
     QNetworkAccessManager *manager = nullptr;
     QString chatModel = chatModelLite;
     QString completionModel = completionModelLite;
+
+    QNetworkReply *completionReply = nullptr;
 };
 
-}// end namespace
+}   // end namespace
 Q_DECLARE_METATYPE(CodeGeeX::CopilotApi::ResponseType)
 
-#endif // COPILOT_H
+#endif   // COPILOT_H

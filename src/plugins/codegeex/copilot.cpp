@@ -52,12 +52,6 @@ Copilot::Copilot(QObject *parent)
 
     connect(&copilotApi, &CopilotApi::responseByStream, this, &Copilot::response);
     connect(&copilotApi, &CopilotApi::messageSended, this, &Copilot::messageSended);
-
-    timer.setSingleShot(true);
-
-    connect(&timer, &QTimer::timeout, [this]() {
-        generateCode();
-    });
 }
 
 QString Copilot::selectedText() const
@@ -119,7 +113,7 @@ QMenu *Copilot::getMenu()
 
 void Copilot::translateCode(const QString &code, const QString &dstLanguage)
 {
-    QString url = QString(kUrlSSEChat) + "?stream=false"; //receive all msg at once
+    QString url = QString(kUrlSSEChat) + "?stream=false";   //receive all msg at once
     copilotApi.postTranslate(url, code, dstLanguage, locale);
 }
 
@@ -159,13 +153,13 @@ void Copilot::handleTextChanged()
 {
     // start generate code.
     QMetaObject::invokeMethod(this, [this]() {
-        timer.start(200);
+        generateCode();
     });
 }
 
 void Copilot::addComment()
 {
-    QString url = QString(kUrlSSEChat) + "?stream=false"; //receive all msg at once
+    QString url = QString(kUrlSSEChat) + "?stream=false";   //receive all msg at once
     copilotApi.postComment(url,
                            selectedText(),
                            locale);
@@ -237,7 +231,7 @@ void Copilot::commits()
     auto workingDirectory = prjInfo.workspaceFolder();
     process.setWorkingDirectory(workingDirectory);
 
-    connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this, &process](int exitCode, QProcess::ExitStatus exitStatus){
+    connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this, &process](int exitCode, QProcess::ExitStatus exitStatus) {
         Q_UNUSED(exitStatus)
 
         if (exitCode != 0)
