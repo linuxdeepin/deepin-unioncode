@@ -62,7 +62,7 @@ bool CodeGeex::start()
             if (ret)
                 return;
 
-            QStringList actions { "codegeex_login_default", "Login" };
+            QStringList actions { "codegeex_login_default", CodeGeex::tr("Login") };
             windowService->notify(0, "CodeGeex", CodeGeex::tr("Please login to use CodeGeeX."), actions);
         });
     });
