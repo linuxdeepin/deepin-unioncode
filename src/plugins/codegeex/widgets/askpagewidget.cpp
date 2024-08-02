@@ -340,17 +340,24 @@ void AskPageWidget::initReferenceMenu()
     connect(current, &QAction::triggered, this, [=](){
         selectedFiles.clear();
         auto file = editorSrv->currentFile();
-        if (!file.isEmpty())
+        if (file.isEmpty())
+            current->setChecked(false);
+        else
             selectedFiles.append(file);
     });
     connect(opened, &QAction::triggered, this, [=](){
         selectedFiles.clear();
         selectedFiles = editorSrv->openedFiles();
+        if (selectedFiles.isEmpty())
+            opened->setChecked(false);
     });
     connect(select, &QAction::triggered, this, [=](){
         selectedFiles.clear();
         QString result = QFileDialog::getOpenFileName(this, tr("Select File"), QDir::homePath());
-        selectedFiles.append(result);
+        if (result.isEmpty())
+            select->setChecked(false);
+        else
+            selectedFiles.append(result);
     });
     connect(clear, &QAction::triggered, this, [=](){
         selectedFiles.clear();
