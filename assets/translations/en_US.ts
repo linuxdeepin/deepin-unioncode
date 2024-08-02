@@ -379,7 +379,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="352"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="356"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1246,6 +1246,11 @@ storage: %2
 <context>
     <name>CodeGeex</name>
     <message>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="65"/>
+        <source>Login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/codegeex/codegeex.cpp" line="66"/>
         <source>Please login to use CodeGeeX.</source>
         <translation type="unfinished"></translation>
@@ -1572,37 +1577,37 @@ storage: %2
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="93"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="87"/>
         <source>Add Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="94"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="88"/>
         <source>Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="95"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
         <source>Fix Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="96"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
         <source>Explain Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="97"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="91"/>
         <source>Review Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="98"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="92"/>
         <source>Generate Unit Tests</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="99"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="93"/>
         <source>Generate git commits</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2924,7 +2929,7 @@ need to manually copy the source code to this path</source>
     <name>LLBuilderGenerator</name>
     <message>
         <location filename="../../src/plugins/linglong/builder/mainframe/llbuildergenerator.cpp" line="53"/>
-        <source>Can`t find linglong-builder tool</source>
+        <source>Can`t find linglong-builder tool, Install it based on %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3037,42 +3042,59 @@ repos path: %0</source>
 <context>
     <name>MainFrame</name>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="85"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="57"/>
+        <source>&amp;Application Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="58"/>
+        <source>Can not find tool named: %1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="60"/>
+        <source>Check the repository source, and install the linglong-builder, linglong-box, and linglong-bin tools.
+ reference %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="89"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="96"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="100"/>
         <source>Installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="97"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="101"/>
         <source>Repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="98"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="102"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="108"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="112"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="160"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="164"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="161"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="165"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="162"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="166"/>
         <source>UnInstall</source>
         <translation type="unfinished"></translation>
     </message>

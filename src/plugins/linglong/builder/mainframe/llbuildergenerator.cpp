@@ -50,7 +50,7 @@ bool LLBuilderGenerator::checkCommandValidity(const BuildCommandInfo &info, QStr
         DDialog dialog;
         dialog.setWindowTitle("Warning");
         dialog.setIcon(QIcon::fromTheme("dialog-warning"));
-        dialog.setMessage(tr("Can`t find linglong-builder tool"));
+        dialog.setMessage(tr("Can`t find linglong-builder tool, Install it based on %1").arg("https://linglong.dev/guide/start/install.html"));
         dialog.exec();
         return false;
     }

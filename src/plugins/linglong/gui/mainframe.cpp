@@ -4,6 +4,7 @@
 
 #include "mainframe.h"
 #include "generatedialog.h"
+#include "services/window/windowservice.h"
 
 #include <DPushButton>
 #include <DButtonBox>
@@ -51,9 +52,12 @@ bool MainFrame::checkToolInstalled(const QString &tool)
     process.start("which", QStringList() << tool);
     process.waitForFinished();
     if (process.exitCode() != 0) {
-        QString message = QString("Can not find tool named: %1\n").arg(tool);
+        using namespace dpfservice;
+        auto windowService = dpfGetService(WindowService);
+        windowService->switchContextWidget(tr("&Application Output"));
+        QString message = tr("Can not find tool named: %1\n").arg(tool);
         AppOutputPane::instance()->defaultPane()->appendText(message, OutputPane::ErrorMessage);
-        message = "Check the repository source, and install the linglong-builder, linglong-box, and linglong-bin tools.\n";
+        message = tr("Check the repository source, and install the linglong-builder, linglong-box, and linglong-bin tools.\n reference %1").arg("https://linglong.dev/guide/start/install.html");
         AppOutputPane::instance()->defaultPane()->appendText(message, OutputPane::ErrorMessage);
         return false;
     }
