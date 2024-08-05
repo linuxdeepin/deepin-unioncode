@@ -28,7 +28,6 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
 {
     using namespace dpfservice;
     if (event.data() == project.activeProject.name) {
-        auto infos = ProjectKeeper::instance()->treeView()->getAllProjectInfo();
         QString kitName = event.property("kitName").toString();
         QString language = event.property("language").toString();
         QString workspace = event.property("workspace").toString();

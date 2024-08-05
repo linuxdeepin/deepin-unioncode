@@ -212,6 +212,9 @@ void ProjectCore::initProject(dpf::PluginServiceContext &ctx)
         if (!projectService->openProject) {
             projectService->openProject = std::bind(&ProjectCore::openProject, this);
         }
+        if (!projectService->getActiveProjectItem) {
+            projectService->getActiveProjectItem = std::bind(&ProjectTree::getActiveProjectItem, treeView);
+        }
     }
 }
 

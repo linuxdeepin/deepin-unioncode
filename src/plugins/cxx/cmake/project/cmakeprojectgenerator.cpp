@@ -66,8 +66,9 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::openProjectPropertys,
                      this, [this](const ProjectInfo &prjInfo){
+        auto prjService = dpfGetService(ProjectService);
         if (prjInfo.kitName() == toolKitName())
-            actionProperties(prjInfo, this->rootItem);
+            actionProperties(prjInfo, prjService->getActiveProjectItem());
     });
 
     QObject::connect(ProjectCmakeProxy::instance(),
@@ -593,13 +594,14 @@ void CmakeProjectGenerator::recursionRemoveItem(QStandardItem *item)
 void CmakeProjectGenerator::targetInitialized(const QString& workspace)
 {
     ProjectConfigure *projectConfigure = ConfigUtil::instance()->getConfigureParamPointer();
+    auto tempType = projectConfigure->tempSelType;
     ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(workspace), *projectConfigure);
-
+    projectConfigure->tempSelType = tempType;
     dpfservice::Target activeExecTarget = TargetsManager::instance()->getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
     for (auto &buildTypeConfigure : projectConfigure->buildTypeConfigures) {
-        createTargetsRunConfigure(buildTypeConfigure.directory, buildTypeConfigure.runConfigure);
-        if (buildTypeConfigure.type != projectConfigure->defaultType)
+        if (buildTypeConfigure.type != projectConfigure->tempSelType)
             continue;
+        createTargetsRunConfigure(buildTypeConfigure.directory, buildTypeConfigure.runConfigure);
 
         // update environment.
         for (auto targetRunConfigure : buildTypeConfigure.runConfigure.targetsRunConfigure) {

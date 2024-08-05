@@ -173,6 +173,20 @@ BuildPropertyPage::BuildPropertyPage(const dpfservice::ProjectInfo &projectInfo,
 
 BuildPropertyPage::~BuildPropertyPage()
 {
+    // restore Targets data when dialog rejected
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
+    if (param->tempSelType != param->defaultType) {
+        for (int index = 0; index < d->configureComboBox->maxVisibleItems(); index ++) {
+            auto type = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->itemText(index));
+            if (type != param->defaultType)
+                continue;
+            auto directory = d->configureComboBox->itemData(index, Qt::UserRole + 1).value<QString>();
+            TargetsManager::instance()->readTargets(directory, param->workspace);
+            break;
+        }
+    }
+    param->tempSelType = param->defaultType;
+
     if (d)
         delete d;
 }
@@ -215,6 +229,8 @@ void BuildPropertyPage::setupOverviewUI()
         ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
         param->tempSelType = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->currentText());
         ConfigUtil::instance()->checkConfigInfo(d->configureComboBox->currentText(), d->outputDirEdit->text());
+        TargetsManager::instance()->readTargets(d->outputDirEdit->text(), param->workspace);
+        ConfigUtil::instance()->switchConfigType(param->tempSelType);
     });
 
     QHBoxLayout *hLayout = new QHBoxLayout();

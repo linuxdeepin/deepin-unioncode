@@ -367,6 +367,11 @@ ProjectInfo ProjectTree::getProjectInfo(const QString &kitName, const QString &w
     return projectInfo;
 }
 
+QStandardItem *ProjectTree::getActiveProjectItem() const
+{
+    return d->itemModel->itemFromIndex(d->delegate->getActiveProject());
+}
+
 ProjectInfo ProjectTree::getActiveProjectInfo() const
 {
     ProjectInfo projectInfo;

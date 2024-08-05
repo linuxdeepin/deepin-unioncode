@@ -173,6 +173,11 @@ public:
     DPF_INTERFACE(dpfservice::ProjectInfo, getActiveProjectInfo);
 
     /**
+     * @brief getActiveProjectItem
+     */
+    DPF_INTERFACE(QStandardItem *, getActiveProjectItem);
+
+    /**
      * @brief DPF_INTERFACE
      * @param projectInfo
      */
