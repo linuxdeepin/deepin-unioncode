@@ -150,7 +150,6 @@ void Runner::running()
         return;
     }
 
-
     LanguageService *service = dpfGetService(LanguageService);
     if (service) {
         auto generator = service->create<LanguageGenerator>(getActiveProjectInfo().kitName());

@@ -37,6 +37,7 @@ public:
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
     dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace) const;
     dpfservice::ProjectInfo getActiveProjectInfo() const;
+    QStandardItem *getActiveProjectItem() const;
     bool updateProjectInfo(dpfservice::ProjectInfo &projectInfo);
     bool hasProjectInfo(const dpfservice::ProjectInfo &info) const;
 

@@ -264,4 +264,9 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
     return false;
 }
 
+void ConfigUtil::switchConfigType(const ConfigType &type)
+{
+    emit configTypeSwitched(type);
+}
+
 }   //namespace config

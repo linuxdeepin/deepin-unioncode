@@ -42,6 +42,10 @@ RunPropertyPage::RunPropertyPage(const dpfservice::ProjectInfo &projectInfo, QSt
     d->projectInfo = projectInfo;
     d->item = item;
     setupUi();
+
+    connect(ConfigUtil::instance(), &ConfigUtil::configTypeSwitched, this, [=]() {
+        updateData();
+    });
 }
 
 RunPropertyPage::~RunPropertyPage()
@@ -103,6 +107,7 @@ void RunPropertyPage::readConfig()
 void RunPropertyPage::saveConfig()
 {
     ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
+
     auto iter = param->buildTypeConfigures.begin();
     for (; iter != param->buildTypeConfigures.end(); ++iter) {
         if (param->defaultType == iter->type) {
@@ -110,7 +115,6 @@ void RunPropertyPage::saveConfig()
             iter->runConfigure.defaultTargetName = d->projectInfo.currentProgram();
         }
         if (param->tempSelType == iter->type) {
-            d->projectInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
             auto activeTarget = TargetsManager::instance()->getActivedTargetByTargetType(kActiveExecTarget);
             for (auto it : iter->runConfigure.targetsRunConfigure) {
                 if (it.targetName == activeTarget.name) {

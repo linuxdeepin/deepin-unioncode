@@ -288,8 +288,10 @@ public:
     void saveConfig(const QString &filePath, const ProjectConfigure &param);
     bool updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectConfigure *param);
 
+    void switchConfigType(const ConfigType &type);
 signals:
     void configureDone(const dpfservice::ProjectInfo &info);
+    void configTypeSwitched(const ConfigType &type);
 
 private:
     explicit ConfigUtil(QObject *parent = nullptr);
