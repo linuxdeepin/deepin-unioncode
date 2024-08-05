@@ -631,8 +631,10 @@ void DAPDebugger::registerDapHandlers()
 
         if (event.reason == "exited") {
             d->threads.removeOne(event.threadId);
-            if (d->threads.isEmpty())
+            if (d->threads.isEmpty()) {
+                printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
                 updateRunState(kNoRun);
+            }
         }
     });
 
@@ -774,7 +776,7 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         auto prjInfo = event.property("projectInfo").value<dpfservice::ProjectInfo>();
         if (d->projectInfo.isSame(prjInfo)) {
             d->activeProjectKitName.clear();
-            updateRunState(kNoRun);
+            abortDebug();
         }
     } else if (event.data() == editor.switchedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
@@ -1203,9 +1205,6 @@ void DAPDebugger::updateWatchingVariables()
 
 void DAPDebugger::exitDebug()
 {
-    //abort debugger
-    abortDebug();
-
     // Change UI.
     editor.removeDebugLine();
     d->variablesPane->hide();
