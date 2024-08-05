@@ -1904,18 +1904,45 @@ Delete anyway?</source>
 <context>
     <name>DependenceManager</name>
     <message>
-        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="49"/>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="63"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="50"/>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="64"/>
+        <source>View Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="65"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="56"/>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="71"/>
         <source>Request to install some dependency packages. Do you want to install them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="97"/>
+        <source>Installation Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="98"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="99"/>
+        <source>Install</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="105"/>
+        <source>Installation package list:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3042,59 +3069,59 @@ repos path: %0</source>
 <context>
     <name>MainFrame</name>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="57"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="56"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="58"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="57"/>
         <source>Can not find tool named: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="60"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="59"/>
         <source>Check the repository source, and install the linglong-builder, linglong-box, and linglong-bin tools.
  reference %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="89"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="88"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="100"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="99"/>
         <source>Installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="101"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="100"/>
         <source>Repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="102"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="101"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="112"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="111"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="164"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="163"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="165"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="164"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="166"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="165"/>
         <source>UnInstall</source>
         <translation type="unfinished"></translation>
     </message>

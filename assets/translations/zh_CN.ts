@@ -1453,7 +1453,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="56"/>
         <source>Manual</source>
-        <translation>手动</translation>
+        <translation>手动设置</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="87"/>
@@ -1904,7 +1904,7 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="43"/>
         <source>Manual</source>
-        <translation>手动</translation>
+        <translation>手动设置</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="66"/>
@@ -1934,19 +1934,46 @@ Delete anyway?</source>
 <context>
     <name>DependenceManager</name>
     <message>
-        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="49"/>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="63"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="50"/>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="64"/>
+        <source>View Details</source>
+        <translation>查看详情</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="65"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="56"/>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="71"/>
         <source>Request to install some dependency packages. Do you want to install them?</source>
         <translation>请求安装一些依赖包。您想要安装它们吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="97"/>
+        <source>Installation Details</source>
+        <translation>安装详情</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="98"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="99"/>
+        <source>Install</source>
+        <comment>button</comment>
+        <translation>安装</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/depend/dependencemanager.cpp" line="105"/>
+        <source>Installation package list:</source>
+        <translation>安装包列表：</translation>
     </message>
 </context>
 <context>
@@ -3074,60 +3101,60 @@ repos path: %0</source>
 <context>
     <name>MainFrame</name>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="57"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="56"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="58"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="57"/>
         <source>Can not find tool named: %1
 </source>
         <translation>无法找到工具：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="60"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="59"/>
         <source>Check the repository source, and install the linglong-builder, linglong-box, and linglong-bin tools.
  reference %1</source>
         <translation>检查仓库源，安装linglong-builder,linglong-box,lingong-bin工具
 参考%1</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="89"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="88"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="100"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="99"/>
         <source>Installed</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="101"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="100"/>
         <source>Repository</source>
         <translation>仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="102"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="101"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="112"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="111"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="164"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="163"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="165"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="164"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="166"/>
+        <location filename="../../src/plugins/linglong/gui/mainframe.cpp" line="165"/>
         <source>UnInstall</source>
         <translation>卸载</translation>
     </message>
@@ -5901,7 +5928,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="43"/>
         <source>Manual</source>
-        <translation>手动</translation>
+        <translation>手动设置</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="66"/>
