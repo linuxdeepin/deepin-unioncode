@@ -29,7 +29,6 @@ class MainFramePrivate
     friend class MainFrame;
 
     DPushButton *generateBtn { nullptr };
-    GenerateDialog genDialog;
     DButtonBox *btnBox { nullptr };
     DButtonBoxButton *installedBtn { nullptr };
     DButtonBoxButton *repositoryBtn { nullptr };
@@ -197,7 +196,8 @@ void MainFrame::initTable()
 void MainFrame::initConnection()
 {
     connect(d->generateBtn, &QPushButton::clicked, this, [=]() {
-        d->genDialog.exec();
+        GenerateDialog genDialog;
+        genDialog.exec();
     });
     connect(d->searchEdit, &DLineEdit::textChanged, this, [=](const QString &text) {
         d->searchBtn->setEnabled(text.isEmpty() ? false : true);
