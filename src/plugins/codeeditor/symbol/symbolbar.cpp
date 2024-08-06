@@ -40,9 +40,9 @@ void CurmbItem::setText(const QString &text)
 {
     displayText = text;
     auto rect = fontMetrics().boundingRect(text);
-    int w = rect.width() + qCeil(font().pixelSize() / 10);
+    int w = rect.width() + qCeil(static_cast<qreal>(font().pixelSize()) / 10);
     if (!isRoot())
-        w += spacing + SeparatorSize;
+        w += spacing + SeparatorSize + 1;
 
     setFixedWidth(w);
     setFixedHeight(rect.height());
@@ -155,14 +155,20 @@ void CurmbItem::paintEvent(QPaintEvent *event)
 }
 
 SymbolBar::SymbolBar(QWidget *parent)
-    : QWidget(parent)
+    : QScrollArea(parent)
 {
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
+    setWidgetResizable(true);
+    setFrameShape(QFrame::NoFrame);
+    setFixedHeight(30);
 
-    auto layout = new QHBoxLayout(this);
-    layout->setContentsMargins(10, 0, 0, 0);
-    layout->setSpacing(4);
+    QWidget *widget = new QWidget(this);
+    mainLayout = new QHBoxLayout(widget);
+    mainLayout->setContentsMargins(10, 0, 0, 0);
+    mainLayout->setSpacing(4);
+
+    setWidget(widget);
 }
 
 void SymbolBar::setPath(const QString &path)
@@ -183,10 +189,10 @@ void SymbolBar::setPath(const QString &path)
         }
     }
 
-    auto layout = qobject_cast<QHBoxLayout *>(this->layout());
     auto itemList = displayPath.split(QDir::separator(), QString::SkipEmptyParts);
     for (int i = 0; i < itemList.size(); ++i) {
         CurmbItem *item = new CurmbItem(CurmbItem::FilePath, i, this);
+        setFixedHeight(item->height());
         item->setText(itemList[i]);
         item->setToolTip(path);
         if (i == itemList.size() - 1)
@@ -194,16 +200,15 @@ void SymbolBar::setPath(const QString &path)
 
         QString filePath = workspaceDir + QDir::separator() + itemList.mid(0, i + 1).join(QDir::separator());
         item->setUserData(filePath);
-        layout->addWidget(item, 0, Qt::AlignVCenter | Qt::AlignLeft);
+        mainLayout->addWidget(item, 0, Qt::AlignVCenter | Qt::AlignLeft);
         connect(item, &CurmbItem::clicked, this, &SymbolBar::curmbItemClicked);
     }
-    layout->addStretch(1);
+    mainLayout->addStretch(1);
 }
 
 void SymbolBar::clear()
 {
-    auto layout = qobject_cast<QHBoxLayout *>(this->layout());
-    while (QLayoutItem *item = layout->takeAt(0)) {
+    while (QLayoutItem *item = mainLayout->takeAt(0)) {
         if (QWidget *widget = item->widget())
             delete widget;
         delete item;
@@ -223,12 +228,11 @@ void SymbolBar::updateSymbol(int line, int index)
         return;
 
     if (!symbolItem) {
-        auto layout = qobject_cast<QHBoxLayout *>(this->layout());
-        if (layout->count() < 1)
+        if (mainLayout->count() < 1)
             return;
 
-        symbolItem = new CurmbItem(CurmbItem::Symbol, layout->count() - 1, this);
-        layout->insertWidget(layout->count() - 1, symbolItem);
+        symbolItem = new CurmbItem(CurmbItem::Symbol, mainLayout->count() - 1, this);
+        mainLayout->insertWidget(mainLayout->count() - 1, symbolItem);
         connect(symbolItem, &CurmbItem::clicked, this, &SymbolBar::curmbItemClicked);
     }
 
@@ -253,8 +257,8 @@ void SymbolBar::curmbItemClicked()
         connect(symbolView, &SymbolView::hidden, this, &SymbolBar::resetCurmbItemState);
     }
 
-    auto rect = item->geometry();
-    auto pos = mapToGlobal(rect.bottomLeft());
+    auto rect = item->rect();
+    auto pos = item->mapToGlobal(rect.bottomLeft());
 
     switch (item->curmbType()) {
     case CurmbItem::FilePath: {
@@ -278,9 +282,8 @@ void SymbolBar::curmbItemClicked()
 
 void SymbolBar::resetCurmbItemState()
 {
-    auto layout = qobject_cast<QHBoxLayout *>(this->layout());
-    for (int i = 0; i < layout->count(); ++i) {
-        auto item = layout->itemAt(i);
+    for (int i = 0; i < mainLayout->count(); ++i) {
+        auto item = mainLayout->itemAt(i);
         if (!item)
             continue;
 

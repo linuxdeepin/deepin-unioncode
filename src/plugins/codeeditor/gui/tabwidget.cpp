@@ -120,6 +120,7 @@ void TabWidgetPrivate::initUI()
 
     tabBar = new TabBar(q);
     symbolBar = new SymbolBar(q);
+    symbolBar->setVisible(false);
 
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addWidget(symbolBar, 0, Qt::AlignTop);
@@ -387,6 +388,7 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
 
     if (editorMng.isEmpty()) {
         symbolBar->clear();
+        symbolBar->setVisible(false);
         q->setSplitButtonVisible(false);
         emit q->closeRequested();
     }
@@ -887,6 +889,7 @@ void TabWidget::openFile(const QString &fileName)
     Inotify::globalInstance()->addPath(fileName);
 
     d->symbolBar->setPath(fileName);
+    d->symbolBar->setVisible(true);
     d->tabBar->setFileName(fileName);
     TextEditor *editor = d->createEditor(fileName);
 
