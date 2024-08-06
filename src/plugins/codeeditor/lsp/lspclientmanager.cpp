@@ -47,6 +47,7 @@ QColor LSPClientManager::highlightColor(const QString &langId, lsp::SemanticToke
             ? QColor("#000000")
             : QColor("#d6cf9a");
 
+    QMutexLocker lk(&dataMutex);
     if (!styleMap.contains(langId)) {
         const auto &filePath = support_file::EditorStyle::globalPath(langId);
         StyleSettings settings;

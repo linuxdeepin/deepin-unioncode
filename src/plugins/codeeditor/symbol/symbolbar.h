@@ -6,7 +6,7 @@
 #define SYMBOLBAR_H
 
 #include <QVariant>
-#include <QWidget>
+#include <QScrollArea>
 #include <QIcon>
 
 class CurmbItem : public QWidget
@@ -51,7 +51,8 @@ private:
 };
 
 class SymbolView;
-class SymbolBar : public QWidget
+class QHBoxLayout;
+class SymbolBar : public QScrollArea
 {
     Q_OBJECT
 public:
@@ -68,6 +69,7 @@ public Q_SLOTS:
 private:
     CurmbItem *symbolItem { nullptr };
     SymbolView *symbolView { nullptr };
+    QHBoxLayout *mainLayout { nullptr };
 };
 
 #endif   // SYMBOLBAR_H

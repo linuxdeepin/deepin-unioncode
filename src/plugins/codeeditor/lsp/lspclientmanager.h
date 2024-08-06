@@ -22,6 +22,7 @@ private:
 
     QHash<newlsp::ProjectKey, newlsp::Client *> clientHash;
     QMap<QString, StyleSettings> styleMap;
+    QMutex dataMutex;
 };
 
 #endif   // LSPCLIENTMANAGER_H
