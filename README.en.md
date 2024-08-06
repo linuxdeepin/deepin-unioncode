@@ -6,7 +6,7 @@ deepin-unioncode is a lightweight integrated development environment, featured w
 
 ## Build dependencies
 
-_The **dev** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
+_The **develop/main** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
 -  debhelper (>=9),
 -  cmake,
