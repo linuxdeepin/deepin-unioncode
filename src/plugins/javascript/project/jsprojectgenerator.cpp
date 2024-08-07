@@ -3,25 +3,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "jsprojectgenerator.h"
-#include "jsasynparse.h"
 #include "properties/configpropertywidget.h"
 #include "common/dialog/propertiesdialog.h"
 #include "services/window/windowservice.h"
-#include "services/builder/builderservice.h"
-#include "services/option/optionmanager.h"
 
 #include <QtConcurrent>
-#include <QtXml>
 #include <QFileIconProvider>
 
 using namespace dpfservice;
 class JSProjectGeneratorPrivate
 {
     friend class JSProjectGenerator;
-    QStandardItem* configureRootItem {nullptr};
     QMenu *jsMenu {nullptr};
-    QProcess *menuGenProcess {nullptr};
-    QHash<QStandardItem*, JSAsynParse*> projectParses {};
     ProjectInfo prjInfo;
 };
 
@@ -48,70 +41,6 @@ QStringList JSProjectGenerator::supportLanguages()
     return {"JS"};
 }
 
-DWidget *JSProjectGenerator::configureWidget(const QString &language,
-                                          const QString &projectPath)
-{
-    d->prjInfo.setLanguage(language);
-    d->prjInfo.setKitName(JSProjectGenerator::toolKitName());
-    d->prjInfo.setWorkspaceFolder(projectPath);
-
-    return nullptr;
-}
-
-void JSProjectGenerator::acceptConfigure()
-{
-    configure(d->prjInfo);
-}
-
-bool JSProjectGenerator::configure(const ProjectInfo &info)
-{
-    ProjectGenerator::configure(info);
-
-    auto root = createRootItem(info);
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService && root) {
-        projectService->addRootItem(root);
-        projectService->expandedDepth(root, 1);
-    }
-
-    return true;
-}
-
-QStandardItem *JSProjectGenerator::createRootItem(const ProjectInfo &info)
-{
-    QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
-
-    d->projectParses[rootItem] = new JSAsynParse();
-    QObject::connect(d->projectParses[rootItem],
-                     &JSAsynParse::itemsModified,
-                     this, &JSProjectGenerator::doProjectChildsModified,
-                     Qt::ConnectionType::UniqueConnection);
-
-    ProjectInfo tempInfo = info;
-    d->projectParses[rootItem]->parseProject(tempInfo);
-    ProjectInfo::set(rootItem, tempInfo);
-
-    return rootItem;
-}
-
-void JSProjectGenerator::removeRootItem(QStandardItem *root)
-{
-    if (!root)
-        return;
-    auto parser = d->projectParses[root];
-
-    while (root->hasChildren()) {
-        root->takeRow(0);
-    }
-    d->projectParses.remove(root);
-
-    delete root;
-
-    if (parser)
-        delete parser;
-}
-
 QMenu *JSProjectGenerator::createItemMenu(const QStandardItem *item)
 {
     if (item->parent())
@@ -133,17 +62,6 @@ QMenu *JSProjectGenerator::createItemMenu(const QStandardItem *item)
     });
 
     return menu;
-}
-
-void JSProjectGenerator::doProjectChildsModified(const QList<QStandardItem *> &info)
-{
-    auto rootItem = d->projectParses.key(qobject_cast<JSAsynParse*>(sender()));
-    if (rootItem) {
-        while (rootItem->hasChildren()) {
-            rootItem->takeRow(0);
-        }
-        rootItem->appendRows(info);
-    }
 }
 
 void JSProjectGenerator::doJSCleanMenu()

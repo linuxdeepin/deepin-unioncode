@@ -10,7 +10,6 @@ include_directories(${CPPDAP_DIR}/include)
 set(CXX_CPP
     python/pythondebug.cpp
     python/pythongenerator.cpp
-    python/project/pythonasynparse.cpp
     python/project/pythonprojectgenerator.cpp
     python/project/properties/configpropertywidget.cpp
     python/project/properties/configutil.cpp
@@ -25,7 +24,6 @@ set(CXX_CPP
 set(CXX_H
     python/pythondebug.h
     python/pythongenerator.h
-    python/project/pythonasynparse.h
     python/project/pythonprojectgenerator.h
     python/project/properties/configpropertywidget.h
     python/project/properties/configutil.h

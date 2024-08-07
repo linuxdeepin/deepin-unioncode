@@ -7,27 +7,12 @@
 
 using namespace dpfservice;
 
-class LLProjectGeneratorPrivate
-{
-    friend class LLProjectGenerator;
-    QHash<QStandardItem *, LLAsynParse *> projectParses {};
-    ProjectInfo prjInfo;
-};
-
 LLProjectGenerator::LLProjectGenerator()
-    : d(new LLProjectGeneratorPrivate)
 {
 }
 
 LLProjectGenerator::~LLProjectGenerator()
 {
-    if (d) {
-        for (auto parser : d->projectParses.values()) {
-            if (parser)
-                delete parser;
-        }
-        delete d;
-    }
 }
 
 QStringList LLProjectGenerator::supportLanguages()
@@ -40,68 +25,17 @@ DWidget *LLProjectGenerator::configureWidget(const QString &language,
 {
     using namespace dpfservice;
 
-    d->prjInfo.setLanguage(language);
-    d->prjInfo.setKitName(LLProjectGenerator::toolKitName());
-    d->prjInfo.setWorkspaceFolder(projectPath);
-    d->prjInfo.setExePrograms({ "LingLong" });
+    prjInfo.setLanguage(language);
+    prjInfo.setKitName(LLProjectGenerator::toolKitName());
+    prjInfo.setWorkspaceFolder(projectPath);
+    prjInfo.setExePrograms({ "LingLong" });
 
     return nullptr;
 }
 
 void LLProjectGenerator::acceptConfigure()
 {
-    configure(d->prjInfo);
-}
-
-bool LLProjectGenerator::configure(const dpfservice::ProjectInfo &projectInfo)
-{
-    dpfservice::ProjectGenerator::configure(projectInfo);
-
-    auto root = createRootItem(projectInfo);
-    ProjectService *projectService = dpfGetService(ProjectService);
-    if (projectService && root) {
-        projectService->addRootItem(root);
-        projectService->expandedDepth(root, 1);
-    }
-
-    return true;
-}
-
-QStandardItem *LLProjectGenerator::createRootItem(const dpfservice::ProjectInfo &info)
-{
-    using namespace dpfservice;
-
-    QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
-    d->projectParses[rootItem] = new LLAsynParse(rootItem);
-    QObject::connect(d->projectParses[rootItem],
-                     &LLAsynParse::itemsModified,
-                     this, &LLProjectGenerator::doProjectChildsModified,
-                     Qt::ConnectionType::UniqueConnection);
-    QMetaObject::invokeMethod(d->projectParses[rootItem], "parseProject",
-                              Q_ARG(const dpfservice::ProjectInfo &, info));
-    auto sourceFiles = d->projectParses[rootItem]->getFilelist();
-    dpfservice::ProjectInfo tempInfo = info;
-    tempInfo.setSourceFiles(sourceFiles);
-    dpfservice::ProjectInfo::set(rootItem, tempInfo);
-
-    return rootItem;
-}
-
-void LLProjectGenerator::removeRootItem(QStandardItem *root)
-{
-    if (!root)
-        return;
-    auto parser = d->projectParses[root];
-
-    while (root->hasChildren()) {
-        root->takeRow(0);
-    }
-    d->projectParses.remove(root);
-
-    delete root;
-
-    if (parser)
-        delete parser;
+    configure(prjInfo);
 }
 
 QMenu *LLProjectGenerator::createItemMenu(const QStandardItem *item)
@@ -127,23 +61,7 @@ QMenu *LLProjectGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void LLProjectGenerator::doProjectChildsModified(const QList<QStandardItem *> &items)
-{
-    auto rootItem = d->projectParses.key(qobject_cast<LLAsynParse *>(sender()));
-    if (!rootItem)
-        return;
-
-    for (auto &item : items) {
-        item->setIcon(CustomIcons::icon(item->toolTip()));
-    }
-
-    rootItem->setData(ParsingState::Done, Parsing_State_Role);
-}
-
 void LLProjectGenerator::actionProperties(const ProjectInfo &info, QStandardItem *item)
 {
-    //PropertiesDialog dlg;
-    //    ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);
-    //    dlg.insertPropertyPanel("Config", property);
-    //    dlg.exec();
+
 }

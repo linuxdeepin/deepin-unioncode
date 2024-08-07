@@ -45,7 +45,7 @@ bool JSGenerator::requestDAPPort(const QString &ppid, const QMap<QString, QVaria
 {
     QString targetPath = param.value("targetPath").toString();
     QStringList arguments = param.value("arguments").toStringList();
-    QString kit = "jsdirectory";
+    QString kit = "javascript";
 
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",

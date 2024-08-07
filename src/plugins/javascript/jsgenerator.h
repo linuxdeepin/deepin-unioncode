@@ -16,7 +16,7 @@ public:
     explicit JSGenerator();
     virtual ~JSGenerator() override;
 
-    static QString toolKitName() { return "jsdirectory"; }
+    static QString toolKitName() { return "javascript"; }
 
     QString debugger() override;
     bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) override;

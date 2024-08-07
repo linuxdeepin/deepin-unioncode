@@ -13,6 +13,7 @@
 #include "base/abstractaction.h"
 #include "base/abstractwidget.h"
 #include "services/project/projectservice.h"
+#include "services/project/directorygenerator.h"
 #include "services/locator/locatorservice.h"
 #include "services/editor/editorservice.h"
 #include "locator/allprojectfilelocator.h"
@@ -230,6 +231,9 @@ void ProjectCore::pluginsStartedMain()
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (projectService && windowService) {
+        QString errorString;
+        if (!projectService->implGenerator<DirectoryGenerator>(DirectoryGenerator::toolKitName(), &errorString))
+            qWarning() << errorString;
         QStringList kitNames = projectService->supportGeneratorName<ProjectGenerator>();
         for (auto kitName : kitNames) {
             auto generator = projectService->createGenerator<ProjectGenerator>(kitName);
@@ -310,7 +314,8 @@ void ProjectCore::confirmProjectKit(const QString &path)
     DStackedWidget *configureWidget = new DStackedWidget;
     dialog.addContent(configureWidget);
 
-    // check defualt kit
+    // check defualt kit by supportNames
+    bool hasDefault = false;
     for (auto kit : allKits) {
         auto generator = projectService->createGenerator<ProjectGenerator>(kit);
         QStringList fileNames = generator->supportFileNames();
@@ -322,9 +327,34 @@ void ProjectCore::confirmProjectKit(const QString &path)
                 auto widget = generator->configureWidget(generator->supportLanguages().first(), path);
                 if (widget)
                     configureWidget->addWidget(widget);
+                hasDefault = true;
                 break;
             }
         }
+    }
+
+    if (!hasDefault) {
+        // Apply language-specific processing by suffix
+        QString kit = DirectoryGenerator::toolKitName();
+        for (auto fileInfo : QDir(path).entryInfoList()) {
+            if (fileInfo.suffix() == "py")
+                kit = "python";
+            else if (fileInfo.suffix() == "js")
+                kit = "javascript";
+            else
+                continue;
+
+            break;
+        }
+        auto generator = projectService->createGenerator<ProjectGenerator>(kit);
+        if (!generator) {
+            kit = DirectoryGenerator::toolKitName();
+            generator = projectService->createGenerator<ProjectGenerator>(DirectoryGenerator::toolKitName());
+        }
+        cbBox->setCurrentText(kit);
+        auto widget = generator->configureWidget(generator->supportLanguages().first(), path);
+        if (widget)
+            configureWidget->addWidget(widget);
     }
 
     // select kit

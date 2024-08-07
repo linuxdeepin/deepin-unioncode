@@ -25,7 +25,7 @@
 
 QStringList dpfservice::ProjectGenerator::supportLanguages()
 {
-    return {};
+    return { "Unknown" };
 }
 
 QStringList dpfservice::ProjectGenerator::supportFileNames()

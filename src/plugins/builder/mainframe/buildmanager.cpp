@@ -26,6 +26,7 @@
 #include <DGuiApplicationHelper>
 #include <DComboBox>
 #include <DFrame>
+#include <DDialog>
 
 #include <QSplitter>
 #include <QCoreApplication>
@@ -391,6 +392,9 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
                 list.append(info);
             }
             execCommands(list, false);
+        } else {
+            auto windowService = dpfGetService(WindowService);
+            windowService->notify(1, tr("Warning"), tr("The project does not have an associated build kit. Please reopen the project and select the corresponding build tool."), {});
         }
     }
 }

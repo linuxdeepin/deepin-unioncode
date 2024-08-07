@@ -5,12 +5,11 @@
 #ifndef LLPROJECTGENERATOR_H
 #define LLPROJECTGENERATOR_H
 
-#include "llasynparse.h"
 #include "llglobal.h"
 #include "services/project/projectservice.h"
+#include "services/project/directorygenerator.h"
 
-class LLProjectGeneratorPrivate;
-class LLProjectGenerator : public dpfservice::ProjectGenerator
+class LLProjectGenerator : public dpfservice::DirectoryGenerator
 {
     Q_OBJECT
 public:
@@ -18,21 +17,16 @@ public:
     virtual ~LLProjectGenerator();
 
     static QString toolKitName() { return LL_TOOLKIT; }
+    virtual QString configureKitName() override { return LL_TOOLKIT; }
     virtual QStringList supportLanguages() override;
+    virtual QStringList supportFileNames() override { return {"linglong.yaml"}; }
     virtual DWidget *configureWidget(const QString &language,
                                      const QString &projectPath) override;
-    virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual void acceptConfigure() override;
-    virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &items) override;
-    virtual void removeRootItem(QStandardItem *root) override;
     virtual QMenu *createItemMenu(const QStandardItem *item) override;
 
 private slots:
-    void doProjectChildsModified(const QList<QStandardItem *> &items);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
-
-private:
-    LLProjectGeneratorPrivate *const d;
 };
 
 #endif   // LLPROJECTGENERATOR_H

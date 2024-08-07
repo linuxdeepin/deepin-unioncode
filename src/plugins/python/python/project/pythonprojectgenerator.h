@@ -5,34 +5,32 @@
 #ifndef PYTHONPROJECTGENERATOR_H
 #define PYTHONPROJECTGENERATOR_H
 
-#include "pythonasynparse.h"
 #include "services/project/projectservice.h"
+#include "services/project/directorygenerator.h"
 
 #include <QObject>
 #include <QDomDocument>
 
 class PythonProjectGeneratorPrivate;
-class PythonProjectGenerator : public dpfservice::ProjectGenerator
+class PythonProjectGenerator : public dpfservice::DirectoryGenerator
 {
     Q_OBJECT
     PythonProjectGeneratorPrivate *const d;
+
 public:
     explicit PythonProjectGenerator();
     virtual ~PythonProjectGenerator();
     static QString toolKitName() { return "python"; }
+    virtual QString configureKitName() override { return "python"; }
     virtual QStringList supportLanguages() override;
-    virtual DWidget* configureWidget(const QString &language,
+    virtual DWidget *configureWidget(const QString &language,
                                      const QString &projectPath) override;
-    virtual void acceptConfigure() override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
-    virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
-    virtual void removeRootItem(QStandardItem* root) override;
-    virtual QMenu* createItemMenu(const QStandardItem *item) override;
+    virtual QMenu *createItemMenu(const QStandardItem *item) override;
 
 private slots:
-    void doProjectChildsModified(const QList<QStandardItem*> &info);
     void doPythonCleanMenu();
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 };
 
-#endif // PYTHONPROJECTGENERATOR_H
+#endif   // PYTHONPROJECTGENERATOR_H

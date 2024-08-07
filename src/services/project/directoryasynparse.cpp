@@ -1,57 +1,48 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ninjaasynparse.h"
-#include "services/project/projectgenerator.h"
+#include "directoryasynparse.h"
+#include "projectgenerator.h"
 
 #include "common/common.h"
 
 #include <QAction>
-#include <QDebug>
-#include <QtXml>
 
-class NinjaAsynParsePrivate
+class DirectoryAsynParsePrivate
 {
-    friend class NinjaAsynParse;
-    QDomDocument xmlDoc;
-    QThread *thread { nullptr };
+    friend class DirectoryAsynParse;
     QString rootPath;
+    QSet<QString> fileList {};
     QList<QStandardItem *> rows {};
 };
 
-NinjaAsynParse::NinjaAsynParse()
-    : d(new NinjaAsynParsePrivate)
+DirectoryAsynParse::DirectoryAsynParse()
+    : d(new DirectoryAsynParsePrivate)
 {
     QObject::connect(this, &QFileSystemWatcher::directoryChanged,
-                     this, &NinjaAsynParse::doDirectoryChanged);
-
-    d->thread = new QThread();
-    this->moveToThread(d->thread);
-    d->thread->start();
+                     this, &DirectoryAsynParse::doDirectoryChanged);
 }
 
-NinjaAsynParse::~NinjaAsynParse()
+DirectoryAsynParse::~DirectoryAsynParse()
 {
     if (d) {
-        if (d->thread) {
-            if (d->thread->isRunning())
-                d->thread->quit();
-            d->thread->wait();
-            d->thread->deleteLater();
-            d->thread = nullptr;
-        }
         delete d;
     }
 }
 
-void NinjaAsynParse::parseProject(const dpfservice::ProjectInfo &info)
+void DirectoryAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
     emit itemsModified(d->rows);
 }
 
-void NinjaAsynParse::doDirectoryChanged(const QString &path)
+QSet<QString> DirectoryAsynParse::getFilelist()
+{
+    return d->fileList;
+}
+
+void DirectoryAsynParse::doDirectoryChanged(const QString &path)
 {
     if (!path.startsWith(d->rootPath))
         return;
@@ -63,16 +54,17 @@ void NinjaAsynParse::doDirectoryChanged(const QString &path)
     emit itemsModified(d->rows);
 }
 
-QString NinjaAsynParse::itemDisplayName(const QStandardItem *item) const
+QString DirectoryAsynParse::itemDisplayName(const QStandardItem *item) const
 {
     if (!item)
         return "";
     return item->data(Qt::DisplayRole).toString();
 }
 
-void NinjaAsynParse::createRows(const QString &path)
+void DirectoryAsynParse::createRows(const QString &path)
 {
     QString rootPath = path;
+    d->fileList.clear();
     if (rootPath.endsWith(QDir::separator())) {
         int separatorSize = QString(QDir::separator()).size();
         rootPath = rootPath.remove(rootPath.size() - separatorSize, separatorSize);
@@ -92,7 +84,8 @@ void NinjaAsynParse::createRows(const QString &path)
             QString childPath = dirItera.next().remove(0, rootPath.size());
             QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
-            auto newItem = new QStandardItem(dirItera.fileName());
+            QIcon icon = CustomIcons::icon(dirItera.fileInfo());
+            auto newItem = new QStandardItem(icon, dirItera.fileName());
             newItem->setToolTip(dirItera.filePath());
             if (!item) {
                 d->rows.append(newItem);
@@ -110,18 +103,20 @@ void NinjaAsynParse::createRows(const QString &path)
         while (fileItera.hasNext()) {
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(childPath);
-            auto newItem = new QStandardItem(fileItera.fileName());
+            QIcon icon = CustomIcons::icon(fileItera.fileInfo());
+            auto newItem = new QStandardItem(icon, fileItera.fileName());
             newItem->setToolTip(fileItera.filePath());
             if (!item) {
                 d->rows.append(newItem);
             } else {
                 item->appendRow(newItem);
             }
+            d->fileList.insert(fileItera.filePath());
         }
     }
 }
 
-QList<QStandardItem *> NinjaAsynParse::rows(const QStandardItem *item) const
+QList<QStandardItem *> DirectoryAsynParse::rows(const QStandardItem *item) const
 {
     QList<QStandardItem *> result;
     for (int i = 0; i < item->rowCount(); i++) {
@@ -130,8 +125,8 @@ QList<QStandardItem *> NinjaAsynParse::rows(const QStandardItem *item) const
     return result;
 }
 
-QStandardItem *NinjaAsynParse::findItem(const QString &path,
-                                        QStandardItem *parent) const
+QStandardItem *DirectoryAsynParse::findItem(const QString &path,
+                                            QStandardItem *parent) const
 {
     QString pathTemp = path;
     if (pathTemp.endsWith(QDir::separator())) {
@@ -170,7 +165,7 @@ QStandardItem *NinjaAsynParse::findItem(const QString &path,
     return parent;
 }
 
-int NinjaAsynParse::separatorSize() const
+int DirectoryAsynParse::separatorSize() const
 {
     return QString(QDir::separator()).size();
 }
