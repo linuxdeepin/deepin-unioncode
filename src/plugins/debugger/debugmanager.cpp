@@ -10,6 +10,7 @@
 #include "interface/attachinfodialog.h"
 
 #include "services/debugger/debuggerservice.h"
+#include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
 #include "services/editor/editorservice.h"
 #include "common/util/custompaths.h"
@@ -105,6 +106,9 @@ void DebugManager::run()
                     currentDebugger = debuggers[debugger];
                     connect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
                 }
+            } else {
+                auto windowService = dpfGetService(WindowService);
+                windowService->notify(1, tr("Warning"), tr("The project does not have an associated build kit. Please reopen the project and select the corresponding build tool."), {});
             }
         }
         AsynInvoke(currentDebugger->startDebug());

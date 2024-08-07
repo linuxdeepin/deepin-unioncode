@@ -18,6 +18,7 @@
 
 #include <DComboBox>
 #include <DGuiApplicationHelper>
+#include <DDialog>
 
 #include <QMenu>
 #include <QTextBlock>
@@ -100,6 +101,9 @@ void Runner::run()
             } else {
                 running();
             }
+        } else {
+            auto windowService = dpfGetService(WindowService);
+            windowService->notify(1, tr("Warning"), tr("The project does not have an associated build kit. Please reopen the project and select the corresponding build tool."), {});
         }
     }
 }

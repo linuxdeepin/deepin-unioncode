@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef PYTHONASYNPARSE_H
-#define PYTHONASYNPARSE_H
+#ifndef DIRECTORYASYNPARSE_H
+#define DIRECTORYASYNPARSE_H
 
 #include "common/common.h"
 
@@ -13,25 +13,27 @@
 
 class QStandardItem;
 class QAction;
-class PythonAsynParsePrivate;
-class PythonAsynParse : public QFileSystemWatcher
+class DirectoryAsynParsePrivate;
+class DirectoryAsynParse : public QFileSystemWatcher
 {
     Q_OBJECT
-    friend class PythonGenerator;
-    PythonAsynParsePrivate *const d;
+    friend class DirectoryAsynParse;
+    DirectoryAsynParsePrivate *const d;
+
 public:
     template<class T>
-    struct ParseInfo{
+    struct ParseInfo
+    {
         T result;
         bool isNormal = true;
     };
 
-    PythonAsynParse();
+    DirectoryAsynParse();
     QSet<QString> getFilelist();
-    virtual ~PythonAsynParse();
+    virtual ~DirectoryAsynParse();
 
 signals:
-    void itemsModified(const QList<QStandardItem*> &info);
+    void itemsModified(const QList<QStandardItem *> &info);
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
@@ -48,4 +50,4 @@ private:
     int separatorSize() const;
 };
 
-#endif // PYTHONASYNPARSE_H
+#endif   // DIRECTORYASYNPARSE_H

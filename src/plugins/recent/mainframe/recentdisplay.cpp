@@ -263,7 +263,6 @@ void RecentDisplay::addProject(const QString &kitName,
 
 void RecentDisplay::doDoubleClickedProject(const QModelIndex &index)
 {
-    QString filePath = index.data(Qt::DisplayRole).toString();
     QString kitName = index.data(ProjectKitName).toString();
     QString language = index.data(ProjectLanguage).toString();
     QString workspace = index.data(ProjectWorkspace).toString();

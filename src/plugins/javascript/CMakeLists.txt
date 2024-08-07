@@ -8,7 +8,6 @@ set(javascript_CPP
     javascriptplugin.cpp
     jsgenerator.cpp
     javascriptplugin.json
-    project/jsasynparse.cpp
     project/jsprojectgenerator.cpp
     project/properties/configpropertywidget.cpp
     project/properties/configutil.cpp
@@ -18,7 +17,6 @@ set(javascript_CPP
 set(javascript_H
     javascriptplugin.h
     jsgenerator.h
-    project/jsasynparse.h
     project/jsprojectgenerator.h
     project/properties/configpropertywidget.h
     project/properties/configutil.h
