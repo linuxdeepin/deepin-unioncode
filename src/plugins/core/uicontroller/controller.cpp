@@ -1272,6 +1272,10 @@ void Controller::showWorkspace()
 
         d->workspace->addedToController = true;
         bindWidgetToNavigation(WN_WORKSPACE, new AbstractAction(d->navigationActions[MWNA_EDIT]));
+
+        connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title) {
+            d->mainWindow->setDockHeaderName(WN_WORKSPACE, title);
+        });
     } else {
         d->mainWindow->showWidget(WN_WORKSPACE);
     }
