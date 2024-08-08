@@ -3462,7 +3462,7 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectcore.cpp" line="302"/>
-        <source>Kit:</source>
+        <source>Project Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3471,7 +3471,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="309"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>

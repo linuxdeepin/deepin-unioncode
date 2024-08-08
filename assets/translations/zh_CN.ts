@@ -3495,8 +3495,8 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectcore.cpp" line="302"/>
-        <source>Kit:</source>
-        <translation>构建工具：</translation>
+        <source>Project Type:</source>
+        <translation>工程类型：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
@@ -3504,7 +3504,7 @@ repos path: %0</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="309"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>

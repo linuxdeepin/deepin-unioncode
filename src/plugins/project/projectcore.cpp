@@ -299,13 +299,14 @@ void ProjectCore::confirmProjectKit(const QString &path)
     auto layout = new QHBoxLayout(widget);
     layout->setAlignment(Qt::AlignLeft);
 
-    QLabel *label = new QLabel(tr("Kit:"), widget);
+    QLabel *label = new QLabel(tr("Project Type:"), widget);
     label->setFixedWidth(100);
     QComboBox *cbBox = new QComboBox(widget);
     layout->addWidget(label);
     layout->addWidget(cbBox);
     dialog.addContent(widget);
-    dialog.addButtons({ tr("Cancel"), tr("Confirm") });
+    dialog.addButton(tr("Cancel"));
+    dialog.addButton(tr("Confirm"), true, DDialog::ButtonRecommend);
     auto originalSize = dialog.size();
 
     auto projectService = dpfGetService(ProjectService);
