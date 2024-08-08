@@ -33,7 +33,6 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     procAs << "--clang-tidy";
     procAs << "--completion-style=bundled";
     procAs << "--limit-results=500";
-    procAs << "-j=$(nproc)";
 
     auto proc = new QProcess();
     proc->setProgram("/usr/bin/bash");
