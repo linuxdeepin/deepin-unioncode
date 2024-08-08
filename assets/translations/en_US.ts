@@ -986,7 +986,7 @@
 <context>
     <name>BuildPropertyPage</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="253"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="269"/>
         <source>Output direcotry:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1048,57 +1048,57 @@ storage: %2
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="104"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="105"/>
         <source>Run CMake</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="126"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="127"/>
         <source>Clear CMake</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="303"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="304"/>
         <source>Files in project %1 have changed, needs to run cmake to update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="377"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="378"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="399"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="400"/>
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="403"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="404"/>
         <source>Copy to Clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="406"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="407"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="554"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="555"/>
         <source>Project Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="564"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="565"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="565"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="566"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="566"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="567"/>
         <source>Kit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2950,7 +2950,7 @@ need to manually copy the source code to this path</source>
     <name>KitPage</name>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/properties/kitpage/kitpage.cpp" line="28"/>
-        <source>Kit:</source>
+        <source>Project Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2996,32 +2996,32 @@ need to manually copy the source code to this path</source>
 <context>
     <name>LanguageClientHandlerPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="505"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="501"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="507"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="503"/>
         <source>Rename Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="513"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="509"/>
         <source>Switch Header/Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="516"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="512"/>
         <source>Follow Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="519"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="515"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="522"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="518"/>
         <source>Format Selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3456,22 +3456,22 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="293"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
         <source>Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="302"/>
         <source>Kit:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="305"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="305"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3498,14 +3498,14 @@ repos path: %0</source>
     <name>ProjectTree</name>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="228"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="453"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="690"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="458"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="695"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="232"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="448"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="453"/>
         <source>New Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3515,75 +3515,75 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="458"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="586"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="463"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="591"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="467"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="472"/>
         <source>Open In Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="481"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="486"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="582"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="686"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="587"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="691"/>
         <source>New Document Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="589"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="631"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="665"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="693"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="718"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="776"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="815"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="594"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="636"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="670"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="698"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="723"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="781"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="820"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="658"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="663"/>
         <source>New Dirctory Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="662"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="667"/>
         <source>New Dirctory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="712"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="717"/>
         <source>Delete operation not be recoverable, delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="716"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="721"/>
         <source>Delete: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="774"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="779"/>
         <source>A directory with name %1 already exists. please reanme it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="625"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="629"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="813"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="630"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="634"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="818"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="630"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="719"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="775"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="814"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="635"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="724"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="780"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="819"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3675,17 +3675,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="507"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="512"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="508"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="513"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="509"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="514"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3908,7 +3908,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="280"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="283"/>
         <source>Open Project Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3936,7 +3936,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="252"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="268"/>
         <source>Build configuration:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4365,7 +4365,7 @@ not exists support files: %0</source>
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/services/project/projectservice.h" line="227"/>
+        <location filename="../../src/services/project/projectservice.h" line="232"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4908,7 +4908,7 @@ not exists support files: %0</source>
 <context>
     <name>RunPropertyPage</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runpropertypage.cpp" line="58"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runpropertypage.cpp" line="62"/>
         <source>Run configuration:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4926,42 +4926,42 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="165"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="164"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="183"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="182"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="188"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="187"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="195"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="194"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="198"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="197"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="202"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="201"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="234"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="233"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -5802,7 +5802,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="187"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="188"/>
         <source>File Operation</source>
         <translation type="unfinished"></translation>
     </message>

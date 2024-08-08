@@ -25,7 +25,7 @@ void KitPage::initUI()
     kitComboBox->setFixedWidth(220);
 
     QFormLayout *layout = new QFormLayout(this);
-    layout->addRow(tr("Kit:"), kitComboBox);
+    layout->addRow(tr("Project Type:"), kitComboBox);
 }
 
 void KitPage::readConfig()
