@@ -31,10 +31,10 @@ public slots:
     void selMoveToTrash();
     void selRemove();
     void selRename();
-    void selNewDocument();
-    void selNewFolder();
-    void createNew(NewType type);
-    void createNewOperation(const QString &newName, NewType type);
+    void selNewDocument(const QModelIndex &index);
+    void selNewFolder(const QModelIndex &index);
+    void createNew(NewType type, const QModelIndex &index);
+    void createNewOperation(const QString &path, const QString &newName, NewType type);
     void recoverFromTrash();
     void doDoubleClicked(const QModelIndex &index);
 signals:
@@ -42,8 +42,9 @@ signals:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    virtual DTK_WIDGET_NAMESPACE::DMenu *createContextMenu(const QModelIndexList &indexs);
-    virtual DTK_WIDGET_NAMESPACE::DMenu *createEmptyMenu();
+    DTK_WIDGET_NAMESPACE::DMenu *createContextMenu(const QModelIndex &index);
+    DTK_WIDGET_NAMESPACE::DMenu *createEmptyMenu();
+    void createCommonActions(DTK_WIDGET_NAMESPACE::DMenu *menu, const QModelIndex &index);
 };
 
 #endif   // TREEVIEW_H
