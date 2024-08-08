@@ -62,7 +62,7 @@ bool PythonDebug::prepareDebug(const QString &fileName, QString &retMsg)
 }
 
 
-bool PythonDebug::requestDAPPort(const QString &uuid, const QString &kit,
+bool PythonDebug::requestDAPPort(const QString &ppid, const QString &kit,
                                  const QString &projectPath,
                                  const QString &fileName,
                                  QString &retMsg)
@@ -71,7 +71,7 @@ bool PythonDebug::requestDAPPort(const QString &uuid, const QString &kit,
                                                   "com.deepin.unioncode.interface",
                                                   "launch_python_dap");
     QString projectCachePath = CustomPaths::projectCachePath(projectPath);
-    msg << uuid
+    msg << ppid
         << kit
         << d->interpreterPath
         << fileName

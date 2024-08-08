@@ -11,6 +11,8 @@
 #include <QApplication>
 #include <QDir>
 
+#include "unistd.h"
+
 class PythonDebuggerPrivate {
     friend class PythonDebugger;
     QProcess process;
@@ -98,7 +100,6 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     QString logFolder = projectCachePath + "/dap/pylog";
     QString param = pythonExecute + " -m debugpy --listen " + validPort +
             " --wait-for-client --log-to " + logFolder + " " + fileName + " --pid " + pid;
-    qInfo() << param;
 
     QStringList options;
     options << "-c" << param;
@@ -106,17 +107,19 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     d->process.waitForStarted();
 }
 
-void PythonDebugger::slotReceiveClientInfo(const QString &uuid,
+void PythonDebugger::slotReceiveClientInfo(const QString &ppid,
                                            const QString &kit,
                                            const QString &pythonExecute,
                                            const QString &fileName,
                                            const QString &projectPath,
                                            const QString &projectCachePath)
 {
+    if (ppid != getppid())
+        return;
     d->port = 0;
     d->process.close();
     initialize(pythonExecute, fileName, projectCachePath);
-    emit sigSendToClient(uuid, d->port, kit, projectPath);
+    emit sigSendToClient(ppid, d->port, kit, projectPath);
 }
 
 
