@@ -36,8 +36,13 @@ void LanguageWorker::handleDocumentSemanticTokens(const QList<lsp::Data> &tokens
             cacheColumn = 0;
 
         cacheColumn += val.start.character;
-        auto startPos = textEditor->positionFromLineIndex(cacheLine, cacheColumn);
-        QString sourceText = textEditor->text(startPos, startPos + val.length);
+        int startPos = textEditor->positionFromLineIndex(cacheLine, cacheColumn);
+        int endPos = startPos + val.length;
+        int lineEndPos = textEditor->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, cacheLine);
+        if (endPos > lineEndPos)
+            break;
+
+        QString sourceText = textEditor->text(startPos, endPos);
         if (!sourceText.isEmpty()) {
             QString tokenValue = clientHandler->tokenToDefine(val.tokenType);
             QColor color = clientHandler->symbolIndicColor(tokenValue, {});
