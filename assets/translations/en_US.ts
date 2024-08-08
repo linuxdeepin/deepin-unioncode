@@ -901,77 +901,83 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="258"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="259"/>
         <source>Compile Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="184"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="185"/>
         <source>Issues list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="192"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="193"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="207"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="208"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="212"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="213"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="216"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="217"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="397"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="292"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="293"/>
         <source>Clear Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="418"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="397"/>
+        <source>The project does not have an associated build kit. Please reopen the project and select the corresponding build tool.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="422"/>
         <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="494"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="498"/>
         <source>Execute command failed!
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="498"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="502"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="506"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="510"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="509"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="513"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="513"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="517"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="541"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="545"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -1625,6 +1631,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="591"/>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="619"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="635"/>
         <source>
 The debugee has Terminated.
 </source>
@@ -1637,24 +1644,24 @@ The debugee has Terminated.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="822"/>
         <source>Input Condition Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="822"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="824"/>
         <source>Condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="823"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="825"/>
         <source>When the breakpoint is reached, it will be hit only when the expression is true</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="252"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="824"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1051"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="826"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1053"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1674,128 +1681,128 @@ The debugee has Terminated.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="825"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1052"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="827"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1054"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="983"/>
-        <source>&lt;Unknown&gt;</source>
-        <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="985"/>
         <source>&lt;Unknown&gt;</source>
+        <comment>name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="987"/>
+        <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="986"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="988"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="992"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="994"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1048"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1050"/>
         <source>New Evaluator Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1049"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1051"/>
         <source>Enter an expression to evaluate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1091"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1093"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1095"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1097"/>
         <source>Stack List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1168"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1170"/>
         <source>Add New Expression Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1169"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1171"/>
         <source>Remove This Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1187"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1187"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1185"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1187"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1126"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1128"/>
         <source>Breakpoint List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1271"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1270"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1283"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1282"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1312"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1311"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1324"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1323"/>
         <source>Requesting debug port...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1386"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1385"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1390"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1389"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1470"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1469"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1473"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1472"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1479"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1478"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1861,6 +1868,19 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="29"/>
         <source>Delete Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DebugManager</name>
+    <message>
+        <location filename="../../src/plugins/debugger/debugmanager.cpp" line="111"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/debugmanager.cpp" line="111"/>
+        <source>The project does not have an associated build kit. Please reopen the project and select the corresponding build tool.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2833,7 +2853,7 @@ need to manually copy the source code to this path</source>
 <context>
     <name>JSProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/javascript/project/jsprojectgenerator.cpp" line="129"/>
+        <location filename="../../src/plugins/javascript/project/jsprojectgenerator.cpp" line="58"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3416,42 +3436,42 @@ repos path: %0</source>
 <context>
     <name>ProjectCore</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="151"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="152"/>
         <source>Open activted project`s property dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="122"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="123"/>
         <source>Auto Focus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="117"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="118"/>
         <source>Opened Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="127"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="128"/>
         <source>Focus File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="289"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="293"/>
         <source>Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="295"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="299"/>
         <source>Kit:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="301"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="305"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="301"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="305"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3612,12 +3632,12 @@ repos path: %0</source>
 <context>
     <name>PythonProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="140"/>
+        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="79"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="175"/>
+        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="101"/>
         <source>Config</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3888,7 +3908,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="276"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="280"/>
         <source>Open Project Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4415,72 +4435,72 @@ not exists support files: %0</source>
 <context>
     <name>RecentDisplay</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="285"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="284"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="410"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="409"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="411"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="410"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="412"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="411"/>
         <source>New File or Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="425"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="424"/>
         <source>Recent Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="435"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="434"/>
         <source>Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="442"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="474"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="441"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="473"/>
         <source>clear all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="446"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="445"/>
         <source>Confirm to clear the record of the opened file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="447"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="479"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="446"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="478"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="448"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="480"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="447"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="479"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="467"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="466"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="478"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="477"/>
         <source>Confirm to clear the record of the opened project?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="413"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="412"/>
         <source>No Project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4896,42 +4916,52 @@ not exists support files: %0</source>
 <context>
     <name>Runner</name>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="161"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="106"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="106"/>
+        <source>The project does not have an associated build kit. Please reopen the project and select the corresponding build tool.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="165"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="179"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="183"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="184"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="188"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="191"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="195"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="194"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="198"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="198"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="202"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="230"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="234"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
