@@ -17,7 +17,7 @@ public:
     ~PythonDebug();
 
     bool prepareDebug(const QString &fileName, QString &retMsg);
-    bool requestDAPPort(const QString &uuid, const QString &kit,
+    bool requestDAPPort(const QString &ppid, const QString &kit,
                         const QString &projectPath,
                         const QString &fileName,
                         QString &retMsg);

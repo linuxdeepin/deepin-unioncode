@@ -17,10 +17,10 @@ public:
     virtual ~PythonDebugger() override;
 
 signals:
-    void sigSendToClient(const QString &uuid, int port, const QString &kit, const QString &projectPath);
+    void sigSendToClient(const QString &ppid, int port, const QString &kit, const QString &projectPath);
 
 public slots:
-    void slotReceiveClientInfo(const QString &uuid,
+    void slotReceiveClientInfo(const QString &ppid,
                                const QString &kit,
                                const QString &pythonExecute,
                                const QString &fileName,
