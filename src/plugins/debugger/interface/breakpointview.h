@@ -15,6 +15,7 @@ class EditorService;
 
 class BreakpointView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
+    Q_OBJECT
 public:
     explicit BreakpointView(QWidget *parent = nullptr);
     ~BreakpointView();
