@@ -30,7 +30,7 @@ struct ProjectKey
     ProjectKey();
     ProjectKey(const std::string &language, const std::string &workspace, const std::string &output);
     ProjectKey(const ProjectKey &other);
-    bool isValid() const { return !workspace.empty() && !language.empty() && !outputDirectory.empty(); }
+    bool isValid() const { return !workspace.empty() && !language.empty(); }
     bool operator==(const ProjectKey &other)
     {
         return language == other.language
