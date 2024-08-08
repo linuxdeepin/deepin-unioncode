@@ -140,7 +140,7 @@ RunCommandInfo PythonGenerator::getRunArguments(const ProjectInfo &projectInfo, 
             runFilePath = entryFilePath;
         }
     }
-    runCommandInfo.arguments << runFilePath;
+    runCommandInfo.arguments << "-u" << runFilePath;  // -u : Process the output immediately without caching.
     runCommandInfo.runInTerminal = ConfigUtil::instance()->getConfigureParamPointer()->runInTerminal;
 
     return runCommandInfo;
