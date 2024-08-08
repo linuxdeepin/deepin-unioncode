@@ -801,6 +801,8 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
     } else if (event.data() == editor.breakpointAdded.name) {
         QString filePath = event.property(editor.breakpointAdded.pKeys[0]).toString();
         int line = event.property(editor.breakpointAdded.pKeys[1]).toInt();
+        if (d->bps.contains(filePath) && d->bps.values(filePath).contains(line))
+            return;
         d->bps.insert(filePath, line);
         addBreakpoint(filePath, line);
     } else if (event.data() == editor.breakpointRemoved.name) {

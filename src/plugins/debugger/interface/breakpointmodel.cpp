@@ -33,13 +33,12 @@ void BreakpointModel::setBreakpoints(const Internal::Breakpoints &breakpoints, b
 
 void BreakpointModel::insertBreakpoint(const Internal::Breakpoint &breakpoint)
 {
-    beginResetModel();
     auto it = bps.begin();
     for (; it != bps.end(); ++it) {
-        if (it->breakpoint() == breakpoint) {
+        if (it->breakpoint() == breakpoint)
             return;
-        }
     }
+    beginResetModel();
     contentsValid = true;
     bps.push_back(BreakpointItem(breakpoint));
     endResetModel();
