@@ -52,7 +52,7 @@
             "Foreground": "#d6cf9a"
         },
         "Comment": {
-            "Foreground": "#a8abb0"
+            "Foreground": "#969696"
         }
     },
     "Light": {
@@ -108,7 +108,7 @@
             "Foreground": "#00677c"
         },
         "Comment": {
-            "Foreground": "#008000"
+            "Foreground": "#8a8a8a"
         }
     }
 }

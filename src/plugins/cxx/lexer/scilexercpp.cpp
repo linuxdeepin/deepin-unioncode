@@ -213,7 +213,9 @@ bool SciLexerCPP::isSupport(const QString &fileName) const
 QStringList SciLexerCPP::autoCompletionWordSeparators() const
 {
     QStringList wl;
-    wl << "::" << "->" << ".";
+    wl << "::"
+       << "->"
+       << ".";
 
     return wl;
 }
@@ -258,77 +260,71 @@ QColor SciLexerCPP::defaultColor(int style) const
     bool isDarkTheme = DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType;
     switch (style) {
     case Default:
+    case InactiveDefault:
         return isDarkTheme ? QColor("#d6cf9a") : QColor("#000000");
 
     case Comment:
     case CommentLine:
+    case InactiveComment:
+    case InactiveCommentLine:
     case CommentDoc:
+    case InactiveCommentDoc:
     case CommentLineDoc:
+    case InactiveCommentLineDoc:
     case PreProcessorCommentLineDoc:
+    case InactivePreProcessorCommentLineDoc:
     case CommentDocKeyword:
     case CommentDocKeywordError:
+    case InactiveCommentDocKeyword:
+    case InactiveCommentDocKeywordError:
     case PreProcessorComment:
+    case InactivePreProcessorComment:
         return isDarkTheme ? QColor("#a8abb0") : QColor("#008000");
 
     case Number:
+    case InactiveNumber:
         return isDarkTheme ? QColor("#8a602c") : QColor("#000080");
 
     case Keyword:
+    case InactiveKeyword:
         return isDarkTheme ? QColor("#45c6d6") : QColor("#808000");
 
     case DoubleQuotedString:
     case SingleQuotedString:
     case RawString:
+    case InactiveDoubleQuotedString:
+    case InactiveSingleQuotedString:
+    case InactiveRawString:
         return isDarkTheme ? QColor("#d69545") : QColor("#008000");
 
     case PreProcessor:
+    case InactivePreProcessor:
         return isDarkTheme ? QColor("#ff6aad") : QColor("#000080");
 
     case Operator:
     case UnclosedString:
+    case InactiveUnclosedString:
+    case InactiveOperator:
         return isDarkTheme ? QColor("#d6cf9a") : QColor("#000000");
 
     case VerbatimString:
     case TripleQuotedVerbatimString:
+    case InactiveVerbatimString:
+    case InactiveTripleQuotedVerbatimString:
     case HashQuotedString:
+    case InactiveHashQuotedString:
         return isDarkTheme ? QColor("#d69545") : QColor("#008000");
 
     case Regex:
+    case InactiveRegex:
         return isDarkTheme ? QColor("#45c6d6") : QColor("#3f7f3f");
 
-    case InactiveDefault:
-    case InactiveUUID:
-    case InactiveCommentLineDoc:
-    case InactiveKeywordSet2:
-    case InactiveCommentDocKeyword:
-    case InactiveCommentDocKeywordError:
-    case InactivePreProcessorCommentLineDoc:
-    case InactiveComment:
-    case InactiveCommentLine:
-    case InactiveNumber:
-    case InactiveVerbatimString:
-    case InactiveTripleQuotedVerbatimString:
-    case InactiveHashQuotedString:
-    case InactiveCommentDoc:
-    case InactiveKeyword:
-    case InactiveDoubleQuotedString:
-    case InactiveSingleQuotedString:
-    case InactiveRawString:
-    case InactivePreProcessor:
-    case InactiveOperator:
-    case InactiveIdentifier:
-    case InactiveGlobalClass:
-    case InactiveUnclosedString:
-    case InactiveRegex:
-    case InactivePreProcessorComment:
-    case InactiveTaskMarker:
-    case InactiveUserLiteral:
-        return isDarkTheme ? QColor("#969696") : QColor("#8a8a8a");
-
     case UserLiteral:
+    case InactiveUserLiteral:
         return isDarkTheme ? QColor("#d6cf9a") : QColor("#c06000");
 
     case TaskMarker:
+    case InactiveTaskMarker:
         return isDarkTheme ? QColor("#ff6aad") : QColor("#be07ff");
     }
 

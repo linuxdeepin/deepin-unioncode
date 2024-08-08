@@ -20,14 +20,6 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     if (key.language != newlsp::Cxx)
         return nullptr;
 
-    QString projectCacheDir = ".unioncode";
-    QString compileDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + projectCacheDir;
-    QStringList compileDB_CMD_As;
-    compileDB_CMD_As << "-S" << QString::fromStdString(key.workspace);
-    compileDB_CMD_As << "-B" << compileDB_Path;
-    compileDB_CMD_As << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-    QProcess::execute("/usr/bin/cmake", compileDB_CMD_As);
-
     QStringList procAs;
     QString clangd = "clangd-13";
     if (ProcessUtil::exists(clangd)) {
@@ -37,7 +29,7 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     }
 
     procAs << "--log=verbose";
-    procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
+    procAs << QString("--compile-commands-dir=%0").arg(key.outputDirectory.c_str());
     procAs << "--clang-tidy";
     procAs << "--completion-style=bundled";
     procAs << "--limit-results=500";
@@ -146,7 +138,8 @@ void selectLspServer(const QJsonObject &params)
 {
     QString language = params.value(QString::fromStdString(newlsp::language)).toString();
     QString workspace = params.value(QString::fromStdString(newlsp::workspace)).toString();
-    newlsp::ProjectKey projectKey {language.toStdString(), workspace.toStdString()};
+    QString output = params.value(QString::fromStdString(newlsp::output)).toString();
+    newlsp::ProjectKey projectKey {language.toStdString(), workspace.toStdString(), output.toStdString()};
     JsonRpcCallProxy::ins().setSelect(projectKey);
     QProcess *proc = JsonRpcCallProxy::ins().value(projectKey);
 

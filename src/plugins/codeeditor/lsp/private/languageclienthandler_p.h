@@ -219,7 +219,7 @@ public:
     QList<lsp::Data> tokensCache;
     QList<DiagnosticCache> diagnosticCache;
     QString diagnosticFormat;
-    newlsp::ProjectKey prjectKey;
+    newlsp::ProjectKey projectKey;
 
     QTimer textChangedTimer;
     QTimer positionChangedTimer;
