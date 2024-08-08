@@ -8,7 +8,6 @@
 #include "common/common.h"
 
 #include <QObject>
-#include <QtXml>
 #include <QSet>
 
 class QStandardItem;
