@@ -28,37 +28,9 @@ const QString DELETE_MESSAGE_TEXT { DTreeView::tr("The delete operation will be 
 
 const QString DELETE_WINDOW_TEXT { DTreeView::tr("Delete Warning") };
 
-class FileSortFilterProxyModel : public QSortFilterProxyModel
-{
-public:
-    explicit FileSortFilterProxyModel(QObject *parent = nullptr);
-
-protected:
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
-};
-
-FileSortFilterProxyModel::FileSortFilterProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
-{
-}
-
-bool FileSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-{
-    QFileSystemModel *fsModel = qobject_cast<QFileSystemModel *>(sourceModel());
-    // Folder always comes before file
-    if (fsModel && fsModel->fileInfo(left).isDir() && !fsModel->fileInfo(right).isDir()) {
-        return true;
-    } else if (fsModel && !fsModel->fileInfo(left).isDir() && fsModel->fileInfo(right).isDir()) {
-        return false;
-    }
-
-    return QSortFilterProxyModel::lessThan(left, right);
-}
-
 class TreeViewPrivate
 {
     friend class FileTreeView;
-    FileSortFilterProxyModel *sortModel { nullptr };
     QFileSystemModel *model { nullptr };
     DMenu *menu { nullptr };
     QStack<QStringList> moveToTrashStack;
@@ -72,13 +44,7 @@ FileTreeView::FileTreeView(QWidget *parent)
     d->model = new QFileSystemModel(this);
     d->menu = new DMenu(this);
 
-    d->sortModel = new FileSortFilterProxyModel(this);
-    d->sortModel->setSourceModel(d->model);
-    d->sortModel->sort(0);
-    d->sortModel->setDynamicSortFilter(true);
-    d->sortModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-
-    setModel(d->sortModel);
+    setModel(d->model);
     setItemDelegate(new BaseItemDelegate(this));
     header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     setAlternatingRowColors(true);
@@ -97,8 +63,9 @@ void FileTreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
 {
     d->proInfo = proInfo;
     d->model->setRootPath(proInfo.workspaceFolder());
-    auto index = d->sortModel->mapFromSource(d->model->index(d->proInfo.workspaceFolder()));
+    auto index = d->model->index(d->proInfo.workspaceFolder());
     setRootIndex(index);
+    sortByColumn(0, Qt::SortOrder::AscendingOrder);
     emit rootPathChanged(proInfo.workspaceFolder());
 }
 
@@ -107,7 +74,7 @@ void FileTreeView::selOpen()
     QModelIndexList indexs = selectedIndexes();
     QSet<QString> countPaths;
     for (auto index : indexs) {
-        countPaths << d->model->filePath(d->sortModel->mapToSource(index));
+        countPaths << d->model->filePath(index);
     }
 
     for (auto path : countPaths) {
@@ -121,7 +88,7 @@ void FileTreeView::selMoveToTrash()
     QModelIndexList indexs = selectedIndexes();
     QSet<QString> countPaths;
     for (auto index : indexs) {
-        countPaths << d->model->filePath(d->sortModel->mapToSource(index));
+        countPaths << d->model->filePath(index);
     }
 
     QStringList errFilePaths;
@@ -150,7 +117,7 @@ void FileTreeView::selRemove()
     QModelIndexList indexs = selectedIndexes();
     QStringList countPaths;
     for (auto index : indexs) {
-        countPaths << d->model->filePath(d->sortModel->mapToSource(index));
+        countPaths << d->model->filePath(index);
     }
     // Remove duplicates
     countPaths = countPaths.toSet().toList();
@@ -191,7 +158,7 @@ void FileTreeView::selRename()
     if (indexs.isEmpty())
         return;
 
-    QString filePath = d->model->filePath(d->sortModel->mapToSource(indexs.first()));
+    QString filePath = d->model->filePath(indexs.first());
     QFileInfo fileInfo(filePath);
 
     auto dialog = new DDialog(this);
@@ -230,17 +197,17 @@ void FileTreeView::selRename()
     dialog->exec();
 }
 
-void FileTreeView::selNewDocument()
+void FileTreeView::selNewDocument(const QModelIndex &index)
 {
-    createNew(NewType::File);
+    createNew(NewType::File, index);
 }
 
-void FileTreeView::selNewFolder()
+void FileTreeView::selNewFolder(const QModelIndex &index)
 {
-    createNew(NewType::Folder);
+    createNew(NewType::Folder, index);
 }
 
-void FileTreeView::createNew(NewType type)
+void FileTreeView::createNew(NewType type, const QModelIndex &index)
 {
     DDialog dialog(this);
     DLineEdit inputEdit(&dialog);
@@ -259,34 +226,30 @@ void FileTreeView::createNew(NewType type)
     dialog.addButton(tr("Ok"), true, DDialog::ButtonRecommend);
 
     int code = dialog.exec();
-    if (code == 0)
-        createNewOperation(inputEdit.text(), type);
+    if (code == 0) {
+        auto filePath = d->model->filePath(index);
+        QFileInfo info(filePath);
+        if (info.isFile())
+            filePath = info.absolutePath();
+
+        createNewOperation(filePath, inputEdit.text(), type);
+    }
 }
 
-void FileTreeView::createNewOperation(const QString &newName, NewType type)
+void FileTreeView::createNewOperation(const QString &path, const QString &newName, NewType type)
 {
-    if (!newName.isEmpty()) {
-        QModelIndexList indexs = selectedIndexes();
-        if (indexs.isEmpty())
-            return;
+    if (!QFile::exists(path) || newName.isEmpty())
+        return;
 
-        QString Path = d->model->filePath(d->sortModel->mapToSource(indexs.first()));
-        QFileInfo upDirInfo(Path);
-
-        if (upDirInfo.isDir()) {
-            bool success;
-            if (type == NewType::File) {
-                success = FileOperation::doNewDocument(Path, newName);
-            } else {
-                success = FileOperation::doNewFolder(Path, newName);
-            }
-            if (!success) {
-                CommonDialog::ok(tr("Error: Can't create new document or folder, please check whether the name already exists!"));
-            }
-        } else {
-            CommonDialog::ok(tr("Error: Can't create new document or folder, parent not's dir"));
-        }
+    bool success;
+    if (type == NewType::File) {
+        success = FileOperation::doNewDocument(path, newName);
+    } else {
+        success = FileOperation::doNewFolder(path, newName);
     }
+
+    if (!success)
+        CommonDialog::ok(tr("Error: Can't create new document or folder, please check whether the name already exists!"));
 }
 
 void FileTreeView::recoverFromTrash()
@@ -301,7 +264,7 @@ void FileTreeView::recoverFromTrash()
 
 void FileTreeView::doDoubleClicked(const QModelIndex &index)
 {
-    QString filePath = d->model->filePath(d->sortModel->mapToSource(index));
+    QString filePath = d->model->filePath(index);
     if (QFileInfo(filePath).isFile())
         editor.openFile(QString(), filePath);
 }
@@ -310,38 +273,24 @@ void FileTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QModelIndex index = DTreeView::indexAt(event->pos());
     if (index.isValid()) {
-        d->menu = createContextMenu(selectedIndexes());
+        d->menu = createContextMenu(index);
     } else {
         d->menu = createEmptyMenu();
     }
-    d->menu->exec(viewport()->mapToGlobal(event->pos()));
+    d->menu->exec(QCursor::pos());
 }
 
-DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
+DMenu *FileTreeView::createContextMenu(const QModelIndex &index)
 {
-    if (indexs.isEmpty())
-        return nullptr;
-
     DMenu *menu = new DMenu();
-
-    QString filePath = d->model->filePath(d->sortModel->mapToSource(indexs.first()));
-    QFileInfo info(filePath);
 
     QAction *openAction = new QAction(tr("Open"));
     QObject::connect(openAction, &QAction::triggered, this, &FileTreeView::selOpen);
     menu->addAction(openAction);
-    if (info.isDir()) {
-        openAction->setEnabled(false);
-        QAction *newFolderAction = new QAction(tr("New Folder"));
-        connect(newFolderAction, &QAction::triggered, this, &FileTreeView::selNewFolder);
+    openAction->setEnabled(false);
 
-        QAction *newDocumentAction = new QAction(tr("New Document"));
-        connect(newDocumentAction, &QAction::triggered, this, &FileTreeView::selNewDocument);
-
-        menu->addSeparator();
-        menu->addAction(newFolderAction);
-        menu->addAction(newDocumentAction);
-    }
+    menu->addSeparator();
+    createCommonActions(menu, index);
 
     QAction *moveToTrashAction = new QAction(tr("Move To Trash"));
     connect(moveToTrashAction, &QAction::triggered, this, &FileTreeView::selMoveToTrash);
@@ -363,9 +312,18 @@ DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
 DMenu *FileTreeView::createEmptyMenu()
 {
     DMenu *menu = new DMenu();
+    createCommonActions(menu, rootIndex());
+
+    menu->addSeparator();
     QAction *recoverFromTrashAction = new QAction(tr("Recover From Trash"));
     QObject::connect(recoverFromTrashAction, &QAction::triggered,
                      this, &FileTreeView::recoverFromTrash);
     menu->addAction(recoverFromTrashAction);
     return menu;
+}
+
+void FileTreeView::createCommonActions(DMenu *menu, const QModelIndex &index)
+{
+    menu->addAction(tr("New Folder"), this, std::bind(&FileTreeView::selNewFolder, this, index));
+    menu->addAction(tr("New Document"), this, std::bind(&FileTreeView::selNewDocument, this, index));
 }
