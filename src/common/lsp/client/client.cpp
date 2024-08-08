@@ -329,11 +329,12 @@ void Client::selectLspServer(const newlsp::ProjectKey &key)
     d->writeLspData(newlsp::notificationData(__FUNCTION__, params).toUtf8());
 }
 
-void Client::initRequest(const QString &compile)
+void Client::initRequest()
 {
     QString langQStr = QString::fromStdString(d->proKey.language);
     QString workQStr = QString::fromStdString(d->proKey.workspace);
-    d->callMethod(lsp::V_INITIALIZE, lsp::initialize(workQStr, langQStr, compile));
+    QString outputStr = QString::fromStdString(d->proKey.outputDirectory);
+    d->callMethod(lsp::V_INITIALIZE, lsp::initialize(workQStr, langQStr, outputStr));
 }
 
 void Client::openRequest(const QString &filePath)

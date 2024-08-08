@@ -8,36 +8,39 @@
 #include <QJsonObject>
 #include <string>
 
-namespace newlsp
-{
+namespace newlsp {
 
-inline const std::string Cxx{"C/C++"};
-inline const std::string Java{"Java"};
-inline const std::string Python{"Python"};
-inline const std::string JS{"JS"};
+inline const std::string Cxx { "C/C++" };
+inline const std::string Java { "Java" };
+inline const std::string Python { "Python" };
+inline const std::string JS { "JS" };
 
-inline const std::string language{"language"};
-inline const std::string workspace{"workspace"};
+inline const std::string language { "language" };
+inline const std::string workspace { "workspace" };
+inline const std::string output { "output" };
 
-inline const std::string lauchLspServer{"lanuchLspServer"};
-inline const std::string selectLspServer{"selectLspServer"};
+inline const std::string lauchLspServer { "lanuchLspServer" };
+inline const std::string selectLspServer { "selectLspServer" };
 
 struct ProjectKey
 {
     std::string language;
     std::string workspace;
+    std::string outputDirectory;
     ProjectKey();
-    ProjectKey(const std::string &language, const std::string &workspace);
+    ProjectKey(const std::string &language, const std::string &workspace, const std::string &output);
     ProjectKey(const ProjectKey &other);
-    bool isValid() const { return !workspace.empty() && !language.empty();}
-    bool operator == (const ProjectKey &other) {
+    bool isValid() const { return !workspace.empty() && !language.empty() && !outputDirectory.empty(); }
+    bool operator==(const ProjectKey &other)
+    {
         return language == other.language
-                && workspace == other.workspace;
+                && workspace == other.workspace
+                && outputDirectory == other.outputDirectory;
     }
 };
 
 uint qHash(const ProjectKey &key, uint seed = 0);
-bool operator == (const ProjectKey &t1, const ProjectKey &t2);
+bool operator==(const ProjectKey &t1, const ProjectKey &t2);
 std::string toJsonValueStr(const ProjectKey &val);
 QJsonObject toQJsonObject(const ProjectKey &val);
 
@@ -55,6 +58,6 @@ struct SelectLspServerParams
 };
 std::string toJsonValueStr(const SelectLspServerParams &val);
 
-} // namesapce newlsp
+}   // namesapce newlsp
 
-#endif // EXTENDEDPROJECT_H
+#endif   // EXTENDEDPROJECT_H

@@ -37,13 +37,8 @@ void LanguageWorker::handleDocumentSemanticTokens(const QList<lsp::Data> &tokens
 
         cacheColumn += val.start.character;
         auto startPos = textEditor->positionFromLineIndex(cacheLine, cacheColumn);
-        auto wordEndPos = textEditor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(startPos), true);
-        auto wordStartPos = textEditor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(startPos), true);
-        if (startPos == 0 || wordEndPos == textEditor->length() || wordStartPos != startPos)
-            continue;
-
-        QString sourceText = textEditor->text(static_cast<int>(wordStartPos), static_cast<int>(wordEndPos));
-        if (!sourceText.isEmpty() && sourceText.length() == val.length) {
+        QString sourceText = textEditor->text(startPos, startPos + val.length);
+        if (!sourceText.isEmpty()) {
             QString tokenValue = clientHandler->tokenToDefine(val.tokenType);
             QColor color = clientHandler->symbolIndicColor(tokenValue, {});
 #if 0

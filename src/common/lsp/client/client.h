@@ -144,7 +144,7 @@ public slots:
     void diagnostic(const newlsp::WorkspaceDiagnosticParams &params);
 
     void selectLspServer(const newlsp::ProjectKey &key);
-    void initRequest(const QString &compile); // yes
+    void initRequest(); // yes
     void shutdownRequest();
     void exitRequest();
     void openRequest(const QString &filePath); // yes
