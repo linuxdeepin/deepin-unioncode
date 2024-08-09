@@ -52,14 +52,15 @@ BuildCommandInfo CMakeBuilderGenerator::getMenuCommand(const BuildMenuType build
     return info;
 }
 
-void CMakeBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputParser>& outputParser)
+void CMakeBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputParser> &outputParser)
 {
     if (outputParser) {
         outputParser->takeOutputParserChain();
         outputParser->appendOutputParser(new AnsiFilterParser());
+        // After appendOutputParser, OutputParser is in a recursive relationship, and the sequence should be cmake -> make -> gcc.
+        outputParser->appendOutputParser(new CMakeParser());
         outputParser->appendOutputParser(new GnuMakeParser());
         outputParser->appendOutputParser(new GccParser());
-        outputParser->appendOutputParser(new CMakeParser());
     }
 }
 
