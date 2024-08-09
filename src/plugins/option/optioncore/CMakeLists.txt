@@ -5,13 +5,13 @@ project(optioncore)
 find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
-    mainframe/environmentwidget.cpp
+
     mainframe/shortcutsettingwidget.cpp
     mainframe/persistentsettings.cpp
     mainframe/optionsdialog.cpp
     mainframe/optiondefaultkeeper.cpp
     mainframe/profilesettingwidget.cpp
-    mainframe/optionenvironmentgenerator.cpp
+
     mainframe/optionprofilesettinggenerator.cpp
     mainframe/optionshortcutsettinggenerator.cpp
     mainframe/navigationdelegate.cpp
@@ -21,13 +21,13 @@ set(CXX_CPP
     )
 
 set(CXX_H
-    mainframe/environmentwidget.h
+
     mainframe/shortcutsettingwidget.h
     mainframe/persistentsettings.h
     mainframe/optionsdialog.h
     mainframe/optiondefaultkeeper.h
     mainframe/profilesettingwidget.h
-    mainframe/optionenvironmentgenerator.h
+
     mainframe/optionprofilesettinggenerator.h
     mainframe/optionshortcutsettinggenerator.h
     mainframe/navigationdelegate.h

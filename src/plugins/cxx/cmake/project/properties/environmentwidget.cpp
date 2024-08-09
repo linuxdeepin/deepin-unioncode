@@ -4,6 +4,9 @@
 
 #include "environmentwidget.h"
 
+#include "base/baseitemdelegate.h"
+#include "common/util/namevaluemodel.h"
+
 #include <DFrame>
 #include <DCheckBox>
 #include <DTableView>
@@ -17,139 +20,6 @@ DWIDGET_USE_NAMESPACE
 
 const char kLoggingRules[] = "QT_LOGGING_RULES";
 
-class EnvironmentModelPrivate
-{
-    friend class EnvironmentModel;
-    QMap<QString, QString> envs;
-};
-
-EnvironmentModel::EnvironmentModel(QObject *parent)
-    : QAbstractTableModel(parent)
-    , d (new EnvironmentModelPrivate())
-{
-
-}
-
-EnvironmentModel::~EnvironmentModel()
-{
-    if (d)
-        delete d;
-}
-
-int EnvironmentModel::rowCount(const QModelIndex &) const
-{
-    return d->envs.keys().size();
-}
-
-int EnvironmentModel::columnCount(const QModelIndex &) const
-{
-    return kColumnCount;
-}
-
-QVariant EnvironmentModel::data(const QModelIndex &index, int role) const
-{
-    if (role == Qt::DisplayRole || role == Qt::EditRole) {
-        auto var = d->envs.keys()[index.row()];
-        switch (index.column()) {
-        case kVaribale:
-            return var;
-        case kValue:
-            return d->envs.value(var);
-        default:
-            break;
-        }
-    }
-    return {};
-}
-
-bool EnvironmentModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if (!index.isValid() || role != Qt::EditRole)
-        return false;
-
-    if (data(index, role) == value)
-        return true;
-
-    const QString oldName = data(this->index(index.row(), 0, QModelIndex()), Qt::EditRole).toString();
-    const QString oldValue = data(this->index(index.row(), 1, QModelIndex()), Qt::EditRole).toString();
-    QMap<QString, QString> map = d->envs;
-    if (index.column() == kVaribale) {
-        const QString newName = value.toString();
-        if (newName.isEmpty() || newName.contains("=") || map.contains(newName))
-            return false;
-        map.remove(oldName);
-        map.insert(value.toString(), oldValue);
-    } else if (index.column() == kValue) {
-        const QString stringValue = value.toString();
-        auto var = map.keys()[index.row()];
-        map[var] = stringValue;
-    }
-    update(map);
-    emit dataChanged(index, index);
-    return true;
-}
-
-Qt::ItemFlags EnvironmentModel::flags(const QModelIndex &index) const
-{
-    Q_UNUSED(index);
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
-}
-
-QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) {
-        case kVaribale:
-            return QObject::tr("Variable");
-        case kValue:
-            return QObject::tr("Value");
-        default:
-            break;
-        }
-    }
-    return {};
-}
-
-QModelIndex EnvironmentModel::append(const QString &key, const QString &value)
-{
-    auto list = d->envs.keys();
-    list.append(key);
-    qSort(list);
-    int pos = list.indexOf(key);
-
-    beginInsertRows(QModelIndex(), pos, pos);
-    d->envs.insert(key, value);
-    endInsertRows();
-    emit dataChanged(index(pos, 0), index(pos, 1));
-    return index(pos, 0);
-}
-
-void EnvironmentModel::remove(QModelIndex &index)
-{
-    if (d->envs.keys().isEmpty() || index.row() < 0 || index.row() >= d->envs.count())
-        return;
-    int row = index.row();
-    beginRemoveRows(QModelIndex(), row, row);
-    QString key = d->envs.keys()[index.row()];
-    d->envs.remove(key);
-    endRemoveRows();
-    emit dataChanged(index, index);
-}
-
-void EnvironmentModel::update(const QMap<QString, QString> &data)
-{
-    beginResetModel();
-    d->envs.clear();
-    d->envs = data;
-    endResetModel();
-    emit dataChanged(index(0, 0), index(d->envs.count() - 1, 1));
-}
-
-const QMap<QString, QString> EnvironmentModel::getEnvironment() const
-{
-    return d->envs;
-}
-
 class EnvironmentWidgetPrivate
 {
     friend class EnvironmentWidget;
@@ -160,7 +30,7 @@ class EnvironmentWidgetPrivate
     DIconButton *appendButton = nullptr;
     DIconButton *deleteButton = nullptr;
     DIconButton *resetButton = nullptr;
-    EnvironmentModel *model{nullptr};
+    NameValueModel model;
 
     config::EnvironmentItem *envShadow{nullptr};
 };
@@ -190,11 +60,11 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent, EnvType type)
         d->tableView->verticalHeader()->hide();
     }
 
-    if (!d->model)
-        d->model = new EnvironmentModel();
-    connect(d->model, &EnvironmentModel::dataChanged, this, &EnvironmentWidget::envUpdated);
+    connect(&d->model, &NameValueModel::dataChanged, this, &EnvironmentWidget::envUpdated);
+    connect(&d->model, &NameValueModel::focusIndex, this, &EnvironmentWidget::handleFocusIndex);
 
-    d->tableView->setModel(d->model);
+    d->tableView->setModel(&d->model);
+    d->tableView->setItemDelegate(new BaseItemDelegate(d->tableView));
 
     // add enable env check box.
     if (!d->enableEnvCB)
@@ -257,42 +127,49 @@ EnvironmentWidget::~EnvironmentWidget()
 
 void EnvironmentWidget::appendRow()
 {
-    auto index = d->model->append("<KEY>", "<VALUE>");
+    auto index = d->model.addItem();
     d->tableView->setCurrentIndex(index);
 }
 
 void EnvironmentWidget::deleteRow()
 {
     QModelIndex index = d->tableView->currentIndex();
-    d->model->remove(index);
+    d->model.removeItem(index);
 }
 
 void EnvironmentWidget::initModel()
 {
-    QMap<QString, QString> envs;
+    QVariantMap envs;
     QStringList keys = QProcessEnvironment::systemEnvironment().keys();
     for (auto key : keys) {
         QString value = QProcessEnvironment::systemEnvironment().value(key);
         envs.insert(key, value);
     }
-    d->model->update(envs);
+    d->model.setItems(envs);
 }
 
 void EnvironmentWidget::getValues(config::EnvironmentItem &env)
 {
     env.enable = d->enableEnvCB->isChecked();
-    env.environments = d->model->getEnvironment();
+    env.environments = d->model.items();
 }
 
 void EnvironmentWidget::setValues(const config::EnvironmentItem &env)
 {
     d->enableEnvCB->setChecked(env.enable);
-    d->model->update(env.environments);
+    d->model.setItems(env.environments);
 }
 
 void EnvironmentWidget::updateEnvList(config::EnvironmentItem *env)
 {
     d->envShadow = env;
     d->enableEnvCB->setChecked(env->enable);
-    d->model->update(env->environments);
+    d->model.setItems(env->environments);
+}
+
+void EnvironmentWidget::handleFocusIndex(const QModelIndex &index)
+{
+    d->tableView->setCurrentIndex(index);
+    d->tableView->setFocus();
+    d->tableView->scrollTo(index, QTableView::PositionAtTop);
 }
