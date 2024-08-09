@@ -58,7 +58,7 @@ struct StepItem
 struct EnvironmentItem
 {
     bool enable = true;
-    QMap<QString, QString> environments;
+    QVariantMap environments;
 
     EnvironmentItem()
     {
@@ -69,7 +69,7 @@ struct EnvironmentItem
     {
         QStringList envList;
         for (auto it = environments.begin(); it != environments.end(); it++) {
-            envList.append(it.key() + "=" + it.value());
+            envList.append(it.key() + "=" + it.value().toString());
         }
         return envList;
     }

@@ -4,7 +4,6 @@
 
 #include "optioncore.h"
 #include "mainframe/optiondefaultkeeper.h"
-#include "mainframe/optionenvironmentgenerator.h"
 #include "mainframe/optionprofilesettinggenerator.h"
 #include "mainframe/optionshortcutsettinggenerator.h"
 
@@ -19,8 +18,6 @@
 #include "framework/listener/listener.h"
 
 #include <DToolButton>
-
-static QStringList generalKits {};
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
@@ -51,12 +48,8 @@ bool OptionCore::start()
     OptionService *optionService = ctx.service<OptionService>(OptionService::name());
 
     if (optionService) {
-        generalKits << OptionEnvironmentGenerator::kitName()
-                    << OptionShortcutsettingGenerator::kitName()
-                    << OptionProfilesettingGenerator::kitName();
-        optionService->implGenerator<OptionEnvironmentGenerator>(option::GROUP_GENERAL, generalKits[0]);
-        optionService->implGenerator<OptionShortcutsettingGenerator>(option::GROUP_GENERAL, generalKits[1]);
-        optionService->implGenerator<OptionProfilesettingGenerator>(option::GROUP_GENERAL, generalKits[2]);
+        optionService->implGenerator<OptionShortcutsettingGenerator>(option::GROUP_GENERAL, OptionShortcutsettingGenerator::kitName());
+        optionService->implGenerator<OptionProfilesettingGenerator>(option::GROUP_GENERAL, OptionProfilesettingGenerator::kitName());
 
         using namespace std::placeholders;
         optionService->showOptionDialog = std::bind(&OptionsDialog::showAtItem, OptionDefaultKeeper::getOptionDialog(), _1);
