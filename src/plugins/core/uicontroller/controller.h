@@ -37,6 +37,7 @@ public slots:
     void setCurrentPlugin(const QString &plugin);
     void registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible);
     void registerWidget(const QString &name, AbstractWidget *abstractWidget);
+    void registerWidgetCreator(const QString &name, std::function<AbstractWidget*()> &widgetCreateFunc);
     void replaceWidget(const QString &name, Position pos = Position::FullWindow);
     void insertWidget(const QString &name, Position pos, Qt::Orientation orientation);
     void hideWidget(const QString &name);

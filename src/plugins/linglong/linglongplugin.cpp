@@ -65,16 +65,18 @@ bool LinglongPlugin::start()
         return false;
 
     windowService->addNavigationItem(new AbstractAction(action), Priority::low);
-    auto mainFrame = new AbstractWidget(new MainFrame());
+    std::function<AbstractWidget *()> findCreator = []() -> AbstractWidget * {
+        return new AbstractWidget(new MainFrame());
+    };
+
     // mainFrame will setParent when register to windowService
-    windowService->registerWidget(LL_NAME, mainFrame);
+    windowService->registerWidgetCreator(LL_NAME, findCreator);
 
     connect(action, &QAction::triggered, this, [=]() {
         windowService->showWidgetAtPosition(LL_NAME, Position::FullWindow, true);
         windowService->showContextWidget();
         MainFrame::checkToolInstalled("ll-cli");
-    },
-            Qt::DirectConnection);
+    }, Qt::DirectConnection);
 
     return true;
 }

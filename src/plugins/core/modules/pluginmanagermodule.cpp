@@ -9,6 +9,8 @@
 #include "base/abstractaction.h"
 #include "uicontroller/controller.h"
 #include "gui/pluginsui.h"
+#include "gui/plugindetailsview.h"
+#include "gui/pluginstorewidget.h"
 
 #include <QAction>
 
@@ -16,7 +18,6 @@ using namespace dpfservice;
 
 PluginManagerModule::PluginManagerModule()
 {
-    pluginsUi = new PluginsUi();
 }
 
 PluginManagerModule::~PluginManagerModule()
@@ -43,11 +44,23 @@ void PluginManagerModule::initialize(Controller *_uiController)
     uiController->addAction(MWM_HELP, actionOptionsImpl);
     uiController->addNavigationItem(actionOptionsImpl, Priority::lowest);
 
-    auto detailViewImpl = new AbstractWidget(pluginsUi->getPluginDetailView());
-    auto storeWidgetImpl = new AbstractWidget(pluginsUi->getStoreWidget());
+    std::function<AbstractWidget*()> detailWidgetCreator = [this]()->AbstractWidget*{
+        if (!pluginsUi) {
+            pluginsUi = new PluginsUi();
+        } 
+        return new AbstractWidget(pluginsUi->getPluginDetailView());
+    };
+    
+    std::function<AbstractWidget*()> storeWidgetCreator = [this]()->AbstractWidget*{
+        if (!pluginsUi) {
+            pluginsUi = new PluginsUi();
+        } 
+        return new AbstractWidget(pluginsUi->getStoreWidget());
+    };
 
-    uiController->registerWidget("pluginDetail", detailViewImpl);
-    uiController->registerWidget(MWMTA_PLUGINS, storeWidgetImpl);
+    uiController->registerWidgetCreator("pluginDetail", detailWidgetCreator);
+    uiController->registerWidgetCreator(MWMTA_PLUGINS, storeWidgetCreator);
+    
     uiController->bindWidgetToNavigation(MWMTA_PLUGINS, actionOptionsImpl);
 
     QObject::connect(pluginManagerAction, &QAction::triggered, this, [this]() {

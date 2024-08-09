@@ -40,11 +40,10 @@ bool Collaborators::start()
 
             windowService->addNavigationItem(new AbstractAction(actionGit), Priority::medium);
             
-            AbstractWidget *gitMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
-           
-
-            windowService->registerWidget(MWNA_GIT, gitMainWidgetImpl);
-            
+            std::function<AbstractWidget *()> gitCreator = []()->AbstractWidget* {
+                return new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
+            };
+            windowService->registerWidgetCreator(MWNA_GIT, gitCreator);
 
             connect(actionGit, &QAction::triggered, this, [=](){
                 windowService->replaceWidget(MWNA_GIT,

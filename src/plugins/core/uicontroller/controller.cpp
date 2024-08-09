@@ -53,7 +53,6 @@ DWIDGET_USE_NAMESPACE
 struct WidgetInfo
 {
     QString name;
-    DWidget *widget { nullptr };
     QDockWidget *dockWidget { nullptr };
     QString headerName;
     QList<QAction *> headerList;
@@ -65,6 +64,28 @@ struct WidgetInfo
     bool defaultVisible { true };
     bool created { false };   // has already create dock
     bool hiddenByManual { false };
+    
+    std::function<AbstractWidget*()> createDWidgetFunc;
+
+    DWidget* getDWidget()
+    {
+        if (!widget) {
+            if (createDWidgetFunc) {
+                auto abstractWidget = createDWidgetFunc(); 
+                icon = abstractWidget->getDisplayIcon();
+                widget = static_cast<DWidget *>(abstractWidget->qWidget());
+                Q_ASSERT(widget);
+                if (!widget->parent())
+                    widget->setParent(Controller::instance()->mainWindow());
+            }
+        }
+        return widget;
+    }
+    
+    void setWidget(DWidget *widget)
+    {
+        this->widget = widget;
+    }
 
     bool operator==(const WidgetInfo &info)
     {
@@ -72,6 +93,9 @@ struct WidgetInfo
             return true;
         return false;
     };
+
+private:    
+    DWidget *widget { nullptr };
 };
 
 class DocksManagerButton : public DToolButton
@@ -195,6 +219,9 @@ void Controller::registerService()
     }
     if (!windowService->registerWidget) {
         windowService->registerWidget = std::bind(&Controller::registerWidget, this, _1, _2);
+    }
+    if (!windowService->registerWidgetCreator) {
+        windowService->registerWidgetCreator = std::bind(&Controller::registerWidgetCreator, this, _1, _2);
     }
     if (!windowService->showWidgetAtPosition) {
         windowService->showWidgetAtPosition = std::bind(&Controller::showWidgetAtPosition, this, _1, _2, _3);
@@ -329,7 +356,7 @@ Controller::~Controller()
 
 void Controller::createDockWidget(WidgetInfo &info)
 {
-    auto dock = d->mainWindow->addWidget(info.name, info.widget, info.defaultPos);
+    auto dock = d->mainWindow->addWidget(info.name, info.getDWidget(), info.defaultPos);
     info.dockWidget = dock;
     info.created = true;
 
@@ -362,7 +389,7 @@ void Controller::raiseMode(const QString &mode)
         if (!widgetInfo.hiddenByManual)
             d->mainWindow->showWidget(widgetInfo.name);
         // widget in mainWindow is Dock(widget), show dock and hide widget
-        widgetInfo.widget->setVisible(widgetInfo.defaultVisible);
+        widgetInfo.getDWidget()->setVisible(widgetInfo.defaultVisible);
         if (widgetInfo.dockWidget)
             d->currentDocks.append(widgetInfo.name);
     }
@@ -401,7 +428,7 @@ void Controller::insertWidget(const QString &name, Position pos, Qt::Orientation
 
     auto &info = d->allWidgets[name];
     if (!info.created) {
-        auto dock = d->mainWindow->addWidget(name, info.widget, pos, orientation);
+        auto dock = d->mainWindow->addWidget(name, info.getDWidget(), pos, orientation);
         info.dockWidget = dock;
         info.created = true;
         info.replace = false;
@@ -442,7 +469,7 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
     widgetInfo.name = name;
     widgetInfo.defaultPos = pos;
     widgetInfo.replace = replace;
-    widgetInfo.widget = qWidget;
+    widgetInfo.setWidget(qWidget);
     widgetInfo.defaultVisible = isVisible;
     widgetInfo.icon = abstractWidget->getDisplayIcon();
 
@@ -464,8 +491,20 @@ void Controller::registerWidget(const QString &name, AbstractWidget *abstractWid
 
     WidgetInfo widgetInfo;
     widgetInfo.name = name;
-    widgetInfo.widget = widget;
+    widgetInfo.setWidget(widget);
     widgetInfo.icon = abstractWidget->getDisplayIcon();
+
+    d->allWidgets.insert(name, widgetInfo);
+}
+
+void Controller::registerWidgetCreator(const QString &name, std::function<AbstractWidget*()> &widgetCreateFunc)
+{
+     if (d->allWidgets.contains(name))
+        return;
+
+    WidgetInfo widgetInfo;
+    widgetInfo.name = name;
+    widgetInfo.createDWidgetFunc = widgetCreateFunc;
 
     d->allWidgets.insert(name, widgetInfo);
 }
@@ -1096,7 +1135,7 @@ void Controller::initContextWidget()
     // add contextWidget after add centralWidget or it`s height is incorrect
     WidgetInfo info;
     info.name = WN_CONTEXTWIDGET;
-    info.widget = d->contextWidget;
+    info.setWidget(d->contextWidget);
     info.defaultPos = Position::Bottom;
     info.icon = QIcon::fromTheme("context_widget");
 
@@ -1127,7 +1166,7 @@ void Controller::initWorkspaceWidget()
 
     WidgetInfo info;
     info.name = WN_WORKSPACE;
-    info.widget = d->workspace;
+    info.setWidget(d->workspace);
     info.defaultPos = Position::Left;
     info.replace = true;
     d->allWidgets.insert(WN_WORKSPACE, info);
