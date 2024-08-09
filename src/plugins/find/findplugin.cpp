@@ -74,11 +74,16 @@ void FindPlugin::registerToSidebar()
     auto actionImpl = new AbstractAction(action);
     windowService->addNavigationItem(actionImpl, Priority::highest);
 
-    advSearchWidget = new AdvancedSearchWidget;
-    windowService->registerWidget(MWNA_ADVANCEDSEARCH, new AbstractWidget(advSearchWidget));
+    std::function<AbstractWidget *()> findCreator = []()->AbstractWidget * {
+        auto advancedSearchWidget = new AdvancedSearchWidget();
+        advancedSearchWidget->initOperator();
+        return new AbstractWidget(advancedSearchWidget);
+    };
+
+    windowService->registerWidgetCreator(MWNA_ADVANCEDSEARCH, findCreator);
+    
     windowService->setDockHeaderName(MWNA_ADVANCEDSEARCH, tr("ADVANCED SEARCH"));
     windowService->bindWidgetToNavigation(MWNA_ADVANCEDSEARCH, actionImpl);
-    advSearchWidget->initOperator();
 
     connect(action, &QAction::triggered, this, &FindPlugin::switchToSearch, Qt::DirectConnection);
 }

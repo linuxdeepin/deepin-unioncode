@@ -12,6 +12,7 @@
 #include <framework/framework.h>
 
 #include <DToolButton>
+#include <DWidget>
 
 #include <QMap>
 #include <QDockWidget>
@@ -92,6 +93,7 @@ public:
      * \param abstractWidget
      */
     DPF_INTERFACE(void, registerWidget, const QString &name, AbstractWidget *abstractWidget);
+    DPF_INTERFACE(void, registerWidgetCreator, const QString &name, std::function<AbstractWidget*()> &widgetCreateFunc);
     DPF_INTERFACE(void, showWidgetAtPosition, const QString &name, Position pos, bool replace);
     DPF_INTERFACE(QString, getCentralWidgetName);
     DPF_INTERFACE(QStringList, getCurrentDockName, Position pos);
