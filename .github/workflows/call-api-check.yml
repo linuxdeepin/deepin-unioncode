@@ -1,0 +1,13 @@
+name: apiCheck
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-check:
+    uses: linuxdeepin/.github/.github/workflows/api-check.yml@master
+    secrets: inherit
