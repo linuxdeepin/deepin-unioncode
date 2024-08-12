@@ -7,9 +7,8 @@
 #include "utils/editorutils.h"
 #include "common/common.h"
 #include "settings/settingsdefine.h"
-#include "services/option/optionutils.h"
 
-#include "Qsci/qscistyledtext.h"
+#include "Qsci/qscidocument.h"
 
 #include <DDialog>
 
@@ -42,7 +41,7 @@ void TextEditor::init()
     connect(this, &TextEditor::cursorPositionChanged, this, &TextEditor::onCursorPositionChanged);
 }
 
-void TextEditor::setFile(const QString &fileName)
+void TextEditor::openFile(const QString &fileName)
 {
     if (d->fileName == fileName)
         return;
@@ -64,6 +63,21 @@ void TextEditor::setFile(const QString &fileName)
     d->initLanguageClient();
     d->isAutoCompletionEnabled = true;
     endUndoAction();
+}
+
+void TextEditor::openFileWithDocument(const QString &fileName, const QsciDocument &doc)
+{
+    if (d->fileName == fileName)
+        return;
+
+    d->fileName = fileName;
+    setDocument(doc);
+    d->loadLexer();
+    d->initLanguageClient();
+    d->isAutoCompletionEnabled = true;
+
+    if (isModified())
+        emit modificationChanged(true);
 }
 
 QString TextEditor::getFile() const
@@ -94,7 +108,6 @@ void TextEditor::save()
     file.write(text().toUtf8());
     file.close();
     setModified(false);
-    emit fileSaved(d->fileName);
     editor.fileSaved(d->fileName);
 }
 
@@ -124,7 +137,7 @@ void TextEditor::reload()
     int line = 0, index = 0;
     getCursorPosition(&line, &index);
     const auto &markers = d->allMarkers();
-    
+
     QString text;
     QFile file(d->fileName);
     if (file.open(QFile::OpenModeFlag::ReadOnly)) {
@@ -136,6 +149,7 @@ void TextEditor::reload()
 
     d->setMarkers(markers);
     setCursorPosition(line, index);
+    emit textChanged();
 }
 
 void TextEditor::addBreakpoint(int line, bool enabled)
@@ -148,7 +162,7 @@ void TextEditor::addBreakpoint(int line, bool enabled)
     } else {
         markerAdd(line, TextEditorPrivate::BreakpointDisabled);
     }
-    
+
     editor.breakpointAdded(d->fileName, line + 1, enabled);
 }
 
@@ -614,7 +628,7 @@ void TextEditor::switchHeaderSource()
 {
     if (!d->languageClient)
         return;
-    
+
     d->languageClient->switchHeaderSource(d->fileName);
 }
 
@@ -622,7 +636,7 @@ void TextEditor::followSymbolUnderCursor()
 {
     if (!d->languageClient)
         return;
-    
+
     d->languageClient->followSymbolUnderCursor();
 }
 
@@ -630,7 +644,7 @@ void TextEditor::findUsage()
 {
     if (!d->languageClient)
         return;
-    
+
     d->languageClient->findUsagesActionTriggered();
 }
 
@@ -638,7 +652,7 @@ void TextEditor::renameSymbol()
 {
     if (!d->languageClient)
         return;
-    
+
     d->languageClient->renameActionTriggered();
 }
 

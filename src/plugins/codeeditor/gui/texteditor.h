@@ -25,7 +25,8 @@ public:
     explicit TextEditor(QWidget *parent = nullptr);
     ~TextEditor() override;
 
-    virtual void setFile(const QString &fileName);
+    void openFile(const QString &fileName);
+    void openFileWithDocument(const QString &fileName, const QsciDocument &doc);
     QString getFile() const;
 
     void save();
@@ -116,7 +117,6 @@ protected:
     virtual bool event(QEvent *event) override;
 
 signals:
-    void fileSaved(const QString &fileName);
     void fileClosed(const QString &fileName);
     void textAdded(int pos, int len, int added, const QString &text, int line);
     void textRemoved(int pos, int len, int removed, const QString &text, int line);

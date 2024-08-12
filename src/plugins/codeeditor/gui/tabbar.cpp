@@ -279,30 +279,16 @@ void TabBar::closeTab(int index)
     d->onTabColseRequested(index);
 }
 
-void TabBar::onFileChanged(const QString &fileName, bool isModified)
+void TabBar::onModificationChanged(const QString &fileName, bool isModified)
 {
     int index = indexOf(fileName);
     if (-1 == index)
         return;
 
-    QString changedFileName = QFileInfo(fileName).fileName();
+    QString tabName = QFileInfo(fileName).fileName();
     if (isModified)
-        changedFileName.prepend("*");
+        tabName.prepend("*");
 
-    if (d->tabBar->tabText(index) != changedFileName)
-        d->tabBar->setTabText(index, changedFileName);
-}
-
-void TabBar::onFileSaved(const QString &fileName)
-{
-    int index = indexOf(fileName);
-    if (index == -1)
-        return;
-
-    auto text = d->tabBar->tabText(index);
-    if (QFileInfo(fileName).fileName() == text)
-        return;
-
-    text = text.remove(0, 1);
-    d->tabBar->setTabText(index, text);
+    if (d->tabBar->tabText(index) != tabName)
+        d->tabBar->setTabText(index, tabName);
 }

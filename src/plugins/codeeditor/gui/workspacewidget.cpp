@@ -144,17 +144,24 @@ TabWidget *WorkspaceWidgetPrivate::currentTabWidget() const
     return tabWidgetList.isEmpty() ? nullptr : tabWidgetList.first();
 }
 
-void WorkspaceWidgetPrivate::doSplit(QSplitter *spliter, int index, const QString &fileName, int pos, int scroll)
+void WorkspaceWidgetPrivate::doSplit(TabWidget *fromTW, QSplitter *spliter, int index, const QString &fileName)
 {
+    auto fromEdit = fromTW->findEditor(fileName);
+    if (!fromEdit)
+        return;
+
     TabWidget *tabWidget = new TabWidget(spliter);
     connectTabWidgetSignals(tabWidget);
 
     tabWidgetList.append(tabWidget);
     spliter->insertWidget(index, tabWidget);
 
-    tabWidget->openFile(fileName);
+    auto doc = fromEdit->document();
+    tabWidget->openFile(fileName, &doc);
     // Set the cursor and scroll position
-    tabWidget->setEditorCursorPosition(pos);
+    int cursorPos = fromTW->editorCursorPosition();
+    int scroll = fromTW->editorScrollValue();
+    tabWidget->setEditorCursorPosition(cursorPos);
     tabWidget->setEditorScrollValue(scroll);
 }
 
@@ -316,18 +323,14 @@ void WorkspaceWidgetPrivate::onSplitRequested(Qt::Orientation ori, const QString
         return;
 
     tabWidgetSender->setCloseButtonVisible(true);
-
     int index = spliter->indexOf(tabWidgetSender);
-    int cursorPos = tabWidgetSender->editorCursorPosition();
-    int scroll = tabWidgetSender->editorScrollValue();
-
     if (spliter->count() == 1) {
         // Only one widget is added to the splitter,
         // change its orientation and add a new widget
         spliter->setOrientation(ori);
-        doSplit(spliter, index + 1, fileName, cursorPos, scroll);
+        doSplit(tabWidgetSender, spliter, index + 1, fileName);
     } else if (spliter->orientation() == ori) {
-        doSplit(spliter, index + 1, fileName, cursorPos, scroll);
+        doSplit(tabWidgetSender, spliter, index + 1, fileName);
     } else {
         // Use a new splitter to replace
         QSplitter *newSplitter = new QSplitter(q);
@@ -335,7 +338,7 @@ void WorkspaceWidgetPrivate::onSplitRequested(Qt::Orientation ori, const QString
 
         spliter->replaceWidget(index, newSplitter);
         newSplitter->addWidget(tabWidgetSender);
-        doSplit(newSplitter, 1, fileName, cursorPos, scroll);
+        doSplit(tabWidgetSender, newSplitter, 1, fileName);
     }
 }
 

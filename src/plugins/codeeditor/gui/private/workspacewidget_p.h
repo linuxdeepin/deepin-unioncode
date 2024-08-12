@@ -26,7 +26,7 @@ public:
     void connectTabWidgetSignals(TabWidget *tabWidget);
 
     TabWidget *currentTabWidget() const;
-    void doSplit(QSplitter *spliter, int index, const QString &fileName, int pos, int scroll);
+    void doSplit(TabWidget *fromTW, QSplitter *spliter, int index, const QString &fileName);
 
     int showFileChangedConfirmDialog(const QString &fileName);
     int showFileRemovedConfirmDialog(const QString &fileName);
