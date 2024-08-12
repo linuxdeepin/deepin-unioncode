@@ -25,7 +25,7 @@ public:
     QString kill() override;
 
     void updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps) override;
-    QString breakInsert(const QString& path, const QString &condition = "") override;
+    QString breakInsert(const QString& path, const QString &condition = "", bool isTemp = false) override;
     QString breakRemove(int bpid) override;
     QString breakRemoveAll() override;
 

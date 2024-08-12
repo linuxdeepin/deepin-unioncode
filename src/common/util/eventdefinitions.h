@@ -78,6 +78,7 @@ OPI_OBJECT(editor,
            //right-cliked menu,  Related to debugging
            OPI_INTERFACE(setBreakpointCondition, "fileName", "line")
            OPI_INTERFACE(jumpToLine, "fileName", "line")
+           OPI_INTERFACE(runToLine, "fileName", "line")
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            )

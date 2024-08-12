@@ -342,6 +342,7 @@ void TextEditorPrivate::showMarginMenu()
     if (debuggerService->getDebugState() == AbstractDebugger::RunState::kStopped) {
         menu.addSeparator();
         menu.addAction(tr("jump to %1 line").arg(line + 1), q, [this, line] { editor.jumpToLine(fileName, line + 1); });
+        menu.addAction(tr("run to %1 line").arg(line + 1), q, [this, line] { editor.runToLine(fileName, line + 1); });
     }
 
     // notify other plugin to add action.

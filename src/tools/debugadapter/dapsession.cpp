@@ -789,6 +789,7 @@ InitializeResponse DapSession::handleInitializeReq(const InitializeRequest &requ
     response.supportsCompletionsRequest = true;
     response.supportsDisassembleRequest = true;
     response.supportsGotoTargetsRequest = true;
+    response.supportsHitConditionalBreakpoints = true;
 
     Log("--> Server sent initialize response to client\n")
     return response;

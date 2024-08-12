@@ -67,7 +67,7 @@ void JSDebugger::updateBreakpoints(const QString &file, const QList<dap::SourceB
     }
 }
 
-QString JSDebugger::breakInsert(const QString &path, const QString &condition)
+QString JSDebugger::breakInsert(const QString &path, const QString &condition, bool isTemp)
 {
     Q_UNUSED(condition)
     return ".break " + path;

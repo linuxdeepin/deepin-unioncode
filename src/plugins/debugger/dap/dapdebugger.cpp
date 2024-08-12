@@ -463,6 +463,25 @@ void DAPDebugger::jumpToLine(const QString &filePath, int lineNumber)
     }
 }
 
+void DAPDebugger::runToLine(const QString &filePath, int lineNumber)
+{
+    if (!d->currentSession)
+        return;
+
+    if (d->runState == kStopped) {
+        dap::array<IBreakpointData> rawBreakpoints;
+        IBreakpointData bpData;
+        bpData.id = QUuid::createUuid().toString().toStdString();
+        bpData.lineNumber = lineNumber;
+        bpData.enabled = true;
+        bpData.hitCondition = "1";
+        rawBreakpoints.push_back(bpData);
+
+        debugService->addBreakpoints(filePath, rawBreakpoints, d->currentSession);
+        continueDebug();
+    }
+}
+
 void DAPDebugger::evaluateWatchVariable(const QString &expression)
 {
     IVariable var;
@@ -837,6 +856,11 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         int line = event.property("line").toInt();
 
         jumpToLine(filePath, line);
+    } else if (event.data() == editor.runToLine.name) {
+        QString filePath = event.property("fileName").toString();
+        int line = event.property("line").toInt();
+
+        runToLine(filePath, line);
     }
 }
 
