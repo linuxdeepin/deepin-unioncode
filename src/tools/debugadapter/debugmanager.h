@@ -44,7 +44,7 @@ public:
 
     void updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps);
     void breakRemoveAll();
-    void breakInsert(const QString& path, const QString &condition = "");
+    void breakInsert(const QString& path, const QString &condition = "", bool isTemp = false);
     void removeBreakpointInFile(const QString &filePath);
     void breakRemove(int bpid);
 

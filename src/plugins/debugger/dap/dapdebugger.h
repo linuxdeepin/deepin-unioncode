@@ -107,6 +107,7 @@ private:
     void switchBreakpointsStatus(const QString &filePath, int lineNumber, bool enabled);
     void setBreakpointCondition(const QString &filePath, int lineNumber, const QString &expression);
     void jumpToLine(const QString &filePath, int lineNumber);
+    void runToLine(const QString &filePath, int lineNumber);
     void evaluateWatchVariable(const QString &expression);
 
     bool getLocals(dap::integer frameId, IVariables *out);

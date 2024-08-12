@@ -115,9 +115,11 @@ QString GDBDebugger::breakRemoveAll()
     return ("-break-delete");
 }
 
-QString GDBDebugger::breakInsert(const QString &path, const QString &condition)
+QString GDBDebugger::breakInsert(const QString &path, const QString &condition, bool isTemp)
 {
-    if (condition.isEmpty())
+    if (isTemp)
+        return QString{"-break-insert -t -f %1"}.arg(path);
+    else if (condition.isEmpty())
         return QString{"-break-insert -f %1"}.arg(path);
     else
         return QString{"-break-insert -c \"%1\" -f %2"}.arg(condition, path);
@@ -193,10 +195,14 @@ void GDBDebugger::updateBreakpoints(const QString &file, const QList<dap::Source
 {
     QSet<int> curLines;
     QMap<int, QString> lineConditionMap;
+    QSet<int> tempBreakPoints;
 
     for (auto bp : sourceBps) {
         QString condition = bp.condition.has_value() ? QString::fromStdString(bp.condition.value()) : "";
-        lineConditionMap.insert(bp.line, condition);
+        if (bp.hitCondition.has_value() && bp.hitCondition.value() == "1")
+            tempBreakPoints.insert(bp.line);
+        else
+            lineConditionMap.insert(bp.line, condition);
     }
 
     //remove canceled bp   and   bp which have condition (to update)
@@ -228,6 +234,12 @@ void GDBDebugger::updateBreakpoints(const QString &file, const QList<dap::Source
                 DebugManager::instance()->breakInsert(filePath, lineConditionMap.value(bp.line)); //1.send to gdb 2.retrieve breakpoints from gdb`s response 3.save to d->breakpoints.
             }
         }
+    }
+
+    // append temp breakpoints
+    for (const auto &bpLine : tempBreakPoints) {
+        auto filePath = file + ":" + QString::number(bpLine);
+        DebugManager::instance()->breakInsert(filePath, "", true);
     }
 }
 

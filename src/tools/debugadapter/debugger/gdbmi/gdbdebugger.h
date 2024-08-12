@@ -27,7 +27,7 @@ public:
     QString quit() override;
     QString kill() override;
 
-    QString breakInsert(const QString& path, const QString &condition = "") override;
+    QString breakInsert(const QString& path, const QString &condition = "", bool isTemp = false) override;
     QString breakRemove(int bpid) override;
     QString breakRemoveAll() override;
 

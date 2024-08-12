@@ -509,6 +509,10 @@ void DebugSession::sendBreakpoints(const QString &sourcePath, dap::array<IBreakp
         SourceBreakpoint bt;
         bt.line = it.lineNumber;
         bt.condition = it.condition;
+        if (it.hitCondition.has_value()) {
+            bt.hitCondition = it.hitCondition;
+            model->removeBreakpoint(sourcePath, bt.line);
+        }
         breakpoints.push_back(bt);
     }
 

@@ -237,9 +237,9 @@ void DebugManager::breakRemoveAll()
     }, true);
 }
 
-void DebugManager::breakInsert(const QString &path, const QString &condition)
+void DebugManager::breakInsert(const QString &path, const QString &condition, bool isTemp)
 {
-    commandAndResponse(d->debugger->breakInsert(path, condition), [this](const QVariant& r) {
+    commandAndResponse(d->debugger->breakInsert(path, condition, isTemp), [this](const QVariant& r) {
         d->debugger->parseBreakPoint(r);
     }, true);
 }
