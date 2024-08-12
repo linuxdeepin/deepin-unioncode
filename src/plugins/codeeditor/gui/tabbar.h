@@ -30,8 +30,7 @@ public:
 
 public slots:
     void closeTab(int index);
-    void onFileChanged(const QString &fileName, bool isModified);
-    void onFileSaved(const QString &fileName);
+    void onModificationChanged(const QString &fileName, bool isModified);
 
 signals:
     void spliterClicked(Qt::Orientation ori);

@@ -38,7 +38,7 @@ public:
     QWidget *createSpaceWidget();
     QWidget *createFindPlaceHolder();
 
-    TextEditor *createEditor(const QString &fileName = "");
+    TextEditor *createEditor(const QString &fileName = "", QsciDocument *doc = nullptr);
     TextEditor *findEditor(const QString &fileName);
     TextEditor *currentTextEditor() const;
     void changeFocusProxy();
@@ -53,7 +53,6 @@ public slots:
     void onTabClosed(const QString &fileName);
     void onSpliterClicked(Qt::Orientation ori);
     void onCursorRecordChanged(int pos);
-    void onFileChanged(const QString &fileName);
     void handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type);
     void handleRemoveAnnotation(const QString &fileName, const QString &title);
     void handleClearAllAnnotation(const QString &title);

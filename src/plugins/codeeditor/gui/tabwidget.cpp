@@ -228,7 +228,7 @@ QWidget *TabWidgetPrivate::createFindPlaceHolder()
     return windowService->createFindPlaceHolder(q, docFind);
 }
 
-TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
+TextEditor *TabWidgetPrivate::createEditor(const QString &fileName, QsciDocument *doc)
 {
     TextEditor *editor = new TextEditor(q);
     editor->updateLineNumberWidth(false);
@@ -236,18 +236,17 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
 
     connect(editor, &TextEditor::zoomValueChanged, q, &TabWidget::zoomValueChanged);
     connect(editor, &TextEditor::cursorRecordChanged, this, &TabWidgetPrivate::onCursorRecordChanged);
-    connect(editor, &TextEditor::fileSaved, tabBar, &TabBar::onFileSaved);
     connect(editor, &TextEditor::requestOpenFiles, this, &TabWidgetPrivate::handleOpenFiles);
     connect(editor, &TextEditor::cursorPositionChanged, symbolBar, &SymbolBar::updateSymbol);
+    connect(editor, &TextEditor::modificationChanged, tabBar, std::bind(&TabBar::onModificationChanged, tabBar, fileName, std::placeholders::_1));
 
-    editor->setFile(fileName);
+    if (doc) {
+        editor->openFileWithDocument(fileName, *doc);
+    } else {
+        editor->openFile(fileName);
+    }
+
     editor->setCursorPosition(0, 0);
-
-    connect(editor, &TextEditor::textChanged, this,
-            [this, fileName] {
-                onFileChanged(fileName);
-            });
-
     editorMng.insert(fileName, editor);
     recentOpenedFiles.prepend(fileName);
 
@@ -416,18 +415,6 @@ void TabWidgetPrivate::onCursorRecordChanged(int pos)
     nextPosRecord.clear();
     if (prePosRecord.size() >= MAX_PRE_NEXT_TIMES)
         prePosRecord.takeFirst();
-}
-
-void TabWidgetPrivate::onFileChanged(const QString &fileName)
-{
-    auto editor = qobject_cast<TextEditor *>(sender());
-    if (!editor)
-        return;
-
-    // The correct value cannot be immediately get by `editor->isModified()`
-    QTimer::singleShot(50, tabBar, [this, editor, fileName] {
-        tabBar->onFileChanged(fileName, editor->isModified());
-    });
 }
 
 void TabWidgetPrivate::handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type)
@@ -875,7 +862,12 @@ QWidget *TabWidget::currentWidget() const
     return d->currentTextEditor();
 }
 
-void TabWidget::openFile(const QString &fileName)
+TextEditor *TabWidget::findEditor(const QString &fileName)
+{
+    return d->findEditor(fileName);
+}
+
+void TabWidget::openFile(const QString &fileName, QsciDocument *doc)
 {
     if (!QFile::exists(fileName) || QFileInfo(fileName).isDir())
         return;
@@ -891,7 +883,7 @@ void TabWidget::openFile(const QString &fileName)
     d->symbolBar->setPath(fileName);
     d->symbolBar->setVisible(true);
     d->tabBar->setFileName(fileName);
-    TextEditor *editor = d->createEditor(fileName);
+    TextEditor *editor = d->createEditor(fileName, doc);
 
     SymbolWidgetGenerator::instance()->symbolWidget()->setEditor(editor);
     d->editorLayout->addWidget(editor);

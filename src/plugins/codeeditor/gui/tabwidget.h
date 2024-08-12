@@ -7,6 +7,8 @@
 
 #include <QWidget>
 
+class TextEditor;
+class QsciDocument;
 class TabWidgetPrivate;
 class TabWidget : public QWidget
 {
@@ -64,9 +66,10 @@ public:
     void updateZoomValue(int value);
 
     QWidget *currentWidget() const;
+    TextEditor *findEditor(const QString &fileName);
 
 public slots:
-    void openFile(const QString &fileName);
+    void openFile(const QString &fileName, QsciDocument *doc = nullptr);
     void setDebugLine(int line);
     void removeDebugLine();
     void gotoLine(int line);
