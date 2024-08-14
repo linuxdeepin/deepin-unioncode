@@ -41,7 +41,9 @@ void PluginManagerModule::initialize(Controller *_uiController)
     actionOptionsImpl->setShortCutInfo("Tools.Plugins",
                                        MWMTA_PLUGINS);
 
-    uiController->addAction(MWM_HELP, actionOptionsImpl);
+    auto menuAction = new QAction(MWMTA_PLUGINS, this);
+    menuAction->setIcon(QIcon::fromTheme("plugins-navigation"));
+    uiController->addAction(MWM_HELP, new AbstractAction(menuAction));
     uiController->addNavigationItem(actionOptionsImpl, Priority::lowest);
 
     std::function<AbstractWidget*()> detailWidgetCreator = [this]()->AbstractWidget*{
@@ -70,4 +72,5 @@ void PluginManagerModule::initialize(Controller *_uiController)
         if (windowService)
             windowService->setDockHeaderName(MWMTA_PLUGINS, tr("Extensions"));
     });
+    QObject::connect(menuAction, &QAction::triggered, this, [this](){uiController->switchWidgetNavigation(MWM_ABOUT_PLUGINS);});
 }
