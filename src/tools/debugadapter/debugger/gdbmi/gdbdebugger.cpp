@@ -417,6 +417,10 @@ void GDBDebugger::parseNotifyData(gdbmi::Record &record)
         ctx.threadId = data.value("thread-id").toString();
         ctx.core = data.value("core").toInt();
         ctx.frame = gdbmi::Frame::parseMap(data.value("frame").toMap());
+        if (ctx.reason == gdbmi::AsyncContext::Reason::signalReceived) {
+            ctx.description = data.value("signal-name").toString();
+            ctx.text = data.value("signal-meaning").toString();
+        }
         d->inferiorRunning.store(false);
         sendStoppedNotify(ctx);
     } else if (record.message == "running") {
@@ -515,6 +519,10 @@ void GDBDebugger::sendStoppedNotify(const gdbmi::AsyncContext &ctx)
     stoppedEvent.threadId = ctx.threadId.toInt();
     stoppedEvent.allThreadsStopped = true;
     stoppedEvent.line = ctx.frame.line;
+    if (ctx.reason == gdbmi::AsyncContext::Reason::signalReceived) {
+        stoppedEvent.description = ctx.description.toStdString();
+        stoppedEvent.text = ctx.text.toStdString();
+    }
     dap::Source source;
     source.name = ctx.frame.file.toStdString();
     source.path = ctx.frame.fullpath.toStdString();

@@ -108,6 +108,8 @@ struct AsyncContext {
     QString threadId;
     int core;
     Frame frame;
+    QString text;
+    QString description;
 
     static Reason textToReason(const QString &s);
     static QString reasonToText(Reason r);

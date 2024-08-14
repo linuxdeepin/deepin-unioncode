@@ -323,6 +323,7 @@ void DAPDebugger::abortDebug()
     d->currentSession->terminate();
     if (d->startAttaching)
         d->startAttaching = false;
+    printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
 }
 
 void DAPDebugger::restartDebug()
@@ -546,6 +547,19 @@ void DAPDebugger::registerDapHandlers()
         details->hitBreakpointIds = event.hitBreakpointIds;
         d->currentSession->getStoppedDetails().push_back(details);
 
+        bool signalStopped = false;
+        if (event.reason == "signal-received" && event.description.has_value()) {
+            auto signalName = QString::fromStdString(event.description.value().c_str());
+            if (signalName == "SIGSEGV") { // Segmentation fault
+                signalStopped = true;
+                auto signalMeaning = event.text.has_value() ? event.text.value().c_str() : "";
+                QMetaObject::invokeMethod(this, "showStoppedBySignalMessageBox",
+                                          Q_ARG(QString, QString::fromStdString(signalMeaning)), Q_ARG(QString, signalName));
+            }
+            if (signalName == "SIGINT" && d->pausing)   // stopped by user
+                signalStopped = true;
+        }
+
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
                 || event.reason == "breakpoint"
@@ -553,8 +567,8 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "breakpoint-hit"
                 || event.reason == "function-finished"
                 || event.reason == "end-stepping-range"
-                || (event.reason == "signal-received" && d->pausing)
                 || event.reason == "goto"
+                || signalStopped
                 || (event.reason == "unknown" && d->startAttaching)) {
             //when attaching to running program . it won`t receive initialized event and event`s reason is "unknwon"
             //so initial breakpoints in here
@@ -616,7 +630,7 @@ void DAPDebugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "TerminatedEvent";
-        printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
+
         updateRunState(kNoRun);
     });
 
