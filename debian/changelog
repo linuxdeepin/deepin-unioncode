@@ -1,3 +1,9 @@
+deepin-unioncode (1.3.10) stable; urgency=medium
+
+  * bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Wed, 14 Aug 2024 13:20:10 +0800
+
 deepin-unioncode (1.3.8) unstable; urgency=medium
 
   * Fix some bugs
