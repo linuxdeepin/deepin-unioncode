@@ -17,6 +17,7 @@
 #include "dap/io.h"
 #include "dap/protocol.h"
 #include "dap/session.h"
+#include "dap/dap.h"
 #include "dap/network.h"
 
 #include <QDebug>
@@ -36,6 +37,7 @@ DebugSession::DebugSession(DebugModel *_model, QObject *parent)
       id(QUuid::createUuid().toString().toStdString()),
       model(_model)
 {
+    dap::initialize();
 }
 
 DebugSession::~DebugSession()
@@ -56,6 +58,7 @@ DebugSession::~DebugSession()
     }
     threads.clear();
 
+    dap::terminate();
     delete alertBox;
 }
 
