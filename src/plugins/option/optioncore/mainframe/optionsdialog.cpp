@@ -90,7 +90,10 @@ void OptionsDialog::showAtItem(const QString &itemName)
 {
     show();
 
-    QModelIndex index = leftBarModel->indexFromItem(leftBarModel->findItems(itemName).at(0));
+    auto targetItems = leftBarModel->findItems(itemName);
+    QModelIndex index = leftBarModel->index(0, 0);
+    if (!targetItems.isEmpty())
+        index = leftBarModel->indexFromItem(targetItems.at(0));
     slotLeftBarClicked(index);
 }
 
