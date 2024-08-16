@@ -1,56 +1,62 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef COMMAND_H
 #define COMMAND_H
 
-#include "common/common_global.h"
-
 #include <QObject>
-#include <QKeySequence>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QKeySequence;
-class ActionPrivate;
-class COMMON_EXPORT Command : public QObject
+class QToolButton;
+QT_END_NAMESPACE
+
+class CommandPrivate;
+class Command : public QObject
 {
     Q_OBJECT
 public:
-    explicit Command(QObject *parent = nullptr)
-        : QObject(parent) {}
+    enum CommandAttribute {
+        CA_Hide = 1,
+        CA_UpdateText = 2,
+        CA_UpdateIcon = 4,
+        CA_NonConfigurable = 8
+    };
+    Q_DECLARE_FLAGS(CommandAttributes, CommandAttribute)
 
-    virtual QString id() const = 0;
-    virtual QAction *action() const = 0;
+    Command(const QString &id, QObject *parent = nullptr);
+    ~Command();
 
-    virtual void setKeySequence(const QKeySequence &key) = 0;
-    virtual QKeySequence keySequence() const = 0;
+    void setDefaultKeySequence(const QKeySequence &key);
+    void setDefaultKeySequences(const QList<QKeySequence> &keys);
+    void setKeySequences(const QList<QKeySequence> &keys);
+    QList<QKeySequence> defaultKeySequences() const;
+    QList<QKeySequence> keySequences() const;
+    QKeySequence keySequence() const;
 
-    virtual void setDescription(const QString &text) = 0;
-    virtual QString description() const = 0;
+    void setDescription(const QString &text);
+    QString description() const;
+    QString id() const;
+    QAction *action() const;
+    QStringList context() const;
+
+    void setAttribute(CommandAttribute attr);
+    void removeAttribute(CommandAttribute attr);
+    bool hasAttribute(CommandAttribute attr) const;
+
+    bool isActive() const;
 
 signals:
     void keySequenceChanged();
-};
-
-class Action : public Command
-{
-    Q_OBJECT
-public:
-    Action(QString id, QAction *action, QObject *parent = nullptr);
-    virtual ~Action() override;
-
-    QString id() const override;
-    QAction *action() const override;
-
-    void setKeySequence(const QKeySequence &key) override;
-    QKeySequence keySequence() const override;
-
-    void setDescription(const QString &text) override;
-    QString description() const override;
+    void activeStateChanged();
 
 private:
-    ActionPrivate *const d;
+    friend class ActionManager;
+    friend class ActionManagerPrivate;
+
+    CommandPrivate *const d;
 };
 
 #endif   // COMMAND_H

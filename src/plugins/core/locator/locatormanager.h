@@ -71,7 +71,6 @@ private:
     QFutureWatcher<void> watcher;
 
     QList<abstractLocator *> locatorList;
-    QShortcut *shortCut { nullptr };
 
     QTimer timer;
 };

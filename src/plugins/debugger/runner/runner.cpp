@@ -47,11 +47,10 @@ Runner::Runner(QObject *parent)
     d->runAction.get()->setIcon(QIcon::fromTheme("run"));
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
 
-    auto actionImpl = new AbstractAction(d->runAction.get(), this);
-    actionImpl->setShortCutInfo("Debug.Running",
-                                MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5));
+    auto cmd = ActionManager::instance()->registerAction(d->runAction.get(), "Debug.Running");
+    cmd->setDefaultKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5);
     WindowService *service = dpfGetService(WindowService);
-    service->addTopToolItem(actionImpl, false, Priority::high);
+    service->addTopToolItem(cmd, false, Priority::high);
     
     d->runProgram = new DComboBox;
     d->runProgram->setFixedSize(200, 36);

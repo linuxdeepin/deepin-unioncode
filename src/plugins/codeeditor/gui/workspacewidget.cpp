@@ -67,20 +67,14 @@ void WorkspaceWidgetPrivate::initActions()
 
     // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
-
-    auto abstractCommentAction = new AbstractAction(commentAction, q);
-    abstractCommentAction->setShortCutInfo("Editor.addAndRemoveComment",
-                                           tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
-    windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
+    auto cmd = ActionManager::instance()->registerAction(commentAction, "Editor.AddAndRemoveComment");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Slash);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
 
     // show opened files
     QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
-
-    auto abstractShowOpenedAction = new AbstractAction(showOpenedAction, q);
-    abstractShowOpenedAction->setShortCutInfo("Editor.showOpened",
-                                              tr("Show opened files"), QKeySequence(Qt::CTRL | Qt::Key_Tab));
-    windowService->addAction(tr("&Show open files"), abstractShowOpenedAction);
+    cmd = ActionManager::instance()->registerAction(commentAction, "Editor.ShowOpenedFiles");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Tab);
     connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 }
 
@@ -461,7 +455,7 @@ void WorkspaceWidgetPrivate::handleCloseCurrentEditor()
 {
     if (stackWidget->currentIndex() == 0) {
         auto tabWidget = currentTabWidget();
-        if (!tabWidget || !tabWidget->hasFocus())
+        if (!tabWidget)
             return;
 
         tabWidget->closeFileEditor();

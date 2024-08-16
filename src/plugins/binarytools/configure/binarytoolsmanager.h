@@ -18,7 +18,7 @@ class WindowService;
 class TerminalService;
 class EditorService;
 }
-class AbstractAction;
+class Command;
 
 class ToolProcess : public QObject
 {
@@ -75,7 +75,7 @@ public:
     void executeTool(const QString &id);
     void checkAndAddToToolbar(const BinaryTools &tools);
     void updateToolMenu(const BinaryTools &tools);
-    void setToolMenu(QMenu *menu);
+    void setupToolMenu();
     void installTool(const QString &id);
     void eventTriggered(EventType event, const QVariantList &args);
 
@@ -110,8 +110,7 @@ private:
     dpfservice::WindowService *windowSrv { nullptr };
     dpfservice::TerminalService *terminalSrv { nullptr };
     dpfservice::EditorService *editorSrv { nullptr };
-    QMap<QString, AbstractAction *> actMap;
-    QMenu *toolMenu { nullptr };
+    QMap<QString, Command *> cmdMap;
     QString cfgVersion;
 };
 

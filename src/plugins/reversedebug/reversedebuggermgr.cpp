@@ -221,7 +221,7 @@ void ReverseDebuggerMgr::outputMessage(const QString &msg)
 
 void ReverseDebuggerMgr::exist()
 {
-    auto command = ActionManager::getInstance()->command("Debug.Abort.Debugging");
+    auto command = ActionManager::instance()->command("Debug.Abort.Debugging");
     QAction *action = nullptr;
     if (command && (action = command->action()) && action->isEnabled()) {
         action->trigger();

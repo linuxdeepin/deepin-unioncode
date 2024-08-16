@@ -113,17 +113,22 @@ void CodeEditor::initButtonBox()
 
 void CodeEditor::initActions()
 {
+    auto mEdit = ActionManager::instance()->actionContainer(M_EDIT);
+
     QAction *backAction = new QAction(tr("Backward"), this);
     connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
-    EditorUtils::registerShortcut(backAction, "Editor.back", QKeySequence(Qt::ALT | Qt::Key_Left));
+    auto cmd = EditorUtils::registerShortcut(backAction, "Editor.back", QKeySequence(Qt::ALT | Qt::Key_Left));
+    mEdit->addAction(cmd);
 
     QAction *forwardAction = new QAction(tr("Forward"), this);
     connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
-    EditorUtils::registerShortcut(forwardAction, "Editor.forward", QKeySequence(Qt::ALT | Qt::Key_Right));
+    cmd = EditorUtils::registerShortcut(forwardAction, "Editor.forward", QKeySequence(Qt::ALT | Qt::Key_Right));
+    mEdit->addAction(cmd);
 
     QAction *closeAction = new QAction(tr("Close Current Editor"), this);
     connect(closeAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor);
-    EditorUtils::registerShortcut(closeAction, "Editor.close", QKeySequence(Qt::CTRL | Qt::Key_W));
+    cmd = EditorUtils::registerShortcut(closeAction, "Editor.close", QKeySequence(Qt::CTRL | Qt::Key_W));
+    mEdit->addAction(cmd, G_EDIT_OTHER);
 
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
     connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
@@ -194,11 +199,6 @@ void CodeEditor::initWindowService()
 
         windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_EDIT, Position::Central, true, true);
         windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_DEBUG, Position::Central, true, true);
-
-        auto sep = new QAction(this);
-        sep->setSeparator(true);
-        windowService->addAction(MWM_FILE, new AbstractAction(sep));
-
         windowService->addContextWidget(QTabWidget::tr("Search &Results"), new AbstractWidget(CodeLens::instance()), true);
 
         StatusInfoManager::instance()->init(windowService);

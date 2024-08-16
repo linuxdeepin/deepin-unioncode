@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     titlebar()->setTitle("Deepin Union Code");
     titlebar()->setIcon(QIcon::fromTheme("ide"));
+    titlebar()->setFocusPolicy(Qt::NoFocus);
 
     setWindowIcon(QIcon::fromTheme("ide"));
     setAttribute(Qt::WA_DeleteOnClose);

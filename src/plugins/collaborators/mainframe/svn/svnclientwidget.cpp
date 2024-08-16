@@ -38,13 +38,13 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     homeMenu->setObjectName("MainMenuBtn");
 
     const auto clone = menu->addAction(QAction::tr("Checkout repository"));
-    ActionManager::getInstance()->registerAction(clone, "SVN.Checkout.Repository",
-                                                 tr("Checkout repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::ALT | Qt::Key::Key_C));
+    auto cmd = ActionManager::instance()->registerAction(clone, "SVN.Checkout.Repository");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_C);
     connect(clone, &QAction::triggered, this, &SvnClientWidget::showCheckoutDialog);
 
     const auto open = menu->addAction(QAction::tr("Open repository"));
-    ActionManager::getInstance()->registerAction(open, "SVN.Open.Repository",
-                                                 tr("Open repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::ALT | Qt::Key::Key_R));
+    cmd = ActionManager::instance()->registerAction(open, "SVN.Open.Repository");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_R);
     connect(open, &QAction::triggered, this, &SvnClientWidget::showOpenLocalRepos);
 
     mRepos->setObjectName("GitQlientTab");

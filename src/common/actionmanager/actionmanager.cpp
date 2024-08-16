@@ -1,219 +1,283 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "actionmanager.h"
-#include "util/shortcututil.h"
+#include "actionmanager_p.h"
+#include "actioncontainer.h"
+#include "command_p.h"
 #include "util/custompaths.h"
 
-#include <QAction>
 #include <QDir>
+#include <QDebug>
+#include <QApplication>
 
-class ActionManagerPrivate final
+constexpr char kKeyboardShortcuts[] = "KeyboardShortcuts";
+static ActionManager *m_instance = nullptr;
+
+ActionManagerPrivate::ActionManagerPrivate()
+    : settings(CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.ini"), QSettings::IniFormat)
 {
-public:
-    using IdCmdMap = QHash<QString, Action *>;
-
-    explicit ActionManagerPrivate(ActionManager *qq);
-    ~ActionManagerPrivate();
-
-    Action *addOverrideAction(QString id, QAction *action);
-    Action *removeOverrideAction(QString id);
-    Command *command(QString id);
-    QList<Command *> commands();
-
-    void addSetting(QString id, Action *action);
-    void removeSetting(QString id);
-    void saveAllSetting();
-    void readUserSetting();
-
-private:
-    ActionManager *q;
-    IdCmdMap idCmdMap;
-    QString configFilePath;
-};
-
-ActionManagerPrivate::ActionManagerPrivate(ActionManager *qq)
-    : q(qq),
-      configFilePath(CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"))
-{
-
 }
 
 ActionManagerPrivate::~ActionManagerPrivate()
 {
+    for (auto container : std::as_const(idContainerMap))
+        disconnect(container, &QObject::destroyed, this, &ActionManagerPrivate::containerDestroyed);
+    qDeleteAll(idContainerMap);
+    qDeleteAll(idCmdMap);
 }
 
-Action *ActionManagerPrivate::addOverrideAction(QString id, QAction *action)
+void ActionManagerPrivate::setContext(const QStringList &context)
 {
-    Action *a = idCmdMap.value(id, nullptr);
-    if (!a) {
-        a = new Action(id, action, q);
-        idCmdMap.insert(id, a);
+    cmdContext = context;
+    auto it = idCmdMap.cbegin();
+    for (; it != idCmdMap.cend(); ++it)
+        it.value()->d->setCurrentContext(context);
+}
+
+bool ActionManagerPrivate::hasContext(const QStringList &context) const
+{
+    for (int i = 0; i < cmdContext.size(); ++i) {
+        if (context.contains(cmdContext.at(i)))
+            return true;
+    }
+    return false;
+}
+
+Command *ActionManagerPrivate::overridableAction(const QString &id)
+{
+    Command *cmd = idCmdMap.value(id, nullptr);
+    if (!cmd) {
+        cmd = new Command(id);
+        idCmdMap.insert(id, cmd);
+        readUserSettings(id, cmd);
+        QAction *action = cmd->action();
+        mainWindow()->addAction(action);
+        action->setObjectName(id);
+        action->setShortcutContext(Qt::ApplicationShortcut);
+        cmd->d->setCurrentContext(cmdContext);
     }
 
-    return a;
+    return cmd;
 }
 
-Action *ActionManagerPrivate::removeOverrideAction(QString id)
+void ActionManagerPrivate::scheduleContainerUpdate(ActionContainer *actionContainer)
 {
-    Action *a = idCmdMap.value(id, nullptr);
-    if (a) {
-        idCmdMap.remove(id);
-    }
-
-    return a;
+    const bool needsSchedule = scheduledContainerUpdates.isEmpty();
+    scheduledContainerUpdates.insert(actionContainer);
+    if (needsSchedule)
+        QMetaObject::invokeMethod(this,
+                                  &ActionManagerPrivate::updateContainer,
+                                  Qt::QueuedConnection);
 }
 
-Command *ActionManagerPrivate::command(QString id)
+void ActionManagerPrivate::updateContainer()
 {
-    return idCmdMap.value(id, nullptr);
+    for (ActionContainer *c : std::as_const(scheduledContainerUpdates))
+        c->update();
+    scheduledContainerUpdates.clear();
 }
 
-QList<Command *> ActionManagerPrivate::commands()
+void ActionManagerPrivate::containerDestroyed(QObject *sender)
 {
-    QList<Command *> result;
-    foreach (Command *cmd, idCmdMap) {
-        result << cmd;
-    }
-
-    return result;
+    auto container = static_cast<ActionContainer *>(sender);
+    idContainerMap.remove(idContainerMap.key(container));
+    scheduledContainerUpdates.remove(container);
 }
 
-void ActionManagerPrivate::addSetting(QString id, Action *action)
+QWidget *ActionManagerPrivate::mainWindow() const
 {
-    QString shortcut = action->keySequence().toString();
-    QString description = action->description();
+    static QWidget *window { nullptr };
+    if (window)
+        return window;
 
-    QMap<QString, QStringList> shortcutItemMap;
-    ShortcutUtil::readFromJson(configFilePath, shortcutItemMap);
-    QStringList valueList = {description, shortcut};
-    shortcutItemMap[id] = valueList;
-    ShortcutUtil::writeToJson(configFilePath, shortcutItemMap);
-}
-
-void ActionManagerPrivate::removeSetting(QString id)
-{
-    QMap<QString, QStringList> shortcutItemMap;
-    ShortcutUtil::readFromJson(configFilePath, shortcutItemMap);
-    if (shortcutItemMap.contains(id)) {
-        shortcutItemMap.remove(id);
-    }
-    ShortcutUtil::writeToJson(configFilePath, shortcutItemMap);
-}
-
-void ActionManagerPrivate::saveAllSetting()
-{
-    QMap<QString, QStringList> shortcutItemMap;
-    IdCmdMap::const_iterator iter = idCmdMap.begin();
-    for (; iter != idCmdMap.end(); ++iter)
-    {
-        QStringList valueList = {iter.value()->description(), iter.value()->keySequence().toString()};
-        shortcutItemMap.insert(iter.key(), valueList);
-    }
-
-    ShortcutUtil::writeToJson(configFilePath, shortcutItemMap);
-}
-
-void ActionManagerPrivate::readUserSetting()
-{
-    QMap<QString, QStringList> shortcutItemMap;
-    ShortcutUtil::readFromJson(configFilePath, shortcutItemMap);
-
-    IdCmdMap::const_iterator iter = idCmdMap.begin();
-    for (; iter != idCmdMap.end(); ++iter)
-    {
-        QString id = iter.key();
-        if (shortcutItemMap.contains(id) && iter.value()->action()) {
-            QString shortcut = shortcutItemMap.value(id).last();
-            iter.value()->action()->setShortcut(QKeySequence(shortcut));
+    for (auto w : qApp->allWidgets()) {
+        if (w->objectName() == "MainWindow") {
+            window = w;
+            break;
         }
     }
+
+    return window;
+}
+
+void ActionManagerPrivate::saveSettings()
+{
+    auto it = idCmdMap.cbegin();
+    for (; it != idCmdMap.cend(); ++it) {
+        saveSettings(it.value());
+    }
+}
+
+void ActionManagerPrivate::saveSettings(Command *cmd)
+{
+    const auto &id = cmd->id();
+    const auto settingsKey = QString(kKeyboardShortcuts) + '/' + id;
+    const QList<QKeySequence> keys = cmd->keySequences();
+    const QList<QKeySequence> defaultKeys = cmd->defaultKeySequences();
+    if (keys != defaultKeys) {
+        if (keys.isEmpty()) {
+            settings.setValue(settingsKey, QString());
+        } else if (keys.size() == 1) {
+            settings.setValue(settingsKey, keys.first().toString());
+        } else {
+            QStringList shortcutList;
+            std::transform(keys.begin(), keys.end(), shortcutList.begin(),
+                           [](const QKeySequence &k) {
+                               return k.toString();
+                           });
+            settings.setValue(settingsKey, shortcutList);
+        }
+    } else {
+        settings.remove(settingsKey);
+    }
+}
+
+void ActionManagerPrivate::readUserSettings(const QString &id, Command *cmd)
+{
+    settings.beginGroup(kKeyboardShortcuts);
+    if (settings.contains(id)) {
+        const QVariant v = settings.value(id);
+        if (QMetaType::Type(v.type()) == QMetaType::QStringList) {
+            auto list = v.toStringList();
+            QList<QKeySequence> keySequenceList;
+            std::transform(list.begin(), list.end(), keySequenceList.begin(),
+                           [](const QString &s) {
+                               return QKeySequence::fromString(s);
+                           });
+            cmd->setKeySequences(keySequenceList);
+        } else {
+            cmd->setKeySequences({ QKeySequence::fromString(v.toString()) });
+        }
+    }
+    settings.endGroup();
 }
 
 ActionManager::ActionManager(QObject *parent)
-    : QObject(parent)
-    , d(new ActionManagerPrivate(this))
+    : QObject(parent),
+      d(new ActionManagerPrivate)
 {
-
+    m_instance = this;
 }
 
 ActionManager::~ActionManager()
 {
-    if (d) {
-        delete d;
-    }
+    delete d;
 }
 
-ActionManager *ActionManager::getInstance()
+ActionManager *ActionManager::instance()
 {
-    static ActionManager ins;
-    return &ins;
+    return m_instance;
 }
 
-/*!
-    \fn Command *ActionManager::registerAction(QAction *action, const QString id,
-                                       const QString description,
-                                       const QKeySequence defaultShortcut)
-
-    Makes an action known to the system under the specified action, id, description, default shortcut.
-    New a command and insert to map, set the keysequence and description to action, and save info to config file.
-
-    Returns a Command instance that represents the action in the application
-    and is owned by the ActionManager.
-
-    Usage: ActionManager::getInstance->registerAction(...);
-*/
-Command *ActionManager::registerAction(QAction *action, const QString &id,
-                                       const QString &description/* = nullptr*/,
-                                       const QKeySequence defaultShortcut/* = QKeySequence()*/)
+ActionContainer *ActionManager::createContainer(const QString &containerId)
 {
-    if(!action || id.isEmpty())
+    auto it = d->idContainerMap.constFind(containerId);
+    if (it != d->idContainerMap.constEnd())
+        return it.value();
+
+    auto mc = new ActionContainer(containerId, d);
+    d->idContainerMap.insert(containerId, mc);
+    connect(mc, &QObject::destroyed, d, &ActionManagerPrivate::containerDestroyed);
+
+    return mc;
+}
+
+ActionContainer *ActionManager::actionContainer(const QString &containerId)
+{
+    auto it = d->idContainerMap.constFind(containerId);
+    if (it == d->idContainerMap.constEnd()) {
+        qWarning() << "failed to find :" << containerId;
         return nullptr;
+    }
+    return it.value();
+}
 
-    connect(action, &QAction::destroyed, this, [=] {
-        unregisterAction(id);
-    });
+Command *ActionManager::registerAction(QAction *action, const QString &id, const QStringList &context)
+{
+    Command *cmd = d->overridableAction(id);
+    if (cmd) {
+        cmd->d->addOverrideAction(action, context);
+        emit commandListChanged();
+        emit commandAdded(id);
+    }
+    return cmd;
+}
 
-    Action *a = d->addOverrideAction(id, action);
-    if (a) {
-        a->setKeySequence(defaultShortcut);
-        a->setDescription(description);
+void ActionManager::unregisterAction(QAction *action, const QString &id)
+{
+    Command *cmd = d->idCmdMap.value(id, nullptr);
+    if (!cmd) {
+        qWarning() << "unregisterAction: id" << id
+                   << "is registered with a different command type.";
+        return;
     }
 
-    return a;
+    cmd->d->removeOverrideAction(action);
+    if (cmd->d->isEmpty()) {
+        // clean up
+        d->saveSettings(cmd);
+        delete cmd->action();
+        d->idCmdMap.remove(id);
+        delete cmd;
+    }
+    emit commandListChanged();
 }
 
-/*!
-    \fn void ActionManager::unregisterAction(QString id)
-
-    Removes the knowledge about an action under the specified id.
-    Remove from map, set action shortcut to null, and save info to config file.
-
-    Usage: ActionManager::getInstance->unregisterAction(...);
-*/
-void ActionManager::unregisterAction(QString id)
+Command *ActionManager::command(const QString &id)
 {
-    d->removeOverrideAction(id);
+    auto it = d->idCmdMap.constFind(id);
+    if (it == d->idCmdMap.constEnd()) {
+        qWarning() << " failed to find :" << id;
+        return nullptr;
+    }
+    return it.value();
 }
 
-Command *ActionManager::command(QString id)
+QList<Command *> ActionManager::commandList()
 {
-    return d->command(id);
+    return d->idCmdMap.values();
 }
 
-QList<Command *> ActionManager::commands()
+void ActionManager::addContext(const QStringList &context)
 {
-    return d->commands();
+    for (const auto &c : context) {
+        if (d->cmdContext.contains(c))
+            continue;
+        d->cmdContext << c;
+    }
+
+    setContext(d->cmdContext);
 }
 
-void ActionManager::readUserSetting()
+void ActionManager::removeContext(const QStringList &context)
 {
-    return d->readUserSetting();
+    for (const auto &c : context) {
+        if (!d->cmdContext.contains(c))
+            continue;
+        d->cmdContext.removeOne(c);
+    }
+
+    setContext(d->cmdContext);
 }
 
-void ActionManager::saveSetting()
+void ActionManager::saveSettings()
 {
-    return d->saveAllSetting();
+    d->saveSettings();
 }
 
+void ActionManager::setContext(const QStringList &context)
+{
+    d->setContext(context);
+}
+
+bool ActionManager::hasContext(const QStringList &context)
+{
+    return d->hasContext(context);
+}
+
+QStringList ActionManager::context() const
+{
+    return d->cmdContext;
+}

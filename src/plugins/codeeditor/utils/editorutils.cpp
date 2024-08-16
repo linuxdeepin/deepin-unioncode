@@ -4,8 +4,7 @@
 
 #include "editorutils.h"
 
-#include "base/abstractaction.h"
-#include "services/window/windowservice.h"
+#include "common/actionmanager/actionmanager.h"
 
 int EditorUtils::nbDigitsFromNbLines(long nbLines)
 {
@@ -35,13 +34,9 @@ int EditorUtils::nbDigitsFromNbLines(long nbLines)
     return nbDigits;
 }
 
-void EditorUtils::registerShortcut(QAction *act, const QString &id, const QKeySequence &shortCut)
+Command *EditorUtils::registerShortcut(QAction *act, const QString &id, const QKeySequence &shortCut)
 {
-    auto winSrv = dpfGetService(dpfservice::WindowService);
-    if (!winSrv)
-        return;
-
-    auto actImpl = new AbstractAction(act, qApp);
-    actImpl->setShortCutInfo(id, act->text(), shortCut);
-    winSrv->addAction(tr("&Edit"), actImpl);
+    auto cmd = ActionManager::instance()->registerAction(act, id);
+    cmd->setDefaultKeySequence(shortCut);
+    return cmd;
 }

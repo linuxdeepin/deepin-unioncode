@@ -19,6 +19,7 @@
 
 class Core;
 class AbstractAction;
+class Command;
 class AbstractMenu;
 class AbstractWidget;
 class AbstractInstaller;
@@ -146,20 +147,6 @@ public:
      */
     DPF_INTERFACE(void, switchContextWidget, const QString &title);
 
-    DPF_INTERFACE(void, addChildMenu, AbstractMenu *menu);
-
-    /*!
-    * \brief insertAction 添加Action到其他由框架发布的可扩展menu
-    * \param menuName 框架扩展menu发布名称
-    * \param beforActionName 之后的Action名称
-    * \param action 实例对象
-    */
-    DPF_INTERFACE(void, insertAction, const QString &menuName, const QString &beforActionName, AbstractAction *action);
-
-    DPF_INTERFACE(void, addAction, const QString &menuName, AbstractAction *action);
-
-    DPF_INTERFACE(void, removeActions, const QString &menuName);
-
     /*!
     * \brief addWidgetToTopTool  Adding widget to a toptoolbar
     * widgets belongs to a group, you can show toptoolbar by group in swtichWidget event.
@@ -171,10 +158,10 @@ public:
     */
     DPF_INTERFACE(void, addWidgetToTopTool, AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);
 
-    DPF_INTERFACE(void, addTopToolItem, AbstractAction *action, bool addSeparator, quint8 priority);
-    DPF_INTERFACE(void, addTopToolItemToRight, AbstractAction *action, bool addSeparator, quint8 priority);
-    DPF_INTERFACE(void, removeTopToolItem, AbstractAction *action);
-    DPF_INTERFACE(void, setTopToolItemVisible, AbstractAction *action, bool visible);
+    DPF_INTERFACE(DTK_WIDGET_NAMESPACE::DToolButton *, addTopToolItem, Command *action, bool addSeparator, quint8 priority);
+    DPF_INTERFACE(void, addTopToolItemToRight, Command *action, bool addSeparator, quint8 priority);
+    DPF_INTERFACE(void, removeTopToolItem, Command *action);
+    DPF_INTERFACE(void, setTopToolItemVisible, Command *action, bool visible);
 
     DPF_INTERFACE(void, showTopToolBar);
     DPF_INTERFACE(void, hideTopToolBar);

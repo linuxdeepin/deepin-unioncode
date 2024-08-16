@@ -101,11 +101,11 @@ CmakeProjectGenerator::CmakeProjectGenerator()
         abort();
     }
 
+    auto mBuild = ActionManager::instance()->actionContainer(M_BUILD);
     // add run cmake menu item.
-    QAction *runCMake = new QAction(tr("Run CMake"));
-    auto inputAction = new AbstractAction(runCMake, this);
-    inputAction->setShortCutInfo("Build.RunCMake", runCMake->text());
-    dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, inputAction);
+    QAction *runCMake = new QAction(tr("Run CMake"), this);
+    auto cmd = ActionManager::instance()->registerAction(runCMake, "Build.RunCMake");
+    mBuild->addAction(cmd);
 
     QObject::connect(runCMake, &QAction::triggered, this, [this](){
         auto prjService = dpfGetService(ProjectService);
@@ -125,9 +125,8 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
     // add clear cmake menu item
     QAction *clearCMake = new QAction(tr("Clear CMake"));
-    auto abstractClearCMake = new AbstractAction(clearCMake, this);
-    abstractClearCMake->setShortCutInfo("Build.ClearCMake", clearCMake->text());
-    dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, abstractClearCMake);
+    cmd = ActionManager::instance()->registerAction(clearCMake, "Build.ClearCMake");
+    mBuild->addAction(cmd);
 
     QObject::connect(clearCMake, &QAction::triggered, this, [this](){
         auto prjService = dpfGetService(ProjectService);
@@ -646,7 +645,7 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
 
     menu->addSeparator();
     auto addBuildMenu = [&](const QString &actionID){
-        auto command = ActionManager::getInstance()->command(actionID);
+        auto command = ActionManager::instance()->command(actionID);
         if (command && command->action()) {
             menu->addAction(command->action());
         }

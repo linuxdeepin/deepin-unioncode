@@ -9,6 +9,7 @@
 #include "common/util/custompaths.h"
 #include "common/util/eventdefinitions.h"
 #include "common/util/macroexpander.h"
+#include "common/actionmanager/actionmanager.h"
 #include "services/window/windowservice.h"
 #include "services/terminal/terminalservice.h"
 #include "services/editor/editorservice.h"
@@ -21,6 +22,10 @@
 #include <QDebug>
 #include <QUuid>
 #include <QTextBlock>
+
+constexpr char G_ACTIONS[] { "BinaryTools.Group.Actions" };
+constexpr char G_CONFIGURE[] { "BinaryTools.Group.Configure" };
+constexpr char A_CONFIGURE[] { "BinaryTools.Action.Configure" };
 
 constexpr char GroupObject[] { "groups" };
 constexpr char ToolObject[] { "tools" };
@@ -407,32 +412,44 @@ void BinaryToolsManager::checkAndAddToToolbar(const BinaryTools &tools)
 
 void BinaryToolsManager::updateToolMenu(const BinaryTools &tools)
 {
-    if (!toolMenu)
-        return;
+    auto mBinaryTools = ActionManager::instance()->actionContainer(M_TOOLS_BINARY);
+    mBinaryTools->clear();
 
-    toolMenu->clear();
+    int idCount = 0;
     auto iter = tools.begin();
     for (; iter != tools.end(); ++iter) {
-        auto groupAct = toolMenu->addAction(iter.key());
-        auto subMenu = new QMenu(toolMenu);
-        groupAct->setMenu(subMenu);
+        auto groupId = QString(M_TOOLS_BINARY).append(".Group.%1").arg(++idCount);
+        auto mGroup = ActionManager::instance()->createContainer(groupId);
+        mGroup->menu()->setTitle(iter.key());
+        mBinaryTools->addMenu(mGroup, G_ACTIONS);
+
         for (const auto &tool : iter.value()) {
-            auto act = subMenu->addAction(QIcon::fromTheme(tool.icon), tool.name);
+            auto act = new QAction(QIcon::fromTheme(tool.icon), tool.name, mGroup);
+            auto cmd = ActionManager::instance()->registerAction(act, tool.id);
+            mGroup->addAction(cmd);
+
             connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
         }
     }
 
-    toolMenu->addSeparator();
-    auto configureAct = toolMenu->addAction(tr("Configure..."));
+    auto configureAct = new QAction(tr("Configure..."), mBinaryTools);
+    auto cmd = ActionManager::instance()->registerAction(configureAct, A_CONFIGURE);
+    mBinaryTools->addAction(cmd, G_CONFIGURE);
     connect(configureAct, &QAction::triggered, this, [=]() {
         BinaryToolsDialog dlg;
         dlg.exec();
     });
 }
 
-void BinaryToolsManager::setToolMenu(QMenu *menu)
+void BinaryToolsManager::setupToolMenu()
 {
-    toolMenu = menu;
+    auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
+    auto mBinaryTools = ActionManager::instance()->createContainer(M_TOOLS_BINARY);
+    mBinaryTools->menu()->setTitle(tr("Binary Tools"));
+    mBinaryTools->appendGroup(G_ACTIONS);
+    mBinaryTools->appendGroup(G_CONFIGURE);
+    mBinaryTools->addSeparator(G_CONFIGURE);
+    mTools->addMenu(mBinaryTools);
 }
 
 void BinaryToolsManager::installTool(const QString &id)
@@ -561,31 +578,33 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
         act->setIcon(QIcon::fromTheme(tool.icon));
         connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
 
-        auto actImpl = new AbstractAction(act, this);
-        return actImpl;
+        auto cmd = ActionManager::instance()->registerAction(act, tool.id);
+        return cmd;
     };
 
     if (!windowSrv)
         windowSrv = dpfGetService(WindowService);
 
-    if (!tool.addToToolbar && actMap.contains(tool.id)) {
-        windowSrv->removeTopToolItem(actMap[tool.id]);
-        actMap.remove(tool.id);
-    } else if (tool.addToToolbar && !actMap.contains(tool.id)) {
-        auto act = createAction(tool);
-        actMap.insert(tool.id, act);
-        windowSrv->addTopToolItemToRight(act, false, Priority::high);
-    } else if (tool.addToToolbar && actMap.contains(tool.id)) {
-        auto act = actMap[tool.id];
-        auto qAct = act->qAction();
+    if (!tool.addToToolbar && cmdMap.contains(tool.id)) {
+        windowSrv->removeTopToolItem(cmdMap[tool.id]);
+        cmdMap.remove(tool.id);
+    } else if (tool.addToToolbar && !cmdMap.contains(tool.id)) {
+        auto cmd = createAction(tool);
+        cmdMap.insert(tool.id, cmd);
+        windowSrv->addTopToolItemToRight(cmd, false, Priority::high);
+    } else if (tool.addToToolbar && cmdMap.contains(tool.id)) {
+        auto cmd = cmdMap[tool.id];
+        auto act = cmd->action();
 
-        if (tool.description != qAct->text()) {
-            qAct->setText(tool.description);
+        if (tool.description != act->text()) {
+            act->setText(tool.description);
+            cmd->setAttribute(Command::CA_UpdateText);
         }
 
-        if (tool.icon != qAct->iconText()) {
-            qAct->setIconText(tool.icon);
-            qAct->setIcon(QIcon::fromTheme(tool.icon));
+        if (tool.icon != act->iconText()) {
+            act->setIconText(tool.icon);
+            act->setIcon(QIcon::fromTheme(tool.icon));
+            cmd->setAttribute(Command::CA_UpdateIcon);
         }
     }
 }

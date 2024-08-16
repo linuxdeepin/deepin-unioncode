@@ -4,6 +4,7 @@
 
 #include "pluginmanagermodule.h"
 #include "common/actionmanager/actionmanager.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "services/window/windowelement.h"
 #include "services/window/windowservice.h"
 #include "base/abstractaction.h"
@@ -31,19 +32,19 @@ PluginManagerModule::~PluginManagerModule()
 void PluginManagerModule::initialize(Controller *_uiController)
 {
     AbstractModule::initialize(_uiController);
+    auto mHelp = ActionManager::instance()->actionContainer(M_HELP);
+    mHelp->appendGroup("Help.Group.Plugin");
+    mHelp->addSeparator("Help.Group.Plugin");
 
-    QAction *pluginManagerAction = new QAction(MWMTA_PLUGINS, this);
-    pluginManagerAction->setIcon(QIcon::fromTheme("plugins-navigation"));
-    ActionManager::getInstance()->registerAction(
-            pluginManagerAction, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
+    QAction *aboutPluginAction = new QAction(MWMTA_PLUGINS, this);
+    auto cmd = ActionManager::instance()->registerAction(aboutPluginAction, "Help.AboutPlugins");
+    mHelp->addAction(cmd, "Help.Group.Plugin");
 
-    auto actionOptionsImpl = new AbstractAction(pluginManagerAction, this);
+    QAction *navigationItemAction = new QAction(MWMTA_PLUGINS, this);
+    navigationItemAction->setIcon(QIcon::fromTheme("plugins-navigation"));
+    auto actionOptionsImpl = new AbstractAction(navigationItemAction, this);
     actionOptionsImpl->setShortCutInfo("Tools.Plugins",
                                        MWMTA_PLUGINS);
-
-    auto menuAction = new QAction(MWMTA_PLUGINS, this);
-    menuAction->setIcon(QIcon::fromTheme("plugins-navigation"));
-    uiController->addAction(MWM_HELP, new AbstractAction(menuAction));
     uiController->addNavigationItem(actionOptionsImpl, Priority::lowest);
 
     std::function<AbstractWidget*()> detailWidgetCreator = [this]()->AbstractWidget*{
@@ -65,12 +66,12 @@ void PluginManagerModule::initialize(Controller *_uiController)
     
     uiController->bindWidgetToNavigation(MWMTA_PLUGINS, actionOptionsImpl);
 
-    QObject::connect(pluginManagerAction, &QAction::triggered, this, [this]() {
+    QObject::connect(navigationItemAction, &QAction::triggered, this, [this]() {
         uiController->showWidgetAtPosition("pluginDetail", Position::Central);
         uiController->showWidgetAtPosition(MWMTA_PLUGINS, Position::Left);
         auto windowService = dpfGetService(dpfservice::WindowService);
         if (windowService)
             windowService->setDockHeaderName(MWMTA_PLUGINS, tr("Extensions"));
     });
-    QObject::connect(menuAction, &QAction::triggered, this, [this](){uiController->switchWidgetNavigation(MWM_ABOUT_PLUGINS);});
+    QObject::connect(aboutPluginAction, &QAction::triggered, this, [this](){uiController->switchWidgetNavigation(MWM_ABOUT_PLUGINS);});
 }

@@ -5,6 +5,8 @@
 #include "findtoolbar.h"
 #include "placeholdermanager.h"
 
+#include "common/actionmanager/actionmanager.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "common/find/abstractdocumentfind.h"
 #include "base/abstractaction.h"
 #include "services/window/windowservice.h"
@@ -19,6 +21,10 @@
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
+
+constexpr char M_FIND[] = "Find.FindMenu";
+constexpr char G_FIND_CURRENTDOCUMENT[] = "Find.FindMenu.CurrentDocument";
+constexpr char G_FIND_ACTIONS[]   = "Find.FindMenu.Actions";
 
 class FindToolBarPrivate
 {
@@ -103,33 +109,33 @@ void FindToolBarPrivate::initConnection()
 
 void FindToolBarPrivate::initActions()
 {
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService)
-        return;
+    auto mEdit = ActionManager::instance()->actionContainer(M_EDIT);
+    auto mFind = ActionManager::instance()->createContainer(M_FIND);
+    mFind->menu()->setTitle("&Find/Replace");
+    mFind->appendGroup(G_FIND_CURRENTDOCUMENT);
+    mFind->appendGroup(G_FIND_ACTIONS);
+    mFind->addSeparator(G_FIND_ACTIONS);
+    mEdit->addMenu(mFind, G_EDIT_FIND);
 
     QAction *findReplaceAction = new QAction(FindToolBar::tr("Find/Replace"), q);
-    auto inputFindReplaceAction = new AbstractAction(findReplaceAction, q);
-    inputFindReplaceAction->setShortCutInfo("Find.findInDocument",
-                                            FindToolBar::tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
-    windowService->addAction(FindToolBar::tr("&Find"), inputFindReplaceAction);
+    auto cmd = ActionManager::instance()->registerAction(findReplaceAction, "Find.findInDocument");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_F);
+    mFind->addAction(cmd, G_FIND_CURRENTDOCUMENT);
     q->connect(findReplaceAction, &QAction::triggered, q, [this] { q->openFindToolBar(); });
 
-    QAction *findNextAction = new QAction(FindToolBar::tr("Find/Replace"), q);
-    auto inputFindNextAction = new AbstractAction(findNextAction, q);
-    inputFindNextAction->setShortCutInfo("Find.findNext",
-                                         FindToolBar::tr("Find Next"), QKeySequence(Qt::Key_F3));
-    windowService->addAction(FindToolBar::tr("&Find"), inputFindNextAction);
+    QAction *findNextAction = new QAction(FindToolBar::tr("Find Next"), q);
+    cmd = ActionManager::instance()->registerAction(findNextAction, "Find.findNext");
+    cmd->setDefaultKeySequence(Qt::Key_F3);
+    mFind->addAction(cmd, G_FIND_ACTIONS);
     q->connect(findNextAction, &QAction::triggered, q, [this] {
         if (q->isVisible())
             q->findNext();
     });
 
-    QAction *findPreviousAction = new QAction(FindToolBar::tr("Find/Replace"), q);
-    auto inputFindPreviousAction = new AbstractAction(findPreviousAction, q);
-    inputFindPreviousAction->setShortCutInfo("Find.findPrevious",
-                                             FindToolBar::tr("Find Previous"), QKeySequence(Qt::Modifier::SHIFT | Qt::Key_F3));
-    windowService->addAction(FindToolBar::tr("&Find"), inputFindPreviousAction);
+    QAction *findPreviousAction = new QAction(FindToolBar::tr("Find Previous"), q);
+    cmd = ActionManager::instance()->registerAction(findPreviousAction, "Find.findPrevious");
+    cmd->setDefaultKeySequence(Qt::SHIFT | Qt::Key_F3);
+    mFind->addAction(cmd, G_FIND_ACTIONS);
     q->connect(findPreviousAction, &QAction::triggered, q, [this] {
         if (q->isVisible())
             q->findPrevious();

@@ -17,9 +17,6 @@ public:
     virtual void initialize() override;
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
-
-private:
-    QMenu *toolMenu { nullptr };
 };
 
 #endif   // BINARYTOOLS_H

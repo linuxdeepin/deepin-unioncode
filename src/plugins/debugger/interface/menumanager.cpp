@@ -8,6 +8,7 @@
 #include "debuggerglobals.h"
 #include "base/abstractmenu.h"
 #include "common/common.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "common/widget/appoutputpane.h"
 #include "services/window/windowservice.h"
 #include "remotedebug/remotedebugdlg.h"
@@ -26,19 +27,22 @@ void MenuManager::initialize(WindowService *windowService)
         return;
 
     auto initAction = [&](QAction *action, const QString &id, const QString &description,
-                          QKeySequence key, const QString &iconName) -> AbstractAction * {
+                          QKeySequence key, const QString &iconName = {}) -> Command * {
         action->setIcon(QIcon::fromTheme(iconName));
-        auto actionImpl = new AbstractAction(action, this);
-        actionImpl->setShortCutInfo(id, description, key);
-        return actionImpl;
+        auto cmd = ActionManager::instance()->registerAction(action, id);
+        cmd->setDefaultKeySequence(key);
+        cmd->setDescription(description);
+        return cmd;
     };
+
+    auto mDebug = ActionManager::instance()->actionContainer(M_DEBUG);
 
     startDebugging.reset(new QAction(MWMDA_START_DEBUG));
     connect(startDebugging.get(), &QAction::triggered, debugManager, &DebugManager::run);
     auto actionImpl = initAction(startDebugging.get(), "Debug.Start.Debugging",
                                  MWMDA_START_DEBUG, QKeySequence(Qt::Key::Key_F5),
                                  "debugger_start");
-    windowService->addAction(MWM_DEBUG, actionImpl);
+    mDebug->addAction(actionImpl);
     windowService->addTopToolItem(actionImpl, false, Priority::medium);
 #if 0   // not used yet.
     detachDebugger.reset(new QAction("Detach Debugger"));
@@ -56,8 +60,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(interrupt.get(), "Debug.Interrupt",
                             MWMDA_INTERRUPT, QKeySequence(Qt::Key::Key_F5),
                             "debugger_interrupt");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), true);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), true);
 
     continueDebugging.reset(new QAction(MWMDA_CONTINUE));
     continueDebugging->setEnabled(false);
@@ -65,8 +69,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(continueDebugging.get(), "Debug.Continue",
                             MWMDA_CONTINUE, QKeySequence(Qt::Key::Key_F5),
                             "debugger_continue");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), false);
 
     abortDebugging.reset(new QAction(MWMDA_ABORT_DEBUGGING));
     abortDebugging->setEnabled(false);
@@ -74,8 +78,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(abortDebugging.get(), "Debug.Abort.Debugging",
                             MWMDA_ABORT_DEBUGGING, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F5),
                             "debugger_stop");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), false);
 
     restartDebugging.reset(new QAction(MWMDA_RESTART_DEBUGGING));
     restartDebugging->setEnabled(false);
@@ -83,8 +87,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(restartDebugging.get(), "Debug.Restart.Debugging",
                             MWMDA_RESTART_DEBUGGING, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_B),
                             "restart_debug");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), false);
 
     stepOver.reset(new QAction(MWMDA_STEP_OVER));
     stepOver->setEnabled(false);
@@ -92,8 +96,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(stepOver.get(), "Debug.Step.Over",
                             MWMDA_STEP_OVER, QKeySequence(Qt::Key::Key_F10),
                             "debugger_stepover");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), true);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), true);
 
     stepIn.reset(new QAction(MWMDA_STEP_IN));
     stepIn->setEnabled(false);
@@ -101,8 +105,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(stepIn.get(), "Debug.Step.In",
                             MWMDA_STEP_IN, QKeySequence(Qt::Key::Key_F11),
                             "debugger_stepinto");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), false);
 
     stepOut.reset(new QAction(MWMDA_STEP_OUT));
     stepOut->setEnabled(false);
@@ -110,8 +114,8 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(stepOut.get(), "Debug.Step.Out",
                             MWMDA_STEP_OUT, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11),
                             "debugger_stepout");
-    windowService->addAction(MWM_DEBUG, actionImpl);
-    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
+    mDebug->addAction(actionImpl);
+    appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->action(), false);
 
     remoteDebug.reset(new QAction(MWMDA_REMOTE_DEBUG));
     connect(remoteDebug.get(), &QAction::triggered, debugManager, [=]() {
@@ -122,14 +126,14 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(remoteDebug.get(), "Debug.Remote.Debug",
                             MWMDA_REMOTE_DEBUG, QKeySequence(),
                             "debugger_remotedebug");
-    windowService->addAction(MWM_DEBUG, actionImpl);
+    mDebug->addAction(actionImpl);
 
     attachDebugging.reset(new QAction(MWMDA_ATTACH_DEBUG));
     connect(attachDebugging.get(), &QAction::triggered, debugManager, &DebugManager::attachDebug);
     actionImpl = initAction(attachDebugging.get(), "Debug.Attach.Debugging",
                             MWMDA_ATTACH_DEBUG, QKeySequence(),
                             "debugger_start");
-    windowService->addAction(MWM_DEBUG, actionImpl);
+    mDebug->addAction(actionImpl);
 }
 
 void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
