@@ -12,6 +12,15 @@
 
 #include <QMenu>
 
+constexpr char M_GIT[] { "Git.Menu" };
+constexpr char M_GIT_FILE[] { "Git.Menu.File" };
+constexpr char M_GIT_PROJECT[] { "Git.Menu.Project" };
+constexpr char A_GIT_LOG_FILE[] { "Git.Action.File.Log" };
+constexpr char A_GIT_BLAME_FILE[] { "Git.Action.File.Blame" };
+constexpr char A_GIT_DIFF_FILE[] { "Git.Action.File.Diff" };
+constexpr char A_GIT_LOG_PROJECT[] { "Git.Action.Project.Log" };
+constexpr char A_GIT_DIFF_PROJECT[] { "Git.Action.Project.Diff" };
+
 using namespace dpfservice;
 
 GitMenuManager::GitMenuManager(QObject *parent)
@@ -19,10 +28,10 @@ GitMenuManager::GitMenuManager(QObject *parent)
 {
 }
 
-void GitMenuManager::actionHandler(QAction *act, GitType type)
+void GitMenuManager::actionHandler(Command *cmd, GitType type)
 {
-    const auto &filePath = act->property(GitFilePath).toString();
-    bool isProject = act->property(GitIsProject).toBool();
+    const auto &filePath = cmd->property(GitFilePath).toString();
+    bool isProject = cmd->property(GitIsProject).toBool();
     bool ret = false;
     switch (type) {
     case GitLog:
@@ -51,36 +60,35 @@ GitMenuManager *GitMenuManager::instance()
     return &ins;
 }
 
-void GitMenuManager::initialize(dpfservice::WindowService *service)
+void GitMenuManager::initialize()
 {
-    if (!service)
-        return;
-
-    winSrv = service;
-    gitAct = new QAction("&Git", this);
-    auto gitActImpl = new AbstractAction(gitAct, this);
-    service->addAction(MWM_TOOLS, gitActImpl);
+    auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
+    auto mGit = ActionManager::instance()->createContainer(M_GIT);
+    mGit->menu()->setTitle("&Git");
+    mTools->addMenu(mGit);
 
     createGitSubMenu();
-    gitAct->setMenu(&gitSubMenu);
 }
 
 void GitMenuManager::setupProjectMenu()
 {
+    auto mCurProject = ActionManager::instance()->actionContainer(M_GIT_PROJECT);
     auto activeProjInfo = dpfGetService(dpfservice::ProjectService)->getActiveProjectInfo();
     if (!activeProjInfo.isVaild() || !GitClient::instance()->checkRepositoryExist(activeProjInfo.workspaceFolder())) {
-        curProjectAct->setEnabled(false);
+        mCurProject->containerAction()->setEnabled(false);
         return;
     }
 
+    mCurProject->containerAction()->setEnabled(true);
     QFileInfo info(activeProjInfo.workspaceFolder());
 
-    curProjectAct->setEnabled(true);
+    auto projectLogAct = ActionManager::instance()->command(A_GIT_LOG_PROJECT);
     projectLogAct->setProperty(GitFilePath, activeProjInfo.workspaceFolder());
-    projectLogAct->setText(tr("Log of \"%1\"").arg(info.fileName()));
+    projectLogAct->action()->setText(tr("Log of \"%1\"").arg(info.fileName()));
 
+    auto projectDiffAct = ActionManager::instance()->command(A_GIT_DIFF_PROJECT);
     projectDiffAct->setProperty(GitFilePath, activeProjInfo.workspaceFolder());
-    projectDiffAct->setText(tr("Diff of \"%1\"").arg(info.fileName()));
+    projectDiffAct->action()->setText(tr("Diff of \"%1\"").arg(info.fileName()));
 }
 
 void GitMenuManager::setupFileMenu(const QString &filePath)
@@ -93,78 +101,89 @@ void GitMenuManager::setupFileMenu(const QString &filePath)
         file = editSrv->currentFile();
     }
 
+    auto mCurFile = ActionManager::instance()->actionContainer(M_GIT_FILE);
     if (file.isEmpty() || !GitClient::instance()->checkRepositoryExist(file)) {
-        curFileAct->setEnabled(false);
+        mCurFile->containerAction()->setEnabled(false);
         return;
     }
 
-    curFileAct->setEnabled(true);
+    mCurFile->containerAction()->setEnabled(true);
     QFileInfo info(file);
 
+    auto fileLogAct = ActionManager::instance()->command(A_GIT_LOG_FILE);
     fileLogAct->setProperty(GitFilePath, file);
-    fileLogAct->setText(tr("Log of \"%1\"").arg(info.fileName()));
+    fileLogAct->action()->setText(tr("Log of \"%1\"").arg(info.fileName()));
 
+    auto fileBlameAct = ActionManager::instance()->command(A_GIT_BLAME_FILE);
     fileBlameAct->setProperty(GitFilePath, file);
-    fileBlameAct->setText(tr("Blame of \"%1\"").arg(info.fileName()));
+    fileBlameAct->action()->setText(tr("Blame of \"%1\"").arg(info.fileName()));
 
+    auto fileDiffAct = ActionManager::instance()->command(A_GIT_DIFF_FILE);
     fileDiffAct->setProperty(GitFilePath, file);
-    fileDiffAct->setText(tr("Diff of \"%1\"").arg(info.fileName()));
+    fileDiffAct->action()->setText(tr("Diff of \"%1\"").arg(info.fileName()));
 }
 
 QAction *GitMenuManager::gitAction() const
 {
-    return gitAct;
+    auto mGit = ActionManager::instance()->actionContainer(M_GIT);
+    return mGit->containerAction();
 }
 
 void GitMenuManager::createGitSubMenu()
 {
-    curFileAct = gitSubMenu.addAction(tr("Current File"));
-    curFileAct->setEnabled(false);
-    curFileAct->setMenu(&fileSubMenu);
+    auto mGit = ActionManager::instance()->actionContainer(M_GIT);
+    auto mCurFile = ActionManager::instance()->createContainer(M_GIT_FILE);
+    mCurFile->menu()->setTitle(tr("Current File"));
+    mCurFile->containerAction()->setEnabled(false);
+    mGit->addMenu(mCurFile);
     createFileSubMenu();
 
-    curProjectAct = gitSubMenu.addAction(tr("Current Project"));
-    curProjectAct->setEnabled(false);
-    curProjectAct->setMenu(&projectSubMenu);
+    auto mCurProject = ActionManager::instance()->createContainer(M_GIT_PROJECT);
+    mCurProject->menu()->setTitle(tr("Current Project"));
+    mCurProject->containerAction()->setEnabled(false);
+    mGit->addMenu(mCurProject);
     createProjectSubMenu();
 }
 
 void GitMenuManager::createFileSubMenu()
 {
-    fileLogAct = new QAction(this);
-    connect(fileLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileLogAct, GitLog));
-    registerShortcut(fileLogAct, "Git.log", tr("Git Log"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_L));
+    auto mCurFile = ActionManager::instance()->actionContainer(M_GIT_FILE);
+    auto fileLogAct = new QAction(this);
+    auto cmd = registerShortcut(fileLogAct, A_GIT_LOG_FILE, tr("Git Log"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_L));
+    mCurFile->addAction(cmd);
+    connect(fileLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitLog));
 
-    fileBlameAct = new QAction(this);
-    connect(fileBlameAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileBlameAct, GitBlame));
-    registerShortcut(fileBlameAct, "Git.blame", tr("Git Blame"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_B));
+    auto fileBlameAct = new QAction(this);
+    cmd = registerShortcut(fileBlameAct, A_GIT_BLAME_FILE, tr("Git Blame"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_B));
+    mCurFile->addAction(cmd);
+    connect(fileBlameAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitBlame));
 
-    fileDiffAct = new QAction(this);
-    connect(fileDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileDiffAct, GitDiff));
-    registerShortcut(fileDiffAct, "Git.diff", tr("Git Diff"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_D));
-
-    fileSubMenu.addAction(fileLogAct);
-    fileSubMenu.addAction(fileBlameAct);
-    fileSubMenu.addAction(fileDiffAct);
+    auto fileDiffAct = new QAction(this);
+    cmd = registerShortcut(fileDiffAct, A_GIT_DIFF_FILE, tr("Git Diff"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_D));
+    mCurFile->addAction(cmd);
+    connect(fileDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitDiff));
 }
 
 void GitMenuManager::createProjectSubMenu()
 {
-    projectLogAct = new QAction(this);
-    projectLogAct->setProperty(GitIsProject, true);
-    connect(projectLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, projectLogAct, GitLog));
+    auto mCurProject = ActionManager::instance()->actionContainer(M_GIT_PROJECT);
+    auto projectLogAct = new QAction(this);
+    auto cmd = ActionManager::instance()->registerAction(projectLogAct, A_GIT_LOG_PROJECT);
+    cmd->setProperty(GitIsProject, true);
+    mCurProject->addAction(cmd);
+    connect(projectLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitLog));
 
-    projectDiffAct = new QAction(this);
-    projectDiffAct->setProperty(GitIsProject, true);
-    connect(projectDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, projectDiffAct, GitDiff));
-
-    projectSubMenu.addAction(projectLogAct);
-    projectSubMenu.addAction(projectDiffAct);
+    auto projectDiffAct = new QAction(this);
+    cmd = ActionManager::instance()->registerAction(projectDiffAct, A_GIT_DIFF_PROJECT);
+    cmd->setProperty(GitIsProject, true);
+    mCurProject->addAction(cmd);
+    connect(projectDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitDiff));
 }
 
-void GitMenuManager::registerShortcut(QAction *act, const QString &id, const QString &description, const QKeySequence &shortCut)
+Command *GitMenuManager::registerShortcut(QAction *act, const QString &id, const QString &description, const QKeySequence &shortCut)
 {
-    auto actImpl = new AbstractAction(act, qApp);
-    actImpl->setShortCutInfo(id, description, shortCut);
-    winSrv->addAction(tr("&Git"), actImpl);
+    auto cmd = ActionManager::instance()->registerAction(act, id);
+    cmd->setDefaultKeySequence(shortCut);
+    cmd->setDescription(description);
+    return cmd;
 }

@@ -55,31 +55,30 @@ bool OptionCore::start()
         optionService->showOptionDialog = std::bind(&OptionsDialog::showAtItem, OptionDefaultKeeper::getOptionDialog(), _1);
     }
 
-    if (windowService && windowService->addAction) {
+    if (windowService) {
+        auto mTool = ActionManager::instance()->actionContainer(M_TOOLS);
+
         auto actionOptions = new QAction(MWMTA_OPTIONS, this);
         actionOptions->setIcon(QIcon::fromTheme("options_setting"));
-        auto actionOptionsImpl = new AbstractAction(actionOptions, this);
-        actionOptionsImpl->setShortCutInfo("Tools.Options",
-                                           MWMTA_OPTIONS,
-                                           QKeySequence(Qt::Modifier::CTRL |
-                                                        Qt::Modifier::SHIFT |
-                                                        Qt::Key::Key_H));
+        auto cmd = ActionManager::instance()->registerAction(actionOptions, "Tools.Options");
+        cmd->setDefaultKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_H);
+        mTool->addAction(cmd);
 
-        windowService->addAction(MWM_TOOLS, actionOptionsImpl);
+        auto actionOptionsImpl = new AbstractAction(actionOptions, this);
         windowService->addNavigationItemToBottom(actionOptionsImpl, Priority::lowest);
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
     }
 
     DPF_USE_NAMESPACE
-    QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=](){
+    QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=]() {
         if (optionDialog) {
             auto groups = optionService->generatorGroups();
             if (groups.isEmpty())
                 return;
 
             //raise general and language group
-            auto raiseGroupPriority= [=](QStringList &groupList, const QString &groupName){
+            auto raiseGroupPriority = [=](QStringList &groupList, const QString &groupName) {
                 if (groupList.contains(groupName)) {
                     groupList.removeOne(groupName);
                     groupList.insert(0, groupName);
@@ -95,7 +94,7 @@ bool OptionCore::start()
                 for (auto name : generatorNames) {
                     auto generator = optionService->createGenerator<OptionGenerator>(name);
                     if (generator) {
-                        PageWidget *optionWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
+                        PageWidget *optionWidget = dynamic_cast<PageWidget *>(generator->optionWidget());
                         if (optionWidget) {
                             optionDialog->insertOptionPanel(name, optionWidget);
                             optionWidget->readConfig();

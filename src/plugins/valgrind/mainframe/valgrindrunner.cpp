@@ -43,23 +43,15 @@ ValgrindRunner::ValgrindRunner(QObject *parent)
 
 void ValgrindRunner::initialize()
 {
-    auto &ctx = dpfInstance.serviceContext();
-    auto windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService)
-        return;
+    auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
 
     d->memcheckAction.reset(new QAction(MWMTA_VALGRIND_MEMCHECK, this));
-    auto memcheckActionImpl = new AbstractAction(d->memcheckAction.get(), this);
-    memcheckActionImpl->setShortCutInfo("Analyze.ValgrindMemcheck",
-                                        d->memcheckAction->text());
-    windowService->addAction(MWM_TOOLS, memcheckActionImpl);
+    auto cmd = ActionManager::instance()->registerAction(d->memcheckAction.get(), "Analyze.ValgrindMemcheck");
+    mTools->addAction(cmd);
 
     d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND, this));
-    auto helgrindActionImpl = new AbstractAction(d->helgrindAction.get(), this);
-    helgrindActionImpl->setShortCutInfo("Analyze.ValgrindHelgrind",
-                                        d->helgrindAction->text());
-
-    windowService->addAction(MWM_TOOLS, helgrindActionImpl);
+    cmd = ActionManager::instance()->registerAction(d->helgrindAction.get(), "Analyze.ValgrindHelgrind");
+    mTools->addAction(cmd);
 
     QObject::connect(d->memcheckAction.get(), &QAction::triggered, this, [=]() {
         QtConcurrent::run([=]() {

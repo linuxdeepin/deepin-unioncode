@@ -9,8 +9,11 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "common/actionmanager/actionmanager.h"
+#include "common/actionmanager/actioncontainer.h"
 
 #include <QMenu>
+
+constexpr char A_CODE_PORTING[] = "CodePorting.Base";
 
 using namespace dpfservice;
 
@@ -28,12 +31,12 @@ bool CodePortingPlugin::start()
     }
 
     // Add code porting item in tool menu.
-    QAction *action = new QAction(tr("Code Porting"));
-    auto inputAction = new AbstractAction(action, this);
-    inputAction->setShortCutInfo("Tool.CodePorting", action->text(),QKeySequence());
-    connect(action, &QAction::triggered, CodePortingManager::instance(), &CodePortingManager::slotShowConfigWidget);
+    auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
 
-    windowService->addAction(MWM_TOOLS, inputAction);
+    QAction *action = new QAction(tr("Code Porting"), mTools);
+    auto cmd = ActionManager::instance()->registerAction(action, A_CODE_PORTING);
+    mTools->addAction(cmd);
+    connect(action, &QAction::triggered, CodePortingManager::instance(), &CodePortingManager::slotShowConfigWidget);
 
     return true;
 }

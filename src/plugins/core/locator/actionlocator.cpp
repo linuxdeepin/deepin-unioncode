@@ -20,14 +20,13 @@ void ActionLocator::prepareSearch(const QString &searchText)
 {
     Q_UNUSED(searchText)
 
-    commandList = ActionManager::getInstance()->commands();
+    commandList = ActionManager::instance()->commandList();
 
     foreach (auto command, commandList) {
-        auto action = dynamic_cast<Action *>(command);
         baseLocatorItem item(this);
-        item.id = action->id();
-        item.displayName = action->description();
-        item.extraInfo = action->keySequence().toString();
+        item.id = command->id();
+        item.displayName = command->description();
+        item.extraInfo = command->keySequence().toString();
 
         locatorList.append(item);
     }

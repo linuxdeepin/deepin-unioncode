@@ -22,7 +22,6 @@ namespace utils {
         QString toolTipStr = action->text();
         if (!action->shortcut().isEmpty()) {
             toolTipStr = toolTipStr + " " + action->shortcut().toString();
-            iconBtn->setShortcut(action->shortcut());
         }
 
         if (!toolTipStr.isEmpty())
@@ -32,8 +31,6 @@ namespace utils {
         QObject::connect(action, &QAction::changed, iconBtn, [=] {
             QString toolTipStr = action->text() + " " + action->shortcut().toString();
             iconBtn->setToolTip(toolTipStr);
-            iconBtn->setShortcut(action->shortcut());
-
             iconBtn->setIcon(action->icon());
             iconBtn->setEnabled(action->isEnabled());
         });

@@ -8,9 +8,13 @@
 #include "services/window/windowservice.h"
 #include "common/util/eventdefinitions.h"
 #include "common/actionmanager/actionmanager.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "reversedebuggermgr.h"
 
 #include <DMenu>
+
+constexpr char A_REVERSE_DEBUG_RECORD[] = "ReverseDebug.Action.Record";
+constexpr char A_REVERSE_DEBUG_REPLAY[] = "ReverseDebug.Action.Replay";
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -29,24 +33,20 @@ bool ReverseDebugPlugin::start()
         abort();
     }
 
-    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
-        action->setIcon(QIcon::fromTheme(iconFileName));
-        AbstractAction *actionImpl = new AbstractAction(action, this);
-        actionImpl->setShortCutInfo(actionID, action->text(), key);
+    auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
+    auto mReverseDbg = ActionManager::instance()->createContainer(M_TOOLS_REVERSEDEBUG);
+    mReverseDbg->menu()->setTitle(tr("Reverse debug"));
+    mTools->addMenu(mReverseDbg);
 
-        windowService->addAction(dpfservice::MWM_TOOLS, actionImpl);
+    auto actionInit = [&](QAction *action, QString actionID) {
+        auto cmd = ActionManager::instance()->registerAction(action, actionID);
+        mReverseDbg->addAction(cmd);
     };
 
-    auto reverseDbgAction = new QAction(tr("Reverse debug"), this);
-    DMenu *menu = new DMenu();
-    reverseDbgAction->setMenu(menu);
-    actionInit(reverseDbgAction, "Tool.Reverse", {}, "");
-
-    auto recoredAction = new QAction(tr("Record"), this);
-    auto replayAction = new QAction(tr("Replay"), this);
-
-    menu->addAction(recoredAction);
-    menu->addAction(replayAction);
+    auto recoredAction = new QAction(tr("Record"), mReverseDbg);
+    actionInit(recoredAction, A_REVERSE_DEBUG_RECORD);
+    auto replayAction = new QAction(tr("Replay"), mReverseDbg);
+    actionInit(replayAction, A_REVERSE_DEBUG_REPLAY);
 
     reverseDebug = new ReverseDebuggerMgr(this);
     connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);

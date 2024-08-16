@@ -9,11 +9,15 @@
 #include "gui/advancedsearchwidget.h"
 
 #include "common/common.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
 
 #include <DMenu>
 #include <QAction>
+
+constexpr char M_FIND[] = "Find.FindMenu";
+
 
 using namespace dpfservice;
 
@@ -47,10 +51,13 @@ void FindPlugin::switchToSearch()
 
 void FindPlugin::registerShortcut()
 {
-    QAction *advancedFindAction = new QAction(this);
-    auto advancedFindActionImpl = new AbstractAction(advancedFindAction);
-    advancedFindActionImpl->setShortCutInfo("Edit.Advanced.Find",
-                                            tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F));
+    auto mFind = ActionManager::instance()->actionContainer(M_FIND);
+    mFind->insertGroup("Find.FindMenu.Actions", "Find.FindMenu.Advanced");
+
+    QAction *advancedFindAction = new QAction(tr("Advanced Find"), mFind);
+    auto cmd = ActionManager::instance()->registerAction(advancedFindAction, "Find.AdvancedFind");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
+    mFind->addAction(cmd, "Find.FindMenu.Advanced");
     connect(advancedFindAction, &QAction::triggered, qApp, [=] {
         auto editSrv = dpfGetService(EditorService);
         const auto &selectedText = editSrv->getSelectedText();
@@ -58,7 +65,6 @@ void FindPlugin::registerShortcut()
             advSearchWidget->setSearchText(selectedText);
         windowService->switchWidgetNavigation(MWNA_ADVANCEDSEARCH);
     });
-    windowService->addAction("&Edit", advancedFindActionImpl);
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()

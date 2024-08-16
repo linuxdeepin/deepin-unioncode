@@ -30,7 +30,7 @@ add_library(
     SHARED
     ${COMMON_FILES}
     resource/common.qrc
-    )
+)
     
 target_include_directories(${PROJECT_NAME}
     PUBLIC

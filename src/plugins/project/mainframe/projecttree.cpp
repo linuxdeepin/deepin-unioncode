@@ -217,7 +217,7 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
     if (rootItem == item) {
         menu = rootMenu(rootItem);
         // add action that running.
-        auto runCommand = ActionManager::getInstance()->command("Debug.Running");
+        auto runCommand = ActionManager::instance()->command("Debug.Running");
         if (runCommand && runCommand->action()) {
             menu->addSeparator();
             menu->addAction(runCommand->action());

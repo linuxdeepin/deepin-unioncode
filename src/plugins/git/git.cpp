@@ -46,6 +46,6 @@ void Git::initWindowService()
     if (!windowService)
         return;
 
-    GitMenuManager::instance()->initialize(windowService);
+    GitMenuManager::instance()->initialize();
     windowService->addStatusBarItem(GitClient::instance()->instantBlameWidget());
 }

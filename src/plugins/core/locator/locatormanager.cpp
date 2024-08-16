@@ -180,7 +180,7 @@ void LocatorManager::registerLocator(abstractLocator *locator)
 {
     if (!locator || locatorList.contains(locator))
         return;
-    if(!locator->getShortCut().isEmpty())
+    if (!locator->getShortCut().isEmpty())
         setShortCutForLocator(locator, locator->getShortCut());
 
     locatorList.append(locator);
@@ -282,46 +282,34 @@ void LocatorManager::showSpinner()
 
 void LocatorManager::initShortCut()
 {
-    shortCut = new QShortcut(inputEdit);
-    shortCut->setKey(Qt::Modifier::CTRL | Qt::Key::Key_K);
-    connect(shortCut, &QShortcut::activated, inputEdit, [=]() {
+    QAction *action = new QAction(tr("Enter Command"), this);
+    auto cmd = ActionManager::instance()->registerAction(action, "locator.EnterCommand");
+    cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key::Key_K);
+    connect(action, &QAction::triggered, inputEdit, [=]() {
         inputEdit->setFocus();
         inputEdit->lineEdit()->selectAll();
     });
 
-    QAction *action = new QAction(this);
-    action->setShortcut(shortCut->key());
-    ActionManager::getInstance()->registerAction(action, "locator.EnterCommand", tr("Enter command"), shortCut->key());
-
-    inputEdit->setPlaceHolder(tr("Enter command %1").arg(shortCut->key().toString()));
-    connect(action, &QAction::changed, shortCut, [=]() {
-        if (action->shortcut() != shortCut->key()) {
-            shortCut->setKey(action->shortcut());
-            inputEdit->setPlaceHolder(tr("Enter command %1").arg(shortCut->key().toString()));
-        }
+    inputEdit->setPlaceHolder(tr("Enter command %1").arg(cmd->keySequence().toString()));
+    connect(cmd, &Command::keySequenceChanged, this, [=]() {
+        inputEdit->setPlaceHolder(tr("Enter command %1").arg(cmd->keySequence().toString()));
     });
 }
 
 void LocatorManager::setShortCutForLocator(abstractLocator *locator, const QKeySequence &key)
 {
-    if(key.isEmpty())
+    if (key.isEmpty())
         return;
 
-    QShortcut *shortCut = new QShortcut(this->inputEdit);
-    shortCut->setKey(key);
-    connect(shortCut, &QShortcut::activated, inputEdit, [=]() {
-        inputEdit->setFocus();
-        inputEdit->setText(locator->getDisplayName() + " ");
-    });
-
     QAction *action = new QAction(this);
-    action->setShortcut(shortCut->key());
     QString id = QString("locator.EnterCommand.%1").arg(locator->getDisplayName());
     QString description = locator->getDescription();
-    ActionManager::getInstance()->registerAction(action, id, description, shortCut->key());
 
-    connect(action, &QAction::changed, shortCut, [=]() {
-        if (action->shortcut() != shortCut->key())
-            shortCut->setKey(action->shortcut());
+    auto cmd = ActionManager::instance()->registerAction(action, id);
+    cmd->setDescription(description);
+    cmd->setDefaultKeySequence(key);
+    connect(action, &QAction::triggered, inputEdit, [=]() {
+        inputEdit->setFocus();
+        inputEdit->setText(locator->getDisplayName() + " ");
     });
 }

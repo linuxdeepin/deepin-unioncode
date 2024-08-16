@@ -7,12 +7,13 @@
 
 #include <QAction>
 
+class Command;
 class EditorUtils : public QObject
 {
     Q_OBJECT
 public:
     static int nbDigitsFromNbLines(long nbLines);
-    static void registerShortcut(QAction *act, const QString &id, const QKeySequence &shortCut);
+    static Command *registerShortcut(QAction *act, const QString &id, const QKeySequence &shortCut);
 };
 
 #endif   // EDITORUTILS_H

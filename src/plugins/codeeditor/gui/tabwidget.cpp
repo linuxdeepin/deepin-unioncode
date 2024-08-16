@@ -194,7 +194,7 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setSpacing(10);
     auto addCommandLine = [this, gridLayout](const QString &id) {
-        auto cmd = ActionManager::getInstance()->command(id);
+        auto cmd = ActionManager::instance()->command(id);
         if (!cmd || !cmd->action())
             return;
 
@@ -203,7 +203,7 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
         gridLayout->addWidget(new KeyLabel(cmd->keySequence().toString(), q), row, 1, Qt::AlignLeft);
     };
 
-    addCommandLine("File.Open.File");
+    addCommandLine(A_OPEN_FILE);
     addCommandLine("Find.findInDocument");
     addCommandLine("Editor.close");
     addCommandLine("locator.EnterCommand");

@@ -15,14 +15,14 @@ namespace dpfservice {
 class WindowService;
 class EditorService;
 }
-
+class Command;
 class GitMenuManager : public QObject
 {
     Q_OBJECT
 public:
     static GitMenuManager *instance();
 
-    void initialize(dpfservice::WindowService *service);
+    void initialize();
     void setupProjectMenu();
     void setupFileMenu(const QString &filePath = QString());
     QAction *gitAction() const;
@@ -30,29 +30,14 @@ public:
 private:
     explicit GitMenuManager(QObject *parent = nullptr);
 
-    void actionHandler(QAction *act, GitType type);
+    void actionHandler(Command *cmd, GitType type);
     void createGitSubMenu();
     void createFileSubMenu();
     void createProjectSubMenu();
-    void registerShortcut(QAction *act, const QString &id, const QString &description, const QKeySequence &shortCut);
+    Command *registerShortcut(QAction *act, const QString &id, const QString &description, const QKeySequence &shortCut);
 
 private:
     dpfservice::EditorService *editSrv { nullptr };
-    dpfservice::WindowService *winSrv { nullptr };
-
-    QMenu gitSubMenu;
-    QMenu fileSubMenu;
-    QMenu projectSubMenu;
-
-    QAction *gitAct { nullptr };
-    QAction *curFileAct { nullptr };
-    QAction *fileLogAct { nullptr };
-    QAction *fileBlameAct { nullptr };
-    QAction *fileDiffAct { nullptr };
-
-    QAction *curProjectAct { nullptr };
-    QAction *projectLogAct { nullptr };
-    QAction *projectDiffAct { nullptr };
 };
 
 #endif   // GITMENUMANAGER_H

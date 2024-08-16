@@ -8,6 +8,7 @@
 #include "common/util/commandparser.h"
 #include "common/project/projectinfo.h"
 #include "common/find/outputdocumentfind.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "problemoutputpane.h"
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
@@ -37,13 +38,12 @@ class BuildManagerPrivate
 {
     friend class BuildManager;
 
-    QAction* buildCancelAction;
-    QAction* buildActionNoIcon;
-    QAction* rebuildAction;
-    QAction* cleanAction;
-    QAction* cancelAction;
-    QAction* cancelActionNoIcon;
+    QAction *buildAction;
+    QAction *rebuildAction;
+    QAction *cleanAction;
+    QAction *cancelAction;
 
+    DToolButton *buildCancelBtn = nullptr;
     CompileOutputPane *compileOutputPane = nullptr;
     ProblemOutputPane *problemOutputPane = nullptr;
     DWidget *issuesWidget = nullptr;
@@ -60,7 +60,6 @@ class BuildManagerPrivate
     QFuture<void> buildThread;
 
     BuildState currentState = BuildState::kNoBuild;
-
 };
 
 BuildManager *BuildManager::instance()
@@ -70,8 +69,7 @@ BuildManager *BuildManager::instance()
 }
 
 BuildManager::BuildManager(QObject *parent)
-    : QObject(parent)
-    , d(new BuildManagerPrivate())
+    : QObject(parent), d(new BuildManagerPrivate())
 {
     addMenu();
     initCompileWidget();
@@ -104,57 +102,46 @@ void BuildManager::addMenu()
     if (!windowService)
         return;
 
-    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName)
-            -> AbstractAction* {
-        action->setIcon(QIcon::fromTheme(iconFileName));
-        auto inputAction = new AbstractAction(action, this);
-        inputAction->setShortCutInfo(actionID, action->text(), key);
-        return inputAction;
+    auto actionInit = [&](QAction *action, const QString &actionID,
+                          const QKeySequence &key,
+                          const QString &iconFileName = {})
+            -> Command * {
+        if (!iconFileName.isEmpty())
+            action->setIcon(QIcon::fromTheme(iconFileName));
+        auto cmd = ActionManager::instance()->registerAction(action, actionID);
+        if (!key.isEmpty())
+            cmd->setDefaultKeySequence(key);
+        return cmd;
     };
 
-    d->buildCancelAction = new QAction(MWMBA_BUILD, this);
-    windowService->addTopToolItem(actionInit(d->buildCancelAction, "Build.Build",
-                                QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-                                "build"), true, Priority::low);
-
-    d->cancelActionNoIcon = new QAction(MWMBA_CANCEL, this);
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon, "Build.Cancel",
-                                                               QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-                                                               ""));
-
-    d->buildActionNoIcon = new QAction(MWMBA_BUILD, this);
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->buildActionNoIcon, "Build.Build",
-                                                               QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-                                                               ""));
+    auto mBuild = ActionManager::instance()->actionContainer(M_BUILD);
+    d->buildAction = new QAction(MWMBA_BUILD, this);
+    auto cmd = actionInit(d->buildAction, "Build.Build",
+                          QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                          "build");
+    mBuild->addAction(cmd);
+    d->buildCancelBtn = windowService->addTopToolItem(cmd, true, Priority::low);
 
     d->cancelAction = new QAction(MWMBA_CANCEL, this);
     d->cancelAction->setIcon(QIcon::fromTheme("cancel"));
-    ActionManager::getInstance()->registerAction(d->cancelAction, "Build.Cancel", MWMBA_CANCEL,
-                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace));
+    cmd = actionInit(d->cancelAction, "Build.Cancel", QKeySequence(Qt::ALT | Qt::Key_Backspace));
+    mBuild->addAction(cmd);
 
     d->rebuildAction = new QAction(MWMBA_REBUILD, this);
     d->rebuildAction->setIcon(QIcon::fromTheme("rebuild"));
-    ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Rebuild", MWMBA_REBUILD,
-                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
-
+    actionInit(d->rebuildAction, "Build.Rebuild", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_B));
 
     d->cleanAction = new QAction(MWMBA_CLEAN, this);
     d->cleanAction->setIcon(QIcon::fromTheme("clearall"));
-    ActionManager::getInstance()->registerAction(d->cleanAction, "Build.Clean", MWMBA_CLEAN,
-                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
+    actionInit(d->cleanAction, "Build.Clean", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_C));
 
-
-    QObject::connect(d->buildCancelAction, &QAction::triggered,
+    QObject::connect(d->buildAction, &QAction::triggered,
                      this, &BuildManager::buildCancelProject, Qt::DirectConnection);
-    QObject::connect(d->buildActionNoIcon, &QAction::triggered,
-                     this, &BuildManager::buildProject, Qt::DirectConnection);
     QObject::connect(d->rebuildAction, &QAction::triggered,
                      this, &BuildManager::rebuildProject, Qt::DirectConnection);
     QObject::connect(d->cleanAction, &QAction::triggered,
                      this, &BuildManager::cleanProject, Qt::DirectConnection);
     QObject::connect(d->cancelAction, &QAction::triggered,
-                     this, &BuildManager::cancelBuild, Qt::DirectConnection);
-    QObject::connect(d->cancelActionNoIcon, &QAction::triggered,
                      this, &BuildManager::cancelBuild, Qt::DirectConnection);
 }
 
@@ -203,18 +190,18 @@ void BuildManager::initIssueList()
     hIssueTopLayout->setContentsMargins(0, 0, 5, 0);
     hIssueTopLayout->setAlignment(Qt::AlignVCenter);
 
-    DMenu* filterMenu = new DMenu(filterButton);
+    DMenu *filterMenu = new DMenu(filterButton);
 
-    QAction* showAllAction = new QAction(tr("All"), this);
+    QAction *showAllAction = new QAction(tr("All"), this);
     showAllAction->setCheckable(true);
     showAllAction->setChecked(true);
     filterMenu->addAction(showAllAction);
 
-    QAction* showErrorAction = new QAction(tr("Error"), this);
+    QAction *showErrorAction = new QAction(tr("Error"), this);
     showErrorAction->setCheckable(true);
     filterMenu->addAction(showErrorAction);
 
-    QAction* showWarningAction = new QAction(tr("Warning"), this);
+    QAction *showWarningAction = new QAction(tr("Warning"), this);
     showWarningAction->setCheckable(true);
     filterMenu->addAction(showWarningAction);
 
@@ -265,7 +252,7 @@ void BuildManager::initCompileOutput()
     hOutputTopLayout->setContentsMargins(0, 0, 5, 0);
     hOutputTopLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
 
-    auto createVLine = [this]{
+    auto createVLine = [this] {
         DVerticalLine *vLine = new DVerticalLine(d->compileWidget);
         vLine->setFixedHeight(20);
         return vLine;
@@ -288,7 +275,7 @@ void BuildManager::initCompileOutput()
 
     DToolButton *clearLogBtn = new DToolButton(d->compileWidget);
     clearLogBtn->setIconSize({ 16, 16 });
-    clearLogBtn->setFixedSize({ 26, 26});
+    clearLogBtn->setFixedSize({ 26, 26 });
     clearLogBtn->setIcon(QIcon::fromTheme("clear_log"));
     clearLogBtn->setToolTip(tr("Clear Output"));
     connect(clearLogBtn, &DToolButton::clicked, d->compileOutputPane, &CompileOutputPane::clearContents);
@@ -331,17 +318,17 @@ void BuildManager::buildCancelProject()
 
 void BuildManager::buildProject()
 {
-    execBuildStep({Build});
+    execBuildStep({ Build });
 }
 
 void BuildManager::rebuildProject()
 {
-    execBuildStep({Clean, Build});
+    execBuildStep({ Clean, Build });
 }
 
 void BuildManager::cleanProject()
 {
-    execBuildStep({Clean});
+    execBuildStep({ Clean });
 }
 
 void BuildManager::cancelBuild()
@@ -353,13 +340,12 @@ void BuildManager::cancelBuild()
     }
 }
 
-
 void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
 {
     // save all modified files before build.
     dpfGetService(EditorService)->saveAll();
 
-    if(!canStartBuild()) {
+    if (!canStartBuild()) {
         QMetaObject::invokeMethod(this, "message",
                                   Q_ARG(QString, "The builder is running, please try again later!"));
         return;
@@ -443,7 +429,7 @@ bool BuildManager::isActivatedProject(const ProjectInfo &info)
 
 bool BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
 {
-    if(!canStartBuild()) {
+    if (!canStartBuild()) {
         QMetaObject::invokeMethod(this, "message",
                                   Q_ARG(QString, "The builder is running, please try again later!"));
         return false;
@@ -479,7 +465,7 @@ bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, bool
         }
     } else {
         if (!commandList.isEmpty()) {
-            d->buildThread = QtConcurrent::run([=](){
+            d->buildThread = QtConcurrent::run([=]() {
                 QMutexLocker locker(&releaseMutex);
                 for (auto command : commandList) {
                     execCommand(command);
@@ -500,24 +486,24 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     d->cmdProcess.setWorkingDirectory(info.workingDir);
 
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
-            .arg(info.program, info.arguments.join(" "), info.workingDir);
+                               .arg(info.program, info.arguments.join(" "), info.workingDir);
     outputLog(startMsg, OutputPane::OutputFormat::NormalMessage);
 
     connect(&d->cmdProcess, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
-        if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
-            ret = true;
-            executeResult = tr("The process \"%1\" exited normally.\n").arg(d->cmdProcess.program());
-        } else if (exitStatus == QProcess::NormalExit) {
-            ret = false;
-            executeResult = tr("The process \"%1\" exited with code %2.\n")
-                    .arg(d->cmdProcess.program(), QString::number(exitcode));
-        } else {
-            ret = false;
-            executeResult = tr("The process \"%1\" crashed.\n")
-                    .arg(d->cmdProcess.program());
-        }
-    });
+                if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+                    ret = true;
+                    executeResult = tr("The process \"%1\" exited normally.\n").arg(d->cmdProcess.program());
+                } else if (exitStatus == QProcess::NormalExit) {
+                    ret = false;
+                    executeResult = tr("The process \"%1\" exited with code %2.\n")
+                                            .arg(d->cmdProcess.program(), QString::number(exitcode));
+                } else {
+                    ret = false;
+                    executeResult = tr("The process \"%1\" crashed.\n")
+                                            .arg(d->cmdProcess.program());
+                }
+            });
 
     connect(&d->cmdProcess, &QProcess::readyReadStandardOutput, [&]() {
         d->cmdProcess.setReadChannel(QProcess::StandardOutput);
@@ -591,8 +577,8 @@ void BuildManager::addOutput(const QString &content, const OutputPane::OutputFor
 {
     QString newContent = content;
     if (OutputPane::OutputFormat::NormalMessage == format
-            || OutputPane::OutputFormat::ErrorMessage == format
-            || OutputPane::OutputFormat::StdOut == format) {
+        || OutputPane::OutputFormat::ErrorMessage == format
+        || OutputPane::OutputFormat::StdOut == format) {
 
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");
@@ -612,24 +598,24 @@ void BuildManager::slotBuildState(const BuildState &buildState)
 
     switch (buildState) {
     case BuildState::kNoBuild:
-    case BuildState::kBuildFailed:
-        d->buildCancelAction->setIcon(QIcon::fromTheme("build"));
-        d->buildCancelAction->setText(MWMBA_BUILD);
-        d->buildCancelAction->setShortcut(ActionManager::getInstance()->command("Build.Build")->keySequence());
-        d->buildActionNoIcon->setEnabled(true);
+    case BuildState::kBuildFailed: {
+        d->buildCancelBtn->setIcon(QIcon::fromTheme("build"));
+        auto cmd = ActionManager::instance()->command("Build.Build");
+        auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(cmd->keySequence().toString());
+        d->buildCancelBtn->setToolTip(toolTip);
         d->rebuildAction->setEnabled(true);
         d->cleanAction->setEnabled(true);
         d->cancelAction->setEnabled(false);
-        break;
-    case BuildState::kBuilding:
-        d->buildCancelAction->setIcon(QIcon::fromTheme("cancel"));
-        d->buildCancelAction->setText(MWMBA_CANCEL);
-        d->buildCancelAction->setShortcut(d->cancelAction->shortcut());
-        d->buildActionNoIcon->setEnabled(true);
+    } break;
+    case BuildState::kBuilding: {
+        d->buildCancelBtn->setIcon(QIcon::fromTheme("cancel"));
+        auto cmd = ActionManager::instance()->command("Build.Cancel");
+        auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(cmd->keySequence().toString());
+        d->buildCancelBtn->setToolTip(toolTip);
         d->rebuildAction->setEnabled(false);
         d->cleanAction->setEnabled(false);
         d->cancelAction->setEnabled(true);
-        break;
+    } break;
     }
 }
 
@@ -640,8 +626,7 @@ bool BuildManager::canStartBuild()
 
 void BuildManager::disconnectSignals()
 {
-    disconnect(&d->cmdProcess, static_cast<void (QProcess::*)\
-                        (int, QProcess::ExitStatus)>(&QProcess::finished), nullptr, nullptr);
+    disconnect(&d->cmdProcess, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), nullptr, nullptr);
     disconnect(&d->cmdProcess, &QProcess::readyReadStandardOutput, nullptr, nullptr);
     disconnect(&d->cmdProcess, &QProcess::readyReadStandardError, nullptr, nullptr);
 }

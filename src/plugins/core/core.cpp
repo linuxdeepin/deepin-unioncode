@@ -7,7 +7,6 @@
 #include "services/window/windowservice.h"
 #include "locator/locatormanager.h"
 #include "locator/actionlocator.h"
-#include "find/findtoolbar.h"
 
 #include <framework/framework.h>
 #include "common/common.h"
@@ -33,7 +32,6 @@ bool Core::start()
     LocatorManager::instance()->registerLocator(actionLocator);
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
-        ActionManager::getInstance()->readUserSetting();
         uiController.doSwitch(MWNA_RECENT);
     });
 

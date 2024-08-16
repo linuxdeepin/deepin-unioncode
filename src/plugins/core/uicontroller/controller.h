@@ -6,8 +6,10 @@
 #define CONTROLLER_H
 
 #include "mainwindow.h"
+
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
+#include "common/actionmanager/command.h"
 
 #include <DToolButton>
 
@@ -60,20 +62,13 @@ public slots:
     void hideContextWidget();
     void switchContextWidget(const QString &title);
 
-    //menu
-    void addChildMenu(AbstractMenu *menu);
-    void insertAction(const QString &menuName, const QString &beforActionName,
-                      AbstractAction *action);
-    void addAction(const QString &menuName, AbstractAction *action);
-    void removeActions(const QString &menuName);
-
     //topToolBar
     void addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);
-    void addTopToolItem(AbstractAction *action, bool addSeparator, quint8 priority);
-    void addTopToolItemToRight(AbstractAction *action, bool addSeparator, quint8 priority);
+    DToolButton *addTopToolItem(Command *action, bool addSeparator, quint8 priority);
+    void addTopToolItemToRight(Command *action, bool addSeparator, quint8 priority);
     void showTopToolBar();
-    void removeTopToolItem(AbstractAction *action);
-    void setTopToolItemVisible(AbstractAction *action, bool visible);
+    void removeTopToolItem(Command *action);
+    void setTopToolItemVisible(Command *action, bool visible);
 
     void openFileDialog();
 
@@ -100,7 +95,6 @@ private:
 
     void initMainWindow();
     void initNavigationBar();
-    void initMenu();
     void initContextWidget();
     void initStatusBar();
     void initWorkspaceWidget();
@@ -108,16 +102,9 @@ private:
     void initModules();
     void initDocksManager();
 
-    //menu
-    void createHelpActions();
-    void createToolsActions();
-    void createDebugActions();
-    void createBuildActions();
-    void createFileActions();
-
-    void addMenuShortCut(QAction *action, QKeySequence keySequence = QKeySequence());
-
-    void registerActionShortCut(AbstractAction *action);
+    //menu and action
+    void registerDefaultContainers();
+    void registerDefaultActions();
 
     void showWorkspace();
 

@@ -50,12 +50,12 @@ void TemplateManager::addMenu()
     if (!windowService)
         return;
 
+    auto mFile = ActionManager::instance()->actionContainer(M_FILE);
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
         action->setIcon(QIcon::fromTheme(iconFileName));
-        AbstractAction *actionImpl = new AbstractAction(action, this);
-        actionImpl->setShortCutInfo(actionID, action->text(), key);
-
-        windowService->addAction(dpfservice::MWMFA_NEW_FILE_OR_PROJECT, actionImpl);
+        auto cmd = ActionManager::instance()->registerAction(action, actionID);
+        cmd->setDefaultKeySequence(key);
+        mFile->addAction(cmd, G_FILE_NEW);
     };
 
     d->newAction.reset(new QAction(MWMFA_NEW_FILE_OR_PROJECT, this));
