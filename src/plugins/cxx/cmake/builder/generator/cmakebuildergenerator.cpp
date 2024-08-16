@@ -23,7 +23,6 @@ class CMakeBuilderGeneratorPrivate
 CMakeBuilderGenerator::CMakeBuilderGenerator()
     : d(new CMakeBuilderGeneratorPrivate())
 {
-
 }
 
 CMakeBuilderGenerator::~CMakeBuilderGenerator()
@@ -67,19 +66,20 @@ void CMakeBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputPar
 bool CMakeBuilderGenerator::checkCommandValidity(const BuildCommandInfo &info, QString &retMsg)
 {
     if (info.program.trimmed().isEmpty()) {
-        retMsg = tr("The build command of %1 project is null! "\
-                    "please install it in console with \"sudo apt install cmake\", and then restart the tool.")
-                .arg(info.kitName.toUpper());
+        retMsg = tr("The build command %1 project is null! You can solve this problem in the following ways:\n"
+                    "1.Check whether cmake is installed;\n"
+                    "2.Global Options > CMake > Select the CMake tool installed locally;\n"
+                    "3.If none of the above methods work, delete the \".unioncode\" folder in the current project directory and open the project again.")
+                         .arg(info.kitName.toUpper());
         return false;
     }
 
     if (!QFileInfo(info.workingDir.trimmed()).exists()) {
-        retMsg = tr("The path of \"%1\" is not exist! "\
+        retMsg = tr("The path of \"%1\" is not exist! "
                     "please check and reopen the project.")
-                .arg(info.workingDir);
+                         .arg(info.workingDir);
         return false;
     }
 
     return true;
 }
-
