@@ -67,14 +67,16 @@ QString parseString(const QString& s, QString::const_iterator& it)
 {
     QString v;
     while (it != s.cend()) {
-        if (*it == '"')
+        if (*it == '"') {
+            ++it;
             break;
+        }
         if (*it == '\\')
             if (++it == s.cend())
                 break;
         v += *it++;
     }
-    ++it;
+
     return v;
 }
 
@@ -126,7 +128,8 @@ QVariantList parseArray(const QString& str, QString::const_iterator& it)
 QVariantMap parseDict(const QString& str, QString::const_iterator& it)
 {
     QVariantMap m = parseKeyVal(str, it, '}');
-    ++it;
+    if (it < str.cend())
+        ++it;
     return m;
 }
 
