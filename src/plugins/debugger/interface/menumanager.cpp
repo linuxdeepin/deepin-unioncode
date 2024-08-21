@@ -30,8 +30,9 @@ void MenuManager::initialize(WindowService *windowService)
                           QKeySequence key, const QString &iconName = {}) -> Command * {
         action->setIcon(QIcon::fromTheme(iconName));
         auto cmd = ActionManager::instance()->registerAction(action, id);
-        cmd->setDefaultKeySequence(key);
         cmd->setDescription(description);
+        if (!key.isEmpty())
+            cmd->setDefaultKeySequence(key);
         return cmd;
     };
 
