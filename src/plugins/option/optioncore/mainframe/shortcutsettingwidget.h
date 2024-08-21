@@ -5,47 +5,15 @@
 #ifndef SHORTCUTSETTINGWIDGET_H
 #define SHORTCUTSETTINGWIDGET_H
 
-#include <DWidget>
-#include <DFrame>
-#include <DDialog>
-#include <QAbstractTableModel>
-#include <common/widget/pagewidget.h>
+#include "common/widget/pagewidget.h"
+#include "services/option/optiongenerator.h"
 
-enum ColumnID
-{
-
-    kDescriptions,
-    kShortcut,
-    _KCount
-};
-
-class ShortCutPrivate;
-class ShortCut : public DTK_WIDGET_NAMESPACE::DFrame
+class OptionShortcutsettingGenerator : public dpfservice::OptionGenerator
 {
     Q_OBJECT
 public:
-    explicit ShortCut(QWidget *parent = nullptr);
-    virtual ~ShortCut();
-
-    int rowCount() const;
-    int columnCount() const;
-
-    void updateUi();
-    void updateShortcut(QString id, QString shortcut);
-    void resetAllShortcut();
-    void saveShortcut();
-    void readShortcut();
-    void importExternalJson(const QString &filePath);
-    void exportExternalJson(const QString &filePath);
-    void updateDescriptions();
-    bool shortcutRepeat(const QString &text) const;
-    bool keySequenceIsInvalid(const QKeySequence &sequence) const;
-    void showWarning(const QString& title, const QString& message);
-
-signals:
-
-private:
-    ShortCutPrivate *d;
+    inline static QString kitName() { return QObject::tr("Commands"); }
+    virtual QWidget *optionWidget() override;
 };
 
 class ShortcutSettingWidgetPrivate;
@@ -55,19 +23,12 @@ class ShortcutSettingWidget : public PageWidget
 public:
     explicit ShortcutSettingWidget(QWidget *parent = nullptr);
     virtual ~ShortcutSettingWidget();
-    void saveConfig();
-    void readConfig();
-    void checkShortcutValidity(const int row, const QString &shortcut);
 
-signals:
+    void readConfig() override;
+    void saveConfig() override;
 
-public slots:
-    void onBtnResetAllClicked();
-    void onBtnImportClicked();
-    void onBtnExportClicked();
 private:
-    void setupUi();
     ShortcutSettingWidgetPrivate *const d;
 };
 
-#endif // SHORTCUTSETTINGWIDGET_H
+#endif   // SHORTCUTSETTINGWIDGET_H

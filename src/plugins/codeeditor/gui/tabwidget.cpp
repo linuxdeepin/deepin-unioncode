@@ -857,7 +857,7 @@ void TabWidget::updateZoomValue(int value)
     }
 }
 
-QWidget *TabWidget::currentWidget() const
+TextEditor *TabWidget::currentEditor() const
 {
     return d->currentTextEditor();
 }

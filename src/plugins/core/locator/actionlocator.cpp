@@ -23,6 +23,9 @@ void ActionLocator::prepareSearch(const QString &searchText)
     commandList = ActionManager::instance()->commandList();
 
     foreach (auto command, commandList) {
+        if (command->action() && command->action()->isSeparator())
+            continue;
+
         baseLocatorItem item(this);
         item.id = command->id();
         item.displayName = command->description();
@@ -39,7 +42,7 @@ QList<baseLocatorItem> ActionLocator::matchesFor(const QString &inputText)
 
     foreach (auto item, locatorList) {
         auto match = regexp.match(item.displayName);
-        if(match.hasMatch())
+        if (match.hasMatch())
             matchResult.append(item);
     }
 
@@ -49,7 +52,7 @@ QList<baseLocatorItem> ActionLocator::matchesFor(const QString &inputText)
 void ActionLocator::accept(baseLocatorItem item)
 {
     foreach (auto command, commandList) {
-        if(command->id() == item.id)
+        if (command->id() == item.id)
             command->action()->trigger();
     }
 }

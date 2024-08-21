@@ -65,7 +65,7 @@ public:
     int zoomValue();
     void updateZoomValue(int value);
 
-    QWidget *currentWidget() const;
+    TextEditor *currentEditor() const;
     TextEditor *findEditor(const QString &fileName);
 
 public slots:

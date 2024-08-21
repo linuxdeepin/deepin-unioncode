@@ -56,7 +56,7 @@ TabWidget *EditorDocumentFindPrivate::tabWidget() const
 
 QWidget *EditorDocumentFindPrivate::autoAdjustCurrentEditor()
 {
-    auto w = tabWidget()->currentWidget();
+    auto w = tabWidget()->currentEditor();
     if (w != curEditor) {
         curEditor = w;
         isFindFirst = true;

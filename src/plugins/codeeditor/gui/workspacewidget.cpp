@@ -7,7 +7,6 @@
 #include "transceiver/codeeditorreceiver.h"
 #include "settings/editorsettings.h"
 #include "settings/settingsdefine.h"
-#include "base/abstractaction.h"
 #include "symbol/symbolwidget.h"
 #include "texteditor.h"
 
@@ -17,6 +16,8 @@
 #include <QVariant>
 #include <QApplication>
 #include <QFileDialog>
+
+constexpr char TextEditorContext[] { "Text Editor" };
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
@@ -67,15 +68,388 @@ void WorkspaceWidgetPrivate::initActions()
 
     // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
-    auto cmd = ActionManager::instance()->registerAction(commentAction, "Editor.AddAndRemoveComment");
+    auto cmd = ActionManager::instance()->registerAction(commentAction, "TextEditor.AddAndRemoveComment");
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Slash);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
 
     // show opened files
     QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
-    cmd = ActionManager::instance()->registerAction(commentAction, "Editor.ShowOpenedFiles");
+    cmd = ActionManager::instance()->registerAction(showOpenedAction, "TextEditor.ShowOpenedFiles");
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Tab);
     connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
+
+    QMetaEnum me = QMetaEnum::fromType<QsciCommand::Command>();
+    for (int i = 0; i < me.keyCount(); ++i) {
+        QList<QKeySequence> ksList;
+        QString actionText;
+        QsciCommand::Command val = static_cast<QsciCommand::Command>(me.value(i));
+        switch (val) {
+        case QsciCommand::LineDownExtend:
+            actionText = tr("Extend selection down one line");
+            ksList.append(Qt::Key_Down | Qt::SHIFT);
+            break;
+        case QsciCommand::LineDownRectExtend:
+            actionText = tr("Extend rectangular selection down one line");
+            ksList.append(Qt::Key_Down | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::LineScrollDown:
+            actionText = tr("Scroll view down one line");
+            ksList.append(Qt::Key_Down | Qt::CTRL);
+            break;
+        case QsciCommand::LineUpExtend:
+            actionText = tr("Extend selection up one line");
+            ksList.append(Qt::Key_Up | Qt::SHIFT);
+            break;
+        case QsciCommand::LineUpRectExtend:
+            actionText = tr("Extend rectangular selection up one line");
+            ksList.append(Qt::Key_Up | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::LineScrollUp:
+            actionText = tr("Scroll view up one line");
+            ksList.append(Qt::Key_Up | Qt::CTRL);
+            break;
+        case QsciCommand::ScrollToStart:
+            actionText = tr("Scroll to start of document");
+            break;
+        case QsciCommand::ScrollToEnd:
+            actionText = tr("Scroll to end of document");
+            break;
+        case QsciCommand::VerticalCentreCaret:
+            actionText = tr("Scroll vertically to centre current line");
+            break;
+        case QsciCommand::ParaDown:
+            actionText = tr("Move down one paragraph");
+            ksList.append(Qt::Key_BracketRight | Qt::CTRL);
+            break;
+        case QsciCommand::ParaDownExtend:
+            actionText = tr("Extend selection down one paragraph");
+            ksList.append(Qt::Key_BracketRight | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::ParaUp:
+            actionText = tr("Move up one paragraph");
+            ksList.append(Qt::Key_BracketLeft | Qt::CTRL);
+            break;
+        case QsciCommand::ParaUpExtend:
+            actionText = tr("Extend selection up one paragraph");
+            ksList.append(Qt::Key_BracketLeft | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::CharLeft:
+            actionText = tr("Move left one character");
+            ksList.append(Qt::Key_Left);
+            break;
+        case QsciCommand::CharLeftExtend:
+            actionText = tr("Extend selection left one character");
+            ksList.append(Qt::Key_Left | Qt::SHIFT);
+            break;
+        case QsciCommand::CharLeftRectExtend:
+            actionText = tr("Extend rectangular selection left one character");
+            ksList.append(Qt::Key_Left | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::CharRight:
+            actionText = tr("Move right one character");
+            ksList.append(Qt::Key_Right);
+            break;
+        case QsciCommand::CharRightExtend:
+            actionText = tr("Extend selection right one character");
+            ksList.append(Qt::Key_Right | Qt::SHIFT);
+            break;
+        case QsciCommand::CharRightRectExtend:
+            actionText = tr("Extend rectangular selection right one character");
+            ksList.append(Qt::Key_Right | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::WordLeft:
+            actionText = tr("Move left one word");
+            ksList.append(Qt::Key_Left | Qt::CTRL);
+            break;
+        case QsciCommand::WordLeftExtend:
+            actionText = tr("Extend selection left one word");
+            ksList.append(Qt::Key_Left | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::WordRight:
+            actionText = tr("Move right one word");
+            ksList.append(Qt::Key_Right | Qt::CTRL);
+            break;
+        case QsciCommand::WordRightExtend:
+            actionText = tr("Extend selection right one word");
+            ksList.append(Qt::Key_Right | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::WordLeftEnd:
+            actionText = tr("Move to end of previous word");
+            break;
+        case QsciCommand::WordLeftEndExtend:
+            actionText = tr("Extend selection to end of previous word");
+            break;
+        case QsciCommand::WordRightEnd:
+            actionText = tr("Move to end of next word");
+            break;
+        case QsciCommand::WordRightEndExtend:
+            actionText = tr("Extend selection to end of next word");
+            break;
+        case QsciCommand::WordPartLeft:
+            actionText = tr("Move left one word part");
+            break;
+        case QsciCommand::WordPartLeftExtend:
+            actionText = tr("Extend selection left one word part");
+            ksList.append(Qt::Key_Slash | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::WordPartRight:
+            actionText = tr("Move right one word part");
+            ksList.append(Qt::Key_Backslash | Qt::CTRL);
+            break;
+        case QsciCommand::WordPartRightExtend:
+            actionText = tr("Extend selection right one word part");
+            ksList.append(Qt::Key_Backslash | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::Home:
+            actionText = tr("Move to start of document line");
+            break;
+        case QsciCommand::HomeExtend:
+            actionText = tr("Extend selection to start of document line");
+            break;
+        case QsciCommand::HomeRectExtend:
+            actionText = tr("Extend rectangular selection to start of document line");
+            break;
+        case QsciCommand::HomeDisplay:
+            actionText = tr("Move to start of display line");
+            ksList.append(Qt::Key_Home | Qt::ALT);
+            break;
+        case QsciCommand::HomeDisplayExtend:
+            actionText = tr("Extend selection to start of display line");
+            break;
+        case QsciCommand::HomeWrap:
+            actionText = tr("Move to start of display or document line");
+            break;
+        case QsciCommand::HomeWrapExtend:
+            actionText = tr("Extend selection to start of display or document line");
+            break;
+        case QsciCommand::VCHome:
+            actionText = tr("Move to first visible character in document line");
+            ksList.append(Qt::Key_Home);
+            break;
+        case QsciCommand::VCHomeExtend:
+            actionText = tr("Extend selection to first visible character in document line");
+            ksList.append(Qt::Key_Home | Qt::SHIFT);
+            break;
+        case QsciCommand::VCHomeRectExtend:
+            actionText = tr("Extend rectangular selection to first visible character in document line");
+            ksList.append(Qt::Key_Home | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::VCHomeWrap:
+            actionText = tr("Move to first visible character of display in document line");
+            break;
+        case QsciCommand::VCHomeWrapExtend:
+            actionText = tr("Extend selection to first visible character in display or document line");
+            break;
+        case QsciCommand::LineEnd:
+            actionText = tr("Move to end of document line");
+            ksList.append(Qt::Key_End);
+            break;
+        case QsciCommand::LineEndExtend:
+            actionText = tr("Extend selection to end of document line");
+            ksList.append(Qt::Key_End | Qt::SHIFT);
+            break;
+        case QsciCommand::LineEndRectExtend:
+            actionText = tr("Extend rectangular selection to end of document line");
+            ksList.append(Qt::Key_End | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::LineEndDisplay:
+            actionText = tr("Move to end of display line");
+            ksList.append(Qt::Key_End | Qt::ALT);
+            break;
+        case QsciCommand::LineEndDisplayExtend:
+            actionText = tr("Extend selection to end of display line");
+            break;
+        case QsciCommand::LineEndWrap:
+            actionText = tr("Move to end of display or document line");
+            break;
+        case QsciCommand::LineEndWrapExtend:
+            actionText = tr("Extend selection to end of display or document line");
+            break;
+        case QsciCommand::DocumentStart:
+            actionText = tr("Move to start of document");
+            ksList.append(Qt::Key_Home | Qt::CTRL);
+            break;
+        case QsciCommand::DocumentStartExtend:
+            actionText = tr("Extend selection to start of document");
+            ksList.append(Qt::Key_Home | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::DocumentEnd:
+            actionText = tr("Move to end of document");
+            ksList.append(Qt::Key_End | Qt::CTRL);
+            break;
+        case QsciCommand::DocumentEndExtend:
+            actionText = tr("Extend selection to end of document");
+            ksList.append(Qt::Key_End | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::PageUp:
+            actionText = tr("Move up one page");
+            ksList.append(Qt::Key_PageUp);
+            break;
+        case QsciCommand::PageUpExtend:
+            actionText = tr("Extend selection up one page");
+            ksList.append(Qt::Key_PageUp | Qt::SHIFT);
+            break;
+        case QsciCommand::PageUpRectExtend:
+            actionText = tr("Extend rectangular selection up one page");
+            ksList.append(Qt::Key_PageUp | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::PageDown:
+            actionText = tr("Move down one page");
+            ksList.append(Qt::Key_PageDown);
+            break;
+        case QsciCommand::PageDownExtend:
+            actionText = tr("Extend selection down one page");
+            ksList.append(Qt::Key_PageDown | Qt::SHIFT);
+            break;
+        case QsciCommand::PageDownRectExtend:
+            actionText = tr("Extend rectangular selection down one page");
+            ksList.append(Qt::Key_PageDown | Qt::ALT | Qt::SHIFT);
+            break;
+        case QsciCommand::StutteredPageUp:
+            actionText = tr("Stuttered move up one page");
+            break;
+        case QsciCommand::StutteredPageUpExtend:
+            actionText = tr("Stuttered extend selection up one page");
+            break;
+        case QsciCommand::StutteredPageDown:
+            actionText = tr("Stuttered move down one page");
+            break;
+        case QsciCommand::StutteredPageDownExtend:
+            actionText = tr("Stuttered extend selection down one page");
+            break;
+        case QsciCommand::Delete:
+            actionText = tr("Delete current character");
+            ksList.append(Qt::Key_Delete);
+            break;
+        case QsciCommand::DeleteBack:
+            actionText = tr("Delete previous character");
+            ksList.append(Qt::Key_Backspace);
+            break;
+        case QsciCommand::DeleteBackNotLine:
+            actionText = tr("Delete previous character if not at start of line");
+            break;
+        case QsciCommand::DeleteWordLeft:
+            actionText = tr("Delete word to left");
+            ksList.append(Qt::Key_Backspace | Qt::CTRL);
+            break;
+        case QsciCommand::DeleteWordRight:
+            actionText = tr("Delete word to right");
+            ksList.append(Qt::Key_Delete | Qt::CTRL);
+            break;
+        case QsciCommand::DeleteWordRightEnd:
+            actionText = tr("Delete right to end of next word");
+            break;
+        case QsciCommand::DeleteLineLeft:
+            actionText = tr("Delete line to left");
+            ksList.append(Qt::Key_Backspace | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::DeleteLineRight:
+            actionText = tr("Delete line to right");
+            ksList.append(Qt::Key_Delete | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::LineDelete:
+            actionText = tr("Delete current line");
+            ksList.append(Qt::Key_L | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::LineCut:
+            actionText = tr("Cut current line");
+            ksList.append(Qt::Key_L | Qt::CTRL);
+            break;
+        case QsciCommand::LineCopy:
+            actionText = tr("Copy current line");
+            ksList.append(Qt::Key_T | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::LineTranspose:
+            actionText = tr("Transpose current and previous lines");
+            break;
+        case QsciCommand::LineDuplicate:
+            actionText = tr("Duplicate the current line");
+            break;
+        case QsciCommand::SelectAll:
+            actionText = tr("Select all");
+            ksList.append(Qt::Key_A | Qt::CTRL);
+            break;
+        case QsciCommand::MoveSelectedLinesUp:
+            actionText = tr("Move selected lines up one line");
+            break;
+        case QsciCommand::MoveSelectedLinesDown:
+            actionText = tr("Move selected lines down one line");
+            break;
+        case QsciCommand::SelectionDuplicate:
+            actionText = tr("Duplicate selection");
+            ksList.append(Qt::Key_D | Qt::CTRL);
+            break;
+        case QsciCommand::SelectionLowerCase:
+            actionText = tr("Convert selection to lower case");
+            ksList.append(Qt::Key_U | Qt::CTRL);
+            break;
+        case QsciCommand::SelectionUpperCase:
+            actionText = tr("Convert selection to upper case");
+            ksList.append(Qt::Key_U | Qt::CTRL | Qt::SHIFT);
+            break;
+        case QsciCommand::SelectionCut:
+            actionText = tr("Cut selection");
+            ksList.append(Qt::Key_X | Qt::CTRL);
+            ksList.append(Qt::Key_Delete | Qt::SHIFT);
+            break;
+        case QsciCommand::SelectionCopy:
+            actionText = tr("Copy selection");
+            ksList.append(Qt::Key_C | Qt::CTRL);
+            ksList.append(Qt::Key_Insert | Qt::CTRL);
+            break;
+        case QsciCommand::Paste:
+            actionText = tr("Paste");
+            ksList.append(Qt::Key_V | Qt::CTRL);
+            ksList.append(Qt::Key_Insert | Qt::SHIFT);
+            break;
+        case QsciCommand::EditToggleOvertype:
+            actionText = tr("Toggle insert/overtype");
+            ksList.append(Qt::Key_Insert);
+            break;
+        case QsciCommand::Formfeed:
+            actionText = tr("Formfeed");
+            break;
+        case QsciCommand::Backtab:
+            actionText = tr("De-indent one level");
+            ksList.append(Qt::Key_Tab | Qt::SHIFT);
+            break;
+        case QsciCommand::Undo:
+            actionText = tr("Undo last command");
+            ksList.append(Qt::Key_Z | Qt::CTRL);
+            ksList.append(Qt::Key_Backspace | Qt::ALT);
+            break;
+        case QsciCommand::Redo:
+            actionText = tr("Redo last command");
+            ksList.append(Qt::Key_Y | Qt::CTRL);
+            break;
+        case QsciCommand::ZoomIn:
+            actionText = tr("Zoom in");
+            ksList.append(Qt::Key_Plus | Qt::CTRL);
+            break;
+        case QsciCommand::ZoomOut:
+            actionText = tr("Zoom out");
+            ksList.append(Qt::Key_Minus | Qt::CTRL);
+            break;
+        default:
+            break;
+        }
+
+        if (!actionText.isEmpty()) {
+            auto id = QString("TextEditor.%1").arg(me.valueToKey(val));
+            auto act = new QAction(actionText, q);
+            auto cmd = ActionManager::instance()->registerAction(act, id, { TextEditorContext });
+            if (!ksList.isEmpty())
+                cmd->setDefaultKeySequences(ksList);
+            connect(act, &QAction::triggered, this, [val, this] {
+                auto tabWidget = currentTabWidget();
+                if (!tabWidget)
+                    return;
+
+                if (auto editor = tabWidget->currentEditor())
+                    editor->SendScintilla(val);
+            });
+        }
+    }
 }
 
 void WorkspaceWidgetPrivate::handleSetComment()
@@ -355,7 +729,7 @@ void WorkspaceWidgetPrivate::onCloseRequested()
         tabWidgetList.last()->setFocus();
         editor.switchedFile(tabWidgetList.last()->currentFile());
         auto symbolWidget = SymbolWidgetGenerator::instance()->symbolWidget();
-        symbolWidget->setEditor(qobject_cast<TextEditor *>(tabWidgetList.last()->currentWidget()));
+        symbolWidget->setEditor(tabWidgetList.last()->currentEditor());
     }
 
     if (tabWidgetList.size() == 1)
@@ -514,18 +888,23 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
 {
     Q_UNUSED(old)
 
-    if (!now)
+    if (!now) {
+        ActionManager::instance()->removeContext({ TextEditorContext });
         return;
+    }
 
     // the `now` is TextEditor
     auto tabWidget = qobject_cast<TabWidget *>(now->parentWidget());
-    if (!tabWidget)
+    if (!tabWidget) {
+        ActionManager::instance()->removeContext({ TextEditorContext });
         return;
+    }
 
+    ActionManager::instance()->addContext({ TextEditorContext });
     focusTabWidget = tabWidget;
     editor.switchedFile(focusTabWidget->currentFile());
     auto symbolWidget = SymbolWidgetGenerator::instance()->symbolWidget();
-    symbolWidget->setEditor(qobject_cast<TextEditor *>(tabWidget->currentWidget()));
+    symbolWidget->setEditor(tabWidget->currentEditor());
 }
 
 void WorkspaceWidgetPrivate::onZoomValueChanged()

@@ -1,6 +1,11 @@
 <RCC>
-    <qresource prefix="/icons/deepin/builtin/">
+    <qresource prefix="/icons/deepin/builtin">
         <file>icons/options_alert_16px.svg</file>
         <file>texts/options_setting_32px.svg</file>
+        <file>texts/edit_16px.svg</file>
+        <file>texts/export_16px.svg</file>
+        <file>texts/import_16px.svg</file>
+        <file>texts/shortcut_search_16px.svg</file>
+        <file>icons/shortcut_group_128px.svg</file>
     </qresource>
 </RCC>

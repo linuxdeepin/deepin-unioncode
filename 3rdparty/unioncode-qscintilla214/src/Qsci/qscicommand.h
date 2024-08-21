@@ -36,8 +36,9 @@ class QsciScintilla;
 //! Methods are provided to change the keys bound to the command and to remove
 //! a key binding.  Each command has a user friendly description of the command
 //! for use in key mapping dialogs.
-class QSCINTILLA_EXPORT QsciCommand
+class QSCINTILLA_EXPORT QsciCommand : public QObject
 {
+    Q_OBJECT
 public:
     //! This enum defines the different commands that can be assigned to a key.
     enum Command {
@@ -343,6 +344,7 @@ public:
         //! Reverse the selected lines.
         ReverseLines = QsciScintillaBase::SCI_LINEREVERSE,
     };
+    Q_ENUM(Command)
 
     //! Return the command that will be executed by this instance.
     Command command() const {return scicmd;}

@@ -123,7 +123,7 @@ void ActionManagerPrivate::saveSettings(Command *cmd)
             settings.setValue(settingsKey, keys.first().toString());
         } else {
             QStringList shortcutList;
-            std::transform(keys.begin(), keys.end(), shortcutList.begin(),
+            std::transform(keys.begin(), keys.end(), std::back_inserter(shortcutList),
                            [](const QKeySequence &k) {
                                return k.toString();
                            });
@@ -142,7 +142,7 @@ void ActionManagerPrivate::readUserSettings(const QString &id, Command *cmd)
         if (QMetaType::Type(v.type()) == QMetaType::QStringList) {
             auto list = v.toStringList();
             QList<QKeySequence> keySequenceList;
-            std::transform(list.begin(), list.end(), keySequenceList.begin(),
+            std::transform(list.begin(), list.end(), std::back_inserter(keySequenceList),
                            [](const QString &s) {
                                return QKeySequence::fromString(s);
                            });

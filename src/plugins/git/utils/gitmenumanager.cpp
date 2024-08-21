@@ -149,17 +149,17 @@ void GitMenuManager::createFileSubMenu()
 {
     auto mCurFile = ActionManager::instance()->actionContainer(M_GIT_FILE);
     auto fileLogAct = new QAction(this);
-    auto cmd = registerShortcut(fileLogAct, A_GIT_LOG_FILE, tr("Git Log"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_L));
+    auto cmd = registerShortcut(fileLogAct, A_GIT_LOG_FILE, tr("Git Log"), QKeySequence("Alt+G,Alt+L"));
     mCurFile->addAction(cmd);
     connect(fileLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitLog));
 
     auto fileBlameAct = new QAction(this);
-    cmd = registerShortcut(fileBlameAct, A_GIT_BLAME_FILE, tr("Git Blame"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_B));
+    cmd = registerShortcut(fileBlameAct, A_GIT_BLAME_FILE, tr("Git Blame"), QKeySequence("Alt+G,Alt+B"));
     mCurFile->addAction(cmd);
     connect(fileBlameAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitBlame));
 
     auto fileDiffAct = new QAction(this);
-    cmd = registerShortcut(fileDiffAct, A_GIT_DIFF_FILE, tr("Git Diff"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_D));
+    cmd = registerShortcut(fileDiffAct, A_GIT_DIFF_FILE, tr("Git Diff"), QKeySequence("Alt+G,Alt+D"));
     mCurFile->addAction(cmd);
     connect(fileDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, cmd, GitDiff));
 }

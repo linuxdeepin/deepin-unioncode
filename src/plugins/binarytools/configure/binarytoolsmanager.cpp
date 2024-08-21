@@ -425,7 +425,8 @@ void BinaryToolsManager::updateToolMenu(const BinaryTools &tools)
 
         for (const auto &tool : iter.value()) {
             auto act = new QAction(QIcon::fromTheme(tool.icon), tool.name, mGroup);
-            auto cmd = ActionManager::instance()->registerAction(act, tool.id);
+            auto actId = QString("BinaryTools.Tool.%1").arg(tool.id);
+            auto cmd = ActionManager::instance()->registerAction(act, actId);
             mGroup->addAction(cmd);
 
             connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
@@ -578,7 +579,8 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
         act->setIcon(QIcon::fromTheme(tool.icon));
         connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
 
-        auto cmd = ActionManager::instance()->registerAction(act, tool.id);
+        auto actId = QString("BinaryTools.Tool.%1").arg(tool.id);
+        auto cmd = ActionManager::instance()->registerAction(act, actId);
         return cmd;
     };
 

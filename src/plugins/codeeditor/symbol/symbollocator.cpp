@@ -46,8 +46,8 @@ TextEditor *SymbolLocatorPrivate::currentEditor()
     auto tabWidget = workspace->currentTabWidget();
     if (!tabWidget)
         return nullptr;
-
-    return qobject_cast<TextEditor *>(tabWidget->currentWidget());
+    
+    return tabWidget->currentEditor();
 }
 
 void SymbolLocatorPrivate::createSymbolItem(const newlsp::DocumentSymbol &symbol)

@@ -117,38 +117,38 @@ void CodeEditor::initActions()
 
     QAction *backAction = new QAction(tr("Backward"), this);
     connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
-    auto cmd = EditorUtils::registerShortcut(backAction, "Editor.back", QKeySequence(Qt::ALT | Qt::Key_Left));
+    auto cmd = EditorUtils::registerShortcut(backAction, "TextEditor.back", QKeySequence(Qt::ALT | Qt::Key_Left));
     mEdit->addAction(cmd);
 
     QAction *forwardAction = new QAction(tr("Forward"), this);
     connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
-    cmd = EditorUtils::registerShortcut(forwardAction, "Editor.forward", QKeySequence(Qt::ALT | Qt::Key_Right));
+    cmd = EditorUtils::registerShortcut(forwardAction, "TextEditor.forward", QKeySequence(Qt::ALT | Qt::Key_Right));
     mEdit->addAction(cmd);
 
     QAction *closeAction = new QAction(tr("Close Current Editor"), this);
     connect(closeAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor);
-    cmd = EditorUtils::registerShortcut(closeAction, "Editor.close", QKeySequence(Qt::CTRL | Qt::Key_W));
+    cmd = EditorUtils::registerShortcut(closeAction, "TextEditor.close", QKeySequence(Qt::CTRL | Qt::Key_W));
     mEdit->addAction(cmd, G_EDIT_OTHER);
 
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
     connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
-    EditorUtils::registerShortcut(switchHeaderSourceAction, "Editor.switchHS", QKeySequence(Qt::Key_F4));
+    EditorUtils::registerShortcut(switchHeaderSourceAction, "TextEditor.switchHS", QKeySequence(Qt::Key_F4));
 
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     connect(follSymbolAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor);
-    EditorUtils::registerShortcut(follSymbolAction, "Editor.followSymbol", QKeySequence(Qt::Key_F2));
+    EditorUtils::registerShortcut(follSymbolAction, "TextEditor.followSymbol", QKeySequence(Qt::Key_F2));
 
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
     connect(toggleBreakpointAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint);
-    EditorUtils::registerShortcut(toggleBreakpointAction, "Editor.toggleBreak", QKeySequence(Qt::Key_F9));
+    EditorUtils::registerShortcut(toggleBreakpointAction, "TextEditor.toggleBreak", QKeySequence(Qt::Key_F9));
 
     QAction *findUsageAction = new QAction(tr("Find Usages"), this);
     connect(findUsageAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFindUsage);
-    EditorUtils::registerShortcut(findUsageAction, "Editor.findUsage", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_G));
+    EditorUtils::registerShortcut(findUsageAction, "TextEditor.findUsage", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_G));
 
     QAction *renameAction = new QAction(tr("Rename Symbol Under Cursor"), this);
     connect(renameAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol);
-    EditorUtils::registerShortcut(renameAction, "Editor.rename", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
+    EditorUtils::registerShortcut(renameAction, "TextEditor.rename", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
 }
 
 void CodeEditor::initEditorService()

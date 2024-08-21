@@ -5,7 +5,7 @@
 #include "optioncore.h"
 #include "mainframe/optiondefaultkeeper.h"
 #include "mainframe/optionprofilesettinggenerator.h"
-#include "mainframe/optionshortcutsettinggenerator.h"
+#include "mainframe/shortcutsettingwidget.h"
 
 #include "common/common.h"
 #include "base/abstractwidget.h"
