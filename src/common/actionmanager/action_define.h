@@ -15,6 +15,7 @@ constexpr char M_BUILD[] = "IDE.Menu.Build";
 constexpr char M_DEBUG[] = "IDE.Menu.Debug";
 constexpr char M_TOOLS[] = "IDE.Menu.Tools";
 constexpr char M_TOOLS_BINARY[] = "IDE.Menu.Tools.Binary";
+constexpr char M_TOOLS_EVENTRECORDER[] = "IDE.Menu.Tools.EventRecorder";
 constexpr char M_TOOLS_REVERSEDEBUG[] = "IDE.Menu.Tools.ReverseDebug";
 constexpr char M_HELP[] = "IDE.Menu.Help";
 

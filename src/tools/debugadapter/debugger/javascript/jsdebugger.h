@@ -33,9 +33,11 @@ public:
 
     void pause() override;
     QString commandContinue() override;
+    QString commandReverseContinue() override;
     QString commandNext() override;
     QString commandStep() override;
     QString commandFinish() override;
+    QString commandBack() override;
 
     QString stackListFrames() override;
     QString stackListVariables() override;

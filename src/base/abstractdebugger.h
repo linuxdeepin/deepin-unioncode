@@ -52,14 +52,17 @@ public:
 
     virtual void interruptDebug() = 0;
     virtual void continueDebug() = 0;
+    virtual void reverseContinue() = 0;
     virtual void abortDebug() = 0;
     virtual void restartDebug() = 0;
 
     virtual void stepOver() = 0;
     virtual void stepIn() = 0;
     virtual void stepOut() = 0;
+    virtual void stepBack() = 0;
 
     virtual RunState getRunState() const = 0;
+    virtual bool supportStepBack() = 0;
     virtual bool runCoredump(const QString &target, const QString &core, const QString &kit) = 0;
 
 signals:

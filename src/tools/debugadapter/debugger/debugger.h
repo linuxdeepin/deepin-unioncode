@@ -29,9 +29,11 @@ public:
 
     virtual void pause() = 0;
     virtual QString commandContinue() = 0;
+    virtual QString commandReverseContinue() = 0;
     virtual QString commandNext() = 0;
     virtual QString commandStep() = 0;
     virtual QString commandFinish() = 0;
+    virtual QString commandBack() = 0;
 
     virtual QString threadInfo() = 0;
     virtual QString threadSelect(const int threadId) = 0;

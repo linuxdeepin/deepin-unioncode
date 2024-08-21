@@ -35,9 +35,11 @@ public:
 
     void pause() override;
     QString commandContinue() override;
+    QString commandReverseContinue() override;
     QString commandNext() override;
     QString commandStep() override;
     QString commandFinish() override;
+    QString commandBack() override;
 
     QString stackListFrames() override;
     QString stackListVariables() override;
@@ -126,6 +128,19 @@ private:
     void checkVariablesLocker();
 
     GDBDebuggerPrivate *const d;
+};
+
+class RRDebugger : public GDBDebugger
+{
+    Q_OBJECT
+public:
+    explicit RRDebugger(QObject *parent = nullptr) { }
+
+    QString program() override { return "rr"; }
+    QStringList preArguments() override
+    {
+        return QStringList { "-q", "-i=mi2", "replay" };
+    }
 };
 
 #endif // GDBDEBUGGER_H

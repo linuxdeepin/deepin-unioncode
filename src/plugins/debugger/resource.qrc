@@ -3,10 +3,12 @@
         <file>icons/executable_16px.svg</file>
         <file>texts/debug-navigation_22px.svg</file>
         <file>texts/debugger_continue_16px.svg</file>
+        <file>texts/debugger_reverse_continue_16px.svg</file>
         <file>texts/debugger_interrupt_16px.svg</file>
         <file>texts/debugger_stepinto_16px.svg</file>
         <file>texts/debugger_stepout_16px.svg</file>
         <file>texts/debugger_stepover_16px.svg</file>
+        <file>texts/debugger_stepback_16px.svg</file>
         <file>texts/restart_debug_16px.svg</file>
         <file>texts/variable_watchers_16px.svg</file>
         <file>light/icons/breakpoint_14px.svg</file>

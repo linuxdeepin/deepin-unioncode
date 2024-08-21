@@ -89,6 +89,10 @@ void JSDebugger::continueDebug()
     emit runStateChanged(kRunning);
 }
 
+void JSDebugger::reverseContinue()
+{
+}
+
 void JSDebugger::abortDebug()
 {
 }
@@ -112,6 +116,16 @@ void JSDebugger::stepIn()
 void JSDebugger::stepOut()
 {
     runCommand(QScriptEngineDebugger::StepOverAction);
+}
+
+void JSDebugger::stepBack()
+{
+    //runCommand(QScriptEngineDebugger::StepOverAction);
+}
+
+bool JSDebugger::supportStepBack()
+{
+    return false;
 }
 
 AbstractDebugger::RunState JSDebugger::getRunState() const

@@ -34,13 +34,16 @@ public:
 
     void interruptDebug() override;
     void continueDebug() override;
+    void reverseContinue() override;
     void abortDebug() override;
     void restartDebug() override;
 
     void stepOver() override;
     void stepIn() override;
     void stepOut() override;
+    void stepBack() override;
 
+    bool supportStepBack() override;
     RunState getRunState() const override;
     bool runCoredump(const QString &target, const QString &core, const QString &kit) override;
 

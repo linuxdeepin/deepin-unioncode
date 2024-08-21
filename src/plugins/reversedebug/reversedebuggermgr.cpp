@@ -247,7 +247,7 @@ QString ReverseDebuggerMgr::projectTargetPath() const
 
 void ReverseDebuggerMgr::enterReplayEnvironment()
 {
-    emit uiController.switchContext(tr("R&everse Debug"));
+    uiController.switchContext(tr("Ev&ent Recorder"));
 }
 
 static void NumberList2QString(uchar *in, int size, QString &str)

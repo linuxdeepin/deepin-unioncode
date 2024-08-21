@@ -121,6 +121,8 @@ void DebugManager::initDebugger(const QString &program, const QStringList &argum
         d->debugger.reset(new GDBDebugger());
     } else if (program.contains("jsdbg")) {
         d->debugger.reset(new JSDebugger());
+    } else if (program == "rr") {
+        d->debugger.reset(new RRDebugger());
     }
 }
 
@@ -307,6 +309,11 @@ void DebugManager::commandContinue()
     command(d->debugger->commandContinue());
 }
 
+void DebugManager::commandReverseContinue()
+{
+    command(d->debugger->commandReverseContinue());
+}
+
 void DebugManager::commandNext()
 {
     command(d->debugger->commandNext()); //step over
@@ -320,6 +327,11 @@ void DebugManager::commandStep()
 void DebugManager::commandFinish()
 {
     command(d->debugger->commandFinish()); //step out
+}
+
+void DebugManager::commandBack()
+{
+    command(d->debugger->commandBack()); //step back
 }
 
 void DebugManager::threadSelect(const int threadId)

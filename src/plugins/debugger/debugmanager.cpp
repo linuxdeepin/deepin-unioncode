@@ -8,6 +8,7 @@
 #include "debuggerglobals.h"
 #include "interface/menumanager.h"
 #include "interface/attachinfodialog.h"
+#include "reversedebug/reversedebugger.h"
 
 #include "services/debugger/debuggerservice.h"
 #include "services/window/windowservice.h"
@@ -33,6 +34,9 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
 
     menuManager.reset(new MenuManager());
     menuManager->initialize(windowService);
+
+    auto reverseDbg = new ReverseDebugger(this);
+    connect(reverseDbg, &ReverseDebugger::startReplay, this, &DebugManager::rrReplay);
 
     connect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
 
@@ -170,6 +174,11 @@ void DebugManager::continueDebug()
     AsynInvoke(currentDebugger->continueDebug());
 }
 
+void DebugManager::reverseContinue()
+{
+    AsynInvoke(currentDebugger->reverseContinue());
+}
+
 void DebugManager::abortDebug()
 {
     AsynInvoke(currentDebugger->abortDebug());
@@ -198,11 +207,21 @@ void DebugManager::stepOut()
     AsynInvoke(currentDebugger->stepOut());
 }
 
+void DebugManager::stepBack()
+{
+    AsynInvoke(currentDebugger->stepBack());
+}
+
+bool DebugManager::supportStepBack()
+{
+    return currentDebugger->supportStepBack();
+}
+
 void DebugManager::handleRunStateChanged(AbstractDebugger::RunState state)
 {
     menuManager->handleRunStateChanged(state);
 
-    if(state == AbstractDebugger::kStart || state == AbstractDebugger::kRunning) {
+    if(state == AbstractDebugger::kStart || state == AbstractDebugger::kRunning || state == AbstractDebugger::kCustomRunning) {
         emit debugStarted();
     } else if (state == AbstractDebugger::kNoRun) {
         emit debugStopped();
@@ -236,3 +255,10 @@ bool DebugManager::runCoredump(const QString &target, const QString &core, const
 {
     return QtConcurrent::run(currentDebugger, &AbstractDebugger::runCoredump, target, core, kit);
 }
+
+void DebugManager::rrReplay(const QString &target)
+{
+    auto dapdbgger = qobject_cast<DAPDebugger *>(debuggers["dap"]);
+    dapdbgger->startRerverseDebug(target);
+}
+

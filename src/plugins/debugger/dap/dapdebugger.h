@@ -45,6 +45,12 @@ public:
     explicit DAPDebugger(QObject *parent = nullptr);
     ~DAPDebugger() override;
 
+    enum debugState {
+        Normal,
+        Attaching,
+        Reverse
+    };
+
     DWidget *getOutputPane() const override;
     DWidget *getStackPane() const override;
     DWidget *getLocalsPane() const override;
@@ -53,18 +59,22 @@ public:
 
     void startDebug() override;
     void startDebugRemote(const RemoteInfo &info) override;
+    void startRerverseDebug(const QString &target);
     void attachDebug(const QString &processId) override;
     void detachDebug() override;
 
     void interruptDebug() override;
     void continueDebug() override;
+    void reverseContinue() override;
     void abortDebug() override;
     void restartDebug() override;
 
     void stepOver() override;
     void stepIn() override;
     void stepOut() override;
+    void stepBack() override;
 
+    bool supportStepBack() override;
     RunState getRunState() const override;
     bool runCoredump(const QString &target, const QString &core, const QString &kit) override;
 
