@@ -227,10 +227,12 @@ void DapSession::initializeDebugMgr()
     connect(DapProxy::instance(), &DapProxy::sigUpdateBreakpoints, d->debugger, &DebugManager::updateBreakpoints, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigLaunchLocal, d->debugger, &DebugManager::launchLocal, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigContinue, d->debugger, &DebugManager::commandContinue, SequentialExecution);
+    connect(DapProxy::instance(), &DapProxy::sigReverseContinue, d->debugger, &DebugManager::commandReverseContinue, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigPause, d->debugger, &DebugManager::pauseDebugger, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigNext, d->debugger, &DebugManager::commandNext, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStepin, d->debugger, &DebugManager::commandStep, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStepout, d->debugger, &DebugManager::commandFinish, SequentialExecution);
+    connect(DapProxy::instance(), &DapProxy::sigStepback, d->debugger, &DebugManager::commandBack, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigThreads, d->debugger, &DebugManager::threadInfo, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigSelectThread, d->debugger, &DebugManager::threadSelect, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStackTrace, d->debugger, &DebugManager::stackListFrames, SequentialExecution);
@@ -342,10 +344,13 @@ void DapSession::registerHanlder()
             QStringList arguments;
             arguments.push_back(request.program.value().c_str());
             if (request.args.has_value()) {
-                arguments.insert(0, "--args");
-                foreach(auto arg, request.args.value()) {
+                foreach (auto arg, request.args.value()) {
                     arguments.push_back(arg.c_str());
                 }
+                // --args : add arguments for gdb.  except : rr, runcoredump
+                if (request.name.value() != "rr" && arguments.size() >= 2 && !(arguments.size() == 2 && arguments.last().endsWith(".core")))
+                    arguments.insert(0, "--args");
+                arguments.removeAll("");
             }
             d->debugger->initDebugger(request.name.value().c_str(), arguments);
             if (request.environment.has_value()) {
@@ -441,6 +446,14 @@ void DapSession::registerHanlder()
         return dap::ContinueResponse();
     });
 
+    d->session->registerHandler([&](const dap::ReverseContinueRequest &request) {
+        Q_UNUSED(request)
+        Log("<-- Server received reverse continue request from client\n")
+        emit DapProxy::instance()->sigReverseContinue();
+        Log("--> Server received reverse continue request from client\n")
+        return dap::ReverseContinueResponse();
+    });
+
     // The Next request instructs the debugger to single line step for a specific
     // thread.
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Next
@@ -476,6 +489,14 @@ void DapSession::registerHanlder()
         emit DapProxy::instance()->sigStepout();
         Log("--> Server sent stepout response to client\n")
         return dap::StepOutResponse();
+    });
+
+    d->session->registerHandler([&](const dap::StepBackRequest &request) {
+        Q_UNUSED(request)
+        Log("<-- Server received stepback request from client\n")
+        emit DapProxy::instance()->sigStepback();
+        Log("--> Server sent stepback response to client\n")
+        return dap::StepBackResponse();
     });
 
     // The BreakpointLocations request returns all possible locations for source breakpoints in a range
@@ -790,6 +811,7 @@ InitializeResponse DapSession::handleInitializeReq(const InitializeRequest &requ
     response.supportsDisassembleRequest = true;
     response.supportsGotoTargetsRequest = true;
     response.supportsHitConditionalBreakpoints = true;
+    response.supportsStepBack = true;
 
     Log("--> Server sent initialize response to client\n")
     return response;

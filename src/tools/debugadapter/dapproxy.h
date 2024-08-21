@@ -27,10 +27,12 @@ Q_SIGNALS:
     void sigDetach();
     void sigDisconnect();
     void sigContinue();
+    void sigReverseContinue();
     void sigPause();
     void sigNext();
     void sigStepin();
     void sigStepout();
+    void sigStepback();
     void sigStepover();
     void sigBreakInsert(const QString& path);
     void sigThreads();

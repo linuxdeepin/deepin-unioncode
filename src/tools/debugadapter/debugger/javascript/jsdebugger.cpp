@@ -98,6 +98,11 @@ QString JSDebugger::commandContinue()
     return ".continue";
 }
 
+QString JSDebugger::commandReverseContinue()
+{
+    RET_EMPTY
+}
+
 QString JSDebugger::commandNext()
 {
     return ".next";
@@ -109,6 +114,11 @@ QString JSDebugger::commandStep()
 }
 
 QString JSDebugger::commandFinish()
+{
+    RET_EMPTY
+}
+
+QString JSDebugger::commandBack()
 {
     RET_EMPTY
 }

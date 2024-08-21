@@ -35,11 +35,13 @@ private:
     QSharedPointer<QAction> detachDebugger;
     QSharedPointer<QAction> interrupt;
     QSharedPointer<QAction> continueDebugging;
+    QSharedPointer<QAction> reverseContinue;
     QSharedPointer<QAction> abortDebugging;
     QSharedPointer<QAction> restartDebugging;
     QSharedPointer<QAction> stepOver;
     QSharedPointer<QAction> stepIn;
     QSharedPointer<QAction> stepOut;
+    QSharedPointer<QAction> stepBack;
     QSharedPointer<QAction> remoteDebug;
 };
 

@@ -13,8 +13,8 @@
 
 #include <DMenu>
 
-constexpr char A_REVERSE_DEBUG_RECORD[] = "ReverseDebug.Action.Record";
-constexpr char A_REVERSE_DEBUG_REPLAY[] = "ReverseDebug.Action.Replay";
+constexpr char A_EVENT_RECORDER_RECORD[] = "EventRecorder.Action.Record";
+constexpr char A_EVENT_RECORDER_REPLAY[] = "EventRecorder.Action.Replay";
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -34,25 +34,25 @@ bool ReverseDebugPlugin::start()
     }
 
     auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
-    auto mReverseDbg = ActionManager::instance()->createContainer(M_TOOLS_REVERSEDEBUG);
-    mReverseDbg->menu()->setTitle(tr("Reverse debug"));
-    mTools->addMenu(mReverseDbg);
+    auto mEventRecorder = ActionManager::instance()->createContainer(M_TOOLS_EVENTRECORDER);
+    mEventRecorder->menu()->setTitle(tr("Event recorder"));
+    mTools->addMenu(mEventRecorder);
 
     auto actionInit = [&](QAction *action, QString actionID) {
         auto cmd = ActionManager::instance()->registerAction(action, actionID);
-        mReverseDbg->addAction(cmd);
+        mEventRecorder->addAction(cmd);
     };
 
-    auto recoredAction = new QAction(tr("Record"), mReverseDbg);
-    actionInit(recoredAction, A_REVERSE_DEBUG_RECORD);
-    auto replayAction = new QAction(tr("Replay"), mReverseDbg);
-    actionInit(replayAction, A_REVERSE_DEBUG_REPLAY);
+    auto recoredAction = new QAction(tr("Record"), mEventRecorder);
+    actionInit(recoredAction, A_EVENT_RECORDER_RECORD);
+    auto replayAction = new QAction(tr("Replay"), mEventRecorder);
+    actionInit(replayAction, A_EVENT_RECORDER_REPLAY);
 
     reverseDebug = new ReverseDebuggerMgr(this);
     connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);
     connect(replayAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::replay);
 
-    windowService->addContextWidget(tr("R&everse Debug"), new AbstractWidget(reverseDebug->getWidget()), false);
+    windowService->addContextWidget(tr("Ev&ent Recorder"), new AbstractWidget(reverseDebug->getWidget()), false);
 
     return true;
 }

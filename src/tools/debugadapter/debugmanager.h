@@ -50,9 +50,11 @@ public:
 
     void pauseDebugger();
     void commandContinue();
+    void commandReverseContinue();
     void commandNext();
     void commandStep();
     void commandFinish();
+    void commandBack();
 
     void threadInfo();
     void threadSelect(const int threadId);

@@ -151,7 +151,7 @@ void MinidumpRunControl::onStraceExit(int, QProcess::ExitStatus)
         return;
     }
 
-    QMessageBox::information(nullptr, tr("reverse debug"), tr("Recored done, minidump load ready."));
+    QMessageBox::information(nullptr, tr("Event Recorder"), tr("Recored done, minidump load ready."));
 }
 
 }   // namespace Internal

@@ -61,11 +61,13 @@ inline const QString MWMDA_ATTACH_DEBUG { QAction::tr("Attaching to Running Prog
 inline const QString MWMDA_RUNNING { QAction::tr("Running") };
 inline const QString MWMDA_INTERRUPT { QAction::tr("Interrupt") };
 inline const QString MWMDA_CONTINUE { QAction::tr("Continue") };
+inline const QString MWMDA_REVERSE_CONTINUE { QAction::tr("Reverse Continue") };
 inline const QString MWMDA_ABORT_DEBUGGING { QAction::tr("Abort Debugging") };
 inline const QString MWMDA_RESTART_DEBUGGING { QAction::tr("Restart Debugging") };
 inline const QString MWMDA_STEP_OVER { QAction::tr("Step Over") };
 inline const QString MWMDA_STEP_IN { QAction::tr("Step In") };
 inline const QString MWMDA_STEP_OUT { QAction::tr("Step Out") };
+inline const QString MWMDA_STEP_BACK { QAction::tr("Step Back") };
 inline const QString MWMDA_REMOTE_DEBUG { QAction::tr("Remote Debug") };
 
 // MWMTA = MWM Tool Action

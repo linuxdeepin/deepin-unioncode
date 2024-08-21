@@ -56,18 +56,22 @@ public slots:
 
     void interruptDebug();
     void continueDebug();
+    void reverseContinue();
     void abortDebug();
     void restartDebug();
 
     void stepOver();
     void stepIn();
     void stepOut();
+    void stepBack();
+    bool supportStepBack();
 
     void handleRunStateChanged(AbstractDebugger::RunState state);
     void handleEvents(const dpf::Event &event);
 
 private:
     bool runCoredump(const QString &target, const QString &core, const QString &kit);
+    void rrReplay(const QString &target);
 
     QMap<QString, AbstractDebugger *> debuggers;
     AbstractDebugger *currentDebugger = nullptr;

@@ -117,7 +117,7 @@ class DebuggerPrivate
     bool isRemote = false;
     RemoteInfo remoteInfo;
 
-    bool startAttaching = false;
+    DAPDebugger::debugState debugState = DAPDebugger::Normal;
 };
 
 DebuggerPrivate::~DebuggerPrivate()
@@ -215,6 +215,35 @@ void DAPDebugger::startDebug()
     }
 }
 
+void DAPDebugger::startRerverseDebug(const QString &target)
+{
+    d->isRemote = false;
+    d->debugState = Reverse;
+    if (d->currentSession == d->remoteSession)
+        d->currentSession = d->localSession;
+
+    updateRunState(kPreparing);
+    
+    QMap<QString, QVariant> param;
+    param.insert("program", "rr");
+
+    d->requestDAPPortPpid = QString(getpid());
+    QDBusMessage msg = QDBusMessage::createSignal("/path",
+                                                  "com.deepin.unioncode.interface",
+                                                  "getDebugPort");
+
+    msg << d->requestDAPPortPpid
+        << "cmake" //rr only support c/c++
+        << ""
+        << QStringList{target};
+
+    bool ret = QDBusConnection::sessionBus().send(msg);
+    if (!ret) {
+        qWarning() << "requeset debug port failed";
+        updateRunState(kNoRun);
+    }
+}
+
 void DAPDebugger::startDebugRemote(const RemoteInfo &info)
 {
     d->remoteInfo = info;
@@ -255,7 +284,7 @@ void DAPDebugger::attachDebug(const QString &processId)
     }
 
     d->isRemote = false;
-    d->startAttaching = true;
+    d->debugState = Attaching;
     d->currentSession = d->localSession;
 
     // only support gdb for now
@@ -304,6 +333,14 @@ void DAPDebugger::continueDebug()
     }
 }
 
+void DAPDebugger::reverseContinue()
+{
+    if (d->runState == kStopped) {
+        d->currentSession->reverseContinue(d->threadId);
+        editor.removeDebugLine();
+    }
+}
+
 void DAPDebugger::abortDebug()
 {
     if (d->runState == kRunning || d->runState == kStopped || d->runState == kCustomRunning) {
@@ -321,8 +358,6 @@ void DAPDebugger::abortDebug()
     }
 
     d->currentSession->terminate();
-    if (d->startAttaching)
-        d->startAttaching = false;
     printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
 }
 
@@ -364,6 +399,18 @@ void DAPDebugger::stepOut()
     if (d->runState == kStopped && d->processingVariablesCount == 0) {
         d->currentSession->stepOut(d->threadId, undefined);
     }
+}
+
+void DAPDebugger::stepBack()
+{
+    if (d->runState == kStopped && d->processingVariablesCount == 0) {
+        d->currentSession->stepBack(d->threadId, undefined);
+    }
+}
+
+bool DAPDebugger::supportStepBack()
+{
+    return d->debugState == Reverse;
 }
 
 DAPDebugger::RunState DAPDebugger::getRunState() const
@@ -568,17 +615,18 @@ void DAPDebugger::registerDapHandlers()
 
         bool signalStopped = false;
         if (event.reason == "signal-received" && event.description.has_value()) {
+            signalStopped = true;
             auto signalName = QString::fromStdString(event.description.value().c_str());
             if (signalName == "SIGSEGV") { // Segmentation fault
-                signalStopped = true;
                 auto signalMeaning = event.text.has_value() ? event.text.value().c_str() : "";
                 QMetaObject::invokeMethod(this, "showStoppedBySignalMessageBox",
                                           Q_ARG(QString, QString::fromStdString(signalMeaning)), Q_ARG(QString, signalName));
             }
-            if (signalName == "SIGINT" && d->pausing)   // stopped by user
-                signalStopped = true;
+            if (signalName == "SIGINT" && !d->pausing)   // stopped by user
+                signalStopped = false;
         }
 
+        bool attaching = d->debugState == Attaching;
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
                 || event.reason == "breakpoint"
@@ -588,14 +636,12 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "end-stepping-range"
                 || event.reason == "goto"
                 || signalStopped
-                || (event.reason == "unknown" && d->startAttaching)) {
+                || (event.reason == "unknown" && attaching)) {
             //when attaching to running program . it won`t receive initialized event and event`s reason is "unknwon"
             //so initial breakpoints in here
-            if (d->startAttaching) {
+            if (attaching) {
                 d->currentSession->getRawSession()->setReadyForBreakpoints(true);
                 debugService->sendAllBreakpoints(d->currentSession);
-
-                d->startAttaching = false;
             }
             if (event.threadId) {
                 d->threadId = event.threadId.value(0);
@@ -1265,6 +1311,7 @@ void DAPDebugger::updateRunState(DAPDebugger::RunState state)
         case kNoRun:
             exitDebug();
             AppOutputPane::instance()->setProcessFinished("debugPane");
+            d->debugState = Normal;
             break;
         case kRunning:
         case kCustomRunning:
@@ -1333,7 +1380,7 @@ void DAPDebugger::prepareDebug()
             QMap<QString, QVariant> param;
             if (!d->isRemote)
                 param = generator->getDebugArguments(getActiveProjectInfo(), d->currentOpenedFileName);
-            
+
             bool ret = generator->prepareDebug(param, retMsg);
             if (!ret) {
                 printOutput(retMsg, OutputPane::ErrorMessage);
@@ -1448,31 +1495,56 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     }
 
     // Launch debuggee.
-    if (d->startAttaching) {
-        dap::object obj;
-        obj["processId"] = param.value("targetPath").toString().toStdString();
-        dap::AttachRequest request;
-        request.name = kitName.toStdString(); //kitName: gdb
-        request.connect = obj;
-        bSuccess &= d->currentSession->attach(request);
-    } else {
-        auto &ctx = dpfInstance.serviceContext();
-        LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
-        if (service) {
-            auto generator = service->create<LanguageGenerator>(kitName);
-            if (generator) {
-                if (generator->isLaunchNotAttach()) {
-                    dap::LaunchRequest request = generator->launchDAP(param);
-                    bSuccess &= d->currentSession->launch(request);
-                } else {
-                    dap::AttachRequest request = generator->attachDAP(port, param);
-                    bSuccess &= d->currentSession->attach(request);
+    switch (d->debugState) {
+        case Normal: {
+            auto &ctx = dpfInstance.serviceContext();
+            LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
+            if (service) {
+                auto generator = service->create<LanguageGenerator>(kitName);
+                if (generator) {
+                    if (generator->isLaunchNotAttach()) {
+                        dap::LaunchRequest request = generator->launchDAP(param);
+                        bSuccess &= d->currentSession->launch(request);
+                    } else {
+                        dap::AttachRequest request = generator->attachDAP(port, param);
+                        bSuccess &= d->currentSession->attach(request);
+                    }
                 }
+            } else {
+                bSuccess &= false;
             }
-        } else {
-            bSuccess &= false;
+            break;
         }
+        case Attaching: {
+            dap::object obj;
+            obj["processId"] = param.value("targetPath").toString().toStdString();
+            dap::AttachRequest request;
+            request.name = kitName.toStdString(); //kitName: gdb
+            request.connect = obj;
+            bSuccess &= d->currentSession->attach(request);
+            break;
+        }
+        case Reverse: {
+            dap::LaunchRequest request;
+            request.name = "rr";
+            request.type = "cppdbg";
+            request.request = "launch";
+            request.program = "";   // targetPath.toStdString();
+            request.stopAtEntry = false;
+            dap::array<dap::string> arrayArg;
+            foreach (QString arg, param["arguments"].toStringList()) {
+                arrayArg.push_back(arg.toStdString());
+            }
+            request.args = arrayArg;
+            request.externalConsole = false;
+            request.MIMode = "gdb";
+            request.__sessionId = QUuid::createUuid().toString().toStdString();
+            bSuccess &= d->currentSession->launch(request);
+        }
+        default:
+            break;
     }
+
     if (!bSuccess) {
         qCritical() << "startDebug failed!";
     } else {
