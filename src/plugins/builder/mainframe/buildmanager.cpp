@@ -601,7 +601,7 @@ void BuildManager::slotBuildState(const BuildState &buildState)
     case BuildState::kBuildFailed: {
         d->buildCancelBtn->setIcon(QIcon::fromTheme("build"));
         auto cmd = ActionManager::instance()->command("Build.Build");
-        auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(cmd->keySequence().toString());
+        auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(Command::keySequencesToNativeString(cmd->keySequences()).join(" | "));
         d->buildCancelBtn->setToolTip(toolTip);
         d->rebuildAction->setEnabled(true);
         d->cleanAction->setEnabled(true);
@@ -610,7 +610,7 @@ void BuildManager::slotBuildState(const BuildState &buildState)
     case BuildState::kBuilding: {
         d->buildCancelBtn->setIcon(QIcon::fromTheme("cancel"));
         auto cmd = ActionManager::instance()->command("Build.Cancel");
-        auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(cmd->keySequence().toString());
+        auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(Command::keySequencesToNativeString(cmd->keySequences()).join(" | "));
         d->buildCancelBtn->setToolTip(toolTip);
         d->rebuildAction->setEnabled(false);
         d->cleanAction->setEnabled(false);

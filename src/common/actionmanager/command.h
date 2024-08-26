@@ -47,6 +47,7 @@ public:
     bool hasAttribute(CommandAttribute attr) const;
 
     bool isActive() const;
+    static QStringList keySequencesToNativeString(const QList<QKeySequence> &sequences);
 
 signals:
     void keySequenceChanged();

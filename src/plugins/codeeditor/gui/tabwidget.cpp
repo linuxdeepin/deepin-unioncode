@@ -200,7 +200,11 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
 
         int row = gridLayout->rowCount();
         gridLayout->addWidget(new QLabel(cmd->action()->text(), q), row, 0, Qt::AlignRight);
-        gridLayout->addWidget(new KeyLabel(cmd->keySequence().toString(), q), row, 1, Qt::AlignLeft);
+        const auto &keyList = cmd->keySequences();
+        for (int i = 0; i < keyList.size(); ++i) {
+            auto key = keyList[i];
+            gridLayout->addWidget(new KeyLabel(key.toString(), q), row, i + 1, Qt::AlignLeft);
+        }
     };
 
     addCommandLine(A_OPEN_FILE);
