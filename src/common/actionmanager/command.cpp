@@ -224,3 +224,20 @@ bool Command::isActive() const
 {
     return d->active;
 }
+
+QStringList Command::keySequencesToNativeString(const QList<QKeySequence> &sequences)
+{
+    QList<QKeySequence> validSequences;
+    std::copy_if(sequences.begin(), sequences.end(), std::back_inserter(validSequences),
+                 [](const QKeySequence &k) {
+                     return !k.isEmpty();
+                 });
+
+    QStringList keyList;
+    std::transform(validSequences.begin(), validSequences.end(), std::back_inserter(keyList),
+                   [](const QKeySequence &k) {
+                       return k.toString(QKeySequence::NativeText);
+                   });
+
+    return keyList;
+}

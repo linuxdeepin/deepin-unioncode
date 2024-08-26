@@ -20,8 +20,8 @@ void ActionLocator::prepareSearch(const QString &searchText)
 {
     Q_UNUSED(searchText)
 
+    locatorList.clear();
     commandList = ActionManager::instance()->commandList();
-
     foreach (auto command, commandList) {
         if (command->action() && command->action()->isSeparator())
             continue;
@@ -29,7 +29,7 @@ void ActionLocator::prepareSearch(const QString &searchText)
         baseLocatorItem item(this);
         item.id = command->id();
         item.displayName = command->description();
-        item.extraInfo = command->keySequence().toString();
+        item.extraInfo = Command::keySequencesToNativeString(command->keySequences()).join(" | ");
 
         locatorList.append(item);
     }

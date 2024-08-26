@@ -63,7 +63,6 @@ public:
 
     ShortcutItem *shortcutItem(QTreeWidgetItem *item);
     int checkConflict(const QKeySequence &key, int index);
-    QStringList keySequencesToNativeString(const QList<QKeySequence> &sequences);
     void setModified(QTreeWidgetItem *item, bool modified);
     void resetRecordState();
     int translateModifiers(Qt::KeyboardModifiers state, const QString &text);
@@ -239,7 +238,7 @@ void ShortcutSettingWidgetPrivate::updateShortcut(QTreeWidgetItem *item, const Q
         return;
     }
 
-    const auto &keyStrList = keySequencesToNativeString(scItem->shortcutKeys);
+    const auto &keyStrList = Command::keySequencesToNativeString(scItem->shortcutKeys);
     ShortcutLabel *keyLabel = new ShortcutLabel(q);
     keyLabel->setKeySqueces(keyStrList);
     commandWidget->setItemWidget(item, 2, keyLabel);
@@ -504,23 +503,6 @@ int ShortcutSettingWidgetPrivate::checkConflict(const QKeySequence &key, int ind
     }
 
     return conflictCount;
-}
-
-QStringList ShortcutSettingWidgetPrivate::keySequencesToNativeString(const QList<QKeySequence> &sequences)
-{
-    QList<QKeySequence> validSequences;
-    std::copy_if(sequences.begin(), sequences.end(), std::back_inserter(validSequences),
-                 [](const QKeySequence &k) {
-                     return !k.isEmpty();
-                 });
-
-    QStringList keyList;
-    std::transform(validSequences.begin(), validSequences.end(), std::back_inserter(keyList),
-                   [](const QKeySequence &k) {
-                       return k.toString(QKeySequence::NativeText);
-                   });
-
-    return keyList;
 }
 
 void ShortcutSettingWidgetPrivate::setModified(QTreeWidgetItem *item, bool modified)
