@@ -169,7 +169,7 @@ void TextEditorPrivate::updateSettings()
     QFont font(fontName, fontSize, QFont::Normal);
     if (q->lexer())
         q->lexer()->setDefaultFont(font);
-    else
+    else if (!fileName.isEmpty())
         q->setFont(font);
 
     int fontZoom = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontZoom, 100).toInt();
@@ -215,13 +215,14 @@ void TextEditorPrivate::loadLexer()
 
     using namespace support_file;
     auto id = Language::id(fileName);
+    QFont font(fontName, fontSize, QFont::Normal);
     if (auto lexer = LexerManager::instance()->createSciLexer(id, fileName)) {
         lexer->setParent(q);
-        QFont font(fontName, fontSize, QFont::Normal);
         lexer->setDefaultFont(font);
         q->setLexer(lexer);
         setMarginVisible(FoldingMargin, true);
     } else {
+        q->setFont(font);
         setMarginVisible(FoldingMargin, false);
     }
 }
