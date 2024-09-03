@@ -68,13 +68,13 @@ void WorkspaceWidgetPrivate::initActions()
 
     // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
-    auto cmd = ActionManager::instance()->registerAction(commentAction, "TextEditor.AddAndRemoveComment");
+    auto cmd = ActionManager::instance()->registerAction(commentAction, "TextEditor.AddAndRemoveComment", { TextEditorContext });
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Slash);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
 
     // show opened files
     QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
-    cmd = ActionManager::instance()->registerAction(showOpenedAction, "TextEditor.ShowOpenedFiles");
+    cmd = ActionManager::instance()->registerAction(showOpenedAction, "TextEditor.ShowOpenedFiles", { TextEditorContext });
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Tab);
     connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 
