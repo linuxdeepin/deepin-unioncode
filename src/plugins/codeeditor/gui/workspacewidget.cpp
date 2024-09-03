@@ -743,8 +743,22 @@ void WorkspaceWidgetPrivate::handleOpenFile(const QString &workspace, const QStr
     if (stackWidget->currentIndex() != 0)
         stackWidget->setCurrentIndex(0);
 
-    if (auto tabWidget = currentTabWidget())
-        tabWidget->openFile(fileName);
+    // find the editor if the `fileName` is already opened
+    TextEditor *editor { nullptr };
+    for (auto tabWidget : qAsConst(tabWidgetList)) {
+        editor = tabWidget->findEditor(fileName);
+        if (editor)
+            break;
+    }
+
+    if (auto tabWidget = currentTabWidget()) {
+        if (editor) {
+            auto document = editor->document();
+            tabWidget->openFile(fileName, &document);
+        } else {
+            tabWidget->openFile(fileName);
+        }
+    }
 }
 
 void WorkspaceWidgetPrivate::handleCloseFile(const QString &fileName)
