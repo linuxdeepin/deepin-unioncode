@@ -322,9 +322,8 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
     jsonObject.insert("machineId", machineId);
     jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
-    //temp  support choose to use later
     jsonObject.insert("locale", locale);
-    
+
     if (!CodeGeeXManager::instance()->getReferenceFiles().isEmpty()) {
         auto fileDatas = parseFile(CodeGeeXManager::instance()->getReferenceFiles());
         jsonObject.insert("command", "file_augment");
@@ -336,7 +335,7 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
     else
         jsonObject.insert("model", model);
 
-    if(!talkId.isEmpty())
+    if (!talkId.isEmpty())
         jsonObject.insert("talkId", talkId);
 
     return jsonToByteArray(jsonObject);

@@ -90,7 +90,6 @@ void CodeGeeXManager::setLocale(CodeGeeX::locale locale)
         askApi.setLocale("en");
         Copilot::instance()->setLocale("en");
     }
-
 }
 
 void CodeGeeXManager::setCurrentModel(languageModel model)
@@ -168,7 +167,7 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
 {
     if (msgID.isEmpty())
         return;
-    
+
     auto msgData = modifiedData(data);
     if (event == "finish") {
         responseData.clear();
@@ -190,8 +189,6 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
             curSessionMsg[msgID].updateData(responseData);
             Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
         }
-    } else if (event == "processing") {
-        emit searching(data);
     }
 }
 
@@ -294,8 +291,8 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::getMessageListResult, this, &CodeGeeXManager::showHistoryMessage);
 
     connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
-    connect(Copilot::instance(), &Copilot::response,  this, &CodeGeeXManager::onResponse);
-    connect(Copilot::instance(), &Copilot::messageSended,  this, &CodeGeeXManager::startReceiving);
+    connect(Copilot::instance(), &Copilot::response, this, &CodeGeeXManager::onResponse);
+    connect(Copilot::instance(), &Copilot::messageSended, this, &CodeGeeXManager::startReceiving);
 
     connect(this, &CodeGeeXManager::requestStop, &askApi, &AskApi::stopReceive);
 }

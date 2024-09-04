@@ -183,34 +183,35 @@ void MessageComponent::initConnect()
 void MessageComponent::waitForAnswer()
 {
     waitingAnswer = true;
-    auto hlayout = new QHBoxLayout;
-    spinner = new DSpinner(this);
+    auto spinner = new DSpinner(this);
     spinner->setFixedSize(14, 14);
-    hlayout->addWidget(spinner);
+
+    searchingWidget = new DWidget(this);
+    auto hlayout = new QHBoxLayout(searchingWidget);
+    auto searchingIcon = new DLabel(searchingWidget);
+    searchingIcon->setPixmap(QIcon::fromTheme("codegeex_internet").pixmap(QSize(14, 14)));
+    auto searchingText = new DLabel(tr("Online Searching"), searchingWidget);
+
+    hlayout->setContentsMargins(0, 0, 0, 0);
     hlayout->setAlignment(Qt::AlignLeft);
-
-    if (!searchingText)
-        searchingText = new DLabel(this);
-    searchingText->setWordWrap(true);
+    hlayout->addWidget(searchingIcon);
     hlayout->addWidget(searchingText);
-    msgLayout->addLayout(hlayout);
+    hlayout->addWidget(spinner);
+    msgLayout->addWidget(searchingWidget);
+    isConnecting = CodeGeeXManager::instance()->isConnectToNetWork();
+    if (!isConnecting) {
+        searchingIcon->hide();
+        searchingText->hide();
+    }
     spinner->start();
-
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::searching, searchingText, [=](const QString &searchText) {
-        if (finished)
-            return;
-        isConnecting = true;
-        auto text = tr("online searching --- %1 ").arg(searchText);
-        searchingText->setText(text);
-    });
 }
 
 void MessageComponent::stopWaiting()
 {
     if (waitingAnswer) {
-        msgLayout->removeWidget(spinner);
-        searchingText->hide();
-        delete spinner;
+        msgLayout->removeWidget(searchingWidget);
+        searchingWidget->hide();
+        delete searchingWidget;
         waitingAnswer = false;
     }
 }
@@ -271,11 +272,12 @@ void MessageComponent::showWebsitesRefrences()
 
     auto separator = new QHBoxLayout;
     separator->setContentsMargins(0, 0, 0, 0);
-    separator->setSpacing(0);
-    auto toggleBtn = new DCommandLinkButton(tr("References"), this);
-    separator->addWidget(toggleBtn);
-    separator->addWidget(new DHorizontalLine);
+    auto toggleBtn = new DPushButton(this);
+    toggleBtn->setText(tr("Show Reference"));
+    toggleBtn->setFlat(true);
+    toggleBtn->setIcon(QIcon::fromTheme("codegeex_internet"));
 
+    separator->addWidget(toggleBtn);
     msgLayout->addLayout(separator);
 
     int count = 0;
@@ -298,7 +300,7 @@ void MessageComponent::showWebsitesRefrences()
         if (!QDesktopServices::openUrl(website.url))
             qWarning() << "can not open url: " << website.url;
     });
-    connect(toggleBtn, &DCommandLinkButton::clicked, this, [=](){
+    connect(toggleBtn, &DPushButton::clicked, this, [=]() {
         if (view->isVisible()) {
             msgLayout->removeWidget(view);
             view->hide();

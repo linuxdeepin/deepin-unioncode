@@ -56,8 +56,7 @@ private:
     DLabel *senderName { nullptr };
     DLabel *context { nullptr };
     DPushButton *editButton { nullptr };
-    DSpinner *spinner { nullptr };
-    DLabel *searchingText { nullptr };
+    DWidget *searchingWidget { nullptr };
 
     QVBoxLayout *msgLayout { nullptr };
 

@@ -11,7 +11,7 @@
 #include <DStyleOptionViewItem>
 #include <DListView>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
-#include <DPaletteHelper>
+#    include <DPaletteHelper>
 #endif
 
 #include <QPainter>
@@ -31,9 +31,8 @@ inline constexpr int kIconLeftMargin = { 10 };
 inline constexpr int kTextLeftMargin = { 8 };
 
 DisplayItemDelegate::DisplayItemDelegate(QAbstractItemView *parent)
-    : DStyledItemDelegate (parent)
+    : DStyledItemDelegate(parent)
 {
-
 }
 
 void DisplayItemDelegate::paint(QPainter *painter,
@@ -66,7 +65,7 @@ QSize DisplayItemDelegate::sizeHint(const QStyleOptionViewItem &option,
         if (size.isValid()) {
             return size;
         } else {
-            return {option.rect.width(), option.fontMetrics.height() * 2 + 5};
+            return { option.rect.width(), option.fontMetrics.height() * 2 + 5 };
         }
     }
     return DStyledItemDelegate::sizeHint(option, index);
@@ -118,7 +117,6 @@ QRectF DisplayItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionV
 
     if (!parent() || !parent()->parent())
         return QRect();
-
 
     // draw icon
     QRectF iconRect = option.rect;
