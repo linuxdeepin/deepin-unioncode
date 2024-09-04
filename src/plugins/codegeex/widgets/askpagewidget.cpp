@@ -6,7 +6,6 @@
 #include "intropage.h"
 #include "messagecomponent.h"
 #include "codegeexmanager.h"
-#include "services/editor/editorservice.h"
 
 #include <DLabel>
 #include <DLineEdit>
@@ -21,44 +20,10 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QKeyEvent>
-#include <QMenu>
-#include <QFileDialog>
+#include <QComboBox>
 
-static const int minInputEditHeight = 36;
-static const int maxInputEditHeight = 236;
-static const int minInputWidgetHeight = 86;
-
-InputEdit::InputEdit(QWidget *parent)
-    : DTextEdit(parent)
-{
-    setMinimumHeight(minInputEditHeight);
-    setFixedHeight(minInputEditHeight);
-    setLineWrapMode(QTextEdit::WidgetWidth);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    connect(this, &DTextEdit::textChanged, this, [this]() {
-        auto adjustHeight = document()->size().height();
-        if (adjustHeight < minInputEditHeight)
-            setFixedHeight(minInputEditHeight);
-        else if (adjustHeight > maxInputEditHeight)
-            setFixedHeight(maxInputEditHeight);
-        else
-            setFixedHeight(adjustHeight);
-    });
-}
-
-void InputEdit::keyPressEvent(QKeyEvent *e)
-{
-    if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) {
-        if (e->modifiers() & Qt::AltModifier)
-            insertPlainText("\n");
-        else if (!document()->toPlainText().isEmpty())
-            emit pressedEnter();
-        return;
-    }
-
-    DTextEdit::keyPressEvent(e);
-}
+// button height + margin
+static const int inputExtraHeight = 56;
 
 AskPageWidget::AskPageWidget(QWidget *parent)
     : DWidget(parent)
@@ -112,7 +77,7 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
 void AskPageWidget::slotMessageSend()
 {
     if (inputEdit) {
-        auto prompt = inputEdit->toPlainText();
+        auto prompt = inputEdit->edit()->toPlainText();
         if (prompt.isEmpty())
             return;
         askQuestion(prompt);
@@ -142,22 +107,6 @@ void AskPageWidget::onDeleteBtnClicked()
     confirmDialog->exec();
 }
 
-void AskPageWidget::onReferenceBtnClicked()
-{
-    referenceBtn->setChecked(true);
-    referenceMenu->exec(QCursor::pos());
-    referenceBtn->update();
-    if (selectedFiles.isEmpty())
-        referenceBtn->setChecked(false);
-
-    CodeGeeXManager::instance()->setRefereceFiles(selectedFiles);
-}
-
-void AskPageWidget::onNetWorkBtnClicked()
-{
-    CodeGeeXManager::instance()->connectToNetWork(netWorkBtn->isChecked());
-}
-
 void AskPageWidget::onHistoryBtnClicked()
 {
     Q_EMIT requestShowHistoryPage();
@@ -167,6 +116,12 @@ void AskPageWidget::onCreateNewBtnClicked()
 {
     CodeGeeXManager::instance()->cleanHistoryMessage();
     CodeGeeXManager::instance()->createNewSession();
+}
+
+void AskPageWidget::onModelchanged(int index)
+{
+    auto model = modelCb->itemData(index).value<CodeGeeX::languageModel>();
+    CodeGeeXManager::instance()->setCurrentModel(model);
 }
 
 void AskPageWidget::initUI()
@@ -208,7 +163,7 @@ void AskPageWidget::initUI()
 void AskPageWidget::initInputWidget()
 {
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(10, 0, 10, 0);
+    layout->setContentsMargins(10, 0, 10, 10);
     layout->setSpacing(0);
     inputWidget->setLayout(layout);
 
@@ -217,59 +172,40 @@ void AskPageWidget::initInputWidget()
     btnLayout->setContentsMargins(0, 0, 0, 0);
 
     deleteBtn = new DToolButton(this);
-    deleteBtn->setFixedSize(30, 30);
+    deleteBtn->setFixedSize(26, 26);
     deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
     deleteBtn->setToolTip(tr("delete this session"));
 
-    referenceBtn = new DToolButton(this);
-    referenceBtn->setFixedSize(30, 30);
-    referenceBtn->setIcon(QIcon::fromTheme("codegeex_files"));
-    referenceBtn->setToolTip(tr("reference files"));
-    referenceBtn->setCheckable(true);
-
-    netWorkBtn = new DToolButton(this);
-    netWorkBtn->setFixedSize(30, 30);
-    netWorkBtn->setCheckable(true);
-    netWorkBtn->setIcon(QIcon::fromTheme("codegeex_internet"));
-    netWorkBtn->setToolTip(tr("connect to network"));
-
     btnLayout->addWidget(deleteBtn);
-    btnLayout->addWidget(referenceBtn);
-    btnLayout->addWidget(netWorkBtn);
-
-    btnLayout->addStretch(1);
 
     historyBtn = new DToolButton(this);
     historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
-    historyBtn->setFixedSize(30, 30);
+    historyBtn->setFixedSize(26, 26);
     historyBtn->setToolTip(tr("history sessions"));
     btnLayout->addWidget(historyBtn);
 
     createNewBtn = new DToolButton(this);
     createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
-    createNewBtn->setFixedSize(30, 30);
+    createNewBtn->setFixedSize(26, 26);
     createNewBtn->setToolTip(tr("create new session"));
     btnLayout->addWidget(createNewBtn);
+    btnLayout->addStretch(1);
 
-    auto hlayout = new QHBoxLayout;
-    inputEdit = new InputEdit(inputWidget);
+    modelCb = new QComboBox(this);
+    modelCb->setFixedHeight(26);
+    modelCb->addItem(QIcon::fromTheme("codegeex_model_lite"), "Lite", CodeGeeX::languageModel::Lite);
+    modelCb->addItem(QIcon::fromTheme("codegeex_model_pro"), "Pro", CodeGeeX::languageModel::Pro);
+    modelCb->setFixedWidth(100);
+    btnLayout->addWidget(modelCb);
+
+    inputEdit = new InputEditWidget(inputWidget);
     placeHolderText = tr("Ask question here, press Enter to send...");
-    inputEdit->setPlaceholderText(placeHolderText);
+    inputEdit->edit()->setPlaceholderText(placeHolderText);
 
-    sendButton = new DFloatingButton(this);
-    sendButton->setFixedSize(30, 30);
-    sendButton->setIcon(QIcon::fromTheme("codegeex_send").pixmap(16, QIcon::Selected));
-    sendButton->setEnabled(false);
-
-    inputWidget->setFixedHeight(minInputWidgetHeight);
+    inputWidget->setFixedHeight(inputEdit->height() + inputExtraHeight);
     inputWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    hlayout->addWidget(inputEdit);
-    hlayout->setSpacing(10);
-    hlayout->addWidget(sendButton);
-    layout->addLayout(hlayout);
-
-    initReferenceMenu();
+    layout->addWidget(inputEdit);
 }
 
 void AskPageWidget::initConnection()
@@ -280,20 +216,14 @@ void AskPageWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this, &AskPageWidget::onChatFinished);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::setTextToSend, this, &AskPageWidget::setInputText);
 
-    connect(sendButton, &DFloatingButton::clicked, this, &AskPageWidget::slotMessageSend);
-    connect(inputEdit, &InputEdit::pressedEnter, this, &AskPageWidget::slotMessageSend);
+    connect(inputEdit, &InputEditWidget::messageSended, this, &AskPageWidget::slotMessageSend);
+    connect(inputEdit, &InputEditWidget::pressedEnter, this, &AskPageWidget::slotMessageSend);
     connect(deleteBtn, &DToolButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
-    connect(referenceBtn, &DToolButton::clicked, this, &AskPageWidget::onReferenceBtnClicked);
-    connect(netWorkBtn, &DToolButton::clicked, this, &AskPageWidget::onNetWorkBtnClicked);
     connect(historyBtn, &DToolButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DToolButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
-    connect(inputEdit, &DTextEdit::textChanged, this, [this]() {
-        if (inputEdit->toPlainText().isEmpty())
-            sendButton->setEnabled(false);
-        else
-            sendButton->setEnabled(true);
-
-        inputWidget->setFixedHeight(inputEdit->height() + minInputWidgetHeight - minInputEditHeight);
+    connect(modelCb, qOverload<int>(&QComboBox::currentIndexChanged), this, &AskPageWidget::onModelchanged);
+    connect(inputEdit->edit(), &DTextEdit::textChanged, this, [this]() {
+        inputWidget->setFixedHeight(inputEdit->height() + inputExtraHeight);
     });
     connect(stopGenerate, &DPushButton::clicked, this, [this]() {
         CodeGeeXManager::instance()->stopReceiving();
@@ -310,59 +240,6 @@ void AskPageWidget::initConnection()
             int maxValue = scrollArea->verticalScrollBar()->maximum();
             scrollArea->verticalScrollBar()->setValue(maxValue);
         }
-    });
-}
-
-void AskPageWidget::initReferenceMenu()
-{
-    // files references menu
-    referenceMenu = new QMenu(this);
-    auto *current = new QAction(tr("Current file"), this);
-    current->setCheckable(true);
-    auto *opened = new QAction(tr("Opened files"), this);
-    opened->setCheckable(true);
-    auto *select = new QAction(tr("Select file"), this);
-    select->setCheckable(true);
-
-    auto *clear = new QAction(tr("clear"), this);
-
-    QActionGroup *group = new QActionGroup(this);
-    group->addAction(current);
-    group->addAction(opened);
-    group->addAction(select);
-
-    referenceMenu->addActions(group->actions());
-    referenceMenu->addSeparator();
-    referenceMenu->addAction(clear);
-
-    auto editorSrv = dpfGetService(dpfservice::EditorService);
-
-    connect(current, &QAction::triggered, this, [=](){
-        selectedFiles.clear();
-        auto file = editorSrv->currentFile();
-        if (file.isEmpty())
-            current->setChecked(false);
-        else
-            selectedFiles.append(file);
-    });
-    connect(opened, &QAction::triggered, this, [=](){
-        selectedFiles.clear();
-        selectedFiles = editorSrv->openedFiles();
-        if (selectedFiles.isEmpty())
-            opened->setChecked(false);
-    });
-    connect(select, &QAction::triggered, this, [=](){
-        selectedFiles.clear();
-        QString result = QFileDialog::getOpenFileName(this, tr("Select File"), QDir::homePath());
-        if (result.isEmpty())
-            select->setChecked(false);
-        else
-            selectedFiles.append(result);
-    });
-    connect(clear, &QAction::triggered, this, [=](){
-        selectedFiles.clear();
-        referenceBtn->setChecked(false);
-        group->checkedAction()->setChecked(false);
     });
 }
 
@@ -400,7 +277,7 @@ void AskPageWidget::enterAnswerState()
     }
 
     progressCalcNum = 0;
-    inputEdit->clear();
+    inputEdit->edit()->clear();
     inputEdit->setEnabled(false);
 
     if (deleteBtn)
@@ -418,7 +295,7 @@ void AskPageWidget::enterInputState()
 {
     stopWidget->hide();
     inputEdit->setEnabled(true);
-    inputEdit->setPlaceholderText(placeHolderText);
+    inputEdit->edit()->setPlaceholderText(placeHolderText);
 
     if (deleteBtn)
         deleteBtn->setEnabled(true);
@@ -455,5 +332,5 @@ void AskPageWidget::resetBtns()
 void AskPageWidget::setInputText(const QString &prompt)
 {
     if (!waitingAnswer)
-        inputEdit->setText(prompt);
+        inputEdit->edit()->setText(prompt);
 }

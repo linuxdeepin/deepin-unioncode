@@ -79,9 +79,9 @@ public:
     QList<RecordData> sessionRecords() const;
 
     void connectToNetWork(bool connecting);
-    bool isConnectToNetWork() { return isConnecting; };
-    QStringList getReferenceFiles() { return referenceFiles; };
-    void setRefereceFiles(QStringList files) { referenceFiles = files; };
+    bool isConnectToNetWork() { return isConnecting; }
+    QStringList getReferenceFiles() { return referenceFiles; }
+    void setRefereceFiles(const QStringList &files) { referenceFiles = files; }
 
 Q_SIGNALS:
     void loginSuccessed();
