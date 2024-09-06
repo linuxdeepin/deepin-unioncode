@@ -23,9 +23,6 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     eventHandleMap.insert(editor.clearAllAnnotation.name, std::bind(&CodeEditorReceiver::processClearAllAnnotationEvent, this, _1));
     eventHandleMap.insert(editor.setDebugLine.name, std::bind(&CodeEditorReceiver::processSetDebugLineEvent, this, _1));
     eventHandleMap.insert(editor.removeDebugLine.name, std::bind(&CodeEditorReceiver::processRemoveDebugLineEvent, this, _1));
-    eventHandleMap.insert(editor.setLineBackgroundColor.name, std::bind(&CodeEditorReceiver::processSetLineBackgroundColorEvent, this, _1));
-    eventHandleMap.insert(editor.resetLineBackgroundColor.name, std::bind(&CodeEditorReceiver::processResetLineBackgroundEvent, this, _1));
-    eventHandleMap.insert(editor.clearLineBackgroundColor.name, std::bind(&CodeEditorReceiver::processClearLineBackgroundEvent, this, _1));
     eventHandleMap.insert(editor.addBreakpoint.name, std::bind(&CodeEditorReceiver::processAddBreakpointEvent, this, _1));
     eventHandleMap.insert(editor.removeBreakpoint.name, std::bind(&CodeEditorReceiver::processRemoveBreakpointEvent, this, _1));
     eventHandleMap.insert(editor.setBreakpointEnabled.name, std::bind(&CodeEditorReceiver::processSetBreakpointEnabledEvent, this, _1));
@@ -83,37 +80,16 @@ void CodeEditorReceiver::processForwardEvent(const dpf::Event &event)
 void CodeEditorReceiver::processGotoLineEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     Q_EMIT EditorCallProxy::instance()->reqGotoLine(filePath, line);
 }
 
 void CodeEditorReceiver::processGotoPositionEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     int col = event.property("column").toInt();
     Q_EMIT EditorCallProxy::instance()->reqGotoPosition(filePath, line, col);
-}
-
-void CodeEditorReceiver::processSetLineBackgroundColorEvent(const dpf::Event &event)
-{
-    QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
-    QColor color = qvariant_cast<QColor>(event.property("color"));
-    Q_EMIT EditorCallProxy::instance()->reqSetLineBackgroundColor(filePath, line, color);
-}
-
-void CodeEditorReceiver::processResetLineBackgroundEvent(const dpf::Event &event)
-{
-    QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
-    Q_EMIT EditorCallProxy::instance()->reqResetLineBackground(filePath, line);
-}
-
-void CodeEditorReceiver::processClearLineBackgroundEvent(const dpf::Event &event)
-{
-    QString filePath = event.property("fileName").toString();
-    Q_EMIT EditorCallProxy::instance()->reqClearLineBackground(filePath);
 }
 
 void CodeEditorReceiver::processSetModifiedAutoReloadEvent(const dpf::Event &event)
@@ -127,7 +103,7 @@ void CodeEditorReceiver::processAddAnnotationEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
     QString title = event.property("title").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     QString content = event.property("content").toString();
     AnnotationType type = qvariant_cast<AnnotationType>(event.property("type"));
     Q_EMIT EditorCallProxy::instance()->reqAddAnnotation(filePath, title, content, line, type);
@@ -149,7 +125,7 @@ void CodeEditorReceiver::processClearAllAnnotationEvent(const dpf::Event &event)
 void CodeEditorReceiver::processAddBreakpointEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     bool enabled = event.property("enabled").toBool();
     Q_EMIT EditorCallProxy::instance()->reqAddBreakpoint(filePath, line, enabled);
 }
@@ -157,14 +133,14 @@ void CodeEditorReceiver::processAddBreakpointEvent(const dpf::Event &event)
 void CodeEditorReceiver::processRemoveBreakpointEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     Q_EMIT EditorCallProxy::instance()->reqRemoveBreakpoint(filePath, line);
 }
 
 void CodeEditorReceiver::processSetBreakpointEnabledEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     bool enabled = event.property("enabled").toBool();
     Q_EMIT EditorCallProxy::instance()->reqSetBreakpointEnabled(filePath, line, enabled);
 }
@@ -179,7 +155,7 @@ void CodeEditorReceiver::processClearAllBreakpointsEvent(const dpf::Event &event
 void CodeEditorReceiver::processSetDebugLineEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
+    int line = event.property("line").toInt();
     Q_EMIT EditorCallProxy::instance()->reqSetDebugLine(filePath, line);
 }
 

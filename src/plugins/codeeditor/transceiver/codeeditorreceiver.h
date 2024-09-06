@@ -25,9 +25,6 @@ private:
     void processForwardEvent(const dpf::Event &event);
     void processGotoLineEvent(const dpf::Event &event);
     void processGotoPositionEvent(const dpf::Event &event);
-    void processSetLineBackgroundColorEvent(const dpf::Event &event);
-    void processResetLineBackgroundEvent(const dpf::Event &event);
-    void processClearLineBackgroundEvent(const dpf::Event &event);
     void processSetModifiedAutoReloadEvent(const dpf::Event &event);
 
     // annotation
@@ -63,9 +60,6 @@ signals:
     void reqForward();
     void reqGotoLine(const QString &fileName, int line);
     void reqGotoPosition(const QString &fileName, int line, int column);
-    void reqSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
-    void reqResetLineBackground(const QString &fileName, int line);
-    void reqClearLineBackground(const QString &fileName);
     void reqSetModifiedAutoReload(const QString &fileName, bool flag);
     void reqDoRename(const newlsp::WorkspaceEdit &info);
     void reqCloseCurrentEditor();

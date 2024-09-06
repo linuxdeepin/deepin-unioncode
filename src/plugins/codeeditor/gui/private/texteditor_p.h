@@ -28,8 +28,7 @@ public:
         BreakpointDisabled,
         Bookmark,
         Runtime,
-        RuntimeLineBackground,
-        CustomLineBackground
+        RuntimeLineBackground
     };
 
     explicit TextEditorPrivate(TextEditor *qq);
@@ -56,6 +55,10 @@ public:
     QMap<int, int> allMarkers();
     void setMarkers(const QMap<int, int> &maskMap);
 
+    QWidget *mainWindow();
+    void setContainerWidget(QWidget *widget);
+    void updateLineWidgetPosition();
+
 public slots:
     void resetThemeColor();
     void onDwellStart(int position, int x, int y);
@@ -71,7 +74,7 @@ public:
     int preFirstLineNum { 0 };
     int lastCursorPos { 0 };
     QMultiHash<QString, int> annotationRecords;
-    
+
     LanguageClientHandler *languageClient { nullptr };
     bool isAutoCompletionEnabled { false };
 
@@ -83,8 +86,11 @@ public:
     int fontSize { 10 };
 
     CodeCompletionWidget *completionWidget { nullptr };
-    
     QMap<QString, QVariant> commentSettings;
+
+    std::tuple<int, int, int, int> selectionCache { -1, -1, -1, -1 };
+    QFrame *lineWidgetContainer { nullptr };
+    int showAtLine { 0 };
 };
 
 #endif   // TEXTEDITOR_P_H

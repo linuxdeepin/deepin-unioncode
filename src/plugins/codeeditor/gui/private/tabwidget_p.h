@@ -56,9 +56,6 @@ public slots:
     void handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type);
     void handleRemoveAnnotation(const QString &fileName, const QString &title);
     void handleClearAllAnnotation(const QString &title);
-    void handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
-    void handleResetLineBackground(const QString &fileName, int line);
-    void handleClearLineBackground(const QString &fileName);
     void handleDoRename(const newlsp::WorkspaceEdit &info);
     void handleOpenFiles(const QList<QUrl> &fileList);
 

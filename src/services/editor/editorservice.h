@@ -43,6 +43,7 @@ public:
     DPF_INTERFACE(QString, currentFile);
     DPF_INTERFACE(QStringList, openedFiles);
     DPF_INTERFACE(QString, fileText, const QString &file);
+    DPF_INTERFACE(void, cursorPosition, int *line, int *index);
     DPF_INTERFACE(void, replaceAll, const QString &file, const QString &oldText,
                   const QString &newText, bool caseSensitive, bool wholeWords);
     DPF_INTERFACE(void, replaceRange, const QString &file, int line, int index, int length, const QString &after);
@@ -51,6 +52,14 @@ public:
     DPF_INTERFACE(void, registerWidget, const QString &id, AbstractEditWidget *widget);
     DPF_INTERFACE(void, switchWidget, const QString &id);
     DPF_INTERFACE(void, switchDefaultWidget);
+
+    // NOTE: Return the `marker` value,
+    //       if the return value is -1, it indicates that the setting failed.
+    DPF_INTERFACE(int, setRangeBackgroundColor, const QString &file, int startLine, int endLine, const QColor &color);
+    DPF_INTERFACE(void, clearRangeBackgroundColor, const QString &file, int startLine, int endLine, int marker);
+    DPF_INTERFACE(void, clearAllBackgroundColor, const QString &file, int marker);
+    DPF_INTERFACE(void, showLineWidget, int line, QWidget *widget);
+    DPF_INTERFACE(void, closeLineWidget);
 };
 
 }   // namespace dpfservice

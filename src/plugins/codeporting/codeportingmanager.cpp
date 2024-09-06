@@ -8,6 +8,7 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
+#include "services/editor/editorservice.h"
 #include "reportpane.h"
 
 #include <QtConcurrent>
@@ -84,15 +85,13 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
 {
     Q_UNUSED(endLine)
 
-    int startLineInEditor = startLine + kLineNumberAdaptation;
-    int endLineInEditor = endLine + kLineNumberAdaptation;
-    editor.gotoLine(filePath, startLineInEditor);
+    editor.gotoLine(filePath, startLine);
     editor.addAnnotation(filePath, QString("CodePorting"), suggestion, startLine, AnnotationType::NoteAnnotation);
     QColor backgroundColor(Qt::red);
     backgroundColor.setAlpha(100);
-    for (int lineNumber = startLineInEditor; lineNumber <= endLineInEditor; ++lineNumber) {
-        editor.setLineBackgroundColor(filePath, lineNumber, backgroundColor);
-    }
+
+    if (auto editSrv = dpfGetService(EditorService))
+        editSrv->setRangeBackgroundColor(filePath, startLine, endLine, backgroundColor);
 }
 
 void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format, OutputPane::AppendMode mode)

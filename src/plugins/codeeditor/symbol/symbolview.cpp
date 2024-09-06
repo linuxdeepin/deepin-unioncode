@@ -109,7 +109,7 @@ void SymbolViewPrivate::handleItemClicked(const QModelIndex &index)
             return;
 
         const auto &range = index.data(SymbolRangeRole).value<newlsp::Range>();
-        editor.gotoPosition(path, range.start.line + 1, range.start.character);
+        editor.gotoPosition(path, range.start.line, range.start.character);
     } else {
         if (QFileInfo(path).isDir()) {
             view->setExpanded(index, !view->isExpanded(index));

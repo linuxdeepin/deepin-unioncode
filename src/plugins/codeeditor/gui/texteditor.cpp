@@ -163,7 +163,7 @@ void TextEditor::addBreakpoint(int line, bool enabled)
         markerAdd(line, TextEditorPrivate::BreakpointDisabled);
     }
 
-    editor.breakpointAdded(d->fileName, line + 1, enabled);
+    editor.breakpointAdded(d->fileName, line, enabled);
 }
 
 void TextEditor::removeBreakpoint(int line)
@@ -173,7 +173,7 @@ void TextEditor::removeBreakpoint(int line)
     else
         markerDelete(line, TextEditorPrivate::BreakpointDisabled);
 
-    editor.breakpointRemoved(d->fileName, line + 1);
+    editor.breakpointRemoved(d->fileName, line);
 }
 
 void TextEditor::toggleBreakpoint()
@@ -198,12 +198,12 @@ void TextEditor::setBreakpointEnabled(int line, bool enabled)
         markerDelete(line, TextEditorPrivate::Breakpoint);
         markerAdd(line, TextEditorPrivate::BreakpointDisabled);
     }
-    editor.breakpointStatusChanged(d->fileName, line + 1, enabled);
+    editor.breakpointStatusChanged(d->fileName, line, enabled);
 }
 
 void TextEditor::setBreakpointCondition(int line)
 {
-    editor.setBreakpointCondition(d->fileName, line + 1);
+    editor.setBreakpointCondition(d->fileName, line);
 }
 
 bool TextEditor::breakpointEnabled(int line)
@@ -329,20 +329,36 @@ int TextEditor::cursorPosition()
     return static_cast<int>(SendScintilla(TextEditor::SCI_GETCURRENTPOS));
 }
 
-void TextEditor::setLineBackgroundColor(int line, const QColor &color)
+int TextEditor::setRangeBackgroundColor(int startLine, int endLine, const QColor &color)
 {
-    markerAdd(line, TextEditorPrivate::CustomLineBackground);
-    setMarkerBackgroundColor(color, TextEditorPrivate::CustomLineBackground);
+    startLine = qMax(startLine, 0);
+    endLine = qMin(endLine, lines() - 1);
+    if (startLine > endLine)
+        return -1;
+
+    int marker = markerDefine(Background);
+    for (; startLine <= endLine; ++startLine) {
+        markerAdd(startLine, marker);
+    }
+
+    return marker;
 }
 
-void TextEditor::resetLineBackgroundColor(int line)
+void TextEditor::clearRangeBackgroundColor(int startLine, int endLine, int marker)
 {
-    markerDelete(line, TextEditorPrivate::CustomLineBackground);
+    startLine = qMax(startLine, 0);
+    endLine = qMin(endLine, lines() - 1);
+    if (startLine > endLine)
+        return;
+
+    for (; startLine <= endLine; ++startLine) {
+        markerDelete(startLine, marker);
+    }
 }
 
-void TextEditor::clearLineBackgroundColor()
+void TextEditor::clearAllBackgroundColor(int marker)
 {
-    markerDeleteAll(TextEditorPrivate::CustomLineBackground);
+    markerDeleteAll(marker);
 }
 
 void TextEditor::showTips(const QString &tips)
@@ -686,6 +702,21 @@ bool TextEditor::isAutomaticInvocationEnabled() const
     return d->isAutoCompletionEnabled;
 }
 
+bool TextEditor::showLineWidget(int line, QWidget *widget)
+{
+    if (line < 0 || line >= lines())
+        return false;
+
+    d->showAtLine = line;
+    d->setContainerWidget(widget);
+    return true;
+}
+
+void TextEditor::closeLineWidget()
+{
+    d->lineWidgetContainer->setVisible(false);
+}
+
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
 {
     Q_UNUSED(state)
@@ -762,6 +793,9 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 
 void TextEditor::focusOutEvent(QFocusEvent *event)
 {
+    if (!d->lineWidgetContainer->hasFocus())
+        d->lineWidgetContainer->setVisible(false);
+
     Q_EMIT focusOut();
     Q_EMIT followTypeEnd();
     QsciScintilla::focusOutEvent(event);
@@ -785,6 +819,33 @@ void TextEditor::mouseMoveEvent(QMouseEvent *event)
     }
 
     QsciScintilla::mouseMoveEvent(event);
+}
+
+void TextEditor::mouseReleaseEvent(QMouseEvent *event)
+{
+    QsciScintilla::mouseReleaseEvent(event);
+
+    bool selChanged = hasSelectedText();
+    if (!selChanged && d->selectionCache != std::make_tuple(-1, -1, -1, -1))
+        selChanged = true;
+
+    if (selChanged) {
+        int lineFrom = -1, indexFrom = -1, lineTo = -1, indexTo = -1;
+        getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
+        d->selectionCache = std::make_tuple(lineFrom, indexFrom, lineTo, indexTo);
+        editor.selectionChanged(d->fileName, lineFrom, indexFrom, lineTo, indexTo);
+    }
+}
+
+bool TextEditor::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == d->lineWidgetContainer && event->type() == QEvent::Resize) {
+        d->updateLineWidgetPosition();
+    } else if (obj == d->mainWindow() && event->type() == QEvent::Move) {
+        d->updateLineWidgetPosition();
+    }
+
+    return QsciScintilla::eventFilter(obj, event);
 }
 
 bool TextEditor::event(QEvent *event)

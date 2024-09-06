@@ -82,7 +82,7 @@ void SearchResultWidgetPrivate::openFile(const QModelIndex &index)
     if (!item)
         return;
 
-    editor.gotoPosition(item->filePathName, item->line, item->column);
+    editor.gotoPosition(item->filePathName, item->line - 1, item->column);
 }
 
 void SearchResultWidgetPrivate::handleMenuRequested(const QPoint &pos)

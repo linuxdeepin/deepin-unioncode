@@ -65,6 +65,13 @@ public:
     int zoomValue();
     void updateZoomValue(int value);
 
+    bool setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, const QColor &color, int &marker);
+    bool clearRangeBackground(const QString &fileName, int startLine, int endLine, int marker);
+    bool clearAllBackground(const QString &fileName, int marker);
+    void showLineWidget(int line, QWidget *widget);
+    void closeLineWidget();
+    void cursorPosition(int *line, int *index);
+
     TextEditor *currentEditor() const;
     TextEditor *findEditor(const QString &fileName);
 
