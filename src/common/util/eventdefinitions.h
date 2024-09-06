@@ -55,9 +55,6 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(clearAllAnnotation, "title")
            OPI_INTERFACE(setDebugLine, "fileName", "line")
            OPI_INTERFACE(removeDebugLine)
-           OPI_INTERFACE(setLineBackgroundColor, "fileName", "line", "color")
-           OPI_INTERFACE(resetLineBackgroundColor, "fileName", "line")
-           OPI_INTERFACE(clearLineBackgroundColor, "fileName")
            OPI_INTERFACE(setModifiedAutoReload, "fileName", "flag")
            OPI_INTERFACE(addBreakpoint, "fileName", "line", "enabled")
            OPI_INTERFACE(removeBreakpoint, "fileName", "line")
@@ -74,6 +71,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(breakpointStatusChanged, "fileName", "line", "enabled")
            OPI_INTERFACE(textChanged)
            OPI_INTERFACE(cursorPositionChanged, "fileName", "line", "index")
+           OPI_INTERFACE(selectionChanged, "fileName", "lineFrom", "indexFrom", "lineTo", "indexTo")
 
            //right-cliked menu,  Related to debugging
            OPI_INTERFACE(setBreakpointCondition, "fileName", "line")

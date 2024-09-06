@@ -66,9 +66,9 @@ public:
     void gotoPosition(int pos);
     int cursorLastPosition();
     int cursorPosition();
-    void setLineBackgroundColor(int line, const QColor &color);
-    void resetLineBackgroundColor(int line);
-    void clearLineBackgroundColor();
+    int setRangeBackgroundColor(int startLine, int endLine, const QColor &color);
+    void clearRangeBackgroundColor(int startLine, int endLine, int marker);
+    void clearAllBackgroundColor(int marker);
     void showTips(const QString &tips);
     void showTips(int pos, const QString &tips);
     void cancelTips();
@@ -103,6 +103,8 @@ public:
 
     void setAutomaticInvocationEnabled(bool enabled);
     bool isAutomaticInvocationEnabled() const;
+    bool showLineWidget(int line, QWidget *widget);
+    void closeLineWidget();
 
 public slots:
     void onMarginClicked(int margin, int line, Qt::KeyboardModifiers state);
@@ -114,6 +116,8 @@ protected:
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual bool eventFilter(QObject *obj, QEvent *event) override;
     virtual bool event(QEvent *event) override;
 
 signals:

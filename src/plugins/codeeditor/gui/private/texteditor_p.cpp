@@ -55,6 +55,13 @@ void TextEditorPrivate::init()
     q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
 
+    lineWidgetContainer = new QFrame(q, Qt::Tool | Qt::FramelessWindowHint);
+    lineWidgetContainer->setLayout(new QVBoxLayout);
+    lineWidgetContainer->setContentsMargins(0, 0, 0, 0);
+    lineWidgetContainer->installEventFilter(q);
+    if (mainWindow())
+        mainWindow()->installEventFilter(q);
+
     initMargins();
     updateColorTheme();
     updateSettings();
@@ -69,6 +76,7 @@ void TextEditorPrivate::initConnection()
             q->cancelTips();
     });
 
+    connect(q->verticalScrollBar(), &QScrollBar::valueChanged, this, &TextEditorPrivate::updateLineWidgetPosition);
     connect(q, &TextEditor::SCN_ZOOM, q, &TextEditor::zoomValueChanged);
     connect(q, &TextEditor::SCN_DWELLSTART, this, &TextEditorPrivate::onDwellStart);
     connect(q, &TextEditor::SCN_DWELLEND, this, &TextEditorPrivate::onDwellEnd);
@@ -91,13 +99,12 @@ void TextEditorPrivate::initMargins()
     q->setMarginMarkerMask(SymbolMargin,
                            1 << Breakpoint | 1 << BreakpointDisabled
                                    | 1 << Bookmark | 1 << Runtime
-                                   | 1 << RuntimeLineBackground | 1 << CustomLineBackground);
+                                   | 1 << RuntimeLineBackground);
 
     q->markerDefine(TextEditor::RightTriangle, Bookmark);
     q->setMarkerBackgroundColor(QColor(Qt::red), Bookmark);
 
     q->markerDefine(TextEditor::Background, RuntimeLineBackground);
-    q->markerDefine(TextEditor::Background, CustomLineBackground);
 }
 
 void TextEditorPrivate::updateColorTheme()
@@ -342,8 +349,8 @@ void TextEditorPrivate::showMarginMenu()
     DebuggerService *debuggerService = ctx.service<DebuggerService>(DebuggerService::name());
     if (debuggerService->getDebugState() == AbstractDebugger::RunState::kStopped) {
         menu.addSeparator();
-        menu.addAction(tr("jump to %1 line").arg(line + 1), q, [this, line] { editor.jumpToLine(fileName, line + 1); });
-        menu.addAction(tr("run to %1 line").arg(line + 1), q, [this, line] { editor.runToLine(fileName, line + 1); });
+        menu.addAction(tr("jump to %1 line").arg(line + 1), q, [this, line] { editor.jumpToLine(fileName, line); });
+        menu.addAction(tr("run to %1 line").arg(line + 1), q, [this, line] { editor.runToLine(fileName, line); });
     }
 
     // notify other plugin to add action.
@@ -440,7 +447,7 @@ QMap<int, int> TextEditorPrivate::allMarkers()
         if (mask != 0)
             markers.insert(line, mask);
     }
-    
+
     return markers;
 }
 
@@ -450,13 +457,73 @@ void TextEditorPrivate::setMarkers(const QMap<int, int> &maskMap)
     for (auto iter = maskMap.begin(); iter != maskMap.end(); ++iter) {
         if (iter.key() >= totalLine)
             break;
-        
+
         if (iter.value() & (1 << Breakpoint)) {
             q->addBreakpoint(iter.key(), true);
         } else if (iter.value() & (1 << BreakpointDisabled)) {
             q->addBreakpoint(iter.key(), false);
         }
     }
+}
+
+QWidget *TextEditorPrivate::mainWindow()
+{
+    static QWidget *mw { nullptr };
+    if (mw)
+        return mw;
+
+    for (auto w : qApp->allWidgets()) {
+        if (w->objectName() == "MainWindow") {
+            mw = w;
+            break;
+        }
+    }
+
+    return mw;
+}
+
+void TextEditorPrivate::setContainerWidget(QWidget *widget)
+{
+    auto layout = lineWidgetContainer->layout();
+    while (auto item = layout->takeAt(0)) {
+        if (QWidget *w = item->widget())
+            w->setVisible(false);
+        delete item;
+    }
+
+    widget->setVisible(true);
+    lineWidgetContainer->setFocusProxy(widget);
+    lineWidgetContainer->layout()->addWidget(widget);
+    lineWidgetContainer->show();
+    updateLineWidgetPosition();
+}
+
+void TextEditorPrivate::updateLineWidgetPosition()
+{
+    if (!lineWidgetContainer->isVisible() || showAtLine < 0 || showAtLine > q->lines() - 1)
+        return;
+
+    int pos = q->positionFromLineIndex(showAtLine, 0);
+    auto point = q->mapToGlobal(q->pointFromPosition(pos));
+    auto displayY = point.y() - lineWidgetContainer->height();
+
+    auto rect = q->rect();
+    auto rectTL = q->mapToGlobal(rect.topLeft());
+    auto rectBL = q->mapToGlobal(rect.bottomLeft());
+
+    // NOTE: upate the `lineWidgetContainer` position
+    // 1.It is displayed above `showAtLine` by default
+    // 2.The `lineWidgetContainer` does not extend beyond the top and bottom of the editor
+    // 3.When the `lineWidgetContainer` will block the `showAtLine`, display it below the `showAtLine`
+    if (displayY < rectTL.y()) {
+        displayY = point.y() + q->textHeight(showAtLine);
+        if (displayY < rectTL.y())
+            displayY = rectTL.y();
+    } else if (displayY > rectBL.y() - lineWidgetContainer->height()) {
+        displayY = rectBL.y() - lineWidgetContainer->height();
+    }
+
+    lineWidgetContainer->move(point.x(), displayY);
 }
 
 void TextEditorPrivate::resetThemeColor()
@@ -505,11 +572,17 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
     contentsChanged = true;
     if (isAutoCompletionEnabled && !text.isEmpty())
         editor.textChanged();
-    
+
     if (added != 0) {
         int line = 0, index = 0;
         q->lineIndexFromPosition(pos, &line, &index);
-        editor.lineChanged(fileName, line + 1, added);
+        editor.lineChanged(fileName, line, added);
+        if (lineWidgetContainer->isVisible()) {
+            if (showAtLine > line) {
+                showAtLine += added;
+                updateLineWidgetPosition();
+            }
+        }
     }
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {

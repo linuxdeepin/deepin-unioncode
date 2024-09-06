@@ -1167,6 +1167,12 @@ TabWidget *WorkspaceWidget::currentTabWidget() const
     return d->currentTabWidget();
 }
 
+void WorkspaceWidget::cursorPosition(int *line, int *index)
+{
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->cursorPosition(line, index);
+}
+
 void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)
 {
     d->registeredWidget.insert(id, widget);
@@ -1184,6 +1190,45 @@ void WorkspaceWidget::switchWidget(const QString &id)
 void WorkspaceWidget::switchDefaultWidget()
 {
     d->stackWidget->setCurrentIndex(0);
+}
+
+int WorkspaceWidget::setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, const QColor &color)
+{
+    int marker = 0;
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->setRangeBackgroundColor(fileName, startLine, endLine, color, marker))
+            break;
+    }
+
+    return marker;
+}
+
+void WorkspaceWidget::clearRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->clearRangeBackground(fileName, startLine, endLine, marker))
+            break;
+    }
+}
+
+void WorkspaceWidget::clearAllBackgroundColor(const QString &fileName, int marker)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->clearAllBackground(fileName, marker))
+            break;
+    }
+}
+
+void WorkspaceWidget::showLineWidget(int line, QWidget *widget)
+{
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->showLineWidget(line, widget);
+}
+
+void WorkspaceWidget::closeLineWidget()
+{
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->closeLineWidget();
 }
 
 bool WorkspaceWidget::event(QEvent *event)

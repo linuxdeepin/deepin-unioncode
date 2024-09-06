@@ -21,7 +21,7 @@ XmlStreamReader::XmlStreamReader(DTreeWidget *tree)
         if (toolTip.count() > 1) {
             QString filePath = toolTip.at(0);
             QString line = toolTip.at(1);
-            editor.gotoLine(filePath, line.toInt());
+            editor.gotoLine(filePath, line.toInt() - 1);
         }
     });
 }
