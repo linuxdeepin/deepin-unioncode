@@ -305,8 +305,10 @@ Entry AskApi::processJsonObject(const QString &event, QJsonObject *obj)
         return entry;
     }
 
-    if (event == "finish")
+    if (event == "finish") {
+        entry.text = obj->value("text").toString();
         entry.type = event;
+    }
 
     return entry;
 }
