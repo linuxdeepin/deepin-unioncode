@@ -60,6 +60,11 @@ public:
     DPF_INTERFACE(void, clearAllBackgroundColor, const QString &file, int marker);
     DPF_INTERFACE(void, showLineWidget, int line, QWidget *widget);
     DPF_INTERFACE(void, closeLineWidget);
+
+    using RepairCallback = std::function<void(const QString &info)>;
+    using RepairToolInfo = QMap<QString, RepairCallback>;
+    DPF_INTERFACE(void, registerDiagnosticRepairTool, const QString &toolName, RepairCallback callback);
+    DPF_INTERFACE(RepairToolInfo, getDiagnosticRepairTool);
 };
 
 }   // namespace dpfservice

@@ -187,6 +187,8 @@ void CodeEditor::initEditorService()
     editorService->showLineWidget = std::bind(&WorkspaceWidget::showLineWidget, workspaceWidget, _1, _2);
     editorService->closeLineWidget = std::bind(&WorkspaceWidget::closeLineWidget, workspaceWidget);
     editorService->cursorPosition = std::bind(&WorkspaceWidget::cursorPosition, workspaceWidget, _1, _2);
+    editorService->registerDiagnosticRepairTool = std::bind(&WorkspaceWidget::registerDiagnosticRepairTool, workspaceWidget, _1, _2);
+    editorService->getDiagnosticRepairTool = std::bind(&WorkspaceWidget::getDiagnosticRepairTool, workspaceWidget);
 
     LexerManager::instance()->init(editorService);
 }

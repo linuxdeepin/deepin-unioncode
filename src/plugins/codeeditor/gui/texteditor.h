@@ -71,6 +71,7 @@ public:
     void clearAllBackgroundColor(int marker);
     void showTips(const QString &tips);
     void showTips(int pos, const QString &tips);
+    void showTips(int pos, QWidget *w);
     void cancelTips();
     void addAnnotation(const QString &title, const QString &content, int line, int type);
     void addAnnotation(const QString &content, int line, int type);

@@ -173,7 +173,6 @@ public:
     void initLspConnection();
     void initIndicStyle();
 
-    QString formatDiagnosticMessage(const QString &message, int type);
     bool shouldStartCompletion(const QString &insertedText);
     int wordPostion();
     newlsp::Client *getClient();
@@ -182,6 +181,7 @@ public:
     void cleanDefinition(int pos);
     void setDefinitionSelectedStyle(int start, int end);
     void gotoDefinition();
+    void showDiagnosticTip(int pos, const QString &message);
 
 public slots:
     void handleTokenFull(const QList<lsp::Data> &tokens, const QString &filePath);
@@ -218,7 +218,6 @@ public:
     TextEditor *editor { nullptr };
     QList<lsp::Data> tokensCache;
     QList<DiagnosticCache> diagnosticCache;
-    QString diagnosticFormat;
     newlsp::ProjectKey projectKey;
 
     QTimer textChangedTimer;

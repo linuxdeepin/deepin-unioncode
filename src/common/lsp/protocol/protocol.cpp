@@ -240,6 +240,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                                             { "declaration", QJsonObject { { "dynamicRegistration", true }, { "linkSupport", true } } },
                                             { "semanticHighlightingCapabilities", QJsonObject { { "semanticHighlighting", true } } },
                                             { "semanticTokens", capabilitiesSemanticTokens },
+                                            { "hover", QJsonObject { { "contentFormat", QJsonArray { "markdown", "plaintext" } } } },
                                             { "completion", QJsonObject { { "editsNearCursor", true } } } } },
             { "workspace", workspace() },
             {

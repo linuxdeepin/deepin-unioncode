@@ -1115,7 +1115,7 @@ bool ClientPrivate::diagnosticsCalled(const QJsonObject &jsonObj)
                 newlsp::Location {
                         newlsp::DocumentUri { reInfoLocationUrl },
                         newlsp::Range {
-                                { reInfoLocationRangeObj.value(lsp::K_LINE).toInt(), reInfoLocationRangeObj.value(lsp::K_CHARACTER).toInt() },
+                                { reInfoLocationStartObj.value(lsp::K_LINE).toInt(), reInfoLocationStartObj.value(lsp::K_CHARACTER).toInt() },
                                 { reInfoLocationEndObj.value(lsp::K_LINE).toInt(), reInfoLocationEndObj.value(lsp::K_CHARACTER).toInt() } } },
                 std::string {
                         reInfoMessage }

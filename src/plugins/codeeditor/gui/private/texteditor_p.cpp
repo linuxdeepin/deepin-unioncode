@@ -17,7 +17,6 @@
 
 #include <DGuiApplicationHelper>
 
-#include <QToolTip>
 #include <QScrollBar>
 #include <QMenu>
 #include <QDebug>
@@ -119,7 +118,6 @@ void TextEditorPrivate::updateColorTheme()
     q->markerDefine(rtIcon.pixmap(14, 14), Runtime);
 
     q->setColor(q->palette().color(QPalette::WindowText));
-    auto palette = QToolTip::palette();
     if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
         // editor
         q->setPaper(QColor("#2e2f30"));
@@ -138,9 +136,6 @@ void TextEditorPrivate::updateColorTheme()
         rlbColor.setAlpha(qRound(255 * 0.1));
         q->setMarkerForegroundColor(rlbColor, RuntimeLineBackground);
         q->setMarkerBackgroundColor(rlbColor, RuntimeLineBackground);
-
-        // tooltip
-        palette.setColor(QPalette::Inactive, QPalette::ToolTipText, Qt::lightGray);
     } else {
         // editor
         q->setPaper(QColor("#F8F8F8"));
@@ -159,12 +154,7 @@ void TextEditorPrivate::updateColorTheme()
         rlbColor.setAlpha(qRound(255 * 0.1));
         q->setMarkerForegroundColor(rlbColor, RuntimeLineBackground);
         q->setMarkerBackgroundColor(rlbColor, RuntimeLineBackground);
-
-        // tooltip
-        palette.setColor(QPalette::Inactive, QPalette::ToolTipText, Qt::black);
     }
-
-    QToolTip::setPalette(palette);
 }
 
 void TextEditorPrivate::updateSettings()
