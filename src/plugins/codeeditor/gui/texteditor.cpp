@@ -6,6 +6,7 @@
 #include "private/texteditor_p.h"
 #include "utils/editorutils.h"
 #include "common/common.h"
+#include "common/tooltip/tooltip.h"
 #include "settings/settingsdefine.h"
 
 #include "Qsci/qscidocument.h"
@@ -13,7 +14,6 @@
 #include <DDialog>
 
 #include <QFile>
-#include <QToolTip>
 #include <QScrollBar>
 #include <QFileDialog>
 #include <QApplication>
@@ -377,12 +377,25 @@ void TextEditor::showTips(int pos, const QString &tips)
         return;
 
     auto point = pointFromPosition(pos);
-    QToolTip::showText(mapToGlobal(point), tips, this);
+    ToolTip::show(mapToGlobal(point), tips, this);
+}
+
+void TextEditor::showTips(int pos, QWidget *w)
+{
+    if (!hasFocus() || !d->tipsDisplayable)
+        return;
+
+    bool isCtrlPressed = qApp->queryKeyboardModifiers().testFlag(Qt::ControlModifier);
+    if (isCtrlPressed)
+        return;
+
+    auto point = pointFromPosition(pos);
+    ToolTip::show(mapToGlobal(point), w, this);
 }
 
 void TextEditor::cancelTips()
 {
-    QToolTip::hideText();
+    ToolTip::hideImmediately();
 }
 
 void TextEditor::addAnnotation(const QString &title, const QString &content, int line, int type)
