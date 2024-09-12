@@ -42,7 +42,7 @@ void CodeCompletionWidget::initUI()
     completionView->setVisible(false);
 
     completionExtWidget = new CodeCompletionExtendWidget(this);
-    completionExtWidget->setFixedWidth(300);
+    completionExtWidget->setFixedWidth(500);
     completionExtWidget->setVisible(false);
     completionExtWidget->setTextEditor(editor());
 

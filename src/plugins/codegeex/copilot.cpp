@@ -11,8 +11,8 @@
 #include <QDebug>
 #include <QTimer>
 
-static const char *kUrlSSEChat = "https://api.codegeex.cn:8443/tx/v3/chat/message";
-static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/tx/v3/completions/inline?stream=false";
+static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
+static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/v3/completions/inline?stream=false";
 
 static const char *commandFixBug = "fixbug";
 static const char *commandExplain = "explain";

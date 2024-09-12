@@ -191,6 +191,11 @@ void CopilotApi::slotReadReply(QNetworkReply *reply)
             code = content.value("text").toString();
             // Cut the first code segment
             auto codeLines = code.split('\n');
+            QString lastLine = codeLines.last();
+
+            QRegularExpression endOfLinePattern("\\n|;|}");
+            if (!endOfLinePattern.match(lastLine).hasMatch())
+                codeLines.removeLast();
             code = codeLines.mid(0, codeLines.indexOf("", 1)).join('\n') + '\n';
             completionReply = nullptr;
             emit response(CopilotApi::inline_completions, code, "");
