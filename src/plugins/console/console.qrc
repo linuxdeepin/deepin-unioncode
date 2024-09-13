@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons/deepin/builtin"/>
+    <qresource prefix="/icons/deepin"/>
+    <qresource prefix="/">
+        <file>color-schemes/Dark.colorscheme</file>
+        <file>color-schemes/Light.colorscheme</file>
+    </qresource>
+</RCC>
