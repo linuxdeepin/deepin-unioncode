@@ -62,8 +62,13 @@ private:
 
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
-    QString generateResponse;
-    QMutex mutexResponse;
+    QStringList generateCache {};
+    QString generatedCode {};
+    QString extractSingleLine();
+
+    CodeGeeX::CopilotApi::GenerateType generateType;
+    CodeGeeX::CopilotApi::GenerateType checkPrefixType(const QString &prefixCode);
+
     bool generateCodeEnabled = true;
 };
 
