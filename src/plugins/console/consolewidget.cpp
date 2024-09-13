@@ -7,6 +7,7 @@
 
 #include <DMenu>
 
+#include <QDir>
 #include <QDebug>
 
 DWIDGET_USE_NAMESPACE
@@ -31,6 +32,12 @@ ConsoleWidget::ConsoleWidget(QWidget *parent, bool startNow)
     setForegroundRole(QPalette::ColorRole::Window);
     setAutoFillBackground(true);
     setTerminalOpacity(1);
+
+    // using default deepin-terminal style schemes
+    // U can see schemes path with deepin-os
+    QString sys_schemes_path = "/usr/share/terminalwidget5/color-schemes";
+    if (QDir(sys_schemes_path).exists())
+        addCustomColorSchemeDir(sys_schemes_path);
 
     auto theme = DGuiApplicationHelper::instance()->themeType();
     updateColorScheme(theme);
@@ -85,11 +92,19 @@ void ConsoleWidget::contextMenuEvent(QContextMenuEvent *event)
 
 void ConsoleWidget::updateColorScheme(DGuiApplicationHelper::ColorType themetype)
 {
-    if (themetype == DGuiApplicationHelper::DarkType
-        && availableColorSchemes().contains("Linux"))
-        this->setColorScheme("Linux");
-    else if (availableColorSchemes().contains("BlackOnWhite"))
-        this->setColorScheme("BlackOnWhite");
+    if (DGuiApplicationHelper::DarkType == themetype) {
+        // need add member option setting check logic
+        if (availableColorSchemes().contains("Dark"))
+            this->setColorScheme("Dark");
+        else
+            this->setColorScheme(":/color-schemes/Dark.colorscheme");
+    } else if (DGuiApplicationHelper::LightType == themetype) {
+        // need add member option setting check logic
+        if (availableColorSchemes().contains("Light"))
+            this->setColorScheme("Light");
+        else
+            this->setColorScheme(":/color-schemes/Light.colorscheme");
+    }
 }
 
 void ConsoleWidget::enterCurrentProjectPath()
