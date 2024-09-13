@@ -12,6 +12,7 @@
 #include <QHeaderView>
 #include <QToolTip>
 #include <QPainter>
+#include <QPainterPath>
 #include <QFileInfo>
 
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
