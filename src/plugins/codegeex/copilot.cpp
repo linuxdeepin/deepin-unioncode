@@ -22,6 +22,7 @@ static const char *commandCommits = "commit_message";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
+
 Copilot::Copilot(QObject *parent)
     : QObject(parent)
 {
@@ -36,12 +37,24 @@ Copilot::Copilot(QObject *parent)
             replaceSelectedText(response);
             break;
         case CopilotApi::inline_completions:
-            mutexResponse.lock();
-            generateResponse = response;
-            if (editorService->setCompletion && responseValid(response)) {
-                editorService->setCompletion(generateResponse, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+            if (!responseValid(response))
+                return;
+            {
+                QString completion = "";
+
+                if (generateType == CopilotApi::Line) {
+                    generateCache = response.split('\n');
+                    completion = extractSingleLine();
+                } else if (generateType == CopilotApi::Block) {
+                    generateCache.clear();
+                    completion = response;
+                }
+
+                if (editorService->setCompletion) {
+                    editorService->setCompletion(completion, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+                    generatedCode = completion;
+                }
             }
-            mutexResponse.unlock();
             break;
         case CopilotApi::multilingual_code_translate:
             emit translatedResult(response, dstLang);
@@ -170,12 +183,21 @@ void Copilot::generateCode()
     if (!generateCodeEnabled)
         return;
 
-    QString prompt = editorService->getCursorBeforeText();
+    QString prefix = editorService->getCursorBeforeText();
     QString suffix = editorService->getCursorBehindText();
-
-    copilotApi.postGenerate(kUrlGenerateMultiLine,
-                            prompt,
-                            suffix);
+    if (!prefix.endsWith(generatedCode) || generateCache.isEmpty()) {
+        generateType = checkPrefixType(prefix);
+        copilotApi.postGenerate(kUrlGenerateMultiLine,
+                                prefix,
+                                suffix,
+                                generateType);
+    } else {
+        QString completion = extractSingleLine();
+        if (editorService->setCompletion) {
+            editorService->setCompletion(completion, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+            generatedCode = completion;
+        }
+    }
 }
 
 void Copilot::login()
@@ -264,4 +286,50 @@ QString Copilot::assembleCodeByCurrentFile(const QString &code)
     QString result;
     result = "```" + fileType + "\n" + code + "```";
     return result;
+}
+
+CodeGeeX::CopilotApi::GenerateType Copilot::checkPrefixType(const QString &prefixCode)
+{
+    //todo
+    Q_UNUSED(prefixCode)
+    if (0)
+        return CopilotApi::Line;
+    else
+        return CopilotApi::Block;
+}
+
+QString Copilot::extractSingleLine()
+{
+    if (generateCache.isEmpty())
+        return "";
+
+    bool extractedCode = false;
+    QString completion = "";
+    for (auto line : generateCache) {
+        if (extractedCode)
+            break;
+        if (line != "")
+            extractedCode = true;
+
+        completion += line == "" ? "\n" : line;
+        generateCache.removeFirst();
+    }
+    completion += "\n";
+
+    //check if left cache all '\n'
+    bool leftAllEmpty = true;
+    for (auto line : generateCache) {
+        if (line == "")
+            continue;
+        leftAllEmpty = false;
+        break;
+    }
+    if (leftAllEmpty) {
+        generateCache.clear();
+        completion += "\n";
+    }
+
+    if (!extractedCode)
+        completion = "";
+    return completion;
 }

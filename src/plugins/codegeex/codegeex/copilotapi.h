@@ -117,10 +117,15 @@ class CopilotApi : public QObject
     Q_OBJECT
 
 public:
+    enum GenerateType {
+        Line,
+        Block
+    };
+
     CopilotApi(QObject *parent = nullptr);
     void setModel(languageModel model);
 
-    void postGenerate(const QString &url, const QString &code, const QString &suffix);
+    void postGenerate(const QString &url, const QString &prefix, const QString &suffix, GenerateType type);
 
     void postComment(const QString &url,
                      const QString &code,
@@ -157,7 +162,8 @@ private:
     QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);
 
     QByteArray assembleGenerateBody(const QString &prefix,
-                                    const QString &suffix);
+                                    const QString &suffix,
+                                    GenerateType type);
 
     QByteArray assembleTranslateBody(const QString &code,
                                      const QString &dst_lang,
