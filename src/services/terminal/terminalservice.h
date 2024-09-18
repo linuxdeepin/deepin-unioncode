@@ -32,6 +32,9 @@ public:
      */
     DPF_INTERFACE(void, sendCommand, const QString &command);
     DPF_INTERFACE(void, executeCommand, const QString &name, const QString &program, const QStringList &args, const QString &workingDir, const QStringList &env);
+    DPF_INTERFACE(QUuid, createConsole, const QString &name, bool rename);
+    DPF_INTERFACE(void, selectConsole, const QUuid &id);
+    DPF_INTERFACE(void, run2Console, const QUuid &id, const QProcess& process);
 };
 
 } // namespace dpfservice

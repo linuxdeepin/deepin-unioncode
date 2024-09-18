@@ -43,6 +43,9 @@ bool Console::start()
         using namespace std::placeholders;
         terminalService->sendCommand = std::bind(&ConsoleManager::sendCommand, consoleManager, _1);
         terminalService->executeCommand = std::bind(&ConsoleManager::executeCommand, consoleManager, _1, _2, _3, _4, _5);
+        terminalService->createConsole = std::bind(&ConsoleManager::newConsole, consoleManager, _1, _2);
+        terminalService->selectConsole = std::bind(&ConsoleManager::selectConsole, consoleManager, _1);
+        terminalService->run2Console = std::bind(&ConsoleManager::run2Console, consoleManager, _1, _2);
     }
     return true;
 }
