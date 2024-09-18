@@ -51,7 +51,7 @@ Copilot::Copilot(QObject *parent)
                 }
 
                 if (editorService->setCompletion) {
-                    editorService->setCompletion(completion, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+                    editorService->setCompletion(completion);
                     generatedCode = completion;
                 }
             }
@@ -194,7 +194,7 @@ void Copilot::generateCode()
     } else {
         QString completion = extractSingleLine();
         if (editorService->setCompletion) {
-            editorService->setCompletion(completion, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+            editorService->setCompletion(completion);
             generatedCode = completion;
         }
     }

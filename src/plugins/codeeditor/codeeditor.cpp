@@ -171,7 +171,7 @@ void CodeEditor::initEditorService()
     editorService->undo = std::bind(&WorkspaceWidget::undo, workspaceWidget);
     editorService->modifiedFiles = std::bind(&WorkspaceWidget::modifiedFiles, workspaceWidget);
     editorService->saveAll = std::bind(&WorkspaceWidget::saveAll, workspaceWidget);
-    editorService->setCompletion = std::bind(&WorkspaceWidget::setCompletion, workspaceWidget, _1, _2, _3);
+    editorService->setCompletion = std::bind(&WorkspaceWidget::setCompletion, workspaceWidget, _1);
     editorService->currentFile = std::bind(&WorkspaceWidget::currentFile, workspaceWidget);
     editorService->setText = std::bind(&WorkspaceWidget::setText, workspaceWidget, _1);
     editorService->registerWidget = std::bind(&WorkspaceWidget::registerWidget, workspaceWidget, _1, _2);

@@ -45,7 +45,7 @@ public:
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);
     Q_INVOKABLE void undo();
-    Q_INVOKABLE void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
+    Q_INVOKABLE void setCompletion(const QString &info);
     void gotoNextPosition();
     void gotoPreviousPosition();
 

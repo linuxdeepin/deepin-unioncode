@@ -128,6 +128,7 @@ QsciScintilla::QsciScintilla(QWidget *parent)
     setUnmatchedBraceForegroundColor(Qt::red);
 
     setAnnotationDisplay(AnnotationStandard);
+    setEOLAnnotationDisplay(EOLAnnotationStandard);
     setLexer();
 
     // Set the visible policy.  These are the same as SciTE's defaults
@@ -4281,12 +4282,22 @@ QsciScintilla::AnnotationDisplay QsciScintilla::annotationDisplay() const
     return (AnnotationDisplay)SendScintilla(SCI_ANNOTATIONGETVISIBLE);
 }
 
+QsciScintilla::EOLAnnotationDisplay QsciScintilla::eolAnnotationDisplay() const
+{
+    return (EOLAnnotationDisplay)SendScintilla(SCI_EOLANNOTATIONGETVISIBLE);
+}
+
 
 // Set the display style for annotations.
 void QsciScintilla::setAnnotationDisplay(QsciScintilla::AnnotationDisplay display)
 {
     SendScintilla(SCI_ANNOTATIONSETVISIBLE, display);
     setScrollBars();
+}
+
+void QsciScintilla::setEOLAnnotationDisplay(EOLAnnotationDisplay display)
+{
+    SendScintilla(SCI_EOLANNOTATIONSETVISIBLE, display);
 }
 
 
@@ -4301,6 +4312,13 @@ void QsciScintilla::clearAnnotations(int line)
     setScrollBars();
 }
 
+void QsciScintilla::clearEOLAnnotations(int line)
+{
+    if (line >= 0)
+        SendScintilla(SCI_EOLANNOTATIONSETTEXT, line, (const char *)0);
+    else
+        SendScintilla(SCI_EOLANNOTATIONCLEARALL);
+}
 
 // Annotate a line.
 void QsciScintilla::annotate(int line, const QString &text, int style)
@@ -4313,6 +4331,14 @@ void QsciScintilla::annotate(int line, const QString &text, int style)
     setScrollBars();
 }
 
+void QsciScintilla::eOLAnnotate(int line, const QString &text, int style)
+{
+    int style_offset = SendScintilla(SCI_EOLANNOTATIONGETSTYLEOFFSET);
+
+    SendScintilla(SCI_EOLANNOTATIONSETTEXT, line, textAsBytes(text).constData());
+    SendScintilla(SCI_EOLANNOTATIONSETSTYLE, line, style - style_offset);
+}
+
 
 // Annotate a line.
 void QsciScintilla::annotate(int line, const QString &text, const QsciStyle &style)
@@ -4322,6 +4348,13 @@ void QsciScintilla::annotate(int line, const QString &text, const QsciStyle &sty
     annotate(line, text, style.style());
 }
 
+void QsciScintilla::eOLAnnotate(int line, const QString &text, const QsciStyle &style)
+{
+    style.apply(this);
+
+    eOLAnnotate(line, text, style.style());
+}
+
 
 // Annotate a line.
 void QsciScintilla::annotate(int line, const QsciStyledText &text)
@@ -4329,6 +4362,13 @@ void QsciScintilla::annotate(int line, const QsciStyledText &text)
     text.apply(this);
 
     annotate(line, text.text(), text.style());
+}
+
+void QsciScintilla::eOLAnnotate(int line, const QsciStyledText &text)
+{
+    text.apply(this);
+
+    eOLAnnotate(line, text.text(), text.style());
 }
 
 
@@ -4355,6 +4395,15 @@ QString QsciScintilla::annotation(int line) const
     QString qs = bytesAsText(buf, size);
     delete[] buf;
 
+    return qs;
+}
+
+QString QsciScintilla::eolAnnotation(int line) const
+{
+    char buf[2048] {0};
+    int size = SendScintilla(SCI_EOLANNOTATIONGETTEXT, line, buf);
+
+    QString qs = bytesAsText(buf, size);
     return qs;
 }
 

@@ -573,6 +573,12 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
                 updateLineWidgetPosition();
             }
         }
+
+        if (cpCache.first != -1 && cpCache.first >= line) {
+            const auto &eolStr = q->eolAnnotation(cpCache.first);
+            if (eolStr.isEmpty() || !cpCache.second.contains(eolStr))
+                cpCache.first += added;
+        }
     }
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {

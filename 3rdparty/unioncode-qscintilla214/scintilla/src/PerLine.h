@@ -121,6 +121,7 @@ public:
 	void operator=(const LineAnnotation &) = delete;
 	void operator=(LineAnnotation &&) = delete;
 	~LineAnnotation() override;
+    bool Empty() const;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;

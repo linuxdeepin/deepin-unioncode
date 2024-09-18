@@ -169,12 +169,24 @@ public:
 		right += xDelta;
 		bottom += yDelta;
 	}
+    Point Centre() const noexcept {
+        return Point((left + right) / 2, (top + bottom) / 2);
+    }
+
 	XYPOSITION Width() const noexcept { return right - left; }
 	XYPOSITION Height() const noexcept { return bottom - top; }
 	bool Empty() const noexcept {
 		return (Height() <= 0) || (Width() <= 0);
 	}
 };
+
+XYPOSITION PixelAlign(XYPOSITION xy, int pixelDivisions) noexcept;
+XYPOSITION PixelAlignFloor(XYPOSITION xy, int pixelDivisions) noexcept;
+XYPOSITION PixelAlignCeil(XYPOSITION xy, int pixelDivisions) noexcept;
+
+Point PixelAlign(const Point &pt, int pixelDivisions) noexcept;
+
+PRectangle PixelAlign(const PRectangle &rc, int pixelDivisions) noexcept;
 
 /**
  * Holds an RGB colour with 8 bits for each component.
@@ -350,6 +362,14 @@ public:
 	virtual void Init(SurfaceID sid, WindowID wid)=0;
 	virtual void InitPixMap(int width, int height, Surface *surface_, WindowID wid)=0;
 
+    enum class Ends {
+        semiCircles = 0x0,
+        leftFlat = 0x1,
+        leftAngle = 0x2,
+        rightFlat = 0x10,
+        rightAngle = 0x20,
+    };
+
 	virtual void Release()=0;
 	virtual bool Initialised()=0;
 	virtual void PenColour(ColourDesired fore)=0;
@@ -360,6 +380,7 @@ public:
 	virtual void Polygon(Point *pts, size_t npts, ColourDesired fore, ColourDesired back)=0;
 	virtual void RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void FillRectangle(PRectangle rc, ColourDesired back)=0;
+    virtual void RectangleFrame(PRectangle rc, ColourDesired fore) = 0;
 	virtual void FillRectangle(PRectangle rc, Surface &surfacePattern)=0;
 	virtual void RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
@@ -368,6 +389,7 @@ public:
 	virtual void GradientRectangle(PRectangle rc, const std::vector<ColourStop> &stops, GradientOptions options)=0;
 	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
 	virtual void Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
+    virtual void Stadium(PRectangle rc, ColourDesired fore, ColourDesired back, Ends ends) = 0;
 	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
 
 	virtual void DrawTextNoClip(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len, ColourDesired fore, ColourDesired back)=0;
@@ -375,6 +397,9 @@ public:
 	virtual void DrawTextTransparent(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len, ColourDesired fore)=0;
 	virtual void MeasureWidths(Font &font_, const char *s, int len, XYPOSITION *positions)=0;
 	virtual XYPOSITION WidthText(Font &font_, const char *s, int len)=0;
+
+    virtual XYPOSITION WidthTextUTF8(Font &font_, const char *s) = 0;
+
 	virtual XYPOSITION Ascent(Font &font_)=0;
 	virtual XYPOSITION Descent(Font &font_)=0;
 	virtual XYPOSITION InternalLeading(Font &font_)=0;
