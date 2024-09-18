@@ -7,6 +7,7 @@
 
 #include "consolewidget.h"
 
+class QProcess;
 class ConsoleManagerPrivate;
 class ConsoleManager : public QWidget
 {
@@ -17,9 +18,12 @@ public:
 
     QTermWidget *currentConsole();
     QTermWidget *findConsole(const QString &id);
-    QTermWidget *createConsole(const QString &name, bool startNow = true);
+    QTermWidget *createConsole(const QString &name, bool startNow = true, bool rename = true);
     void sendCommand(const QString &text);
     void executeCommand(const QString &name, const QString &program, const QStringList &args, const QString &workingDir, const QStringList &env);
+    QUuid newConsole(const QString &name, bool rename = true);
+    void selectConsole(const QUuid &uuid);
+    void run2Console(const QUuid &uuid, const QProcess &process);
 
 private:
     void showEvent(QShowEvent *event) override;

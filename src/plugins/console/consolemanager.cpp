@@ -11,6 +11,7 @@
 #include <DFrame>
 
 #include <QUuid>
+#include <QProcess>
 #include <QHBoxLayout>
 #include <QListView>
 #include <QSplitter>
@@ -32,6 +33,7 @@ public:
     void appendConsole();
     void removeConsole();
     void switchConsole(const QModelIndex &index, const QModelIndex &previous);
+    void switchConsole(const QUuid &uuid);
     void updateButtonState();
 
 public:
@@ -99,7 +101,8 @@ void ConsoleManagerPrivate::initUI()
 
 void ConsoleManagerPrivate::initConnection()
 {
-    connect(consoleListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &ConsoleManagerPrivate::switchConsole);
+    connect(consoleListView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, QOverload<const QModelIndex &, const QModelIndex &>::of(&ConsoleManagerPrivate::switchConsole));
     connect(addConsoleBtn, &DToolButton::clicked, this, &ConsoleManagerPrivate::appendConsole);
     connect(removeConsoleBtn, &DToolButton::clicked, this, &ConsoleManagerPrivate::removeConsole);
     connect(model, &QStandardItemModel::rowsRemoved, this, &ConsoleManagerPrivate::updateButtonState);
@@ -141,6 +144,13 @@ void ConsoleManagerPrivate::switchConsole(const QModelIndex &index, const QModel
     }
 }
 
+void ConsoleManagerPrivate::switchConsole(const QUuid &uuid) {
+    if (auto console = q->findConsole(uuid.toString())) {
+        console->setFocus();
+        consoleStackedWidget->setCurrentWidget(console);
+    }
+}
+
 void ConsoleManagerPrivate::updateButtonState()
 {
     removeConsoleBtn->setEnabled(model->rowCount() > 1);
@@ -175,7 +185,7 @@ QTermWidget *ConsoleManager::findConsole(const QString &id)
     return d->consoleMap.value(id, nullptr);
 }
 
-QTermWidget *ConsoleManager::createConsole(const QString &name, bool startNow)
+QTermWidget *ConsoleManager::createConsole(const QString &name, bool startNow, bool rename)
 {
     auto id = QUuid::createUuid().toString();
     ConsoleWidget *console = new ConsoleWidget(this, startNow);
@@ -184,6 +194,7 @@ QTermWidget *ConsoleManager::createConsole(const QString &name, bool startNow)
 
     QStandardItem *item = new QStandardItem(name);
     item->setData(id, IdRole);
+    item->setData(rename, Qt::EditRole);
     d->model->appendRow(item);
     d->consoleListView->setCurrentIndex(d->model->index(d->model->rowCount() - 1, 0));
 
@@ -216,6 +227,36 @@ void ConsoleManager::executeCommand(const QString &name, const QString &program,
     QString cmd = program + ' ';
     cmd += args.join(' ') + '\n';
     console->sendText(cmd);
+}
+
+QUuid ConsoleManager::newConsole(const QString &name, bool rename)
+{
+    auto ptr_term = dynamic_cast<ConsoleWidget*>(this->createConsole(name, true, rename));
+    return QUuid::fromString(d->consoleMap.key(ptr_term, ""));
+}
+
+void ConsoleManager::selectConsole(const QUuid &uuid)
+{
+    d->switchConsole(uuid);
+}
+
+void ConsoleManager::run2Console(const QUuid &uuid, const QProcess &process)
+{
+    auto ptr_term = findConsole(uuid.toString());
+    if (!ptr_term)
+        return;
+
+    if (!process.workingDirectory().isEmpty())
+        ptr_term->changeDir(process.workingDirectory());
+    if (!process.environment().isEmpty())
+        ptr_term->setEnvironment(process.environment());
+    if (!process.program().isEmpty()) {
+        QString cmd = process.program();
+        if (!process.arguments().isEmpty())
+            cmd += ' ' + process.arguments().join(' ');
+        cmd += '\n';
+        ptr_term->sendText(cmd);
+    }
 }
 
 void ConsoleManager::showEvent(QShowEvent *event)
