@@ -154,7 +154,9 @@ ViewStyle::ViewStyle(const ViewStyle &source) : markers(MARKER_MAX + 1), indicat
 	extraDescent = source.extraDescent;
 	marginStyleOffset = source.marginStyleOffset;
 	annotationVisible = source.annotationVisible;
+    eolAnnotationVisible = source.eolAnnotationVisible;
 	annotationStyleOffset = source.annotationStyleOffset;
+    eolAnnotationStyleOffset = source.eolAnnotationStyleOffset;
 	braceHighlightIndicatorSet = source.braceHighlightIndicatorSet;
 	braceHighlightIndicator = source.braceHighlightIndicator;
 	braceBadLightIndicatorSet = source.braceBadLightIndicatorSet;
@@ -287,7 +289,9 @@ void ViewStyle::Init(size_t stylesSize_) {
 	extraDescent = 0;
 	marginStyleOffset = 0;
 	annotationVisible = ANNOTATION_HIDDEN;
+    eolAnnotationVisible = EOLANNOTATION_HIDDEN;
 	annotationStyleOffset = 0;
+    eolAnnotationStyleOffset = 0;
 	braceHighlightIndicatorSet = false;
 	braceHighlightIndicator = 0;
 	braceBadLightIndicatorSet = false;

@@ -699,10 +699,10 @@ void TabWidget::undo()
         editor->undo();
 }
 
-void TabWidget::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
+void TabWidget::setCompletion(const QString &info)
 {
     if (auto editor = d->currentTextEditor())
-        editor->setCompletion(info, icon, key);
+        editor->setCompletion(info);
 }
 
 void TabWidget::gotoNextPosition()

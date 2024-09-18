@@ -97,7 +97,9 @@ public:
     void followSymbolUnderCursor();
     void findUsage();
     void renameSymbol();
-    void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
+    void setCompletion(const QString &info);
+    void applyCompletion();
+    void cancelCompletion();
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;

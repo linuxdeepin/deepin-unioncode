@@ -140,6 +140,7 @@ Document::Document(int options) :
 	perLineData[ldState].reset(new LineState());
 	perLineData[ldMargin].reset(new LineAnnotation());
 	perLineData[ldAnnotation].reset(new LineAnnotation());
+    perLineData[ldEOLAnnotation].reset(new LineAnnotation());
 
 	decorations = DecorationListCreate(IsLarge());
 
@@ -205,7 +206,12 @@ LineAnnotation *Document::Margins() const {
 }
 
 LineAnnotation *Document::Annotations() const {
-	return static_cast<LineAnnotation *>(perLineData[ldAnnotation].get());
+    return static_cast<LineAnnotation *>(perLineData[ldAnnotation].get());
+}
+
+LineAnnotation *Document::EOLAnnotations() const
+{
+    return static_cast<LineAnnotation *>(perLineData[ldEOLAnnotation].get());
 }
 
 int Document::LineEndTypesSupported() const {
@@ -1483,7 +1489,6 @@ Sci::Position Document::SetLineIndentation(Sci::Line line, Sci::Position indent)
 		std::string linebuf = CreateIndentation(indent, tabInChars, !useTabs);
 		const Sci::Position thisLineStart = LineStart(line);
 		const Sci::Position indentPos = GetLineIndentPosition(line);
-		UndoGroup ug(this);
 		DeleteChars(thisLineStart, indentPos - thisLineStart);
 		return thisLineStart + InsertString(thisLineStart, linebuf.c_str(),
 			linebuf.length());
@@ -2351,11 +2356,53 @@ int Document::AnnotationLines(Sci::Line line) const {
 }
 
 void Document::AnnotationClearAll() {
+    if (Annotations()->Empty()) {
+        return;
+    }
 	const Sci::Line maxEditorLine = LinesTotal();
 	for (Sci::Line l=0; l<maxEditorLine; l++)
 		AnnotationSetText(l, nullptr);
 	// Free remaining data
-	Annotations()->ClearAll();
+    Annotations()->ClearAll();
+}
+
+StyledText Document::EOLAnnotationStyledText(Sci::Line line) const
+{
+    const LineAnnotation *pla = EOLAnnotations();
+    return StyledText(pla->Length(line), pla->Text(line),
+                      pla->MultipleStyles(line), pla->Style(line), pla->Styles(line));
+}
+
+void Document::EOLAnnotationSetStyle(Sci::Line line, int style)
+{
+    if (line >= 0 && line < LinesTotal()) {
+        EOLAnnotations()->SetStyle(line, style);
+        const DocModification mh(SC_MOD_CHANGEEOLANNOTATION, LineStart(line),
+                                 0, 0, nullptr, line);
+        NotifyModified(mh);
+    }
+}
+
+void Document::EOLAnnotationSetText(Sci::Line line, const char *text)
+{
+    if (line >= 0 && line < LinesTotal()) {
+        EOLAnnotations()->SetText(line, text);
+        const DocModification mh(SC_MOD_CHANGEEOLANNOTATION, LineStart(line),
+                                 0, 0, nullptr, line);
+        NotifyModified(mh);
+    }
+}
+
+void Document::EOLAnnotationClearAll()
+{
+    if (EOLAnnotations()->Empty()) {
+        return;
+    }
+    const Sci::Line maxEditorLine = LinesTotal();
+    for (Sci::Line l=0; l<maxEditorLine; l++)
+        EOLAnnotationSetText(l, nullptr);
+    // Free remaining data
+    EOLAnnotations()->ClearAll();
 }
 
 void Document::IncrementStyleClock() noexcept {

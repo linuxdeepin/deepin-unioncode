@@ -85,6 +85,8 @@ public:
     QString fontName;
     int fontSize { 10 };
 
+    using CompletionCache = QPair<int, QString>;
+    CompletionCache cpCache { -1, "" };
     CodeCompletionWidget *completionWidget { nullptr };
     QMap<QString, QVariant> commentSettings;
 

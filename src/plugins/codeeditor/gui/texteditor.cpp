@@ -10,6 +10,7 @@
 #include "settings/settingsdefine.h"
 
 #include "Qsci/qscidocument.h"
+#include "Qsci/qscilexer.h"
 
 #include <DDialog>
 
@@ -636,6 +637,7 @@ void TextEditor::insertText(const QString &text)
 
     SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.constData());
     SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
+    d->adjustScrollBar();
 }
 
 LanguageClientHandler *TextEditor::languageClient() const
@@ -685,12 +687,47 @@ void TextEditor::renameSymbol()
     d->languageClient->renameActionTriggered();
 }
 
-void TextEditor::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
+void TextEditor::setCompletion(const QString &info)
 {
-    if (!d->completionWidget)
+    if (info.isEmpty())
         return;
 
-    d->completionWidget->setCompletion(info, icon, key);
+    int line = -1, index = -1;
+    getCursorPosition(&line, &index);
+    int lineEndPos = SendScintilla(SCI_GETLINEENDPOSITION, line);
+    if (lineEndPos != cursorPosition())
+        return;
+
+    cancelCompletion();
+    d->cpCache = qMakePair(line, info);
+    const auto &part1 = info.mid(0, info.indexOf('\n'));
+    const auto &part2 = info.mid(info.indexOf('\n') + 1);
+    QsciStyle cpStyle(1, "", Qt::gray, lexer() ? lexer()->defaultPaper(-1) : paper(),
+                      lexer() ? lexer()->defaultFont() : font());
+    eOLAnnotate(line, part1, cpStyle);
+    if (part1 != part2)
+        annotate(line, part2, cpStyle);
+}
+
+void TextEditor::applyCompletion()
+{
+    if (d->cpCache.first == -1)
+        return;
+
+    const auto cpStr = d->cpCache.second;
+    cancelCompletion();
+    insertText(cpStr);
+}
+
+void TextEditor::cancelCompletion()
+{
+    if (d->cpCache.first == -1)
+        return;
+
+    clearEOLAnnotations(d->cpCache.first);
+    clearAnnotations(d->cpCache.first);
+
+    d->cpCache = qMakePair(-1, QString());
 }
 
 QString TextEditor::cursorBeforeText() const
@@ -791,6 +828,7 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 {
     Q_UNUSED(line)
 
+    cancelCompletion();
     editor.cursorPositionChanged(d->fileName, line, index);
     int pos = positionFromLineIndex(line, index);
 
@@ -809,6 +847,7 @@ void TextEditor::focusOutEvent(QFocusEvent *event)
     if (!d->lineWidgetContainer->hasFocus())
         d->lineWidgetContainer->setVisible(false);
 
+    cancelCompletion();
     Q_EMIT focusOut();
     Q_EMIT followTypeEnd();
     QsciScintilla::focusOutEvent(event);
@@ -816,8 +855,14 @@ void TextEditor::focusOutEvent(QFocusEvent *event)
 
 void TextEditor::keyPressEvent(QKeyEvent *event)
 {
+    if (event->key() == Qt::Key_Tab && d->cpCache.first != -1)
+        return applyCompletion();
+
     if (d->completionWidget->processKeyPressEvent(event))
         return;
+
+    if (event->key() == Qt::Key_Escape && d->cpCache.first != -1)
+        return cancelCompletion();
 
     QsciScintilla::keyPressEvent(event);
 }

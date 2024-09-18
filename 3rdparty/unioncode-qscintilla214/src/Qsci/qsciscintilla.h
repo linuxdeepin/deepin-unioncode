@@ -123,6 +123,21 @@ public:
         AnnotationIndented = ANNOTATION_INDENTED,
     };
 
+    enum EOLAnnotationDisplay {
+        EOLAnnotationHidden = EOLANNOTATION_HIDDEN,
+        EOLAnnotationStandard = EOLANNOTATION_STANDARD,
+        EOLAnnotationBoxed = EOLANNOTATION_BOXED,
+        EOLAnnotationStadium = EOLANNOTATION_STADIUM,
+        EOLAnnotationFlatCircle = EOLANNOTATION_FLAT_CIRCLE,
+        EOLAnnotationAngleCirle = EOLANNOTATION_ANGLE_CIRCLE,
+        EOLAnnotationCircleFlat = EOLANNOTATION_CIRCLE_FLAT,
+        EOLAnnotationFlats = EOLANNOTATION_FLATS,
+        EOLAnnotationAngleFlat = EOLANNOTATION_ANGLE_FLAT,
+        EOLAnnotationCircleAngle = EOLANNOTATION_CIRCLE_ANGLE,
+        EOLAnnotationFlatAngle = EOLANNOTATION_FLAT_ANGLE,
+        EOLAnnotationAngles = EOLANNOTATION_ANGLES,
+    };
+
     //! This enum defines the behavior if an auto-completion list contains a
     //! single entry.
     enum AutoCompletionUseSingle {
@@ -577,28 +592,34 @@ public:
     //! Annotate the line \a line with the text \a text using the style number
     //! \a style.
     void annotate(int line, const QString &text, int style);
+    void eOLAnnotate(int line, const QString &text, int style);
 
     //! Annotate the line \a line with the text \a text using the style \a
     //! style.
     void annotate(int line, const QString &text, const QsciStyle &style);
+    void eOLAnnotate(int line, const QString &text, const QsciStyle &style);
 
     //! Annotate the line \a line with the styled text \a text.
     void annotate(int line, const QsciStyledText &text);
+    void eOLAnnotate(int line, const QsciStyledText &text);
 
     //! Annotate the line \a line with the list of styled text \a text.
     void annotate(int line, const QList<QsciStyledText> &text);
 
     //! Returns the annotation on line \a line, if any.
     QString annotation(int line) const;
+    QString eolAnnotation(int line) const;
 
     //! Returns the display style for annotations.
     //!
     //! \sa setAnnotationDisplay()
     AnnotationDisplay annotationDisplay() const;
+    EOLAnnotationDisplay eolAnnotationDisplay() const;
 
     //! The annotations on line \a line are removed.  If \a line is negative
     //! then all annotations are removed.
     void clearAnnotations(int line = -1);
+    void clearEOLAnnotations(int line = -1);
 
     //! Returns true if auto-completion lists are case sensitive.
     //!
@@ -1237,6 +1258,7 @@ public:
     //!
     //! \sa annotationDisplay()
     void setAnnotationDisplay(AnnotationDisplay display);
+    void setEOLAnnotationDisplay(EOLAnnotationDisplay display);
 
     //! Enable the use of fill-up characters, either those explicitly set or
     //! those set by a lexer.  By default, fill-up characters are disabled.

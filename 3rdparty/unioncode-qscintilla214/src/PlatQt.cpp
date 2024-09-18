@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <cmath>
 
 #include <qapplication.h>
 #include <qcursor.h>
@@ -139,6 +140,36 @@ void Font::Release()
     }
 }
 
+XYPOSITION PixelAlign(XYPOSITION xy, int pixelDivisions) noexcept {
+    return std::round(xy * pixelDivisions) / pixelDivisions;
+}
+
+XYPOSITION PixelAlignFloor(XYPOSITION xy, int pixelDivisions) noexcept {
+    return std::floor(xy * pixelDivisions) / pixelDivisions;
+}
+
+XYPOSITION PixelAlignCeil(XYPOSITION xy, int pixelDivisions) noexcept {
+    return std::ceil(xy * pixelDivisions) / pixelDivisions;
+}
+
+Point PixelAlign(const Point &pt, int pixelDivisions) noexcept {
+    return Point(
+        PixelAlign(pt.x, pixelDivisions),
+        PixelAlign(pt.y, pixelDivisions));
+}
+
+PRectangle PixelAlign(const PRectangle &rc, int pixelDivisions) noexcept {
+    // Move left and right side to nearest pixel to avoid blurry visuals.
+    // The top and bottom should be integers but floor them to make sure.
+    // `pixelDivisions` is commonly 1 except for 'retina' displays where it is 2.
+    // On retina displays, the positions should be moved to the nearest device
+    // pixel which is the nearest half logical pixel.
+    return PRectangle(
+        PixelAlign(rc.left, pixelDivisions),
+        PixelAlignFloor(rc.top, pixelDivisions),
+        PixelAlign(rc.right, pixelDivisions),
+        PixelAlignFloor(rc.bottom, pixelDivisions));
+}
 
 // A surface abstracts a place to draw.
 class SurfaceImpl : public Surface
@@ -164,6 +195,7 @@ public:
     void RectangleDraw(PRectangle rc, ColourDesired fore,
             ColourDesired back);
     void FillRectangle(PRectangle rc, ColourDesired back);
+    void RectangleFrame(PRectangle rc, ColourDesired fore);
     void FillRectangle(PRectangle rc, Surface &surfacePattern);
     void RoundedRectangle(PRectangle rc, ColourDesired fore,
             ColourDesired back);
@@ -174,6 +206,7 @@ public:
             GradientOptions options);
     void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage);
     void Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back);
+    void Stadium(PRectangle rc, ColourDesired fore, ColourDesired back, Ends ends);
     void Copy(PRectangle rc, Point from, Surface &surfaceSource);
 
     void DrawTextNoClip(PRectangle rc, Font &font_, XYPOSITION ybase,
@@ -185,6 +218,9 @@ public:
     void MeasureWidths(Font &font_, const char *s, int len,
             XYPOSITION *positions);
     XYPOSITION WidthText(Font &font_, const char *s, int len);
+
+    XYPOSITION WidthTextUTF8(Font &font_, const char *s);
+
     XYPOSITION Ascent(Font &font_);
     XYPOSITION Descent(Font &font_);
     XYPOSITION InternalLeading(Font &font_) {Q_UNUSED(font_); return 0;}
@@ -352,6 +388,15 @@ void SurfaceImpl::FillRectangle(PRectangle rc, ColourDesired back)
     drawRect(rc);
 }
 
+void SurfaceImpl::RectangleFrame(PRectangle rc, ColourDesired fore)
+{
+    Q_ASSERT(painter);
+
+    painter->setPen(convertQColor(fore));
+    painter->setBrush(Qt::NoBrush);
+    drawRect(rc);
+}
+
 void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern)
 {
     Q_ASSERT(painter);
@@ -453,7 +498,68 @@ void SurfaceImpl::Ellipse(PRectangle rc, ColourDesired fore,
     painter->setPen(convertQColor(fore));
     painter->setBrush(convertQColor(back));
     painter->drawEllipse(
-            QRectF(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top));
+        QRectF(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top));
+}
+
+void SurfaceImpl::Stadium(PRectangle rc, ColourDesired fore, ColourDesired back, Ends ends)
+{
+    Q_ASSERT(painter);
+
+    const XYPOSITION halfStroke = 1.0 / 2.0f;
+    const XYPOSITION radius = rc.Height() / 2.0f - halfStroke;
+    PRectangle rcInner = rc;
+    rcInner.left += radius;
+    rcInner.right -= radius;
+    const XYPOSITION arcHeight = rc.Height() - 1.0;
+
+    painter->setPen(convertQColor(fore));
+    painter->setBrush(convertQColor(back));
+
+    QPainterPath path;
+
+    const Ends leftSide = static_cast<Ends>(static_cast<unsigned int>(ends) & 0xfu);
+    const Ends rightSide = static_cast<Ends>(static_cast<unsigned int>(ends) & 0xf0u);
+    switch (leftSide) {
+    case Ends::leftFlat:
+        path.moveTo(rc.left + halfStroke, rc.top + halfStroke);
+        path.lineTo(rc.left + halfStroke, rc.bottom - halfStroke);
+        break;
+    case Ends::leftAngle:
+        path.moveTo(rcInner.left + halfStroke, rc.top + halfStroke);
+        path.lineTo(rc.left + halfStroke, rc.Centre().y);
+        path.lineTo(rcInner.left + halfStroke, rc.bottom - halfStroke);
+        break;
+    case Ends::semiCircles:
+    default:
+        path.moveTo(rcInner.left + halfStroke, rc.top + halfStroke);
+        QRectF rectangleArc(rc.left + halfStroke, rc.top + halfStroke,
+                            arcHeight, arcHeight);
+        path.arcTo(rectangleArc, 90, 180);
+        break;
+    }
+
+    switch (rightSide) {
+    case Ends::rightFlat:
+        path.lineTo(rc.right - halfStroke, rc.bottom - halfStroke);
+        path.lineTo(rc.right - halfStroke, rc.top + halfStroke);
+        break;
+    case Ends::rightAngle:
+        path.lineTo(rcInner.right - halfStroke, rc.bottom - halfStroke);
+        path.lineTo(rc.right - halfStroke, rc.Centre().y);
+        path.lineTo(rcInner.right - halfStroke, rc.top + halfStroke);
+        break;
+    case Ends::semiCircles:
+    default:
+        path.lineTo(rcInner.right - halfStroke, rc.bottom - halfStroke);
+        QRectF rectangleArc(rc.right - arcHeight - halfStroke, rc.top + halfStroke,
+                            arcHeight, arcHeight);
+        path.arcTo(rectangleArc, 270, 180);
+        break;
+    }
+
+    // Close the path to enclose it for stroking and for filling, then draw it
+    path.closeSubpath();
+    painter->drawPath(path);
 }
 
 void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource)
@@ -615,6 +721,16 @@ XYPOSITION SurfaceImpl::WidthText(Font &font_, const char *s, int len)
 {
     return metrics(font_).horizontalAdvance(convertText(s, len));
 
+}
+
+XYPOSITION SurfaceImpl::WidthTextUTF8(Font &font_, const char *s)
+{
+    QString su = QString::fromUtf8(s);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    return metrics(font_).horizontalAdvance(su);
+#else
+    return metrics(font_).width(su);
+#endif
 }
 
 XYPOSITION SurfaceImpl::Ascent(Font &font_)

@@ -2640,6 +2640,11 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 				Redraw();
 			}
 		}
+        if (mh.modificationType & SC_MOD_CHANGEEOLANNOTATION) {
+            if (vs.eolAnnotationVisible) {
+                Redraw();
+            }
+        }
 		CheckModificationForWrap(mh);
 		if (mh.linesAdded != 0) {
 			// Avoid scrolling of display if change before current display
@@ -5269,7 +5274,15 @@ void Editor::SetAnnotationVisible(int visible) {
 			SetScrollBars();
 		}
 		Redraw();
-	}
+    }
+}
+
+void Editor::SetEOLAnnotationVisible(int visible)
+{
+    if (vs.eolAnnotationVisible != visible) {
+        vs.eolAnnotationVisible = visible;
+        Redraw();
+    }
 }
 
 /**
@@ -7985,6 +7998,43 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_ANNOTATIONGETSTYLEOFFSET:
 		return vs.annotationStyleOffset;
+
+    case SCI_EOLANNOTATIONSETTEXT:
+        pdoc->EOLAnnotationSetText(static_cast<Sci::Line>(wParam), CharPtrFromSPtr(lParam));
+        break;
+
+    case SCI_EOLANNOTATIONGETTEXT: {
+        const StyledText st = pdoc->EOLAnnotationStyledText(static_cast<Sci::Line>(wParam));
+        return BytesResult(lParam, reinterpret_cast<const unsigned char *>(st.text), st.length);
+    }
+
+    case SCI_EOLANNOTATIONSETSTYLE:
+        pdoc->EOLAnnotationSetStyle(static_cast<Sci::Line>(wParam), static_cast<int>(lParam));
+        break;
+
+    case SCI_EOLANNOTATIONGETSTYLE: {
+        const StyledText st = pdoc->EOLAnnotationStyledText(static_cast<Sci::Line>(wParam));
+        return st.style;
+    }
+
+    case SCI_EOLANNOTATIONCLEARALL:
+        pdoc->EOLAnnotationClearAll();
+        break;
+
+    case SCI_EOLANNOTATIONSETVISIBLE:
+        SetEOLAnnotationVisible(static_cast<int>(wParam));
+        break;
+
+    case SCI_EOLANNOTATIONGETVISIBLE:
+        return static_cast<sptr_t>(vs.eolAnnotationVisible);
+
+    case SCI_EOLANNOTATIONSETSTYLEOFFSET:
+        vs.eolAnnotationStyleOffset = static_cast<int>(wParam);
+        InvalidateStyleRedraw();
+        break;
+
+    case SCI_EOLANNOTATIONGETSTYLEOFFSET:
+        return vs.eolAnnotationStyleOffset;
 
 	case SCI_RELEASEALLEXTENDEDSTYLES:
 		vs.ReleaseAllExtendedStyles();

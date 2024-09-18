@@ -310,7 +310,12 @@ struct AnnotationHeader {
 };
 
 LineAnnotation::~LineAnnotation() {
-	ClearAll();
+    ClearAll();
+}
+
+bool LineAnnotation::Empty() const
+{
+    return annotations.Length() == 0;
 }
 
 void LineAnnotation::Init() {
