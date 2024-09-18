@@ -108,9 +108,9 @@ void BreakpointView::enableBreakpoints(const QModelIndexList &rows)
     for (auto row : rows) {
         auto bp = bpModel->BreakpointAt(row.row());
         if (openedFiles.contains(bp.filePath))
-            editor.setBreakpointEnabled(bp.filePath, bp.lineNumber, true);
+            editor.setBreakpointEnabled(bp.filePath, bp.lineNumber - 1, true);
         else
-            editor.breakpointStatusChanged(bp.filePath, bp.lineNumber, true);
+            editor.breakpointStatusChanged(bp.filePath, bp.lineNumber - 1, true);
     }
 }
 
@@ -121,9 +121,9 @@ void BreakpointView::disableBreakpoints(const QModelIndexList &rows)
     for (auto row : rows) {
         auto bp = bpModel->BreakpointAt(row.row());
         if (openedFiles.contains(bp.filePath))
-            editor.setBreakpointEnabled(bp.filePath, bp.lineNumber, false);
+            editor.setBreakpointEnabled(bp.filePath, bp.lineNumber - 1, false);
         else
-            editor.breakpointStatusChanged(bp.filePath, bp.lineNumber, false);
+            editor.breakpointStatusChanged(bp.filePath, bp.lineNumber - 1, false);
     }
 }
 
@@ -134,9 +134,9 @@ void BreakpointView::removeBreakpoints(const QModelIndexList &rows)
     for (auto row : rows) {
         auto bp = bpModel->BreakpointAt(row.row());
         if (openedFiles.contains(bp.filePath))
-            editor.removeBreakpoint(bp.filePath, bp.lineNumber);
+            editor.removeBreakpoint(bp.filePath, bp.lineNumber - 1);
         else
-            editor.breakpointRemoved(bp.filePath, bp.lineNumber);
+            editor.breakpointRemoved(bp.filePath, bp.lineNumber - 1);
     }
 }
 
@@ -145,7 +145,7 @@ void BreakpointView::editBreakpointCondition(const QModelIndex &index)
     BreakpointModel *bpModel = static_cast<BreakpointModel *>(model());
     auto bp = bpModel->BreakpointAt(index.row());
 
-    editor.setBreakpointCondition(bp.filePath, bp.lineNumber);
+    editor.setBreakpointCondition(bp.filePath, bp.lineNumber - 1);
 }
 
 void BreakpointView::initHeaderView()

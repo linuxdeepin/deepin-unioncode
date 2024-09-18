@@ -145,9 +145,6 @@ void TabWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddAnnotation, this, &TabWidgetPrivate::handleAddAnnotation);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveAnnotation, this, &TabWidgetPrivate::handleRemoveAnnotation);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearAllAnnotation, this, &TabWidgetPrivate::handleClearAllAnnotation);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetLineBackgroundColor, this, &TabWidgetPrivate::handleSetLineBackgroundColor);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetLineBackground, this, &TabWidgetPrivate::handleResetLineBackground);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearLineBackground, this, &TabWidgetPrivate::handleClearLineBackground);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, this, &TabWidgetPrivate::handleDoRename);
 }
 
@@ -437,24 +434,6 @@ void TabWidgetPrivate::handleClearAllAnnotation(const QString &title)
 {
     for (auto editor : editorMng)
         editor->removeAnnotation(title);
-}
-
-void TabWidgetPrivate::handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color)
-{
-    if (auto editor = findEditor(fileName))
-        editor->setLineBackgroundColor(line, color);
-}
-
-void TabWidgetPrivate::handleResetLineBackground(const QString &fileName, int line)
-{
-    if (auto editor = findEditor(fileName))
-        editor->resetLineBackgroundColor(line);
-}
-
-void TabWidgetPrivate::handleClearLineBackground(const QString &fileName)
-{
-    if (auto editor = findEditor(fileName))
-        editor->clearLineBackgroundColor();
 }
 
 void TabWidgetPrivate::handleDoRename(const newlsp::WorkspaceEdit &info)
@@ -859,6 +838,57 @@ void TabWidget::updateZoomValue(int value)
         other->updateLineNumberWidth(false);
         connect(other, &TextEditor::zoomValueChanged, this, &TabWidget::zoomValueChanged);
     }
+}
+
+bool TabWidget::setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, const QColor &color, int &marker)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        marker = editor->setRangeBackgroundColor(startLine, endLine, color);
+        return true;
+    }
+
+    return false;
+}
+
+bool TabWidget::clearRangeBackground(const QString &fileName, int startLine, int endLine, int marker)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        editor->clearRangeBackgroundColor(startLine, endLine, marker);
+        return true;
+    }
+
+    return false;
+}
+
+bool TabWidget::clearAllBackground(const QString &fileName, int marker)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        editor->clearAllBackgroundColor(marker);
+        return true;
+    }
+
+    return false;
+}
+
+void TabWidget::showLineWidget(int line, QWidget *widget)
+{
+    if (auto editor = d->currentTextEditor())
+        editor->showLineWidget(line, widget);
+}
+
+void TabWidget::closeLineWidget()
+{
+    if (auto editor = d->currentTextEditor())
+        editor->closeLineWidget();
+}
+
+void TabWidget::cursorPosition(int *line, int *index)
+{
+    if (!line || !index)
+        return;
+
+    if (auto editor = d->currentTextEditor())
+        editor->getCursorPosition(line, index);
 }
 
 TextEditor *TabWidget::currentEditor() const

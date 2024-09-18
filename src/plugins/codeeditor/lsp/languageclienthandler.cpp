@@ -13,15 +13,23 @@
 #include "symbol/symbolmanager.h"
 
 #include "services/project/projectservice.h"
+#include "services/editor/editorservice.h"
+#include "common/tooltip/tooltip.h"
 
 #include "Qsci/qscilexer.h"
 
+#include <cmark.h>
 #include <DApplicationHelper>
+#include <DFrame>
+
 #include <QApplication>
+#include <QTextDocumentFragment>
 
 #include <bitset>
+#include <regex>
 
 DGUI_USE_NAMESPACE
+DWIDGET_USE_NAMESPACE
 
 LanguageClientHandlerPrivate::LanguageClientHandlerPrivate(TextEditor *edit, LanguageClientHandler *qq)
     : q(qq),
@@ -39,7 +47,6 @@ LanguageClientHandlerPrivate::~LanguageClientHandlerPrivate()
 
 void LanguageClientHandlerPrivate::init()
 {
-    diagnosticFormat = "%1\n%2:%3";
     textChangedTimer.setSingleShot(true);
     textChangedTimer.setInterval(200);
 
@@ -71,6 +78,7 @@ void LanguageClientHandlerPrivate::initConnection()
     connect(&textChangedTimer, &QTimer::timeout, this, &LanguageClientHandlerPrivate::delayTextChanged);
     connect(&positionChangedTimer, &QTimer::timeout, this, &LanguageClientHandlerPrivate::delayPositionChanged);
     connect(languageWorker, &LanguageWorker::highlightToken, this, &LanguageClientHandlerPrivate::handleHighlightToken);
+    connect(ToolTip::instance(), &ToolTip::hidden, this, [this] { hoverCache.clean(); });
 }
 
 void LanguageClientHandlerPrivate::initLspConnection()
@@ -136,20 +144,6 @@ void LanguageClientHandlerPrivate::initIndicStyle()
     editor->indicatorDefine(TextEditor::TextColorIndicator, TextEditor::INDIC_TEXTFORE);
     editor->indicatorDefine(TextEditor::TriangleIndicator, TextEditor::INDIC_POINT);
     editor->indicatorDefine(TextEditor::TriangleCharacterIndicator, TextEditor::INDIC_POINTCHARACTER);
-}
-
-QString LanguageClientHandlerPrivate::formatDiagnosticMessage(const QString &message, int type)
-{
-    auto result = message;
-    switch (type) {
-    case AnnotationType::ErrorAnnotation:
-        result = diagnosticFormat.arg("Parse Issue", "Error", result);
-        break;
-    default:
-        break;
-    }
-
-    return result;
 }
 
 bool LanguageClientHandlerPrivate::shouldStartCompletion(const QString &insertedText)
@@ -238,8 +232,18 @@ void LanguageClientHandlerPrivate::handleDiagnostics(const newlsp::PublishDiagno
             editor->SendScintilla(TextEditor::SCI_INDICSETFORE, TextEditor::INDIC_SQUIGGLE, QColor(Qt::red));
             editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(startPos), endPos - startPos);
 
-            std::string message = val.message.value();
-            diagnosticCache.append({ startPos, endPos, message.c_str(), AnnotationType::ErrorAnnotation });
+            QString message = val.message.value().c_str();
+            if (val.relatedInformation.has_value()) {
+                message += "\n\n";
+                for (const auto &info : val.relatedInformation.value()) {
+                    QString infoMsg("%1:%2:%3:\nnote:%4");
+                    auto path = QUrl(info.location.uri.c_str()).path();
+                    message += infoMsg.arg(path, QString::number(info.location.range.start.line + 1),
+                                           QString::number(info.location.range.start.character + 1),
+                                           info.message.c_str());
+                }
+            }
+            diagnosticCache.append({ startPos, endPos, message, AnnotationType::ErrorAnnotation });
         }
     }
 }
@@ -279,6 +283,11 @@ void LanguageClientHandlerPrivate::handleShowHoverInfo(const newlsp::Hover &hove
     } else if (newlsp::any_contrast<newlsp::MarkupContent>(hover.contents)) {
         auto markupContent = std::any_cast<newlsp::MarkupContent>(hover.contents);
         showText = markupContent.value;
+        if (markupContent.kind == newlsp::Enum::MarkupKind::get()->Markdown) {
+            char *output = cmark_markdown_to_html(showText.c_str(), showText.size(), CMARK_OPT_DEFAULT);
+            showText = output;
+            free(output);
+        }
     } else if (newlsp::any_contrast<newlsp::MarkedString>(hover.contents)) {
         auto markedString = std::any_cast<newlsp::MarkedString>(hover.contents);
         if (!std::string(markedString).empty()) {
@@ -401,18 +410,6 @@ void LanguageClientHandlerPrivate::handleHoveredStart(int position)
     if (!editor || !getClient())
         return;
 
-    if (!diagnosticCache.isEmpty()) {
-        auto iter = std::find_if(diagnosticCache.begin(), diagnosticCache.end(),
-                                 [position](const DiagnosticCache &cache) {
-                                     return cache.contains(position);
-                                 });
-        if (iter != diagnosticCache.end()) {
-            const auto &msg = formatDiagnosticMessage(iter->message, iter->type);
-            editor->showTips(position, msg);
-            return;
-        }
-    }
-
     hoverCache.setPosition(position);
     auto textRange = hoverCache.getTextRange();
     if (!textRange.isEmpty() && textRange.contaions(position))
@@ -425,6 +422,17 @@ void LanguageClientHandlerPrivate::handleHoveredStart(int position)
         return;
 
     hoverCache.setTextRange(static_cast<int>(startPos), static_cast<int>(endPos));
+    if (!diagnosticCache.isEmpty()) {
+        auto iter = std::find_if(diagnosticCache.begin(), diagnosticCache.end(),
+                                 [position](const DiagnosticCache &cache) {
+                                     return cache.contains(position);
+                                 });
+        if (iter != diagnosticCache.end()) {
+            showDiagnosticTip(position, iter->message);
+            return;
+        }
+    }
+
     lsp::Position pos;
     editor->lineIndexFromPosition(position, &pos.line, &pos.character);
     getClient()->docHoverRequest(editor->getFile(), pos);
@@ -554,6 +562,49 @@ void LanguageClientHandlerPrivate::gotoDefinition()
         EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
                                                      one.range.start.line, one.range.start.character);
     }
+}
+
+void LanguageClientHandlerPrivate::showDiagnosticTip(int pos, const QString &message)
+{
+    if (!editor)
+        return;
+
+    QWidget *widget = new QWidget;
+    widget->setAutoFillBackground(true);
+    widget->setForegroundRole(QPalette::BrightText);
+    widget->setBackgroundRole(QPalette::Base);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setContentsMargins(5, 5, 5, 5);
+
+    QLabel *msgLabel = new QLabel(message, widget);
+    layout->addWidget(msgLabel);
+    QString repairMsg = tr("%1: <a href='repair'>Repair with %2</a>");
+
+    // create repair tool
+    auto editSrv = dpfGetService(dpfservice::EditorService);
+    auto repairTools = editSrv->getDiagnosticRepairTool();
+    for (auto iter = repairTools.cbegin(); iter != repairTools.cend(); ++iter) {
+        auto callback = iter.value();
+        QLabel *repairLabel = new QLabel(widget);
+        QString msg = message.mid(0, message.indexOf('\n'));
+        repairLabel->setText(repairMsg.arg(iter.key(), iter.key()));
+        connect(repairLabel, &QLabel::linkActivated, this,
+                [msg, callback, this]() {
+                    QJsonObject info {
+                        { "fileName", editor->getFile() },
+                        { "msg", msg }
+                    };
+
+                    QJsonDocument doc(info);
+                    callback(doc.toJson());
+                    ToolTip::hideImmediately();
+                });
+
+        layout->addWidget(new DHorizontalLine(widget));
+        layout->addWidget(repairLabel);
+    }
+
+    editor->showTips(pos, widget);
 }
 
 void LanguageClientHandlerPrivate::handleSwitchHeaderSource(const QString &file)

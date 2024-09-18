@@ -8,6 +8,8 @@
 #include <QWidget>
 #include <QSplitter>
 
+#include <functional>
+
 class TabWidget;
 class AbstractEditWidget;
 class WorkspaceWidgetPrivate;
@@ -38,10 +40,21 @@ public:
     void replaceAll(const QString &fileName, const QString &oldText, const QString &newText, bool caseSensitive, bool wholeWords);
     void replaceRange(const QString &fileName, int line, int index, int length, const QString &after);
     TabWidget *currentTabWidget() const;
+    void cursorPosition(int *line, int *index);
 
     void registerWidget(const QString &id, AbstractEditWidget *widget);
     void switchWidget(const QString &id);
     void switchDefaultWidget();
+
+    int setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, const QColor &color);
+    void clearRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker);
+    void clearAllBackgroundColor(const QString &fileName, int marker);
+    void showLineWidget(int line, QWidget *widget);
+    void closeLineWidget();
+
+    using RepairCallback = std::function<void(const QString &info)>;
+    void registerDiagnosticRepairTool(const QString &toolName, RepairCallback callback);
+    QMap<QString, RepairCallback> getDiagnosticRepairTool() const;
 
 protected:
     bool event(QEvent *event) override;

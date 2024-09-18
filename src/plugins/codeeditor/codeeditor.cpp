@@ -181,6 +181,14 @@ void CodeEditor::initEditorService()
     editorService->fileText = std::bind(&WorkspaceWidget::fileText, workspaceWidget, _1);
     editorService->replaceAll = std::bind(&WorkspaceWidget::replaceAll, workspaceWidget, _1, _2, _3, _4, _5);
     editorService->replaceRange = std::bind(&WorkspaceWidget::replaceRange, workspaceWidget, _1, _2, _3, _4, _5);
+    editorService->setRangeBackgroundColor = std::bind(&WorkspaceWidget::setRangeBackgroundColor, workspaceWidget, _1, _2, _3, _4);
+    editorService->clearRangeBackgroundColor = std::bind(&WorkspaceWidget::clearRangeBackgroundColor, workspaceWidget, _1, _2, _3, _4);
+    editorService->clearAllBackgroundColor = std::bind(&WorkspaceWidget::clearAllBackgroundColor, workspaceWidget, _1, _2);
+    editorService->showLineWidget = std::bind(&WorkspaceWidget::showLineWidget, workspaceWidget, _1, _2);
+    editorService->closeLineWidget = std::bind(&WorkspaceWidget::closeLineWidget, workspaceWidget);
+    editorService->cursorPosition = std::bind(&WorkspaceWidget::cursorPosition, workspaceWidget, _1, _2);
+    editorService->registerDiagnosticRepairTool = std::bind(&WorkspaceWidget::registerDiagnosticRepairTool, workspaceWidget, _1, _2);
+    editorService->getDiagnosticRepairTool = std::bind(&WorkspaceWidget::getDiagnosticRepairTool, workspaceWidget);
 
     LexerManager::instance()->init(editorService);
 }

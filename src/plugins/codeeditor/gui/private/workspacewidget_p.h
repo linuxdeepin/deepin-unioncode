@@ -72,6 +72,7 @@ public:
     QList<TabWidget *> tabWidgetList;
     QStackedWidget *stackWidget { nullptr };
     QMap<QString, AbstractEditWidget *> registeredWidget;
+    QMap<QString, WorkspaceWidget::RepairCallback> repairToolInfo;
 
     QStringList autoReloadList;
     QStringList modifiedFileList;
