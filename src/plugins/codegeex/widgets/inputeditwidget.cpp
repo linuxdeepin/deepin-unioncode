@@ -66,7 +66,7 @@ public:
 
         using DTK_GUI_NAMESPACE::DPalette;
 
-        DPalette dp(DGuiApplicationHelper::instance()->applicationPalette());
+        DPalette dp(Dtk::DGuiApplicationHelper::instance()->applicationPalette());
 
         auto color = dp.color(DPalette::LightLively);
         color.setAlpha(26);

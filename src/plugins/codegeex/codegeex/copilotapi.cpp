@@ -24,12 +24,11 @@ CopilotApi::CopilotApi(QObject *parent)
 {
 }
 
-void CopilotApi::postGenerate(const QString &url, const QString &code, const QString &suffix)
+void CopilotApi::postGenerate(const QString &url, const QString &prefix, const QString &suffix, GenerateType type)
 {
     if (completionReply)
         completionReply->close();
-
-    QByteArray body = assembleGenerateBody(code, suffix);
+    QByteArray body = assembleGenerateBody(prefix, suffix, type);
     QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
     completionReply = reply;
     reply->setProperty("responseType", CopilotApi::inline_completions);
@@ -99,7 +98,7 @@ QNetworkReply *CopilotApi::postMessage(const QString &url,
         "lang":
     }
 */
-QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString &suffix)
+QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString &suffix, GenerateType type)
 {
     auto file = getCurrentFileInfo();
 
@@ -120,7 +119,10 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
     json.insert("context", context);
     json.insert("model", completionModel);
     json.insert("lang", file.second);
-    json.insert("max_new_tokens", 128);
+    if (type == GenerateType::Line)
+        json.insert("max_new_tokens", 64);
+    else
+        json.insert("max_new_tokens", 128);
 
     QJsonDocument doc(json);
     return doc.toJson();
@@ -189,15 +191,19 @@ void CopilotApi::slotReadReply(QNetworkReply *reply)
         if (type == CopilotApi::inline_completions) {
             auto content = jsonObject.value("inline_completions").toArray().at(0).toObject();
             code = content.value("text").toString();
-            // Cut the first code segment
-            auto codeLines = code.split('\n');
-            QString lastLine = codeLines.last();
+            if (content.value("finish_reason").toString() == "length") {
+                // Due to the length limit of the code, the last line will be discarded when the code is truncated.
+                auto codeLines = code.split('\n');
+                if (codeLines.size() > 1)
+                    codeLines.removeLast();
+                code = codeLines.join('\n');
+            }
 
-            QRegularExpression endOfLinePattern("\\n|;|}");
-            if (!endOfLinePattern.match(lastLine).hasMatch())
-                codeLines.removeLast();
-            code = codeLines.mid(0, codeLines.indexOf("", 1)).join('\n') + '\n';
             completionReply = nullptr;
+
+            // all '\n'
+            if (code.split('\n', QString::SkipEmptyParts).isEmpty())
+                return;
             emit response(CopilotApi::inline_completions, code, "");
         } else if (type == CopilotApi::multilingual_code_translate) {
             auto codeLines = jsonObject.value("text").toString().split('\n');
