@@ -23,7 +23,8 @@ public:
         Configures,
         Scripts,
         Translations,
-        Templates
+        Templates,
+        Models
     };
     static QString user(Flags flags);
     static QString global(Flags flags);

@@ -23,6 +23,11 @@ DWIDGET_USE_NAMESPACE
 static const int minInputEditHeight = 36;
 static const int maxInputEditHeight = 236;
 
+static const QString reference_opened_files = "OpendFiles";
+static const QString reference_current_file = "CurrentFile";
+static const QString reference_select_file = "SelectFile";
+static const QString reference_codebase = "CodeBase";
+
 TagTextFormat::TagTextFormat()
     : QTextCharFormat(QTextFormat(QTextFormat::InvalidFormat))
 {
@@ -178,16 +183,19 @@ void InputEditWidgetPrivate::initreferencePopup()
     referencePopup->setmodel(&model);
 
     ItemInfo currentFile;
-    currentFile.type = "CurrentFile";
+    currentFile.type = reference_current_file;
     currentFile.displayName = InputEditWidget::tr("Current File");
     ItemInfo selectFile;
-    selectFile.type = "SelectFile";
+    selectFile.type = reference_select_file;
     selectFile.displayName = InputEditWidget::tr("Select File");
     ItemInfo openedFiles;
-    openedFiles.type = "OpenedFiles";
+    openedFiles.type = reference_opened_files;
     openedFiles.displayName = InputEditWidget::tr("Opened Files");
+    ItemInfo codeBase;
+    codeBase.type = reference_codebase;
+    codeBase.displayName = InputEditWidget::tr("CodeBase");
 
-    defaultReferenceItems = QList { currentFile, selectFile, openedFiles };
+    defaultReferenceItems = QList { currentFile, selectFile, openedFiles, codeBase };
 }
 
 InputEdit::InputEdit(QWidget *parent)
@@ -411,17 +419,17 @@ void InputEditWidget::accept(const QModelIndex &index)
         d->edit->appendTag(tag);
         d->tagMap.insert('@' + tag, { filePath });
     };
-    if (item.type == "CurrentFile") {
+    if (item.type == reference_current_file) {
         auto filePath = editorSrv->currentFile();
         if (filePath.isEmpty())
             return;
         appendTag(filePath);
-    } else if (item.type == "SelectFile") {
+    } else if (item.type == reference_select_file) {
         QString result = QFileDialog::getOpenFileName(this, QAction::tr("Select File"), QDir::homePath());
         if (result.isEmpty())
             return;
         appendTag(result);
-    } else if (item.type == "OpenedFiles") {
+    } else if (item.type == reference_opened_files) {
         auto openedFiles = editorSrv->openedFiles();
         if (openedFiles.isEmpty())
             return;
@@ -435,30 +443,37 @@ void InputEditWidget::accept(const QModelIndex &index)
         d->model.clear();
         d->model.addItems(items);
         return;
+    } else if (item.type == reference_codebase) {
+        CodeGeeXManager::instance()->setReferenceCodebase(true);
+        d->edit->appendTag(reference_codebase);
     } else if (!item.extraInfo.isEmpty()) {
         appendTag(item.extraInfo);
     }
 
     d->referencePopup->hide();
-    CodeGeeXManager::instance()->setRefereceFiles(d->selectedFiles);
+    CodeGeeXManager::instance()->setReferenceFiles(d->selectedFiles);
 }
 
 // use to restore tag, : remove tag then Ctrl+z
 void InputEditWidget::onTagAdded(const QString &text)
 {
+    if (text.mid(1) == reference_codebase)
+        CodeGeeXManager::instance()->setReferenceCodebase(true);
     if (!d->tagMap.contains(text))
         return;
     d->selectedFiles.append(d->tagMap[text]);
-    CodeGeeXManager::instance()->setRefereceFiles(d->selectedFiles);
+    CodeGeeXManager::instance()->setReferenceFiles(d->selectedFiles);
 }
 
 void InputEditWidget::onTagRemoved(const QString &text)
 {
+    if (text.mid(1) == reference_codebase) //remove @
+        CodeGeeXManager::instance()->setReferenceCodebase(false);
     if (!d->tagMap.contains(text))
         return;
     for (auto item : d->tagMap[text])
         d->selectedFiles.removeOne(item);
-    CodeGeeXManager::instance()->setRefereceFiles(d->selectedFiles);
+    CodeGeeXManager::instance()->setReferenceFiles(d->selectedFiles);
 }
 
 #include "inputeditwidget.moc"

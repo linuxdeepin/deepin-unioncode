@@ -62,6 +62,7 @@ private:
 
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
+    QTimer *generateTimer = nullptr;
     QStringList generateCache {};
     QString generatedCode {};
     QString extractSingleLine();

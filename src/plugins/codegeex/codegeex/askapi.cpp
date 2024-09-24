@@ -4,10 +4,13 @@
 #include "askapi.h"
 #include "codegeexmanager.h"
 #include "src/common/supportfile/language.h"
+#include "services/project/projectservice.h"
+#include "services/window/windowservice.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDesktopServices>
+#include <QtConcurrent>
 
 #include <QJsonObject>
 #include <QJsonArray>
@@ -21,8 +24,8 @@ static int kCode_Success = 200;
 AskApi::AskApi(QObject *parent)
     : QObject(parent),
       manager(new QNetworkAccessManager(this))
-
 {
+    connect(this, &AskApi::syncSendMessage, this, &AskApi::slotSendMessage);
 }
 
 void AskApi::sendLoginRequest(const QString &sessionId,
@@ -92,6 +95,15 @@ QJsonArray convertHistoryToJSONArray(const QMultiMap<QString, QString> &history)
     return jsonArray;
 }
 
+void AskApi::slotSendMessage(const QString url, const QString &token, const QByteArray &body)
+{
+    QNetworkReply *reply = postMessage(url, token, body);
+    connect(this, &AskApi::stopReceive, reply, [reply]() {
+        reply->close();
+    });
+    processResponse(reply);
+}
+
 void AskApi::postSSEChat(const QString &url,
                          const QString &token,
                          const QString &prompt,
@@ -100,12 +112,19 @@ void AskApi::postSSEChat(const QString &url,
                          const QString &talkId)
 {
     QJsonArray jsonArray = convertHistoryToJSONArray(history);
-    QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
-    QNetworkReply *reply = postMessage(url, token, body);
-    connect(this, &AskApi::stopReceive, reply, [reply]() {
-        reply->close();
+    auto impl = CodeGeeXManager::instance();
+    impl->checkCondaInstalled();
+    if (impl->isReferenceCodebase() && !impl->condaHasInstalled()) {
+        QStringList actions { "ai_rag_install", tr("Install") };
+        dpfservice::WindowService *windowService = dpfGetService(dpfservice::WindowService);
+        windowService->notify(0, "AI", tr("The file indexing feature is not available, which may cause functions such as xx to not work properly."
+                             "Please install the required environment.\n the installation process may take several minutes."),
+                              actions);
+    }
+    QtConcurrent::run([prompt, machineId, jsonArray, talkId, url, token, this]() {
+        QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
+        emit syncSendMessage(url, token, body);
     });
-    processResponse(reply);
 }
 
 void AskApi::postNewSession(const QString &url,
@@ -213,7 +232,6 @@ QNetworkReply *AskApi::postMessage(const QString &url, const QString &token, con
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("code-token", token.toUtf8());
-
     return manager->post(request, body);
 }
 
@@ -322,9 +340,39 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
 
     jsonObject.insert("prompt", prompt);
     jsonObject.insert("machineId", machineId);
-    jsonObject.insert("client", "deepin-unioncode");
+    //jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
     jsonObject.insert("locale", locale);
+    jsonObject.insert("model", model);
+
+    if (CodeGeeXManager::instance()->isReferenceCodebase()) {
+        using dpfservice::ProjectService;
+        ProjectService *prjService = dpfGetService(ProjectService);
+        auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
+        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, prompt, 20);
+        QJsonArray chunks = result["Chunks"].toArray();
+        if (!chunks.isEmpty()) {
+            CodeGeeXManager::instance()->cleanHistoryMessage(); // incase history is too big
+            jsonObject["history"] = QJsonArray();
+            QString context;
+            context += prompt;
+            context += "\n 参考下面这些代码片段，回答上面的问题。不要参考其他的代码和上下文，数据不够充分的情况下提示用户\n";
+            for (auto chunk : chunks) {
+                context += chunk.toObject()["fileName"].toString();
+                context += '\n';
+                context += chunk.toObject()["content"].toString();
+                context += "\n\n";
+            }
+            jsonObject["prompt"] = context;
+        } else {
+            QMetaObject::invokeMethod(this, [](){
+                dpfservice::WindowService *windowService = dpfGetService(dpfservice::WindowService);
+                windowService->notify(0, "AI", tr("The project has not established a file index or there are no files available to create an index. "
+                                                  "Please retry after reopening the project."),
+                                      QStringList());
+            });
+        }
+    }
 
     if (!CodeGeeXManager::instance()->getReferenceFiles().isEmpty()) {
         auto fileDatas = parseFile(CodeGeeXManager::instance()->getReferenceFiles());
@@ -334,8 +382,6 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
         jsonObject.insert("files", files);
     } else if (CodeGeeXManager::instance()->isConnectToNetWork())
         jsonObject.insert("command", "online_search");
-    else
-        jsonObject.insert("model", model);
 
     if (!talkId.isEmpty())
         jsonObject.insert("talkId", talkId);

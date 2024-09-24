@@ -5,6 +5,9 @@
 #include "codegeexmanager.h"
 #include "copilot.h"
 #include "common/util/custompaths.h"
+#include "services/window/windowservice.h"
+#include "services/window/windowelement.h"
+#include "services/terminal/terminalservice.h"
 
 #include <QDebug>
 #include <QFile>
@@ -23,6 +26,7 @@ static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGlmTalk
 static const char *kUrlQueryMessage = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
 
 using namespace CodeGeeX;
+using dpfservice::WindowService;
 
 CodeGeeXManager *CodeGeeXManager::instance()
 {
@@ -47,6 +51,26 @@ void CodeGeeXManager::login()
 bool CodeGeeXManager::isLoggedIn() const
 {
     return isLogin;
+}
+
+void CodeGeeXManager::checkCondaInstalled()
+{
+    if (condaInstalled)
+        return;
+    QProcess process;
+    QStringList arguments;
+    arguments << "env" << "list";
+
+    process.start(condaRootPath() + "/miniforge/condabin/conda", arguments);
+    process.waitForFinished();
+
+    QString output = process.readAll();
+    condaInstalled = output.contains("deepin_unioncode_env");
+}
+
+bool CodeGeeXManager::condaHasInstalled()
+{
+    return condaInstalled;
 }
 
 void CodeGeeXManager::saveConfig(const QString &sessionId, const QString &userId)
@@ -389,4 +413,89 @@ QString CodeGeeXManager::modifiedData(const QString &data)
     retData.replace("\\\\", "\\");
 
     return retData;
+}
+
+QString CodeGeeXManager::condaRootPath() const
+{
+    return QDir::homePath() + "/.unioncode";
+}
+
+void CodeGeeXManager::installConda()
+{
+    QString scriptPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag/install.sh";
+//    QProcess process;
+//    process.setProgram("bash");
+//    process.setArguments(QStringList() << scriptPath << condaRootPath());
+//    process.startDetached();
+
+    QMetaObject::invokeMethod(this, [=, scriptPath]() {
+        auto terminalServ = dpfGetService(dpfservice::TerminalService);
+        WindowService *windowService = dpfGetService(WindowService);
+        windowService->switchContextWidget(dpfservice::TERMINAL_TAB_TEXT);
+        terminalServ->executeCommand("install", "bash", QStringList() << scriptPath << condaRootPath(), condaRootPath(), QStringList());
+    });
+}
+
+void CodeGeeXManager::generateRag(const QString &projectPath)
+{
+    if (indexingProject.contains(projectPath))
+        return;
+    bool failed = false;
+    indexingProject.append(projectPath);
+    QProcess process;
+    QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&, projectPath]() {
+        if (!failed) // only notify once
+            QMetaObject::invokeMethod(this, [&, projectPath](){
+                WindowService *windowService = dpfGetService(WindowService);
+                windowService->notify(2, "Ai", tr("The error occurred when performing rag on project %1.").arg(projectPath), QStringList{});
+            });
+        failed = true;
+        qInfo() << "Error:" << process.readAllStandardError() << "\n";
+    });
+    QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                     this, [&](int exitCode, QProcess::ExitStatus exitStatus) {
+                         qInfo() << "Python script finished with exit code" << exitCode  << "Exit!!!";
+                     });
+    qInfo() << "start rag project:" << projectPath;
+    QString ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
+    process.setWorkingDirectory(ragPath);
+    auto generatePyPath = ragPath + "/generate.py";
+    auto pythonPath = condaRootPath() + "/miniforge/envs/deepin_unioncode_env/bin/python";
+    auto modelPath = CustomPaths::CustomPaths::global(CustomPaths::Models);
+    if (!QFileInfo(pythonPath).exists())
+        return;
+    process.start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
+    process.waitForFinished(-1);
+    indexingProject.removeOne(projectPath);
+}
+
+/*
+ JsonObject:
+    Query: str
+    Chunks: Arr[fileName:str, content:str]
+    Instructions: obj{name:str, description:str, content:str}
+*/
+QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &query, int topItems)
+{
+    QProcess process;
+    QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&]() {
+        qInfo() << "Error:" << process.readAllStandardError() << "\n";
+    });
+
+    // If modified, update the Python file accordingly.
+    auto pythonPath = condaRootPath() + "/miniforge/envs/deepin_unioncode_env/bin/python";
+    if (!QFileInfo(pythonPath).exists() || !QFileInfo(condaRootPath() +"/index.sqlite").exists())
+        return {};
+
+    auto modelPath = CustomPaths::CustomPaths::global(CustomPaths::Models);
+    QString ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
+    process.setWorkingDirectory(ragPath);
+    auto queryPyPath = ragPath + "/query.py";
+    process.start(pythonPath, QStringList() << queryPyPath << modelPath << projectPath << query << QString::number(topItems));
+    process.waitForFinished();
+    auto test = process.readAll();
+    QJsonDocument document = QJsonDocument::fromJson(test);
+
+    auto obj = document.object();
+    return obj;
 }

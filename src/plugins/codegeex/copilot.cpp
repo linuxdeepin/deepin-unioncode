@@ -30,6 +30,8 @@ Copilot::Copilot(QObject *parent)
     if (!editorService) {
         qFatal("Editor service is null!");
     }
+    generateTimer = new QTimer(this);
+    generateTimer->setSingleShot(true);
 
     connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
         switch (responseType) {
@@ -65,6 +67,7 @@ Copilot::Copilot(QObject *parent)
 
     connect(&copilotApi, &CopilotApi::responseByStream, this, &Copilot::response);
     connect(&copilotApi, &CopilotApi::messageSended, this, &Copilot::messageSended);
+    connect(generateTimer, &QTimer::timeout, this, &Copilot::generateCode);
 }
 
 QString Copilot::selectedText() const
@@ -164,9 +167,11 @@ void Copilot::setCurrentModel(CodeGeeX::languageModel model)
 
 void Copilot::handleTextChanged()
 {
-    // start generate code.
+    editorService->setCompletion("", QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
     QMetaObject::invokeMethod(this, [this]() {
-        generateCode();
+        if (generateTimer->isActive())
+            generateTimer->stop();
+        generateTimer->start(500);
     });
 }
 

@@ -151,12 +151,14 @@ public:
 signals:
     void response(ResponseType responseType, const QString &response, const QString &dstLang);
     void responseByStream(const QString &msgID, const QString &response, const QString &event);
+    void asyncGenerateMessages(const QString &url, const QByteArray &body);
 
     void messageSended();
 
 public slots:
     void slotReadReply(QNetworkReply *reply);
     void slotReadReplyStream(QNetworkReply *reply);
+    void slotPostGenerateMessage(const QString &url, const QByteArray &body);
 
 private:
     QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);

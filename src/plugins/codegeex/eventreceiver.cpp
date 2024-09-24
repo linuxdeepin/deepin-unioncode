@@ -21,7 +21,7 @@ dpf::EventHandler::Type EventReceiverDemo::type()
 
 QStringList EventReceiverDemo::topics()
 {
-    return { T_MENU, editor.topic, notifyManager.topic };
+    return { T_MENU, editor.topic, notifyManager.topic, project.topic };
 }
 
 void EventReceiverDemo::eventProcess(const dpf::Event &event)
@@ -43,10 +43,16 @@ void EventReceiverDemo::eventProcess(const dpf::Event &event)
         QString eventData = event.data().toString();
         if (eventData == "actionInvoked") {
             auto actId = event.property("actionId").toString();
-            if (actId != "codegeex_login_default")
-                return;
-
-            QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
+            if (actId == "codegeex_login_default")
+                QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
+            else if (actId == "ai_rag_install")
+                CodeGeeXManager::instance()->installConda();
+        }
+    } else if (event.topic() == project.topic) {
+        QString eventData = event.data().toString();
+        if (eventData == "openProject") {
+            auto projectPath = event.property("workspace").toString();
+            CodeGeeXManager::instance()->generateRag(projectPath);
         }
     }
 }
