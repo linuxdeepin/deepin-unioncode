@@ -1,6 +1,8 @@
 # install templates.
 install(DIRECTORY templates/
     DESTINATION "${SOURCES_INSTALL_RPEFIX}/templates")
+install(DIRECTORY models/
+    DESTINATION "${SOURCES_INSTALL_RPEFIX}/models")
 
 find_package(Qt5 COMPONENTS LinguistTools)
 
@@ -45,4 +47,3 @@ file(GLOB ICON "${CMAKE_CURRENT_SOURCE_DIR}/configures/*.svg")
 install(FILES ${SUPPORTFILES} DESTINATION "${SOURCES_INSTALL_RPEFIX}/configures")
 install(FILES ${DESKTOPFILES} DESTINATION "/usr/share/applications")
 install(FILES ${ICON} DESTINATION "${SOURCES_INSTALL_RPEFIX}/configures/icons")
-

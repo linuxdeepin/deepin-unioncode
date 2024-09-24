@@ -18,3 +18,6 @@ install(DIRECTORY symbol-parser/
 
 install(DIRECTORY prettyprinters/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/prettyprinters")
+
+install(DIRECTORY rag/
+    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/rag")

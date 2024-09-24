@@ -94,8 +94,10 @@ signals:
     void sessionDeleted(const QStringList &talkId, bool isSuccessful);
     void sessionCreated(const QString &talkId, bool isSuccessful);
     void stopReceive();
+    void syncSendMessage(const QString url, const QString &token, const QByteArray &body);
 
 public slots:
+    void slotSendMessage(const QString url, const QString &token, const QByteArray &body);
 
 private:
     QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);

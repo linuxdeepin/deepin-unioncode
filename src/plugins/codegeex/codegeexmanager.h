@@ -51,6 +51,8 @@ public:
 
     Q_INVOKABLE void login();
     bool isLoggedIn() const;
+    void checkCondaInstalled();
+    bool condaHasInstalled();
 
     void saveConfig(const QString &sessionId, const QString &userId);
     void loadConfig();
@@ -81,7 +83,21 @@ public:
     void connectToNetWork(bool connecting);
     bool isConnectToNetWork() { return isConnecting; }
     QStringList getReferenceFiles() { return referenceFiles; }
-    void setRefereceFiles(const QStringList &files) { referenceFiles = files; }
+    void setReferenceCodebase(bool on) { referenceCodebase = on; }
+    bool isReferenceCodebase() { return referenceCodebase; }
+    void setReferenceFiles(const QStringList &files) { referenceFiles = files; }
+
+    // Rag
+    QString condaRootPath() const;
+    void installConda();
+    void generateRag(const QString &projectPath);
+    /*
+     JsonObject:
+        Query: str
+        Chunks: Arr[fileName:str, content:str]
+        Instructions: obj{name:str, description:str, content:str}
+     */
+    QJsonObject query(const QString &projectPath, const QString &query, int topItems);
 
 Q_SIGNALS:
     void loginSuccessed();
@@ -132,7 +148,10 @@ private:
     bool isLogin { false };
     bool isRunning { false };
     bool isConnecting { false };
-    QStringList referenceFiles;
+    bool referenceCodebase { false };
+    bool condaInstalled { false };
+    QStringList indexingProject {};
+    QStringList referenceFiles {};
 };
 
 #endif   // CODEGEEXMANAGER_H

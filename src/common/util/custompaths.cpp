@@ -70,6 +70,8 @@ QString PathMode::installed(CustomPaths::Flags flags)
         return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "translations";
     case CustomPaths::Templates:
         return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "templates";
+    case CustomPaths::Models:
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "models";
     default:
         return "";
     }
@@ -111,6 +113,8 @@ QString PathMode::builded(CustomPaths::Flags flags)
         return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "templates";
     case CustomPaths::Translations:
         return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "translations";
+    case CustomPaths::Models:
+        return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "models";
     default:
         return "";
     }
@@ -189,6 +193,8 @@ QString CustomPaths::user(CustomPaths::Flags flag)
         return FileOperation::checkCreateDir(PathMode::userConfigurePath(), "Scripts");
     case Templates:
         return FileOperation::checkCreateDir(PathMode::userConfigurePath(), "templates");
+    case Models:
+        return FileOperation::checkCreateDir(PathMode::userConfigurePath(), "models");
     default:
         return "";
     }

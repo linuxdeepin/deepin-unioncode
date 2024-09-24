@@ -4,6 +4,7 @@
 #include "copilotapi.h"
 #include "src/common/supportfile/language.h"
 #include "src/services/editor/editorservice.h"
+#include "src/services/project/projectservice.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -11,6 +12,7 @@
 
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QJsonObject>
 #include <QJsonDocument>
 
 #include <QString>
@@ -22,17 +24,25 @@ namespace CodeGeeX {
 CopilotApi::CopilotApi(QObject *parent)
     : QObject(parent), manager(new QNetworkAccessManager(this))
 {
+    connect(this, &CopilotApi::asyncGenerateMessages, this, &CopilotApi::slotPostGenerateMessage);
+}
+
+void CopilotApi::slotPostGenerateMessage(const QString &url, const QByteArray &body)
+{
+    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
+    reply->setProperty("responseType", CopilotApi::inline_completions);
+    completionReply = reply;
+    processResponse(reply);
 }
 
 void CopilotApi::postGenerate(const QString &url, const QString &prefix, const QString &suffix, GenerateType type)
 {
     if (completionReply)
         completionReply->close();
-    QByteArray body = assembleGenerateBody(prefix, suffix, type);
-    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    completionReply = reply;
-    reply->setProperty("responseType", CopilotApi::inline_completions);
-    processResponse(reply);
+    QtConcurrent::run([prefix, suffix, type, url, this](){
+        QByteArray body = assembleGenerateBody(prefix, suffix, type);
+        emit asyncGenerateMessages(url, body);
+    });
 }
 
 void CopilotApi::postTranslate(const QString &url,
@@ -108,12 +118,27 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
     activeDocument.insert("suffix", suffix);
     activeDocument.insert("lang", file.second);
 
-    QJsonObject contextItem;
-    contextItem.insert("kind", "active_document");
-    contextItem.insert("active_document", activeDocument);
+    QJsonObject activeContextItem;
+    activeContextItem.insert("kind", "active_document");
+    activeContextItem.insert("active_document", activeDocument);
 
+    ProjectService *prjSrv = dpfGetService(ProjectService);
     QJsonArray context;
-    context.append(contextItem);
+    context.append(activeContextItem);
+    QJsonObject queryResults = CodeGeeXManager::instance()->query(prjSrv->getActiveProjectInfo().workspaceFolder(), prefix, 5);
+    QJsonArray chunks = queryResults["Chunks"].toArray();
+
+    for (auto chunk : chunks) {
+        QJsonObject document;
+        document.insert("path", chunk.toObject()["fileName"].toString());
+        document.insert("text", chunk.toObject()["content"].toString());
+        document.insert("lang", file.second);
+
+        QJsonObject contextItem;
+        contextItem.insert("kind", "document");
+        contextItem.insert("document", document);
+        context.append(contextItem);
+    }
 
     QJsonObject json;
     json.insert("context", context);

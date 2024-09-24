@@ -55,15 +55,21 @@ bool CodeGeex::start()
     }
 
     Copilot::instance();
+    CodeGeeXManager::instance()->checkCondaInstalled();
 
     connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
         QTimer::singleShot(5000, windowService, [=] {
             bool ret = CodeGeeXManager::instance()->isLoggedIn();
-            if (ret)
-                return;
-
-            QStringList actions { "codegeex_login_default", CodeGeex::tr("Login") };
-            windowService->notify(0, "CodeGeex", CodeGeex::tr("Please login to use CodeGeeX."), actions);
+            if (!ret) {
+                QStringList actions { "codegeex_login_default", CodeGeex::tr("Login") };
+                windowService->notify(0, "CodeGeex", CodeGeex::tr("Please login to use CodeGeeX."), actions);
+            }
+            if (!CodeGeeXManager::instance()->condaHasInstalled()) {
+                QStringList actions { "ai_rag_install", CodeGeex::tr("Install") };
+                windowService->notify(0, "AI", CodeGeex::tr("Install a Python Conda virtual environment for using the file indexing feature.\
+                         Without it, there may be abnormalities in the @codebase and some AI functionalities."),
+                                      actions);
+            }
         });
     });
 
