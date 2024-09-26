@@ -167,7 +167,7 @@ void Copilot::setCurrentModel(CodeGeeX::languageModel model)
 
 void Copilot::handleTextChanged()
 {
-    editorService->setCompletion("", QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+    editorService->setCompletion("");
     QMetaObject::invokeMethod(this, [this]() {
         if (generateTimer->isActive())
             generateTimer->stop();
