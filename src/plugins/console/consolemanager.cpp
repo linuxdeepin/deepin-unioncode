@@ -194,7 +194,7 @@ QTermWidget *ConsoleManager::createConsole(const QString &name, bool startNow, b
 
     QStandardItem *item = new QStandardItem(name);
     item->setData(id, IdRole);
-    item->setData(rename, Qt::EditRole);
+    item->setEditable(rename);
     d->model->appendRow(item);
     d->consoleListView->setCurrentIndex(d->model->index(d->model->rowCount() - 1, 0));
 
