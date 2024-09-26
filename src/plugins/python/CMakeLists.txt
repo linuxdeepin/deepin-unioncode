@@ -13,7 +13,7 @@ set(CXX_CPP
     python/project/pythonprojectgenerator.cpp
     python/project/properties/configpropertywidget.cpp
     python/project/properties/configutil.cpp
-    python/option/interperterwidget.cpp
+    python/option/interpreterwidget.cpp
     python/option/pythonoptionwidget.cpp
     python/option/optionpythongenerator.cpp
     lexer/scilexerpython.cpp
@@ -27,7 +27,7 @@ set(CXX_H
     python/project/pythonprojectgenerator.h
     python/project/properties/configpropertywidget.h
     python/project/properties/configutil.h
-    python/option/interperterwidget.h
+    python/option/interpreterwidget.h
     python/option/pythonoptionwidget.h
     python/option/optionpythongenerator.h
     lexer/scilexerpython.h

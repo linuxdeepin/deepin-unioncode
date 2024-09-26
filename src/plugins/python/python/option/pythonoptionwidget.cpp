@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "pythonoptionwidget.h"
-#include "interperterwidget.h"
+#include "interpreterwidget.h"
 
 #include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"

@@ -16,14 +16,13 @@
 #include <QVBoxLayout>
 
 using namespace config;
+using DTK_WIDGET_NAMESPACE::DComboBox;
 class DetailPropertyWidgetPrivate
 {
     friend class DetailPropertyWidget;
     DComboBox *pyVersionComboBox { nullptr };
     DComboBox *executeFileComboBox { nullptr };
     DCheckBox *runInTerminal {nullptr};
-
-    QSharedPointer<ToolChainData> toolChainData;
 };
 
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
@@ -109,37 +108,40 @@ QStringList getPythonAllVersion()
     return versions;
 }
 
-QString getNewVersionPython()
-{
-    QStringList versions = getPythonAllVersion();
-    double newVersion = 0;
-    for (auto version : versions) {
-        double v = version.toDouble();
-        if (v > newVersion) {
-            newVersion = v;
-        }
-    }
-    QString pythonCmd = "python" + QString::number(newVersion);
-    return pythonCmd;
-}
-
 void DetailPropertyWidget::initData()
 {
-    d->toolChainData.reset(new ToolChainData());
-    auto initPyVersionComboBox = [](DComboBox *comboBox, const QStringList &data) {
-        int index = 0;
-        for (auto version : data) {
-            ToolChainData::ToolChainParam param;
-            param.name = QString("python%1").arg(version);
-            param.path = "/usr/bin/" + param.name;
-            QString text = param.name + "(" + param.path + ")";
-            comboBox->insertItem(index, text);
-            comboBox->setItemData(index, QVariant::fromValue(param), Qt::UserRole + 1);
-            index++;
-        }
-        comboBox->setCurrentText(getNewVersionPython());
-    };
-    initPyVersionComboBox(d->pyVersionComboBox, getPythonAllVersion());
+    QVariant interpreterConfig = OptionManager::getInstance()->getValue(option::CATEGORY_PYTHON, {"Interpreter"});
+    QVariantList variantList = interpreterConfig.toMap().value("customInterpreters").toList();
+    QList<ToolChainData::ToolChainParam> customInterpreters;
+
+    auto globalToolPath = OptionManager::getInstance()->getPythonToolPath();
+
+    for (QVariant variant : variantList) {
+        auto map = variant.toMap();
+        ToolChainData::ToolChainParam interpreter { map.value("name").toString(), map.value("path").toString() };
+        customInterpreters.append(interpreter);
+    }
+
+    auto systemPythonVersions = getPythonAllVersion();
+    int index = 0;
+    for (auto version : systemPythonVersions) {
+        ToolChainData::ToolChainParam param;
+        param.name = QString("python%1").arg(version);
+        param.path = "/usr/bin/" + param.name;
+        QString text = param.name + "(" + param.path + ")";
+        d->pyVersionComboBox->insertItem(index, text);
+        d->pyVersionComboBox->setItemData(index, QVariant::fromValue(param), Qt::UserRole + 1);
+        if (param.path == globalToolPath)
+            d->pyVersionComboBox->setCurrentIndex(index);
+        index++;
+    }
+    for (auto interpreter : customInterpreters) {
+        d->pyVersionComboBox->insertItem(index, interpreter.name + "(" + interpreter.path + ")");
+        d->pyVersionComboBox->setItemData(index, QVariant::fromValue(interpreter), Qt::UserRole + 1);
+        if (interpreter.path == globalToolPath)
+            d->pyVersionComboBox->setCurrentIndex(index);
+        index++;
+    }
 
     d->executeFileComboBox->insertItem(0, exeCurrent);
     d->executeFileComboBox->insertItem(1, exeEntry);

@@ -92,11 +92,9 @@ void OptionUtils::convert(const QString &key, const QVariant &variant, QJsonObje
     }
     case QVariant::List:
     {
-        QJsonObject object;
-        foreach (const QVariant &var, variant.toList()) {
-            Q_UNUSED(var)
-            //TODO
-        }
+        QJsonArray object;
+        auto variantList = variant.toList();
+        object = QJsonArray::fromVariantList(variantList);
         jsonObject.insert(key, object);
         break;
     }
@@ -145,10 +143,7 @@ void OptionUtils::convert(const QString &key, const QJsonValue &variant, QMap<QS
     }
     case QJsonValue::Array:
     {
-        QMap<QString, QVariant> varMap;
-        const QJsonArray array = variant.toArray();
-        //TODO
-        map.insert(key, varMap);
+        map.insert(key, variant.toArray().toVariantList());
         break;
     }
     default:
