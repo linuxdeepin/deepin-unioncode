@@ -34,6 +34,9 @@ public:
     {
         QString name;
         QString path;
+        bool operator ==(const ToolChainParam &param) {
+            return (this->name == param.name && this->path == param.path);
+        }
     };
     using Params = QVector<ToolChainParam>;
 

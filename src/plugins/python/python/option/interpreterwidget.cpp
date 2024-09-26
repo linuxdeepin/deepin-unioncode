@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "interperterwidget.h"
+#include "interpreterwidget.h"
 #include "services/option/toolchaindata.h"
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
@@ -13,6 +13,9 @@
 #include <DLabel>
 #include <DWidget>
 #include <DFrame>
+#include <DPushButton>
+#include <DFileDialog>
+#include <DDialog>
 
 #include <QtConcurrent>
 #include <QDir>
@@ -102,18 +105,26 @@ void InterpreterModel::setCustomData(QVector<QPair<QString, QString>>& data)
     endResetModel();
 }
 
-class InterperterWidgetPrivate
+class InterpreterWidgetPrivate
 {
     friend class InterpreterWidget;
 
     DComboBox *interpreterComboBox = nullptr;
+
+    //todo: modified it later: creating a generic component to manage the toolchain
+    DPushButton *selectCustomInterpreter = nullptr;
+    DPushButton *removeCustomInterpreter = nullptr;
+
+    InterpreterConfig currentInterpreter;
+    QList<ToolChainData::ToolChainParam> customInterpreters {};
+
     InterpreterModel *model = nullptr;
     QSharedPointer<ToolChainData> toolChainData;
 };
 
 InterpreterWidget::InterpreterWidget(QWidget *parent)
     : PageWidget(parent)
-    , d(new InterperterWidgetPrivate())
+    , d(new InterpreterWidgetPrivate())
 {
     d->toolChainData.reset(new ToolChainData());
     QString retMsg;
@@ -139,16 +150,20 @@ void InterpreterWidget::setupUi()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(tr("Python Interperter:"));
+    DLabel *label = new DLabel(tr("Python Interpreter:"));
     label->setFixedWidth(180);
     d->interpreterComboBox = new DComboBox();
+    d->interpreterComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     QObject::connect(d->interpreterComboBox, &DComboBox::currentTextChanged,
                      this, &InterpreterWidget::setPackageData);
 
-    d->interpreterComboBox->setFixedWidth(300);
+    d->selectCustomInterpreter = new DPushButton(tr("Browse"), this);
+    d->removeCustomInterpreter = new DPushButton(tr("Remove"), this);
+
     hLayout->addWidget(label);
     hLayout->addWidget(d->interpreterComboBox);
-    hLayout->setAlignment(d->interpreterComboBox, Qt::AlignRight);
+    hLayout->addWidget(d->selectCustomInterpreter);
+    hLayout->addWidget(d->removeCustomInterpreter);
 
     auto tableframe = new DFrame(this);
     auto tablelayout = new QVBoxLayout(tableframe);
@@ -172,6 +187,34 @@ void InterpreterWidget::setupUi()
     tableView->setFixedHeight(180);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(tableframe);
+
+    connect(d->selectCustomInterpreter, &QPushButton::clicked, this, [=](){
+        auto path = DFileDialog::getOpenFileName(this, tr("Select Local Interpreter"), QDir::homePath(), "Python interpreters (python* python3*)");
+        if (path.isEmpty())
+            return;
+        auto name = QFileInfo(path).fileName();
+        ToolChainData::ToolChainParam param {name, path};
+        auto index = d->interpreterComboBox->count();
+        d->interpreterComboBox->insertItem(index, name + "(" + path + ")");
+        d->interpreterComboBox->setItemData(index, QVariant::fromValue(param), Qt::UserRole + 1);
+        d->interpreterComboBox->setCurrentIndex(index);
+        d->customInterpreters.append(param);
+    });
+    connect(d->removeCustomInterpreter, &QPushButton::clicked, this, [=](){
+        DDialog dialog;
+        dialog.setMessage(tr("Confirm the removal of this interpreter?"));
+        dialog.setWindowTitle(tr("Remove"));
+        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.insertButton(0, tr("Yes"));
+        dialog.insertButton(1, tr("Cancel"));
+        int code = dialog.exec();
+        if (code == 1)
+            return;
+
+        auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
+        d->customInterpreters.removeOne(param);
+        d->interpreterComboBox->removeItem(d->interpreterComboBox->currentIndex());
+    });
 }
 
 void InterpreterWidget::updateUi()
@@ -230,51 +273,73 @@ void InterpreterWidget::findPackages(const QString &cmd)
 
 bool InterpreterWidget::getControlValue(QMap<QString, QVariant> &map)
 {
-    InterpreterConfig config;
     int index = d->interpreterComboBox->currentIndex();
     if (index < 0) {
-        config.version = ToolChainData::ToolChainParam();
+        d->currentInterpreter.version = ToolChainData::ToolChainParam();
     } else {
-        config.version = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->itemData(index, Qt::UserRole + 1));
+        d->currentInterpreter.version = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->itemData(index, Qt::UserRole + 1));
     }
 
-    dataToMap(config, map);
+    dataToMap(map);
 
     return true;
 }
 
 void InterpreterWidget::setControlValue(const QMap<QString, QVariant> &map)
 {
-    InterpreterConfig config;
-    mapToData(map, config);
+    d->customInterpreters.clear();
+    mapToData(map);
 
+    d->interpreterComboBox->clear();
+    updateUi();
     int count = d->interpreterComboBox->count();
+    //append custom interpreters
+    for (auto interpreter : d->customInterpreters) {
+        d->interpreterComboBox->insertItem(count, interpreter.name + "(" + interpreter.path + ")");
+        d->interpreterComboBox->setItemData(count, QVariant::fromValue(interpreter), Qt::UserRole + 1);
+        count++;
+    }
+
     for (int i = 0; i < count; i++) {
         ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->itemData(i, Qt::UserRole + 1));
-        if (config.version.name == toolChainParam.name
-                && config.version.path == toolChainParam.path) {
+        if (d->currentInterpreter.version == toolChainParam) {
             d->interpreterComboBox->setCurrentIndex(i);
             break;
         }
     }
 }
 
-bool InterpreterWidget::dataToMap(const InterpreterConfig &config, QMap<QString, QVariant> &map)
+bool InterpreterWidget::dataToMap(QMap<QString, QVariant> &map)
 {
-    QMap<QString, QVariant> version;
-    version.insert("name", config.version.name);
-    version.insert("path", config.version.path);
+    QMap<QString, QVariant> currentInterpreter;
+    currentInterpreter.insert("name", d->currentInterpreter.version.name);
+    currentInterpreter.insert("path", d->currentInterpreter.version.path);
 
-    map.insert("version", version);
+    QVariantList list;
+    for (auto interpreter : d->customInterpreters) {
+        QMap<QString, QVariant> temp;
+        temp.insert("name", interpreter.name);
+        temp.insert("path", interpreter.path);
+        list.append(temp);
+    }
 
+    map.insert("version", currentInterpreter);
+    map.insert("customInterpreters", list);
     return true;
 }
 
-bool InterpreterWidget::mapToData(const QMap<QString, QVariant> &map, InterpreterConfig &config)
+bool InterpreterWidget::mapToData(const QMap<QString, QVariant> &map)
 {
-    QMap<QString, QVariant> version = map.value("version").toMap();
-    config.version.name = version.value("name").toString();
-    config.version.path = version.value("path").toString();
+    QMap<QString, QVariant> currentInterpreter = map.value("version").toMap();
+    d->currentInterpreter.version.name = currentInterpreter.value("name").toString();
+    d->currentInterpreter.version.path = currentInterpreter.value("path").toString();
+
+    auto variantList = map.value("customInterpreters").toList();
+    for (QVariant variant : variantList) {
+        auto map = variant.toMap();
+        ToolChainData::ToolChainParam interpreter { map.value("name").toString(), map.value("path").toString() };
+        d->customInterpreters.append(interpreter);
+    }
 
     return true;
 }

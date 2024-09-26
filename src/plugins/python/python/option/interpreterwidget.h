@@ -43,7 +43,7 @@ private:
 };
 
 class ToolChainData;
-class InterperterWidgetPrivate;
+class InterpreterWidgetPrivate;
 class InterpreterWidget : public PageWidget
 {
     Q_OBJECT
@@ -62,8 +62,8 @@ private:
     void setupUi();
     void updateUi();
 
-    bool dataToMap(const InterpreterConfig &config, QMap<QString, QVariant> &map);
-    bool mapToData(const QMap<QString, QVariant> &map, InterpreterConfig &config);
+    bool dataToMap(QMap<QString, QVariant> &map);
+    bool mapToData(const QMap<QString, QVariant> &map);
 
     bool getControlValue(QMap<QString, QVariant> &map);
     void setControlValue(const QMap<QString, QVariant> &map);
@@ -71,7 +71,7 @@ private:
     void setPackageData(const QString &text);
     void findPackages(const QString &cmd);
 
-    InterperterWidgetPrivate *const d;
+    InterpreterWidgetPrivate *const d;
 };
 
 #endif // INTERPRETERWIDGET_H
