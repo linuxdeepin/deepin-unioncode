@@ -12,6 +12,8 @@
 
 #include <Qsci/qscistyle.h>
 
+#include <DFloatingWidget>
+
 class TextEditorPrivate : public QObject
 {
     Q_OBJECT
@@ -36,6 +38,7 @@ public:
     void init();
     void initConnection();
     void initMargins();
+    void initWidgetContainer();
     void updateColorTheme();
     void loadLexer();
     void initLanguageClient();
@@ -74,6 +77,7 @@ public:
     int preFirstLineNum { 0 };
     int lastCursorPos { 0 };
     QMultiHash<QString, int> annotationRecords;
+    QMultiHash<QString, int> eOLAnnotationRecords;
 
     LanguageClientHandler *languageClient { nullptr };
     bool isAutoCompletionEnabled { false };
@@ -91,7 +95,7 @@ public:
     QMap<QString, QVariant> commentSettings;
 
     std::tuple<int, int, int, int> selectionCache { -1, -1, -1, -1 };
-    QFrame *lineWidgetContainer { nullptr };
+    DTK_WIDGET_NAMESPACE::DFloatingWidget *lineWidgetContainer { nullptr };
     int showAtLine { 0 };
 };
 

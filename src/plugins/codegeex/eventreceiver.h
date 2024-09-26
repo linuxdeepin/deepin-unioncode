@@ -23,6 +23,16 @@ public:
 
 private:
     virtual void eventProcess(const dpf::Event &event) override;
+
+    void processContextMenuEvent(const dpf::Event &event);
+    void processTextChangedEvent(const dpf::Event &event);
+    void processSelectionChangedEvent(const dpf::Event &event);
+    void processPositionChangedEvent(const dpf::Event &event);
+    void processActionInvokedEvent(const dpf::Event &event);
+    void processOpenProjectEvent(const dpf::Event &event);
+
+private:
+    QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
 };
 
 #endif   // EVENTRECEIVER_H

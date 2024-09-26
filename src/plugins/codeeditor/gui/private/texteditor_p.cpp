@@ -11,6 +11,7 @@
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
 #include "services/option/optionutils.h"
+#include "services/editor/editor_define.h"
 #include "services/debugger/debuggerservice.h"
 
 #include <Qsci/qsciapis.h>
@@ -54,13 +55,7 @@ void TextEditorPrivate::init()
     q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
 
-    lineWidgetContainer = new QFrame(q, Qt::Tool | Qt::FramelessWindowHint);
-    lineWidgetContainer->setLayout(new QVBoxLayout);
-    lineWidgetContainer->setContentsMargins(0, 0, 0, 0);
-    lineWidgetContainer->installEventFilter(q);
-    if (mainWindow())
-        mainWindow()->installEventFilter(q);
-
+    initWidgetContainer();
     initMargins();
     updateColorTheme();
     updateSettings();
@@ -104,6 +99,20 @@ void TextEditorPrivate::initMargins()
     q->setMarkerBackgroundColor(QColor(Qt::red), Bookmark);
 
     q->markerDefine(TextEditor::Background, RuntimeLineBackground);
+}
+
+void TextEditorPrivate::initWidgetContainer()
+{
+    lineWidgetContainer = new DFloatingWidget(q);
+    lineWidgetContainer->setFramRadius(6);
+    lineWidgetContainer->setVisible(false);
+    QHBoxLayout *layout = new QHBoxLayout(lineWidgetContainer);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
+    lineWidgetContainer->installEventFilter(q);
+
+    if (mainWindow())
+        mainWindow()->installEventFilter(q);
 }
 
 void TextEditorPrivate::updateColorTheme()
@@ -378,10 +387,10 @@ void TextEditorPrivate::gotoPreviousMark(uint mask)
 
 QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
 {
-    QFont font = q->font();
+    QFont font = q->lexer() ? q->lexer()->defaultFont() : q->font();
     font.setItalic(true);
     switch (type) {
-    case AnnotationType::NoteAnnotation: {
+    case Edit::NoteAnnotation: {
         static QsciStyle style(NOTE_ANNOTATION_STYLE,
                                "Note",
                                EditorColor::Table::get()->Black,
@@ -389,7 +398,7 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
                                font);
         return style;
     }
-    case AnnotationType::ErrorAnnotation: {
+    case Edit::ErrorAnnotation: {
         static QsciStyle style(ERROR_ANNOTATION_STYLE,
                                "Error",
                                EditorColor::Table::get()->FireBrick,
@@ -397,7 +406,7 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
                                font);
         return style;
     }
-    case AnnotationType::FatalAnnotation: {
+    case Edit::FatalAnnotation: {
         static QsciStyle style(FATAL_ANNOTATION_STYLE,
                                "Fatal",
                                EditorColor::Table::get()->FireBrick,
@@ -405,7 +414,7 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
                                font);
         return style;
     }
-    case AnnotationType::WarningAnnotation:
+    case Edit::WarningAnnotation:
         static QsciStyle style(WARNING_ANNOTATION_STYLE,
                                "Warning",
                                EditorColor::Table::get()->GoldenRod,
@@ -483,7 +492,7 @@ void TextEditorPrivate::setContainerWidget(QWidget *widget)
 
     widget->setVisible(true);
     lineWidgetContainer->setFocusProxy(widget);
-    lineWidgetContainer->layout()->addWidget(widget);
+    layout->addWidget(widget);
     lineWidgetContainer->show();
     updateLineWidgetPosition();
 }
@@ -493,25 +502,15 @@ void TextEditorPrivate::updateLineWidgetPosition()
     if (!lineWidgetContainer->isVisible() || showAtLine < 0 || showAtLine > q->lines() - 1)
         return;
 
+    // Use annotations for placeholder
+    q->clearAnnotations(showAtLine);
+    auto lineHeight = q->textHeight(showAtLine);
+    auto padding = lineWidgetContainer->height() / lineHeight;
+    q->annotate(showAtLine - 1, QString(padding, '\n'), 1);
+
     int pos = q->positionFromLineIndex(showAtLine, 0);
-    auto point = q->mapToGlobal(q->pointFromPosition(pos));
+    auto point = q->pointFromPosition(pos);
     auto displayY = point.y() - lineWidgetContainer->height();
-
-    auto rect = q->rect();
-    auto rectTL = q->mapToGlobal(rect.topLeft());
-    auto rectBL = q->mapToGlobal(rect.bottomLeft());
-
-    // NOTE: upate the `lineWidgetContainer` position
-    // 1.It is displayed above `showAtLine` by default
-    // 2.The `lineWidgetContainer` does not extend beyond the top and bottom of the editor
-    // 3.When the `lineWidgetContainer` will block the `showAtLine`, display it below the `showAtLine`
-    if (displayY < rectTL.y()) {
-        displayY = point.y() + q->textHeight(showAtLine);
-        if (displayY < rectTL.y())
-            displayY = rectTL.y();
-    } else if (displayY > rectBL.y() - lineWidgetContainer->height()) {
-        displayY = rectBL.y() - lineWidgetContainer->height();
-    }
 
     lineWidgetContainer->move(point.x(), displayY);
 }

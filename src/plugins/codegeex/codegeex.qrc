@@ -19,5 +19,9 @@
         <file>builtin/texts/codegeex_edit_32px.svg</file>
         <file>builtin/texts/codegeex_internet_16px.svg</file>
         <file>builtin/texts/codegeex_files_16px.svg</file>
+        <file>builtin/texts/uc_codegeex_accept_128px.svg</file>
+        <file>builtin/texts/uc_codegeex_quickquestion_128px.svg</file>
+        <file>builtin/texts/uc_codegeex_reject_128px.svg</file>
+        <file>builtin/texts/uc_codegeex_submit_128px.svg</file>
     </qresource>
 </RCC>

@@ -49,10 +49,6 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(gotoLine, "fileName", "line")
            OPI_INTERFACE(gotoPosition, "fileName", "line", "column")
 
-           // (AnnotationType)type
-           OPI_INTERFACE(addAnnotation, "fileName", "title", "content", "line", "type")
-           OPI_INTERFACE(removeAnnotation, "fileName", "title")
-           OPI_INTERFACE(clearAllAnnotation, "title")
            OPI_INTERFACE(setDebugLine, "fileName", "line")
            OPI_INTERFACE(removeDebugLine)
            OPI_INTERFACE(setModifiedAutoReload, "fileName", "flag")
@@ -154,14 +150,6 @@ enum RepalceType{
     RepalceAll
 };
 Q_DECLARE_METATYPE(RepalceType);
-
-enum AnnotationType {
-    NoteAnnotation,
-    WarningAnnotation,
-    ErrorAnnotation,
-    FatalAnnotation
-};
-Q_DECLARE_METATYPE(AnnotationType);
 
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;

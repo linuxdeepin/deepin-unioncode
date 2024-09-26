@@ -110,7 +110,7 @@ void SymbolWidgetPrivate::handleFollowCursor()
 void SymbolWidgetPrivate::handleEditorCursorChanged(int line, int col)
 {
     const auto &info = SymbolManager::instance()->findSymbol(editor->getFile(), line, col);
-    symbolView->selectSymbol(info.first, line, col);
+    symbolView->selectSymbol(info.symbolName, line, col);
 }
 
 void SymbolWidgetPrivate::handleClear()

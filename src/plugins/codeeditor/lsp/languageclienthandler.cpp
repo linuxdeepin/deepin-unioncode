@@ -5,6 +5,7 @@
 #include "languageclienthandler.h"
 #include "private/languageclienthandler_p.h"
 #include "gui/texteditor.h"
+#include "gui/private/texteditor_p.h"
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
 #include "lspclientmanager.h"
@@ -243,7 +244,7 @@ void LanguageClientHandlerPrivate::handleDiagnostics(const newlsp::PublishDiagno
                                            info.message.c_str());
                 }
             }
-            diagnosticCache.append({ startPos, endPos, message, AnnotationType::ErrorAnnotation });
+            diagnosticCache.append({ startPos, endPos, message, dpfservice::Edit::ErrorAnnotation });
         }
     }
 }

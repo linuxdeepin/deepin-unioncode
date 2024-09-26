@@ -224,7 +224,7 @@ void SymbolBar::updateSymbol(int line, int index)
         return;
 
     auto info = SymbolManager::instance()->findSymbol(editor->getFile(), line, index);
-    if (info.first.isEmpty())
+    if (info.symbolName.isEmpty())
         return;
 
     if (!symbolItem) {
@@ -238,9 +238,9 @@ void SymbolBar::updateSymbol(int line, int index)
 
     QVariantList list { editor->getFile(), line, index };
     symbolItem->setUserData(list);
-    symbolItem->setText(info.first);
-    symbolItem->setToolTip(info.first);
-    symbolItem->setIcon(SymbolManager::instance()->iconFromKind(static_cast<SymbolManager::SymbolKind>(info.second)));
+    symbolItem->setText(info.symbolName);
+    symbolItem->setToolTip(info.symbolName);
+    symbolItem->setIcon(SymbolManager::instance()->iconFromKind(info.kind));
 }
 
 void SymbolBar::curmbItemClicked()

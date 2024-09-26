@@ -43,13 +43,20 @@ public:
         TypeParameter = 26
     };
 
+    struct SymbolInfo
+    {
+        QString symbolName;
+        SymbolKind kind;
+        newlsp::Range range;
+    };
+
     static SymbolManager *instance();
 
     void setDocumentSymbols(const QString &file, const QList<newlsp::DocumentSymbol> &docSymbols);
     QList<newlsp::DocumentSymbol> documentSymbols(const QString &file) const;
     void setSymbolInformations(const QString &file, const QList<newlsp::SymbolInformation> &symbolInfos);
     QList<newlsp::SymbolInformation> symbolInformations(const QString &file) const;
-    QPair<QString, int> findSymbol(const QString &file, int line, int column);
+    SymbolInfo findSymbol(const QString &file, int line, int column);
 
     QIcon iconFromKind(SymbolKind kind);
     QString displayNameFromDocumentSymbol(SymbolKind kind, const QString &name, const QString &detail);
