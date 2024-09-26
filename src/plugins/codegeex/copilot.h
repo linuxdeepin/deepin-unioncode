@@ -15,6 +15,8 @@ namespace dpfservice {
 class EditorService;
 }
 
+class LineChatWidget;
+class Command;
 class Copilot : public QObject
 {
     Q_OBJECT
@@ -30,6 +32,9 @@ public:
     void setCommitsLocale(const QString &locale);
     void setCurrentModel(CodeGeeX::languageModel model);
     void handleTextChanged();
+    void handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom,
+                                int lineTo, int indexTo);
+    void handlePositionChanged(const QString &fileName, int line, int index);
 
 signals:
     // the code will be tranlated.
@@ -59,7 +64,11 @@ private:
     void switchToCodegeexPage();
     bool responseValid(const QString &response);
     QString assembleCodeByCurrentFile(const QString &code);
+    void showLineChatTip(const QString &fileName, int line);
+    void showLineChat();
 
+    LineChatWidget *lineChatWidget = nullptr;
+    Command *lineChatCmd = nullptr;
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
     QTimer *generateTimer = nullptr;

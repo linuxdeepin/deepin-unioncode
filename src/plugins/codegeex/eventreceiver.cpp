@@ -12,6 +12,13 @@
 EventReceiverDemo::EventReceiverDemo(QObject *parent)
     : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<EventReceiverDemo>()
 {
+    using namespace std::placeholders;
+    eventHandleMap.insert(editor.contextMenu.name, std::bind(&EventReceiverDemo::processContextMenuEvent, this, _1));
+    eventHandleMap.insert(editor.textChanged.name, std::bind(&EventReceiverDemo::processTextChangedEvent, this, _1));
+    eventHandleMap.insert(editor.selectionChanged.name, std::bind(&EventReceiverDemo::processSelectionChangedEvent, this, _1));
+    eventHandleMap.insert(editor.cursorPositionChanged.name, std::bind(&EventReceiverDemo::processPositionChangedEvent, this, _1));
+    eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&EventReceiverDemo::processActionInvokedEvent, this, _1));
+    eventHandleMap.insert(project.openProject.name, std::bind(&EventReceiverDemo::processOpenProjectEvent, this, _1));
 }
 
 dpf::EventHandler::Type EventReceiverDemo::type()
@@ -26,33 +33,60 @@ QStringList EventReceiverDemo::topics()
 
 void EventReceiverDemo::eventProcess(const dpf::Event &event)
 {
-    if (event.topic() == editor.topic) {
-        QString eventData = event.data().toString();
-        if (eventData == "contextMenu") {
-            QMenu *contextMenu = event.property("menu").value<QMenu *>();
-            if (!contextMenu)
-                return;
+    const auto &eventName = event.data().toString();
+    if (!eventHandleMap.contains(eventName))
+        return;
 
-            QMetaObject::invokeMethod(this, [contextMenu]() {
-                contextMenu->addMenu(Copilot::instance()->getMenu());
-            });
-        } else if (eventData == "textChanged") {
-            Copilot::instance()->handleTextChanged();
-        }
-    } else if (event.topic() == notifyManager.topic) {
-        QString eventData = event.data().toString();
-        if (eventData == "actionInvoked") {
-            auto actId = event.property("actionId").toString();
-            if (actId == "codegeex_login_default")
-                QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
-            else if (actId == "ai_rag_install")
-                CodeGeeXManager::instance()->installConda();
-        }
-    } else if (event.topic() == project.topic) {
-        QString eventData = event.data().toString();
-        if (eventData == "openProject") {
-            auto projectPath = event.property("workspace").toString();
-            CodeGeeXManager::instance()->generateRag(projectPath);
-        }
-    }
+    eventHandleMap[eventName](event);
+}
+
+void EventReceiverDemo::processContextMenuEvent(const dpf::Event &event)
+{
+    QMenu *contextMenu = event.property("menu").value<QMenu *>();
+    if (!contextMenu)
+        return;
+
+    QMetaObject::invokeMethod(this, [contextMenu]() {
+        contextMenu->addMenu(Copilot::instance()->getMenu());
+    });
+}
+
+void EventReceiverDemo::processTextChangedEvent(const dpf::Event &event)
+{
+    Copilot::instance()->handleTextChanged();
+}
+
+void EventReceiverDemo::processSelectionChangedEvent(const dpf::Event &event)
+{
+    QString fileName = event.property("fileName").toString();
+    int lineFrom = event.property("lineFrom").toInt();
+    int indexFrom = event.property("indexFrom").toInt();
+    int lineTo = event.property("lineTo").toInt();
+    int indexTo = event.property("indexTo").toInt();
+    Q_EMIT Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
+}
+
+void EventReceiverDemo::processPositionChangedEvent(const dpf::Event &event)
+{
+    QString fileName = event.property("fileName").toString();
+    int line = event.property("line").toInt();
+    int index = event.property("index").toInt();
+    Q_EMIT Copilot::instance()->handlePositionChanged(fileName, line, index);
+}
+
+void EventReceiverDemo::processActionInvokedEvent(const dpf::Event &event)
+{
+    auto actId = event.property("actionId").toString();
+    if (actId == "codegeex_login_default")
+        QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
+    else if (actId == "ai_rag_install")
+        CodeGeeXManager::instance()->installConda();
+
+    QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
+}
+
+void EventReceiverDemo::processOpenProjectEvent(const dpf::Event &event)
+{
+    auto projectPath = event.property("workspace").toString();
+    CodeGeeXManager::instance()->generateRag(projectPath);
 }

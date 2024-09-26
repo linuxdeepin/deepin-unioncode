@@ -260,8 +260,6 @@ void InputEdit::onTextChanged()
 
 bool InputEdit::event(QEvent *e)
 {
-    if (e->type() == QEvent::Paint)
-        return true;   // do not show border when get focus
     return DTextEdit::event(e);
 }
 
@@ -357,30 +355,34 @@ bool InputEditWidget::event(QEvent *e)
 
 bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == d->edit && event->type() == QEvent::KeyPress) {
-        auto keyEvent = static_cast<QKeyEvent *>(event);
-        switch (keyEvent->key()) {
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
-        case Qt::Key_Down:
-        case Qt::Key_Tab:
-        case Qt::Key_Up:
-        case Qt::Key_Backtab:
-            emit handleKey(keyEvent);
-            return true;
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            if (!d->referencePopup->isVisible())
-                emit pressedEnter();
-            else
+    if (watched == d->edit) {
+        if (event->type() == QEvent::Paint) {
+            return true;   // do not show border when get focus
+        } else if (event->type() == QEvent::KeyPress) {
+            auto keyEvent = static_cast<QKeyEvent *>(event);
+            switch (keyEvent->key()) {
+            case Qt::Key_PageUp:
+            case Qt::Key_PageDown:
+            case Qt::Key_Down:
+            case Qt::Key_Tab:
+            case Qt::Key_Up:
+            case Qt::Key_Backtab:
                 emit handleKey(keyEvent);
-            return true;
-        case Qt::Key_Backspace:
-        case Qt::Key_Space:
-            d->referencePopup->hide();
-            break;
-        default:
-            break;
+                return true;
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+                if (!d->referencePopup->isVisible())
+                    emit pressedEnter();
+                else
+                    emit handleKey(keyEvent);
+                return true;
+            case Qt::Key_Backspace:
+            case Qt::Key_Space:
+                d->referencePopup->hide();
+                break;
+            default:
+                break;
+            }
         }
     }
     return QObject::eventFilter(watched, event);

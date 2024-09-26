@@ -86,12 +86,13 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
     Q_UNUSED(endLine)
 
     editor.gotoLine(filePath, startLine);
-    editor.addAnnotation(filePath, QString("CodePorting"), suggestion, startLine, AnnotationType::NoteAnnotation);
-    QColor backgroundColor(Qt::red);
-    backgroundColor.setAlpha(100);
-
-    if (auto editSrv = dpfGetService(EditorService))
-        editSrv->setRangeBackgroundColor(filePath, startLine, endLine, backgroundColor);
+    if (auto editSrv = dpfGetService(EditorService)) {
+        editSrv->annotate(filePath, QString("CodePorting"), suggestion, startLine, Edit::NoteAnnotation);
+        QColor backgroundColor(Qt::red);
+        backgroundColor.setAlpha(100);
+        int marker = editSrv->backgroundMarkerDefine(filePath, backgroundColor, -1);
+        editSrv->setRangeBackgroundColor(filePath, startLine, endLine, marker);
+    }
 }
 
 void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format, OutputPane::AppendMode mode)
@@ -99,7 +100,7 @@ void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::Ou
     if (outputPane) {
         QString newContent = content;
         if (OutputPane::OutputFormat::NormalMessage == format
-                || OutputPane::OutputFormat::ErrorMessage == format) {
+            || OutputPane::OutputFormat::ErrorMessage == format) {
             QDateTime curDatetime = QDateTime::currentDateTime();
             QString time = curDatetime.toString("hh:mm:ss");
             newContent = time + ": " + newContent;

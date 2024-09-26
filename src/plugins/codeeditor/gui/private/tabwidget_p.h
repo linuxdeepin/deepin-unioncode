@@ -53,9 +53,6 @@ public slots:
     void onTabClosed(const QString &fileName);
     void onSpliterClicked(Qt::Orientation ori);
     void onCursorRecordChanged(int pos);
-    void handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type);
-    void handleRemoveAnnotation(const QString &fileName, const QString &title);
-    void handleClearAllAnnotation(const QString &title);
     void handleDoRename(const newlsp::WorkspaceEdit &info);
     void handleOpenFiles(const QList<QUrl> &fileList);
 

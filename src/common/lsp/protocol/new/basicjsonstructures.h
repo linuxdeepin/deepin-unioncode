@@ -430,8 +430,8 @@ std::string toJsonValueStr(const ProgressToken &val);
 
 struct Position
 {
-    int line;
-    int character;
+    int line = -1;
+    int character = -1;
     Position() = default;
     Position(int line, int character)
         : line(line), character(character) {}

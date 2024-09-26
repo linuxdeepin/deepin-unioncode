@@ -180,15 +180,27 @@ void CodeEditor::initEditorService()
     editorService->openedFiles = std::bind(&WorkspaceWidget::openedFiles, workspaceWidget);
     editorService->fileText = std::bind(&WorkspaceWidget::fileText, workspaceWidget, _1);
     editorService->replaceAll = std::bind(&WorkspaceWidget::replaceAll, workspaceWidget, _1, _2, _3, _4, _5);
-    editorService->replaceRange = std::bind(&WorkspaceWidget::replaceRange, workspaceWidget, _1, _2, _3, _4, _5);
+    editorService->replaceText = std::bind(&WorkspaceWidget::replaceText, workspaceWidget, _1, _2, _3, _4, _5);
+    editorService->replaceRange = std::bind(&WorkspaceWidget::replaceRange, workspaceWidget, _1, _2, _3);
+    editorService->backgroundMarkerDefine = std::bind(&WorkspaceWidget::backgroundMarkerDefine, workspaceWidget, _1, _2, _3);
     editorService->setRangeBackgroundColor = std::bind(&WorkspaceWidget::setRangeBackgroundColor, workspaceWidget, _1, _2, _3, _4);
     editorService->clearRangeBackgroundColor = std::bind(&WorkspaceWidget::clearRangeBackgroundColor, workspaceWidget, _1, _2, _3, _4);
     editorService->clearAllBackgroundColor = std::bind(&WorkspaceWidget::clearAllBackgroundColor, workspaceWidget, _1, _2);
     editorService->showLineWidget = std::bind(&WorkspaceWidget::showLineWidget, workspaceWidget, _1, _2);
     editorService->closeLineWidget = std::bind(&WorkspaceWidget::closeLineWidget, workspaceWidget);
-    editorService->cursorPosition = std::bind(&WorkspaceWidget::cursorPosition, workspaceWidget, _1, _2);
+    editorService->cursorPosition = std::bind(&WorkspaceWidget::cursorPosition, workspaceWidget);
     editorService->registerDiagnosticRepairTool = std::bind(&WorkspaceWidget::registerDiagnosticRepairTool, workspaceWidget, _1, _2);
     editorService->getDiagnosticRepairTool = std::bind(&WorkspaceWidget::getDiagnosticRepairTool, workspaceWidget);
+    editorService->lineText = std::bind(&WorkspaceWidget::lineText, workspaceWidget, _1, _2);
+    editorService->eOLAnnotate = std::bind(&WorkspaceWidget::eOLAnnotate, workspaceWidget, _1, _2, _3, _4, _5);
+    editorService->clearEOLAnnotation = std::bind(&WorkspaceWidget::clearEOLAnnotation, workspaceWidget, _1, _2);
+    editorService->clearAllEOLAnnotation = std::bind(&WorkspaceWidget::clearAllEOLAnnotation, workspaceWidget, _1);
+    editorService->annotate = std::bind(&WorkspaceWidget::annotate, workspaceWidget, _1, _2, _3, _4, _5);
+    editorService->clearAnnotation = std::bind(&WorkspaceWidget::clearAnnotation, workspaceWidget, _1, _2);
+    editorService->clearAllAnnotation = std::bind(&WorkspaceWidget::clearAllAnnotation, workspaceWidget, _1);
+    editorService->rangeText = std::bind(&WorkspaceWidget::rangeText, workspaceWidget, _1, _2);
+    editorService->selectionRange = std::bind(&WorkspaceWidget::selectionRange, workspaceWidget, _1);
+    editorService->codeRange = std::bind(&WorkspaceWidget::codeRange, workspaceWidget, _1, _2);
 
     LexerManager::instance()->init(editorService);
 }

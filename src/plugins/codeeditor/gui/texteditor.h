@@ -66,7 +66,8 @@ public:
     void gotoPosition(int pos);
     int cursorLastPosition();
     int cursorPosition();
-    int setRangeBackgroundColor(int startLine, int endLine, const QColor &color);
+    int backgroundMarkerDefine(const QColor &color, int defaultMarker);
+    void setRangeBackgroundColor(int startLine, int endLine, int marker);
     void clearRangeBackgroundColor(int startLine, int endLine, int marker);
     void clearAllBackgroundColor(int marker);
     void showTips(const QString &tips);
@@ -76,6 +77,8 @@ public:
     void addAnnotation(const QString &title, const QString &content, int line, int type);
     void addAnnotation(const QString &content, int line, int type);
     void removeAnnotation(const QString &title);
+    void addEOLAnnotation(const QString &title, const QString &content, int line, int type);
+    void removeEOLAnnotation(const QString &title);
     void commentOperation();
     QString getFileType();
     QStringList getFileCommentSettings(const QMap<QString, QVariant> &commentSettings);

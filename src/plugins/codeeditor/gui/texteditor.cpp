@@ -9,6 +9,8 @@
 #include "common/tooltip/tooltip.h"
 #include "settings/settingsdefine.h"
 
+#include "services/editor/editor_define.h"
+
 #include "Qsci/qscidocument.h"
 #include "Qsci/qscilexer.h"
 
@@ -330,19 +332,23 @@ int TextEditor::cursorPosition()
     return static_cast<int>(SendScintilla(TextEditor::SCI_GETCURRENTPOS));
 }
 
-int TextEditor::setRangeBackgroundColor(int startLine, int endLine, const QColor &color)
+int TextEditor::backgroundMarkerDefine(const QColor &color, int defaultMarker)
+{
+    int marker = markerDefine(Background, defaultMarker);
+    setMarkerBackgroundColor(color, marker);
+    return marker;
+}
+
+void TextEditor::setRangeBackgroundColor(int startLine, int endLine, int marker)
 {
     startLine = qMax(startLine, 0);
     endLine = qMin(endLine, lines() - 1);
     if (startLine > endLine)
-        return -1;
+        return;
 
-    int marker = markerDefine(Background);
     for (; startLine <= endLine; ++startLine) {
         markerAdd(startLine, marker);
     }
-
-    return marker;
 }
 
 void TextEditor::clearRangeBackgroundColor(int startLine, int endLine, int marker)
@@ -403,16 +409,16 @@ void TextEditor::addAnnotation(const QString &title, const QString &content, int
 {
     QString typeStr;
     switch (type) {
-    case AnnotationType::NoteAnnotation:
+    case dpfservice::Edit::NoteAnnotation:
         typeStr = "Note";
         break;
-    case AnnotationType::ErrorAnnotation:
+    case dpfservice::Edit::ErrorAnnotation:
         typeStr = "Error";
         break;
-    case AnnotationType::FatalAnnotation:
+    case dpfservice::Edit::FatalAnnotation:
         typeStr = "Fatal";
         break;
-    case AnnotationType::WarningAnnotation:
+    case dpfservice::Edit::WarningAnnotation:
         typeStr = "Warning";
         break;
     }
@@ -439,6 +445,25 @@ void TextEditor::removeAnnotation(const QString &title)
 
     for (int line : lineList)
         clearAnnotations(line);
+}
+
+void TextEditor::addEOLAnnotation(const QString &title, const QString &content, int line, int type)
+{
+    d->eOLAnnotationRecords.insertMulti(title, line);
+    auto style = d->createAnnotationStyle(type);
+    eOLAnnotate(line, content, style);
+}
+
+void TextEditor::removeEOLAnnotation(const QString &title)
+{
+    if (!d->eOLAnnotationRecords.contains(title))
+        return;
+
+    auto lineList = d->eOLAnnotationRecords.values(title);
+    d->eOLAnnotationRecords.remove(title);
+
+    for (int line : lineList)
+        clearEOLAnnotations(line);
 }
 
 void TextEditor::commentOperation()
@@ -637,7 +662,6 @@ void TextEditor::insertText(const QString &text)
 
     SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.constData());
     SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
-    d->adjustScrollBar();
 }
 
 LanguageClientHandler *TextEditor::languageClient() const
@@ -754,8 +778,11 @@ bool TextEditor::isAutomaticInvocationEnabled() const
 
 bool TextEditor::showLineWidget(int line, QWidget *widget)
 {
-    if (line < 0 || line >= lines())
+    if (line <= 0 || line >= lines() || !hasFocus())
         return false;
+
+    if (d->lineWidgetContainer->isVisible())
+        closeLineWidget();
 
     d->showAtLine = line;
     d->setContainerWidget(widget);
@@ -765,6 +792,7 @@ bool TextEditor::showLineWidget(int line, QWidget *widget)
 void TextEditor::closeLineWidget()
 {
     d->lineWidgetContainer->setVisible(false);
+    clearAnnotations(d->showAtLine - 1);
 }
 
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
@@ -845,7 +873,7 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 void TextEditor::focusOutEvent(QFocusEvent *event)
 {
     if (!d->lineWidgetContainer->hasFocus())
-        d->lineWidgetContainer->setVisible(false);
+        closeLineWidget();
 
     cancelCompletion();
     Q_EMIT focusOut();

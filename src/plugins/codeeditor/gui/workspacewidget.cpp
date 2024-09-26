@@ -8,6 +8,7 @@
 #include "settings/editorsettings.h"
 #include "settings/settingsdefine.h"
 #include "symbol/symbolwidget.h"
+#include "symbol/symbolmanager.h"
 #include "texteditor.h"
 
 #include <DDialog>
@@ -1042,6 +1043,40 @@ QStringList WorkspaceWidget::modifiedFiles() const
     return tmp.toList();
 }
 
+QString WorkspaceWidget::rangeText(const QString &fileName, const dpfservice::Edit::Range &range)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        bool found = false;
+        const auto &text = tabWidget->rangeText(fileName, range, found);
+        if (found)
+            return text;
+    }
+
+    return {};
+}
+
+Edit::Range WorkspaceWidget::codeRange(const QString &fileName, const dpfservice::Edit::Position &pos)
+{
+    Edit::Range range;
+    const auto &info = SymbolManager::instance()->findSymbol(fileName, pos.line, pos.column);
+    range.start = { info.range.start.line, info.range.start.character };
+    range.end = { info.range.end.line, info.range.end.character };
+    return range;
+}
+
+Edit::Range WorkspaceWidget::selectionRange(const QString &fileName)
+{
+    Edit::Range range;
+    for (auto tabWidget : d->tabWidgetList) {
+        bool found = false;
+        range = tabWidget->selectionRange(fileName, found);
+        if (found)
+            break;
+    }
+
+    return range;
+}
+
 void WorkspaceWidget::setText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())
@@ -1153,10 +1188,18 @@ void WorkspaceWidget::replaceAll(const QString &fileName, const QString &oldText
     }
 }
 
-void WorkspaceWidget::replaceRange(const QString &fileName, int line, int index, int length, const QString &after)
+void WorkspaceWidget::replaceText(const QString &fileName, int line, int index, int length, const QString &after)
 {
     for (auto tabWidget : d->tabWidgetList) {
-        tabWidget->replaceRange(fileName, line, index, length, after);
+        tabWidget->replaceText(fileName, line, index, length, after);
+    }
+}
+
+void WorkspaceWidget::replaceRange(const QString &fileName, const dpfservice::Edit::Range &range, const QString &newText)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->replaceRange(fileName, range, newText))
+            break;
     }
 }
 
@@ -1165,10 +1208,70 @@ TabWidget *WorkspaceWidget::currentTabWidget() const
     return d->currentTabWidget();
 }
 
-void WorkspaceWidget::cursorPosition(int *line, int *index)
+Edit::Position WorkspaceWidget::cursorPosition()
 {
+    Edit::Position pos;
     if (auto tabWidget = d->currentTabWidget())
-        tabWidget->cursorPosition(line, index);
+        tabWidget->cursorPosition(&pos.line, &pos.column);
+
+    return pos;
+}
+
+QString WorkspaceWidget::lineText(const QString &fileName, int line)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        const auto &text = tabWidget->lineText(fileName, line);
+        if (!text.isEmpty())
+            return text;
+    }
+
+    return {};
+}
+
+void WorkspaceWidget::eOLAnnotate(const QString &fileName, const QString &title, const QString &contents, int line, int type)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->eOLAnnotate(fileName, title, contents, line, type))
+            break;
+    }
+}
+
+void WorkspaceWidget::clearEOLAnnotation(const QString &fileName, const QString &title)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->clearEOLAnnotation(fileName, title))
+            break;
+    }
+}
+
+void WorkspaceWidget::clearAllEOLAnnotation(const QString &title)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        tabWidget->clearAllEOLAnnotation(title);
+    }
+}
+
+void WorkspaceWidget::annotate(const QString &fileName, const QString &title, const QString &contents, int line, int type)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->annotate(fileName, title, contents, line, type))
+            break;
+    }
+}
+
+void WorkspaceWidget::clearAnnotation(const QString &fileName, const QString &title)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->clearAnnotation(fileName, title))
+            break;
+    }
+}
+
+void WorkspaceWidget::clearAllAnnotation(const QString &title)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        tabWidget->clearAllAnnotation(title);
+    }
 }
 
 void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)
@@ -1190,15 +1293,23 @@ void WorkspaceWidget::switchDefaultWidget()
     d->stackWidget->setCurrentIndex(0);
 }
 
-int WorkspaceWidget::setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, const QColor &color)
+int WorkspaceWidget::backgroundMarkerDefine(const QString &fileName, const QColor &color, int defaultMarker)
 {
-    int marker = 0;
     for (auto tabWidget : d->tabWidgetList) {
-        if (tabWidget->setRangeBackgroundColor(fileName, startLine, endLine, color, marker))
-            break;
+        int marker = tabWidget->backgroundMarkerDefine(fileName, color, defaultMarker);
+        if (-1 != marker)
+            return marker;
     }
 
-    return marker;
+    return -1;
+}
+
+void WorkspaceWidget::setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        if (tabWidget->setRangeBackgroundColor(fileName, startLine, endLine, marker))
+            break;
+    }
 }
 
 void WorkspaceWidget::clearRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker)

@@ -78,13 +78,14 @@ Files: 3rdparty/scripts/*
 Copyright: 2013 Brendan Gregg
 License: GPL-3.0-or-later
 
-# cppdap
+# cppdap & diff_match_patch
 Files: 3rdparty/cppdap/src/* 
        3rdparty/cppdap/include/*
        3rdparty/cppdap/examples/*
        3rdparty/cppdap/fuzz/*
        3rdparty/cppdap/kokoro/*
        3rdparty/cppdap/CONTRIBUTING
+       3rdparty/diff-match-patch/*
 Copyright: 2019 Google LLC
 License: Apache-2.0
 

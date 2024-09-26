@@ -5,6 +5,8 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
+#include "services/editor/editor_define.h"
+
 #include <QWidget>
 
 class TextEditor;
@@ -26,11 +28,14 @@ public:
     QString cursorBehindText() const;
     QStringList modifiedFiles() const;
     QStringList openedFiles() const;
+    QString rangeText(const QString &fileName, const dpfservice::Edit::Range &range, bool &found);
+    dpfservice::Edit::Range selectionRange(const QString &fileName, bool &found);
     void setText(const QString &text);
     QString fileText(const QString &fileName, bool *success = nullptr);
     void replaceAll(const QString &fileName, const QString &oldText,
                     const QString &newText, bool caseSensitive, bool wholeWords);
-    void replaceRange(const QString &fileName, int line, int index, int length, const QString &after);
+    void replaceText(const QString &fileName, int line, int index, int length, const QString &after);
+    bool replaceRange(const QString &fileName, const dpfservice::Edit::Range &range, const QString &newText);
     void saveAll() const;
     bool saveAs(const QString &from, const QString &to);
     void reloadFile(const QString &fileName);
@@ -48,6 +53,14 @@ public:
     Q_INVOKABLE void setCompletion(const QString &info);
     void gotoNextPosition();
     void gotoPreviousPosition();
+    QString lineText(const QString &fileName, int line);
+
+    bool eOLAnnotate(const QString &fileName, const QString &title, const QString &contents, int line, int type);
+    bool clearEOLAnnotation(const QString &fileName, const QString &title);
+    void clearAllEOLAnnotation(const QString &title);
+    bool annotate(const QString &fileName, const QString &title, const QString &contents, int line, int type);
+    bool clearAnnotation(const QString &fileName, const QString &title);
+    void clearAllAnnotation(const QString &title);
 
     void setEditorCursorPosition(int pos);
     int editorCursorPosition();
@@ -65,7 +78,8 @@ public:
     int zoomValue();
     void updateZoomValue(int value);
 
-    bool setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, const QColor &color, int &marker);
+    int backgroundMarkerDefine(const QString &fileName, const QColor &color, int defaultMarker);
+    bool setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker);
     bool clearRangeBackground(const QString &fileName, int startLine, int endLine, int marker);
     bool clearAllBackground(const QString &fileName, int marker);
     void showLineWidget(int line, QWidget *widget);

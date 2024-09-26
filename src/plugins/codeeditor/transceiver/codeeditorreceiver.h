@@ -27,11 +27,6 @@ private:
     void processGotoPositionEvent(const dpf::Event &event);
     void processSetModifiedAutoReloadEvent(const dpf::Event &event);
 
-    // annotation
-    void processAddAnnotationEvent(const dpf::Event &event);
-    void processRemoveAnnotationEvent(const dpf::Event &event);
-    void processClearAllAnnotationEvent(const dpf::Event &event);
-
     // debug
     void processAddBreakpointEvent(const dpf::Event &event);
     void processRemoveBreakpointEvent(const dpf::Event &event);
@@ -67,11 +62,6 @@ signals:
     void reqFollowSymbolUnderCursor();
     void reqFindUsage();
     void reqRenameSymbol();
-
-    // annotation
-    void reqAddAnnotation(const QString &fileName, const QString &title, const QString &content,int line,  AnnotationType type);
-    void reqRemoveAnnotation(const QString &fileName, const QString &title);
-    void reqClearAllAnnotation(const QString &title);
 
     // debug
     void reqAddBreakpoint(const QString &fileName, int line, bool enabled);

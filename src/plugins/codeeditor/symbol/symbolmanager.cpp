@@ -11,7 +11,7 @@ class SymbolManagerPrivate
 public:
     explicit SymbolManagerPrivate(SymbolManager *qq);
 
-    QPair<QString, int> findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column);
+    SymbolManager::SymbolInfo findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column);
 
 public:
     SymbolManager *q;
@@ -25,7 +25,7 @@ SymbolManagerPrivate::SymbolManagerPrivate(SymbolManager *qq)
 {
 }
 
-QPair<QString, int> SymbolManagerPrivate::findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column)
+SymbolManager::SymbolInfo SymbolManagerPrivate::findSymbol(const newlsp::DocumentSymbol &symbol, int line, int column)
 {
     auto children = symbol.children.value_or(QList<newlsp::DocumentSymbol>());
     auto iter = std::find_if(children.cbegin(), children.cend(),
@@ -38,7 +38,7 @@ QPair<QString, int> SymbolManagerPrivate::findSymbol(const newlsp::DocumentSymbo
     QString name = q->displayNameFromDocumentSymbol(static_cast<SymbolManager::SymbolKind>(symbol.kind),
                                                     symbol.name,
                                                     symbol.detail.value_or(QString()));
-    return qMakePair(name, symbol.kind);
+    return { name, static_cast<SymbolManager::SymbolKind>(symbol.kind), symbol.range };
 }
 
 SymbolManager::SymbolManager(QObject *parent)
@@ -80,7 +80,7 @@ QList<newlsp::SymbolInformation> SymbolManager::symbolInformations(const QString
     return d->symbolInfoHash.value(file, {});
 }
 
-QPair<QString, int> SymbolManager::findSymbol(const QString &file, int line, int column)
+SymbolManager::SymbolInfo SymbolManager::findSymbol(const QString &file, int line, int column)
 {
     if (d->docSymbolHash.contains(file)) {
         const auto &symbolList = d->docSymbolHash[file];
@@ -97,7 +97,7 @@ QPair<QString, int> SymbolManager::findSymbol(const QString &file, int line, int
                                      return info.location.range.contains({ line, column });
                                  });
         if (iter != infoList.cend())
-            return qMakePair(iter->name, iter->kind);
+            return { iter->name, static_cast<SymbolManager::SymbolKind>(iter->kind), iter->location.range };
     }
 
     return {};

@@ -6,6 +6,7 @@
 #define EDITORSERVICE_H
 
 #include <framework/framework.h>
+#include "editor_define.h"
 #include "base/abstractdebugger.h"
 #include "base/abstractlexerproxy.h"
 #include "base/abstracteditwidget.h"
@@ -43,10 +44,23 @@ public:
     DPF_INTERFACE(QString, currentFile);
     DPF_INTERFACE(QStringList, openedFiles);
     DPF_INTERFACE(QString, fileText, const QString &file);
-    DPF_INTERFACE(void, cursorPosition, int *line, int *index);
+    DPF_INTERFACE(Edit::Position, cursorPosition);
     DPF_INTERFACE(void, replaceAll, const QString &file, const QString &oldText,
                   const QString &newText, bool caseSensitive, bool wholeWords);
-    DPF_INTERFACE(void, replaceRange, const QString &file, int line, int index, int length, const QString &after);
+    DPF_INTERFACE(QString, lineText, const QString &file, int line);
+
+    DPF_INTERFACE(void, replaceRange, const QString &file, const Edit::Range &range, const QString &newText);
+    DPF_INTERFACE(void, replaceText, const QString &file, int line, int index, int length, const QString &newText);
+    DPF_INTERFACE(QString, rangeText, const QString &file, const Edit::Range &range);
+    DPF_INTERFACE(Edit::Range, selectionRange, const QString &file);
+    DPF_INTERFACE(Edit::Range, codeRange, const QString &file, const Edit::Position &pos);
+
+    DPF_INTERFACE(void, eOLAnnotate, const QString &file, const QString &title, const QString &contents, int line, Edit::AnnotationType type);
+    DPF_INTERFACE(void, clearEOLAnnotation, const QString &file, const QString &title);
+    DPF_INTERFACE(void, clearAllEOLAnnotation, const QString &title);
+    DPF_INTERFACE(void, annotate, const QString &file, const QString &title, const QString &contents, int line, Edit::AnnotationType type);
+    DPF_INTERFACE(void, clearAnnotation, const QString &file, const QString &title);
+    DPF_INTERFACE(void, clearAllAnnotation, const QString &title);
 
     DPF_INTERFACE(void, registerSciLexerProxy, const QString &language, AbstractLexerProxy *proxy);
     DPF_INTERFACE(void, registerWidget, const QString &id, AbstractEditWidget *widget);
@@ -55,7 +69,8 @@ public:
 
     // NOTE: Return the `marker` value,
     //       if the return value is -1, it indicates that the setting failed.
-    DPF_INTERFACE(int, setRangeBackgroundColor, const QString &file, int startLine, int endLine, const QColor &color);
+    DPF_INTERFACE(int, backgroundMarkerDefine, const QString &file, const QColor &color, int defaultMarker);
+    DPF_INTERFACE(void, setRangeBackgroundColor, const QString &file, int startLine, int endLine, int marker);
     DPF_INTERFACE(void, clearRangeBackgroundColor, const QString &file, int startLine, int endLine, int marker);
     DPF_INTERFACE(void, clearAllBackgroundColor, const QString &file, int marker);
     DPF_INTERFACE(void, showLineWidget, int line, QWidget *widget);

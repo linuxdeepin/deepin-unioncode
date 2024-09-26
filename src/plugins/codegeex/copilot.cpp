@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "copilot.h"
+#include "widgets/linechatwidget.h"
 #include "services/editor/editorservice.h"
 #include "services/option/optionmanager.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
+#include "common/actionmanager/actionmanager.h"
 
 #include <QMenu>
 #include <QDebug>
@@ -14,6 +16,7 @@
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
 static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/v3/completions/inline?stream=false";
 
+static const char *lineChatTip = "LineChatTip";
 static const char *commandFixBug = "fixbug";
 static const char *commandExplain = "explain";
 static const char *commandReview = "review";
@@ -32,6 +35,11 @@ Copilot::Copilot(QObject *parent)
     }
     generateTimer = new QTimer(this);
     generateTimer->setSingleShot(true);
+
+    QAction *lineChatAct = new QAction(tr("Line Chat"), this);
+    lineChatCmd = ActionManager::instance()->registerAction(lineChatAct, "CodeGeeX.LineChat");
+    lineChatCmd->setDefaultKeySequence(Qt::CTRL + Qt::Key_T);
+    connect(lineChatAct, &QAction::triggered, this, &Copilot::showLineChat);
 
     connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
         switch (responseType) {
@@ -175,6 +183,32 @@ void Copilot::handleTextChanged()
     });
 }
 
+void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom, int lineTo, int indexTo)
+{
+    QMetaObject::invokeMethod(this, [=] {
+        if (lineFrom == -1)
+            return;
+
+        Edit::Position pos = editorService->cursorPosition();
+        if (pos.line <= 0)
+            return;
+
+        showLineChatTip(fileName, pos.line);
+    });
+}
+
+void Copilot::handlePositionChanged(const QString &fileName, int line, int index)
+{
+    QMetaObject::invokeMethod(this, [=] {
+        editorService->clearAllEOLAnnotation(lineChatTip);
+        auto text = editorService->lineText(fileName, line);
+        if (!text.remove(QRegExp("\\s+")).isEmpty())
+            return;
+
+        showLineChatTip(fileName, line);
+    });
+}
+
 void Copilot::addComment()
 {
     QString url = QString(kUrlSSEChat) + "?stream=false";   //receive all msg at once
@@ -291,6 +325,33 @@ QString Copilot::assembleCodeByCurrentFile(const QString &code)
     QString result;
     result = "```" + fileType + "\n" + code + "```";
     return result;
+}
+
+void Copilot::showLineChatTip(const QString &fileName, int line)
+{
+    auto keySequences = lineChatCmd->keySequences();
+    QStringList keyList;
+    for (const auto &key : keySequences) {
+        if (key.isEmpty())
+            continue;
+        keyList << key.toString();
+    }
+
+    if (!keyList.isEmpty()) {
+        QString msg = LineChatWidget::tr("  Press %1 to line chat").arg(keyList.join(','));
+        editorService->eOLAnnotate(fileName, lineChatTip, msg, line, Edit::NoteAnnotation);
+    }
+}
+
+void Copilot::showLineChat()
+{
+    editorService->clearAllEOLAnnotation(lineChatTip);
+    if (!lineChatWidget) {
+        lineChatWidget = new LineChatWidget;
+        connect(lineChatWidget, &LineChatWidget::destroyed, this, [this] { lineChatWidget = nullptr; });
+    }
+
+    lineChatWidget->showLineChat();
 }
 
 CodeGeeX::CopilotApi::GenerateType Copilot::checkPrefixType(const QString &prefixCode)

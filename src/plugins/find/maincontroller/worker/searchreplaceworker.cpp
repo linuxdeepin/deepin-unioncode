@@ -315,7 +315,7 @@ void SearchReplaceWorkerPrivate::replaceOpenedFile(const QString &fileName, cons
 
         lastReplaceLine = realLine;
         offset += newText.length() - item.matchedLength;
-        editSrv->replaceRange(fileName, realLine, index, item.matchedLength, newText);
+        editSrv->replaceText(fileName, realLine, index, item.matchedLength, newText);
     }
 }
 
