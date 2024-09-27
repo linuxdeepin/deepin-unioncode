@@ -89,12 +89,13 @@ public:
 
     // Rag
     QString condaRootPath() const;
+    void showIndexingWidget();
     void installConda();
     void generateRag(const QString &projectPath);
     /*
      JsonObject:
         Query: str
-        Chunks: Arr[fileName:str, content:str]
+        Chunks: Arr[fileName:str, content:str, similarity:float]
         Instructions: obj{name:str, description:str, content:str}
      */
     QJsonObject query(const QString &projectPath, const QString &query, int topItems);
@@ -113,6 +114,9 @@ Q_SIGNALS:
     void sessionRecordsUpdated();
     void setTextToSend(const QString &prompt);
     void requestStop();
+    void notify(int type, const QString &message);
+    void showCustomWidget(QWidget *widget);
+    void generateDone(const QString &Path);
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);

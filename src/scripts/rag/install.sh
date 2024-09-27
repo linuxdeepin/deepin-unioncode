@@ -22,6 +22,5 @@ expect eof
 source miniforge/etc/profile.d/conda.sh
 conda env create -f $SCRIPT_DIR/env.yml
 conda config --set auto_activate_base false
-conda activate deepin_unioncode_env
 
-echo "Done! Please restart the deepin-unioncode"
+echo "Done!"

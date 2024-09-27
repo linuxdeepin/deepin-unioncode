@@ -8,8 +8,12 @@
 #include "services/window/windowservice.h"
 #include "services/window/windowelement.h"
 #include "services/terminal/terminalservice.h"
+#include "services/project/projectservice.h"
+
+#include <DSpinner>
 
 #include <QDebug>
+#include <QProcess>
 #include <QFile>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -17,6 +21,9 @@
 #include <QUuid>
 #include <QTimer>
 #include <QDateTime>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QLabel>
 
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
 //static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
@@ -313,12 +320,17 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
     connect(&askApi, &AskApi::sessionDeleted, this, &CodeGeeXManager::recevieDeleteResult);
     connect(&askApi, &AskApi::getMessageListResult, this, &CodeGeeXManager::showHistoryMessage);
+    connect(&askApi, &AskApi::noChunksFounded, this, &CodeGeeXManager::showIndexingWidget);
 
     connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
     connect(Copilot::instance(), &Copilot::response, this, &CodeGeeXManager::onResponse);
     connect(Copilot::instance(), &Copilot::messageSended, this, &CodeGeeXManager::startReceiving);
 
     connect(this, &CodeGeeXManager::requestStop, &askApi, &AskApi::stopReceive);
+    connect(this, &CodeGeeXManager::notify, this, [](int type, const QString &message){
+        WindowService *windowService = dpfGetService(WindowService);
+        windowService->notify(type, "Ai", message, QStringList{});
+    });
 }
 
 void CodeGeeXManager::queryLoginState()
@@ -420,6 +432,47 @@ QString CodeGeeXManager::condaRootPath() const
     return QDir::homePath() + "/.unioncode";
 }
 
+void CodeGeeXManager::showIndexingWidget()
+{
+    emit chatFinished();
+
+    auto widget = new QWidget; // set parent in messageComponent
+    auto layout = new QVBoxLayout(widget);
+
+    const QString tip(tr("This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now."));
+    auto label = new QLabel(tip, widget);
+    label->setWordWrap(true);
+    layout->addWidget(label);
+
+    auto confirmBtn = new QPushButton(tr("Confirm"), widget);
+    layout->addWidget(confirmBtn);
+
+    using DTK_WIDGET_NAMESPACE::DSpinner;
+    auto spinner = new DSpinner(widget);
+    spinner->setFixedSize(16, 16);
+    spinner->hide();
+
+    using dpfservice::ProjectService;
+    ProjectService *prjServ = dpfGetService(ProjectService);
+    auto currentProject = prjServ->getActiveProjectInfo().workspaceFolder();
+    connect(confirmBtn, &QPushButton::clicked, widget, [=]() {
+        QtConcurrent::run([=](){ generateRag(currentProject); });
+
+        layout->addWidget(new QLabel(tr("It may take servel minutes"), widget));
+        layout->addWidget(spinner);
+        spinner->show();
+        spinner->start();
+    });
+
+    connect(this, &CodeGeeXManager::generateDone, spinner, [=](const QString &path) {
+        if (path == currentProject)
+            spinner->hide();
+        layout->addWidget(new QLabel(tr("Indexing Done"), widget));
+    });
+
+    emit showCustomWidget(widget);
+}
+
 void CodeGeeXManager::installConda()
 {
     QString scriptPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag/install.sh";
@@ -445,18 +498,17 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     QProcess process;
     QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&, projectPath]() {
         if (!failed) // only notify once
-            QMetaObject::invokeMethod(this, [&, projectPath](){
-                WindowService *windowService = dpfGetService(WindowService);
-                windowService->notify(2, "Ai", tr("The error occurred when performing rag on project %1.").arg(projectPath), QStringList{});
-            });
+            emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
         failed = true;
         qInfo() << "Error:" << process.readAllStandardError() << "\n";
     });
+
     QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [&](int exitCode, QProcess::ExitStatus exitStatus) {
                          qInfo() << "Python script finished with exit code" << exitCode  << "Exit!!!";
                      });
     qInfo() << "start rag project:" << projectPath;
+
     QString ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
     process.setWorkingDirectory(ragPath);
     auto generatePyPath = ragPath + "/generate.py";
@@ -467,6 +519,7 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     process.start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
     process.waitForFinished(-1);
     indexingProject.removeOne(projectPath);
+    emit generateDone(projectPath);
 }
 
 /*
@@ -477,6 +530,9 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
 */
 QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &query, int topItems)
 {
+    if (indexingProject.contains(projectPath))
+        emit notify(0, tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(projectPath));
+
     QProcess process;
     QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&]() {
         qInfo() << "Error:" << process.readAllStandardError() << "\n";

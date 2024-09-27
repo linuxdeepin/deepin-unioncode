@@ -177,8 +177,6 @@ void Copilot::handleTextChanged()
 {
     editorService->setCompletion("");
     QMetaObject::invokeMethod(this, [this]() {
-        if (generateTimer->isActive())
-            generateTimer->stop();
         generateTimer->start(500);
     });
 }

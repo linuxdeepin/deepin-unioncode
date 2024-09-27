@@ -11,6 +11,7 @@ import json
 from embedding import ONNXEmbeddingsProvider
 from typing import Generator, List, Dict, Any
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import euclidean_distances
 
 class DatabaseConnection:
     def __init__(self, db_path: str):
@@ -61,7 +62,12 @@ if __name__ == "__main__":
             itemMap[row['vector']] = row
             embedding = np.frombuffer(row['vector'], dtype=query_embedding.dtype)
             embeddings.append(embedding)
+        if not embeddings:
+            db.db.close()
+            sys.exit()
+
         similarities = cosine_similarity([query_embedding], embeddings)[0]
+
         top_indices = np.argsort(similarities)[-top_k:][::-1]
 
         content = '''
@@ -73,7 +79,10 @@ if __name__ == "__main__":
             file_content = rows[idx]['contents']
             file_name = file_path + "[" + rows[idx]['startLine'].__str__() + "-" + rows[idx]['endLine'].__str__() + "]"
             file = File(file_path, file_content, file_name)
-            results.append(file.to_dict())
+            obj = file.to_dict()
+            obj["similarity"] = float(similarities[idx])
+            results.append(obj)
+
         instruction = {
             "name": "Instructions",
             "description": "Instructions",

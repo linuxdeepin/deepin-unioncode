@@ -49,6 +49,7 @@ public Q_SLOTS:
     void onCreateNewBtnClicked();
     void onModelchanged(int index);
     void setInputText(const QString &prompt);
+    void showCustomWidget(QWidget *widget);
 
 private:
     void initUI();

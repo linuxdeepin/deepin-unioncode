@@ -217,10 +217,8 @@ def checkFileLastModified(file_path, db: sqlite3.Connection) -> bool:
         """
         cursor.execute(update_sql, (file_path, last_modified_time))
         db.db.commit()
-        print(f"Updated last modified time for {file_path}.")
         return True
     else:
-        print(f"No update needed for {file_path}.")
         return False
 
 def _insert_chunks_sync(db: sqlite3.Connection, tag_string: str, chunks: List[Dict[str, Any]]):

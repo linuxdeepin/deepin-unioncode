@@ -6,6 +6,7 @@
 #include "common/common.h"
 #include "copilot.h"
 #include "codegeexmanager.h"
+#include "services/project/projectservice.h"
 
 #include <QMenu>
 
@@ -81,12 +82,12 @@ void EventReceiverDemo::processActionInvokedEvent(const dpf::Event &event)
         QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
     else if (actId == "ai_rag_install")
         CodeGeeXManager::instance()->installConda();
-
-    QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
 }
 
 void EventReceiverDemo::processOpenProjectEvent(const dpf::Event &event)
 {
     auto projectPath = event.property("workspace").toString();
-    CodeGeeXManager::instance()->generateRag(projectPath);
+    QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
+    if (results["chunks"].toArray().size() != 0) // project has generated, update it
+        CodeGeeXManager::instance()->generateRag(projectPath);
 }

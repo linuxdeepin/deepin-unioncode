@@ -95,6 +95,7 @@ signals:
     void sessionCreated(const QString &talkId, bool isSuccessful);
     void stopReceive();
     void syncSendMessage(const QString url, const QString &token, const QByteArray &body);
+    void noChunksFounded();
 
 public slots:
     void slotSendMessage(const QString url, const QString &token, const QByteArray &body);
