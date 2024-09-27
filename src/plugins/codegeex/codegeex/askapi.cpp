@@ -118,12 +118,14 @@ void AskApi::postSSEChat(const QString &url,
         QStringList actions { "ai_rag_install", tr("Install") };
         dpfservice::WindowService *windowService = dpfGetService(dpfservice::WindowService);
         windowService->notify(0, "AI", tr("The file indexing feature is not available, which may cause functions such as xx to not work properly."
-                             "Please install the required environment.\n the installation process may take several minutes."),
+                                          "Please install the required environment.\n the installation process may take several minutes."),
                               actions);
     }
+
     QtConcurrent::run([prompt, machineId, jsonArray, talkId, url, token, this]() {
         QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
-        emit syncSendMessage(url, token, body);
+        if (!body.isEmpty())
+            emit syncSendMessage(url, token, body);
     });
 }
 
@@ -345,10 +347,11 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
     jsonObject.insert("locale", locale);
     jsonObject.insert("model", model);
 
-    if (CodeGeeXManager::instance()->isReferenceCodebase()) {
-        using dpfservice::ProjectService;
-        ProjectService *prjService = dpfGetService(ProjectService);
-        auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
+    using dpfservice::ProjectService;
+    ProjectService *prjService = dpfGetService(ProjectService);
+    auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
+
+    if (CodeGeeXManager::instance()->isReferenceCodebase() && currentProjectPath != "") {
         QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, prompt, 20);
         QJsonArray chunks = result["Chunks"].toArray();
         if (!chunks.isEmpty()) {
@@ -364,13 +367,9 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
                 context += "\n\n";
             }
             jsonObject["prompt"] = context;
-        } else {
-            QMetaObject::invokeMethod(this, [](){
-                dpfservice::WindowService *windowService = dpfGetService(dpfservice::WindowService);
-                windowService->notify(0, "AI", tr("The project has not established a file index or there are no files available to create an index. "
-                                                  "Please retry after reopening the project."),
-                                      QStringList());
-            });
+        } else if (CodeGeeXManager::instance()->condaHasInstalled()) {
+            emit noChunksFounded();
+            return {};
         }
     }
 

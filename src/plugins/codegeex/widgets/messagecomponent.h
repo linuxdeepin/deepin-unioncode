@@ -37,6 +37,7 @@ public:
     void updateMessage(const MessageData &msgData);
     void waitForAnswer();
     void stopWaiting();
+    void setCustomWidget(QWidget *widget);
 
 private:
     void initUI();

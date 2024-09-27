@@ -216,6 +216,14 @@ void MessageComponent::stopWaiting()
     }
 }
 
+void MessageComponent::setCustomWidget(QWidget *widget)
+{
+    if (widget && !widget->parent())
+        widget->setParent(this);
+
+    msgLayout->addWidget(widget);
+}
+
 bool MessageComponent::createCodeEdit(const MessageData &newData)
 {
     QStringList newLines = newData.messageLines();
@@ -256,8 +264,9 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
                     updateMessage(newData);
 
                 return false;
+            } else if (addedLine.size() > 4) {  // addedline starts with ` but not ```. eg: `123`
+                return true;
             }
-
             return false;
         }
     }

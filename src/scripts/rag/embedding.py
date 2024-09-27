@@ -29,7 +29,6 @@ class ONNXEmbeddingsProvider:
 
     def tokenize(self, text: str) -> Dict[str, np.ndarray]:
         encoded = self.tokenizer.encode(text)
-        
         return {
             'input_ids': np.array([encoded.ids], dtype=np.int64),
             'attention_mask': np.array([encoded.attention_mask], dtype=np.int64),
@@ -53,7 +52,7 @@ class ONNXEmbeddingsProvider:
         embeddings_array = np.array(self.embeddings)
         # Calculate the cosine similarity between the query embedding and all code block embeddings
         similarities = cosine_similarity([query_embedding], embeddings_array)[0]
-        
+
         # get top_k result
         top_indices = np.argsort(similarities)[-top_k:][::-1]
         

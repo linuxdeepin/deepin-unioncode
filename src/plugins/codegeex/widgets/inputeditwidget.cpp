@@ -263,17 +263,6 @@ bool InputEdit::event(QEvent *e)
     return DTextEdit::event(e);
 }
 
-void InputEdit::keyPressEvent(QKeyEvent *e)
-{
-    if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) {
-        if (e->modifiers() & Qt::AltModifier)
-            insertPlainText("\n");
-        return;
-    }
-
-    DTextEdit::keyPressEvent(e);
-}
-
 void InputEdit::focusOutEvent(QFocusEvent *e)
 {
     DTextEdit::focusOutEvent(e);
@@ -371,7 +360,9 @@ bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
                 return true;
             case Qt::Key_Enter:
             case Qt::Key_Return:
-                if (!d->referencePopup->isVisible())
+                if (keyEvent->modifiers() & Qt::AltModifier)
+                    d->edit->insertPlainText("\n");
+                else if (!d->referencePopup->isVisible())
                     emit pressedEnter();
                 else
                     emit handleKey(keyEvent);

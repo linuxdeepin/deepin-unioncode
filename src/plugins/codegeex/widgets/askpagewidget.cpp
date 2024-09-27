@@ -193,8 +193,8 @@ void AskPageWidget::initInputWidget()
 
     modelCb = new QComboBox(this);
     modelCb->setFixedHeight(26);
-    modelCb->addItem(QIcon::fromTheme("codegeex_model_lite"), "Lite", CodeGeeX::languageModel::Lite);
     modelCb->addItem(QIcon::fromTheme("codegeex_model_pro"), "Pro", CodeGeeX::languageModel::Pro);
+    modelCb->addItem(QIcon::fromTheme("codegeex_model_lite"), "Lite", CodeGeeX::languageModel::Lite);
     modelCb->setFixedWidth(100);
     btnLayout->addWidget(modelCb);
 
@@ -215,6 +215,7 @@ void AskPageWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this, &AskPageWidget::onChatFinished);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::setTextToSend, this, &AskPageWidget::setInputText);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::showCustomWidget, this, &AskPageWidget::showCustomWidget);
 
     connect(inputEdit, &InputEditWidget::messageSended, this, &AskPageWidget::slotMessageSend);
     connect(inputEdit, &InputEditWidget::pressedEnter, this, &AskPageWidget::slotMessageSend);
@@ -312,6 +313,18 @@ void AskPageWidget::waitForAnswer()
     waitComponets = new MessageComponent(data, messageContainer);
     qobject_cast<QVBoxLayout *>(messageContainer->layout())->insertWidget(msgComponents.count(), waitComponets);
     waitComponets->waitForAnswer();
+}
+
+void AskPageWidget::showCustomWidget(QWidget *widget)
+{
+    if (waitComponets) {
+        if (!msgComponents.values().contains(waitComponets)) {
+            QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
+            msgComponents.insert(stopId, waitComponets);
+        }
+        waitComponets->stopWaiting();
+    }
+    waitComponets->setCustomWidget(widget);
 }
 
 void AskPageWidget::askQuestion(const QString &question)
