@@ -15,7 +15,7 @@ namespace dpfservice {
 class EditorService;
 }
 
-class LineChatWidget;
+class InlineChatWidget;
 class Command;
 class Copilot : public QObject
 {
@@ -34,7 +34,6 @@ public:
     void handleTextChanged();
     void handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom,
                                 int lineTo, int indexTo);
-    void handlePositionChanged(const QString &fileName, int line, int index);
 
 signals:
     // the code will be tranlated.
@@ -65,9 +64,9 @@ private:
     bool responseValid(const QString &response);
     QString assembleCodeByCurrentFile(const QString &code);
     void showLineChatTip(const QString &fileName, int line);
-    void showLineChat();
+    void startInlineChat();
 
-    LineChatWidget *lineChatWidget = nullptr;
+    InlineChatWidget *inlineChatWidget = nullptr;
     Command *lineChatCmd = nullptr;
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;

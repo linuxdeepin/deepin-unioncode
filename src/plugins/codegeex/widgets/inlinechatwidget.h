@@ -2,20 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef LINECHATWIDGET_H
-#define LINECHATWIDGET_H
+#ifndef INLINECHATWIDGET_H
+#define INLINECHATWIDGET_H
 
 #include <QWidget>
 
-class LineChatWidgetPrivate;
-class LineChatWidget : public QWidget
+class InlineChatWidgetPrivate;
+class InlineChatWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LineChatWidget(QWidget *parent = nullptr);
-    ~LineChatWidget();
+    explicit InlineChatWidget(QWidget *parent = nullptr);
+    ~InlineChatWidget();
 
-    void showLineChat();
+    void start();
 
 protected:
     void showEvent(QShowEvent *e) override;
@@ -24,7 +24,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *e) override;
 
 private:
-    LineChatWidgetPrivate *const d;
+    InlineChatWidgetPrivate *const d;
 };
 
-#endif // LINECHATWIDGET_H
+#endif // INLINECHATWIDGET_H

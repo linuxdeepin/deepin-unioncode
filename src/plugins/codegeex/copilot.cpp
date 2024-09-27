@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "copilot.h"
-#include "widgets/linechatwidget.h"
+#include "widgets/inlinechatwidget.h"
 #include "services/editor/editorservice.h"
 #include "services/option/optionmanager.h"
 #include "services/window/windowservice.h"
@@ -39,7 +39,7 @@ Copilot::Copilot(QObject *parent)
     QAction *lineChatAct = new QAction(tr("Line Chat"), this);
     lineChatCmd = ActionManager::instance()->registerAction(lineChatAct, "CodeGeeX.LineChat");
     lineChatCmd->setDefaultKeySequence(Qt::CTRL + Qt::Key_T);
-    connect(lineChatAct, &QAction::triggered, this, &Copilot::showLineChat);
+    connect(lineChatAct, &QAction::triggered, this, &Copilot::startInlineChat);
 
     connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
         switch (responseType) {
@@ -186,26 +186,21 @@ void Copilot::handleTextChanged()
 void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom, int lineTo, int indexTo)
 {
     QMetaObject::invokeMethod(this, [=] {
-        if (lineFrom == -1)
+        if (!CodeGeeXManager::instance()->isLoggedIn())
             return;
 
+        editorService->clearAllEOLAnnotation(lineChatTip);
         Edit::Position pos = editorService->cursorPosition();
-        if (pos.line <= 0)
+        if (pos.line < 0)
             return;
+
+        if (lineFrom == -1) {
+            auto text = editorService->lineText(fileName, pos.line);
+            if (!text.remove(QRegExp("\\s+")).isEmpty())
+                return;
+        }
 
         showLineChatTip(fileName, pos.line);
-    });
-}
-
-void Copilot::handlePositionChanged(const QString &fileName, int line, int index)
-{
-    QMetaObject::invokeMethod(this, [=] {
-        editorService->clearAllEOLAnnotation(lineChatTip);
-        auto text = editorService->lineText(fileName, line);
-        if (!text.remove(QRegExp("\\s+")).isEmpty())
-            return;
-
-        showLineChatTip(fileName, line);
     });
 }
 
@@ -338,20 +333,23 @@ void Copilot::showLineChatTip(const QString &fileName, int line)
     }
 
     if (!keyList.isEmpty()) {
-        QString msg = LineChatWidget::tr("  Press %1 to line chat").arg(keyList.join(','));
-        editorService->eOLAnnotate(fileName, lineChatTip, msg, line, Edit::NoteAnnotation);
+        QString msg = InlineChatWidget::tr("  Press %1 to inline chat").arg(keyList.join(','));
+        editorService->eOLAnnotate(fileName, lineChatTip, msg, line, Edit::TipAnnotation);
     }
 }
 
-void Copilot::showLineChat()
+void Copilot::startInlineChat()
 {
+    if (!CodeGeeXManager::instance()->isLoggedIn())
+        return;
+
     editorService->clearAllEOLAnnotation(lineChatTip);
-    if (!lineChatWidget) {
-        lineChatWidget = new LineChatWidget;
-        connect(lineChatWidget, &LineChatWidget::destroyed, this, [this] { lineChatWidget = nullptr; });
+    if (!inlineChatWidget) {
+        inlineChatWidget = new InlineChatWidget;
+        connect(inlineChatWidget, &InlineChatWidget::destroyed, this, [this] { inlineChatWidget = nullptr; });
     }
 
-    lineChatWidget->showLineChat();
+    inlineChatWidget->start();
 }
 
 CodeGeeX::CopilotApi::GenerateType Copilot::checkPrefixType(const QString &prefixCode)

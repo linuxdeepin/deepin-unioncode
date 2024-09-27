@@ -16,7 +16,6 @@ EventReceiverDemo::EventReceiverDemo(QObject *parent)
     eventHandleMap.insert(editor.contextMenu.name, std::bind(&EventReceiverDemo::processContextMenuEvent, this, _1));
     eventHandleMap.insert(editor.textChanged.name, std::bind(&EventReceiverDemo::processTextChangedEvent, this, _1));
     eventHandleMap.insert(editor.selectionChanged.name, std::bind(&EventReceiverDemo::processSelectionChangedEvent, this, _1));
-    eventHandleMap.insert(editor.cursorPositionChanged.name, std::bind(&EventReceiverDemo::processPositionChangedEvent, this, _1));
     eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&EventReceiverDemo::processActionInvokedEvent, this, _1));
     eventHandleMap.insert(project.openProject.name, std::bind(&EventReceiverDemo::processOpenProjectEvent, this, _1));
 }
@@ -63,15 +62,7 @@ void EventReceiverDemo::processSelectionChangedEvent(const dpf::Event &event)
     int indexFrom = event.property("indexFrom").toInt();
     int lineTo = event.property("lineTo").toInt();
     int indexTo = event.property("indexTo").toInt();
-    Q_EMIT Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
-}
-
-void EventReceiverDemo::processPositionChangedEvent(const dpf::Event &event)
-{
-    QString fileName = event.property("fileName").toString();
-    int line = event.property("line").toInt();
-    int index = event.property("index").toInt();
-    Q_EMIT Copilot::instance()->handlePositionChanged(fileName, line, index);
+    Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
 }
 
 void EventReceiverDemo::processActionInvokedEvent(const dpf::Event &event)

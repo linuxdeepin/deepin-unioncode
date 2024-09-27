@@ -9,7 +9,8 @@ namespace dpfservice {
 namespace Edit {
 
 enum AnnotationType {
-    NoteAnnotation = 0,
+    TipAnnotation = 0,
+    NoteAnnotation,
     WarningAnnotation,
     ErrorAnnotation,
     FatalAnnotation

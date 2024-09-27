@@ -122,7 +122,6 @@ protected:
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
     virtual bool event(QEvent *event) override;
 

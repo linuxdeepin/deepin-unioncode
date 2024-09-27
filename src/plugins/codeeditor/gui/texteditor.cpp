@@ -409,6 +409,9 @@ void TextEditor::addAnnotation(const QString &title, const QString &content, int
 {
     QString typeStr;
     switch (type) {
+    case dpfservice::Edit::TipAnnotation:
+        typeStr = "Tip";
+        break;
     case dpfservice::Edit::NoteAnnotation:
         typeStr = "Note";
         break;
@@ -778,7 +781,10 @@ bool TextEditor::isAutomaticInvocationEnabled() const
 
 bool TextEditor::showLineWidget(int line, QWidget *widget)
 {
-    if (line <= 0 || line >= lines() || !hasFocus())
+    if (line == 0)
+        line += 1;
+
+    if (line < 0 || line >= lines() || !hasFocus())
         return false;
 
     if (d->lineWidgetContainer->isVisible())
@@ -905,22 +911,6 @@ void TextEditor::mouseMoveEvent(QMouseEvent *event)
     }
 
     QsciScintilla::mouseMoveEvent(event);
-}
-
-void TextEditor::mouseReleaseEvent(QMouseEvent *event)
-{
-    QsciScintilla::mouseReleaseEvent(event);
-
-    bool selChanged = hasSelectedText();
-    if (!selChanged && d->selectionCache != std::make_tuple(-1, -1, -1, -1))
-        selChanged = true;
-
-    if (selChanged) {
-        int lineFrom = -1, indexFrom = -1, lineTo = -1, indexTo = -1;
-        getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
-        d->selectionCache = std::make_tuple(lineFrom, indexFrom, lineTo, indexTo);
-        editor.selectionChanged(d->fileName, lineFrom, indexFrom, lineTo, indexTo);
-    }
 }
 
 bool TextEditor::eventFilter(QObject *obj, QEvent *event)
