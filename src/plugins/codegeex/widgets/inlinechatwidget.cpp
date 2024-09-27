@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "linechatwidget.h"
+#include "inlinechatwidget.h"
 #include "inputeditwidget.h"
 #include "copilot.h"
 #include "diff_match_patch.h"
@@ -10,6 +10,7 @@
 #include "codegeexmanager.h"
 
 #include "services/editor/editorservice.h"
+#include "services/project/projectservice.h"
 
 #include <DToolButton>
 #include <DIconButton>
@@ -31,7 +32,7 @@ constexpr char UrlSSEChat[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat"
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
 
-class LineChatWidgetPrivate : public QObject
+class InlineChatWidgetPrivate : public QObject
 {
 public:
     enum State {
@@ -75,12 +76,13 @@ public:
         }
     };
 
-    explicit LineChatWidgetPrivate(LineChatWidget *qq);
+    explicit InlineChatWidgetPrivate(InlineChatWidget *qq);
+    ~InlineChatWidgetPrivate();
 
     void initUI();
     void initConnection();
 
-    QAbstractButton *createButton(const QString &name, const QIcon &icon, ButtonType type, int flags);
+    QAbstractButton *createButton(const QString &name, ButtonType type, int flags);
     void setState(State s);
 
     void handleTextChanged();
@@ -91,15 +93,17 @@ public:
     void handleReject();
     void handleClose();
     void handleStop();
+    void handleCreatePromptFinished();
 
     void defineBackgroundMarker(const QString &fileName);
-
     void askForCodeGeeX();
     QList<Diff> diffText(const QString &str1, const QString &str2);
     void processGeneratedData(const QString &data);
+    void updateButtonIcon();
+    QString createPrompt(const QString &question, bool useChunk, bool useContext);
 
 public:
-    LineChatWidget *q;
+    InlineChatWidget *q;
     EditorService *editSrv { nullptr };
 
     DLabel *questionLabel { nullptr };
@@ -116,6 +120,7 @@ public:
     QAbstractButton *stopBtn { nullptr };
     DSpinner *spinner { nullptr };
 
+    QList<QFutureWatcher<QString> *> futureWatcherList;
     ChatInfo chatInfo;
     State state { None };
     State prevState { None };
@@ -124,13 +129,29 @@ public:
     int insertMarker = -1;
 };
 
-LineChatWidgetPrivate::LineChatWidgetPrivate(LineChatWidget *qq)
+InlineChatWidgetPrivate::InlineChatWidgetPrivate(InlineChatWidget *qq)
     : q(qq)
 {
     editSrv = dpfGetService(EditorService);
 }
 
-void LineChatWidgetPrivate::initUI()
+InlineChatWidgetPrivate::~InlineChatWidgetPrivate()
+{
+    // Cancel all pending futures.
+    foreach (auto watcher, futureWatcherList) {
+        if (!watcher->isFinished())
+            watcher->cancel();
+    }
+
+    // wait for futures to finish
+    foreach (auto watcher, futureWatcherList) {
+        if (!watcher->isFinished())
+            watcher->waitForFinished();
+        delete watcher;
+    }
+}
+
+void InlineChatWidgetPrivate::initUI()
 {
     QVBoxLayout *layout = new QVBoxLayout(q);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -165,15 +186,15 @@ void LineChatWidgetPrivate::initUI()
     spinner = new DSpinner(q);
     spinner->setFixedSize({ 16, 16 });
     spinner->setProperty(VisibleProperty, SubmitStart | QuestionStart);
-    escBtn = createButton(LineChatWidget::tr("Esc to close"), {}, PushButton, Original | QuestionComplete);
-    submitBtn = createButton(LineChatWidget::tr("Submit Edit"), QIcon::fromTheme("uc_codegeex_submit"), SuggestButton, ReadyAsk);
-    questionBtn = createButton(LineChatWidget::tr("quick question"), QIcon::fromTheme("uc_codegeex_quickquestion"), PushButton, ReadyAsk);
+    escBtn = createButton(InlineChatWidget::tr("Esc to close"), PushButton, Original | QuestionComplete);
+    submitBtn = createButton(InlineChatWidget::tr("Submit Edit"), SuggestButton, ReadyAsk);
+    questionBtn = createButton(InlineChatWidget::tr("quick question"), PushButton, ReadyAsk);
     questionBtn->setIconSize({ 42, 16 });
-    stopBtn = createButton(LineChatWidget::tr("Stop"), QIcon::fromTheme("uc_codegeex_reject"), PushButton, SubmitStart | QuestionStart);
+    stopBtn = createButton(InlineChatWidget::tr("Stop"), PushButton, SubmitStart | QuestionStart);
     stopBtn->setIconSize({ 42, 16 });
-    acceptBtn = createButton(LineChatWidget::tr("Accept"), QIcon::fromTheme("uc_codegeex_accept"), SuggestButton, SubmitComplete);
+    acceptBtn = createButton(InlineChatWidget::tr("Accept"), SuggestButton, SubmitComplete);
     acceptBtn->setIconSize({ 42, 16 });
-    rejectBtn = createButton(LineChatWidget::tr("Reject"), QIcon::fromTheme("uc_codegeex_reject"), PushButton, SubmitComplete);
+    rejectBtn = createButton(InlineChatWidget::tr("Reject"), PushButton, SubmitComplete);
     rejectBtn->setIconSize({ 42, 16 });
 
     btnLayout->addWidget(spinner);
@@ -195,21 +216,21 @@ void LineChatWidgetPrivate::initUI()
     setState(Original);
 }
 
-void LineChatWidgetPrivate::initConnection()
+void InlineChatWidgetPrivate::initConnection()
 {
-    connect(edit, &InputEdit::textChanged, this, &LineChatWidgetPrivate::handleTextChanged);
-    connect(closeBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleReject);
-    connect(escBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleReject);
-    connect(submitBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleSubmitEdit);
-    connect(questionBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleQuickQuestion);
-    connect(acceptBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleAccept);
-    connect(rejectBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleReject);
-    connect(stopBtn, &QAbstractButton::clicked, this, &LineChatWidgetPrivate::handleStop);
+    connect(edit, &InputEdit::textChanged, this, &InlineChatWidgetPrivate::handleTextChanged);
+    connect(closeBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
+    connect(escBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
+    connect(submitBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleSubmitEdit);
+    connect(questionBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleQuickQuestion);
+    connect(acceptBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleAccept);
+    connect(rejectBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
+    connect(stopBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleStop);
 
-    connect(&askApi, &CodeGeeX::AskApi::response, this, &LineChatWidgetPrivate::handleAskFinished);
+    connect(&askApi, &CodeGeeX::AskApi::response, this, &InlineChatWidgetPrivate::handleAskFinished);
 }
 
-QAbstractButton *LineChatWidgetPrivate::createButton(const QString &name, const QIcon &icon, ButtonType type, int flags)
+QAbstractButton *InlineChatWidgetPrivate::createButton(const QString &name, ButtonType type, int flags)
 {
     QAbstractButton *btn { nullptr };
     switch (type) {
@@ -228,8 +249,6 @@ QAbstractButton *LineChatWidgetPrivate::createButton(const QString &name, const 
     btn->setProperty(VisibleProperty, flags);
     if (!name.isEmpty())
         btn->setText(name);
-    if (!icon.isNull())
-        btn->setIcon(icon);
 
     auto f = btn->font();
     f.setPointSize(12);
@@ -237,14 +256,15 @@ QAbstractButton *LineChatWidgetPrivate::createButton(const QString &name, const 
     return btn;
 }
 
-void LineChatWidgetPrivate::setState(State s)
+void InlineChatWidgetPrivate::setState(State s)
 {
     if (state == s)
         return;
 
+    q->setFocus();
     switch (s) {
     case Original:
-        edit->setPlaceholderText(LineChatWidget::tr("Ask here by pressing Enter to send your question"));
+        edit->setPlaceholderText(InlineChatWidget::tr("Ask here by pressing Enter to send your question"));
         break;
     case SubmitStart:
     case QuestionStart:
@@ -253,7 +273,7 @@ void LineChatWidgetPrivate::setState(State s)
     case SubmitComplete:
     case QuestionComplete:
         spinner->stop();
-        edit->setPlaceholderText(LineChatWidget::tr("Follow-up or new code instructions"));
+        edit->setPlaceholderText(InlineChatWidget::tr("Follow-up or new code instructions"));
         break;
     default:
         break;
@@ -275,7 +295,7 @@ void LineChatWidgetPrivate::setState(State s)
     }
 }
 
-void LineChatWidgetPrivate::handleTextChanged()
+void InlineChatWidgetPrivate::handleTextChanged()
 {
     const auto &text = edit->toPlainText();
     questionLabel->setEnabled(text.isEmpty());
@@ -293,19 +313,19 @@ void LineChatWidgetPrivate::handleTextChanged()
         setState(FollowQuestion);
 }
 
-void LineChatWidgetPrivate::handleSubmitEdit()
+void InlineChatWidgetPrivate::handleSubmitEdit()
 {
     setState(SubmitStart);
     askForCodeGeeX();
 }
 
-void LineChatWidgetPrivate::handleQuickQuestion()
+void InlineChatWidgetPrivate::handleQuickQuestion()
 {
     setState(QuestionStart);
     askForCodeGeeX();
 }
 
-void LineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QString &response, const QString &event)
+void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QString &response, const QString &event)
 {
     if (state == QuestionStart || state == QuestionComplete) {
         if (event == "add") {
@@ -327,7 +347,7 @@ void LineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QStrin
     }
 }
 
-void LineChatWidgetPrivate::handleAccept()
+void InlineChatWidgetPrivate::handleAccept()
 {
     diff_match_patch dmp;
     auto patchs = dmp.patch_make(chatInfo.diffList);
@@ -345,7 +365,7 @@ void LineChatWidgetPrivate::handleAccept()
     handleClose();
 }
 
-void LineChatWidgetPrivate::handleReject()
+void InlineChatWidgetPrivate::handleReject()
 {
     if (!chatInfo.tempText.isEmpty()) {
         QString replaceText = chatInfo.originalText;
@@ -360,19 +380,37 @@ void LineChatWidgetPrivate::handleReject()
     handleClose();
 }
 
-void LineChatWidgetPrivate::handleClose()
+void InlineChatWidgetPrivate::handleClose()
 {
     editSrv->closeLineWidget();
 }
 
-void LineChatWidgetPrivate::handleStop()
+void InlineChatWidgetPrivate::handleStop()
 {
     setState(prevState);
     edit->setPlainText(questionLabel->text());
+    foreach (auto watcher, futureWatcherList) {
+        if (!watcher->isFinished())
+            watcher->cancel();
+    }
     Q_EMIT askApi.stopReceive();
 }
 
-void LineChatWidgetPrivate::defineBackgroundMarker(const QString &fileName)
+void InlineChatWidgetPrivate::handleCreatePromptFinished()
+{
+    auto watcher = static_cast<QFutureWatcher<QString> *>(sender());
+    if (!watcher->isCanceled()) {
+        const auto &prompt = watcher->result();
+        auto machineId = QSysInfo::machineUniqueId();
+        askApi.postSSEChat(UrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
+                           prompt, machineId, {}, CodeGeeXManager::instance()->getTalkId());
+    }
+
+    futureWatcherList.removeAll(watcher);
+    watcher->deleteLater();
+}
+
+void InlineChatWidgetPrivate::defineBackgroundMarker(const QString &fileName)
 {
     QColor insBgColor(230, 240, 208);
     QColor delBgColor(242, 198, 196);
@@ -381,7 +419,7 @@ void LineChatWidgetPrivate::defineBackgroundMarker(const QString &fileName)
     deleteMarker = editSrv->backgroundMarkerDefine(fileName, delBgColor, deleteMarker);
 }
 
-void LineChatWidgetPrivate::askForCodeGeeX()
+void InlineChatWidgetPrivate::askForCodeGeeX()
 {
     auto f = questionLabel->font();
     f.setUnderline(state == QuestionStart);
@@ -401,22 +439,13 @@ void LineChatWidgetPrivate::askForCodeGeeX()
     questionLabel->setText(question);
     answerLabel->clear();
 
-    if (!chatInfo.originalText.isEmpty()) {
-        if (state == QuestionStart) {
-            QString format = "根据提供的内容来回答问题，问题：%1，内容：```%2```";
-            question = format.arg(question, chatInfo.originalText);
-        } else {
-            QString format = "基于这段代码和问题，根据问题生成一段代码用来替换，只生成代码。问题：%1， 代码：```%2```";
-            question = format.arg(question, chatInfo.originalText);
-        }
-    }
-
-    QString machineId = QSysInfo::machineUniqueId();
-    askApi.postSSEChat(UrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
-                       question, machineId, {}, CodeGeeXManager::instance()->getTalkId());
+    auto *futureWatcher = new QFutureWatcher<QString>();
+    futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, false, false));
+    connect(futureWatcher, &QFutureWatcher<QString>::finished, this, &InlineChatWidgetPrivate::handleCreatePromptFinished);
+    futureWatcherList << futureWatcher;
 }
 
-QList<Diff> LineChatWidgetPrivate::diffText(const QString &str1, const QString &str2)
+QList<Diff> InlineChatWidgetPrivate::diffText(const QString &str1, const QString &str2)
 {
     diff_match_patch dmp;
     auto a = dmp.diff_linesToChars(str1, str2);
@@ -430,7 +459,7 @@ QList<Diff> LineChatWidgetPrivate::diffText(const QString &str1, const QString &
     return diffs;
 }
 
-void LineChatWidgetPrivate::processGeneratedData(const QString &data)
+void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
 {
     chatInfo.operationRange.clear();
     chatInfo.diffList = diffText(chatInfo.originalText, data);
@@ -464,20 +493,79 @@ void LineChatWidgetPrivate::processGeneratedData(const QString &data)
     }
 }
 
-LineChatWidget::LineChatWidget(QWidget *parent)
+void InlineChatWidgetPrivate::updateButtonIcon()
+{
+    submitBtn->setIcon(q->hasFocus() ? QIcon::fromTheme("uc_codegeex_submit") : QIcon());
+    questionBtn->setIcon(q->hasFocus() ? QIcon::fromTheme("uc_codegeex_quickquestion") : QIcon());
+    stopBtn->setIcon(q->hasFocus() ? QIcon::fromTheme("uc_codegeex_reject") : QIcon());
+    acceptBtn->setIcon(q->hasFocus() ? QIcon::fromTheme("uc_codegeex_accept") : QIcon());
+    rejectBtn->setIcon(q->hasFocus() ? QIcon::fromTheme("uc_codegeex_reject") : QIcon());
+}
+
+QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useChunk, bool useContext)
+{
+    QString workspace = chatInfo.fileName;
+    ProjectService *prjSrv = dpfGetService(ProjectService);
+    const auto &allPrjInfo = prjSrv->getAllProjectInfo();
+    for (const auto &info : allPrjInfo) {
+        if (chatInfo.fileName.startsWith(info.workspaceFolder())) {
+            workspace = info.workspaceFolder();
+            break;
+        }
+    }
+
+    QStringList prompt;
+    prompt << "针对这段代码，回答我的问题。问题：";
+    prompt << question;
+    prompt << "代码：\n```";
+    prompt << chatInfo.originalText;
+    prompt << "```";
+    prompt << "要求：";
+    if (state == SubmitStart)
+        prompt << "回答的内容中包含代码;";
+    prompt << "生成的代码需要与上面提供代码的缩进保持一致";
+
+    if (useChunk || useContext) {
+        prompt << "回答内容不要使用下面的参考内容";
+        prompt << "\n你可以使用下面这些文件和代码内容进行参考，但只针对上面这段代码进行回答";
+    }
+
+    if (useChunk) {
+        QString query = "问题：%1\n内容：```%2```";
+        auto result = CodeGeeXManager::instance()->query(workspace, query.arg(question, chatInfo.originalText), 10);
+        QJsonArray chunks = result["Chunks"].toArray();
+        prompt << "代码：\n```";
+        for (auto chunk : chunks) {
+            prompt << chunk.toObject()["fileName"].toString();
+            prompt << chunk.toObject()["content"].toString();
+        }
+        prompt << "```";
+    }
+
+    if (useContext) {
+        const QString &context = editSrv->fileText(chatInfo.fileName);
+        prompt << "上下文：\n```";
+        prompt << context;
+        prompt << "\n```";
+    }
+
+    return prompt.join('\n');
+}
+
+InlineChatWidget::InlineChatWidget(QWidget *parent)
     : QWidget(parent),
-      d(new LineChatWidgetPrivate(this))
+      d(new InlineChatWidgetPrivate(this))
 {
     d->initUI();
     d->initConnection();
 }
 
-LineChatWidget::~LineChatWidget()
+InlineChatWidget::~InlineChatWidget()
 {
     delete d;
 }
 
-void LineChatWidget::showLineChat()
+void InlineChatWidget::start()
 {
     d->chatInfo.clear();
     d->chatInfo.fileName = d->editSrv->currentFile();
@@ -513,15 +601,15 @@ void LineChatWidget::showLineChat()
     d->editSrv->showLineWidget(d->chatInfo.originalRange.start.line, this);
 }
 
-void LineChatWidget::showEvent(QShowEvent *e)
+void InlineChatWidget::showEvent(QShowEvent *e)
 {
     d->edit->setFocus();
     d->edit->clear();
-    d->setState(LineChatWidgetPrivate::Original);
+    d->setState(InlineChatWidgetPrivate::Original);
     QWidget::showEvent(e);
 }
 
-void LineChatWidget::keyPressEvent(QKeyEvent *e)
+void InlineChatWidget::keyPressEvent(QKeyEvent *e)
 {
     switch (e->modifiers()) {
     case Qt::ControlModifier:
@@ -541,7 +629,7 @@ void LineChatWidget::keyPressEvent(QKeyEvent *e)
     QWidget::keyPressEvent(e);
 }
 
-void LineChatWidget::hideEvent(QHideEvent *e)
+void InlineChatWidget::hideEvent(QHideEvent *e)
 {
     if (d->insertMarker != -1)
         d->editSrv->clearAllBackgroundColor(d->chatInfo.fileName, d->insertMarker);
@@ -550,9 +638,12 @@ void LineChatWidget::hideEvent(QHideEvent *e)
     QWidget::hideEvent(e);
 }
 
-bool LineChatWidget::eventFilter(QObject *obj, QEvent *e)
+bool InlineChatWidget::eventFilter(QObject *obj, QEvent *e)
 {
-    if (obj == d->edit && e->type() == QEvent::KeyPress) {
+    if (obj != d->edit)
+        return QWidget::eventFilter(obj, e);
+
+    if (e->type() == QEvent::KeyPress) {
         auto ke = static_cast<QKeyEvent *>(e);
         switch (ke->modifiers()) {
         case Qt::ShiftModifier: {
@@ -601,6 +692,8 @@ bool LineChatWidget::eventFilter(QObject *obj, QEvent *e)
             }
         } break;
         }
+    } else if (e->type() == QEvent::FocusIn || e->type() == QEvent::FocusOut) {
+        d->updateButtonIcon();
     }
 
     return QWidget::eventFilter(obj, e);

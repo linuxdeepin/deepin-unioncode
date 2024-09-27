@@ -30,7 +30,7 @@ static constexpr int MARGIN_SYMBOLE_DEFAULT_WIDTH = 14;
 static constexpr int MARGIN_FOLDER_DEFAULT_WIDTH = 14;
 static constexpr int MARGIN_CHANGEBAR_DEFAULT_WIDTH = 3;
 
-static constexpr int TAB_DEFAULT_WIDTH = 4;
+static constexpr int TIP_ANNOTATION_STYLE = 768;
 static constexpr int NOTE_ANNOTATION_STYLE = 767;
 static constexpr int WARNING_ANNOTATION_STYLE = 766;
 static constexpr int ERROR_ANNOTATION_STYLE = 765;
@@ -54,6 +54,8 @@ void TextEditorPrivate::init()
     q->setAnnotationDisplay(TextEditor::AnnotationStandard);
     q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
+    selectionChangeTimer.setSingleShot(true);
+    selectionChangeTimer.setInterval(150);
 
     initWidgetContainer();
     initMargins();
@@ -75,6 +77,8 @@ void TextEditorPrivate::initConnection()
     connect(q, &TextEditor::SCN_DWELLSTART, this, &TextEditorPrivate::onDwellStart);
     connect(q, &TextEditor::SCN_DWELLEND, this, &TextEditorPrivate::onDwellEnd);
     connect(q, &TextEditor::SCN_MODIFIED, this, &TextEditorPrivate::onModified);
+    connect(q, &TextEditor::selectionChanged, &selectionChangeTimer, qOverload<>(&QTimer::start));
+    connect(&selectionChangeTimer, &QTimer::timeout, this, &TextEditorPrivate::onSelectionChanged);
 }
 
 void TextEditorPrivate::initMargins()
@@ -212,6 +216,18 @@ void TextEditorPrivate::updateSettings()
 
     q->setMarginsFont(font);
     q->updateLineNumberWidth(false);
+}
+
+void TextEditorPrivate::onSelectionChanged()
+{
+    auto buttons = QApplication::mouseButtons();
+    if (buttons.testFlag(Qt::LeftButton))
+        return;
+
+    int lineFrom = -1, indexFrom = -1, lineTo = -1, indexTo = -1;
+    if (q->hasSelectedText())
+        q->getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
+    editor.selectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
 }
 
 void TextEditorPrivate::loadLexer()
@@ -390,36 +406,44 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
     QFont font = q->lexer() ? q->lexer()->defaultFont() : q->font();
     font.setItalic(true);
     switch (type) {
+    case Edit::TipAnnotation: {
+        QsciStyle style(TIP_ANNOTATION_STYLE,
+                        "Tip",
+                        Qt::gray,
+                        q->lexer() ? q->lexer()->defaultPaper(-1) : q->paper(),
+                        font);
+        return style;
+    }
     case Edit::NoteAnnotation: {
-        static QsciStyle style(NOTE_ANNOTATION_STYLE,
-                               "Note",
-                               EditorColor::Table::get()->Black,
-                               EditorColor::Table::get()->Gainsboro,
-                               font);
+        QsciStyle style(NOTE_ANNOTATION_STYLE,
+                        "Note",
+                        EditorColor::Table::get()->Black,
+                        EditorColor::Table::get()->Gainsboro,
+                        font);
         return style;
     }
     case Edit::ErrorAnnotation: {
-        static QsciStyle style(ERROR_ANNOTATION_STYLE,
-                               "Error",
-                               EditorColor::Table::get()->FireBrick,
-                               "#fbe8e8",
-                               font);
+        QsciStyle style(ERROR_ANNOTATION_STYLE,
+                        "Error",
+                        EditorColor::Table::get()->FireBrick,
+                        "#fbe8e8",
+                        font);
         return style;
     }
     case Edit::FatalAnnotation: {
-        static QsciStyle style(FATAL_ANNOTATION_STYLE,
-                               "Fatal",
-                               EditorColor::Table::get()->FireBrick,
-                               EditorColor::Table::get()->LightCoral,
-                               font);
+        QsciStyle style(FATAL_ANNOTATION_STYLE,
+                        "Fatal",
+                        EditorColor::Table::get()->FireBrick,
+                        EditorColor::Table::get()->LightCoral,
+                        font);
         return style;
     }
     case Edit::WarningAnnotation:
-        static QsciStyle style(WARNING_ANNOTATION_STYLE,
-                               "Warning",
-                               EditorColor::Table::get()->GoldenRod,
-                               EditorColor::Table::get()->Ivory,
-                               font);
+        QsciStyle style(WARNING_ANNOTATION_STYLE,
+                        "Warning",
+                        EditorColor::Table::get()->GoldenRod,
+                        EditorColor::Table::get()->Ivory,
+                        font);
         return style;
     }
 

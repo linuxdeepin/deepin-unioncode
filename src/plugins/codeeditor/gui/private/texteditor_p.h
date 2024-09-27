@@ -69,6 +69,7 @@ public slots:
     void onModified(int pos, int mtype, const QString &text, int len, int added,
                     int line, int foldNow, int foldPrev, int token, int annotationLinesAdded);
     void updateSettings();
+    void onSelectionChanged();
 
 public:
     TextEditor *q { nullptr };
@@ -94,7 +95,7 @@ public:
     CodeCompletionWidget *completionWidget { nullptr };
     QMap<QString, QVariant> commentSettings;
 
-    std::tuple<int, int, int, int> selectionCache { -1, -1, -1, -1 };
+    QTimer selectionChangeTimer;
     DTK_WIDGET_NAMESPACE::DFloatingWidget *lineWidgetContainer { nullptr };
     int showAtLine { 0 };
 };
