@@ -117,7 +117,7 @@ void AskApi::postSSEChat(const QString &url,
     if (impl->isReferenceCodebase() && !impl->condaHasInstalled()) {
         QStringList actions { "ai_rag_install", tr("Install") };
         dpfservice::WindowService *windowService = dpfGetService(dpfservice::WindowService);
-        windowService->notify(0, "AI", tr("The file indexing feature is not available, which may cause functions such as xx to not work properly."
+        windowService->notify(0, "AI", tr("The file indexing feature is not available, which may cause functions such as @codebase to not work properly."
                                           "Please install the required environment.\n the installation process may take several minutes."),
                               actions);
     }
