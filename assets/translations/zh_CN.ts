@@ -1205,13 +1205,14 @@ storage: %2
     <message>
         <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="118"/>
         <source>Install</source>
-        <translation type="unfinished">安装</translation>
+        <translation>安装</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="120"/>
         <source>The file indexing feature is not available, which may cause functions such as xx to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
-        <translation type="unfinished"></translation>
+        <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常工作，请安装需要的环境.
+安装过程可能会耗费若干分钟.</translation>
     </message>
 </context>
 <context>
@@ -1219,32 +1220,32 @@ storage: %2
     <message>
         <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="442"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
-        <translation type="unfinished"></translation>
+        <translation>该工程还没有建立文件索引，@codebase无法正常使用.确认是否现在创建索引</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="447"/>
         <source>Confirm</source>
-        <translation type="unfinished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="461"/>
         <source>It may take servel minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>该过程也许会耗费若干分钟</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="470"/>
         <source>Indexing Done</source>
-        <translation type="unfinished"></translation>
+        <translation>创建索引完成</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="501"/>
         <source>The error occurred when performing rag on project %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="534"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
-        <translation type="unfinished"></translation>
+        <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确</translation>
     </message>
 </context>
 <context>
@@ -1304,12 +1305,12 @@ storage: %2
     <message>
         <location filename="../../src/plugins/codegeex/codegeex.cpp" line="68"/>
         <source>Install</source>
-        <translation type="unfinished">安装</translation>
+        <translation>安装</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
         <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
-        <translation type="unfinished"></translation>
+        <translation>安装Python Conda虚拟环境，以用于文件索引功能。否则可能导致@codebase或部分Ai功能异常。</translation>
     </message>
 </context>
 <context>
@@ -2852,7 +2853,7 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
         <source>Reject</source>
-        <translation>拒接</translation>
+        <translation>拒绝</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="267"/>
@@ -2870,32 +2871,32 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="163"/>
         <source>reference files</source>
-        <translation type="unfinished">引用文件</translation>
+        <translation>引用文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="169"/>
         <source>connect to network</source>
-        <translation type="unfinished">联网</translation>
+        <translation>联网</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="187"/>
         <source>Current File</source>
-        <translation type="unfinished">当前文件</translation>
+        <translation>当前文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="190"/>
         <source>Select File</source>
-        <translation type="unfinished">选择文件</translation>
+        <translation>选择文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="193"/>
         <source>Opened Files</source>
-        <translation type="unfinished">打开文件</translation>
+        <translation>打开文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="196"/>
         <source>CodeBase</source>
-        <translation type="unfinished"></translation>
+        <translation>代码库</translation>
     </message>
 </context>
 <context>
@@ -2924,38 +2925,38 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="153"/>
         <source>Python Interpreter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python解释器:</translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="160"/>
         <source>Browse</source>
-        <translation type="unfinished">浏览</translation>
+        <translation>浏览</translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="161"/>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="206"/>
         <source>Remove</source>
-        <translation type="unfinished">删除</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="192"/>
         <source>Select Local Interpreter</source>
-        <translation type="unfinished"></translation>
+        <translation>选择本地解释器</translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
         <source>Confirm the removal of this interpreter?</source>
-        <translation type="unfinished"></translation>
+        <translation>确认移除这个解释器？</translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="208"/>
         <source>Yes</source>
-        <translation type="unfinished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="209"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -3228,7 +3229,7 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="285"/>
         <source>Enter Command</source>
-        <translation type="unfinished"></translation>
+        <translation>输入命令</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="293"/>
@@ -3444,12 +3445,12 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="193"/>
         <source>Online Searching</source>
-        <translation type="unfinished"></translation>
+        <translation>联网搜索</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="285"/>
         <source>Show Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>显示引用</translation>
     </message>
 </context>
 <context>
@@ -4014,7 +4015,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="64"/>
         <source>Reverse Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>反向执行</translation>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="65"/>
@@ -4044,7 +4045,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="70"/>
         <source>Step Back</source>
-        <translation type="unfinished"></translation>
+        <translation>回退</translation>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="71"/>
@@ -4099,7 +4100,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="421"/>
         <source>Select File</source>
-        <translation type="unfinished">选择文件</translation>
+        <translation>选择文件</translation>
     </message>
 </context>
 <context>
@@ -4729,27 +4730,27 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="54"/>
         <source>Record</source>
-        <translation type="unfinished">记录</translation>
+        <translation>记录</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="63"/>
         <source>Current Project:</source>
-        <translation type="unfinished"></translation>
+        <translation>当前工程：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="70"/>
         <source>Target:</source>
-        <translation type="unfinished"></translation>
+        <translation>目标：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="86"/>
         <source>Start Record</source>
-        <translation type="unfinished"></translation>
+        <translation>开始记录</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="93"/>
         <source>Only support C/C++, and some architectures of CPU may experience anomalies.</source>
-        <translation type="unfinished"></translation>
+        <translation>只支持C/C++，部分架构的CPU可能会表现异常</translation>
     </message>
 </context>
 <context>
@@ -4803,22 +4804,22 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="128"/>
         <source>Replay</source>
-        <translation type="unfinished">重放</translation>
+        <translation>重放</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="139"/>
         <source>Trace Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>跟踪目录：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="163"/>
         <source>Start Replay</source>
-        <translation type="unfinished"></translation>
+        <translation>开始重放</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="174"/>
         <source>Open Directory</source>
-        <translation type="unfinished">打开目录</translation>
+        <translation>打开目录</translation>
     </message>
 </context>
 <context>
@@ -4826,7 +4827,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="38"/>
         <source>Event recorder</source>
-        <translation type="unfinished"></translation>
+        <translation>事件记录器</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="46"/>
@@ -4841,7 +4842,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="55"/>
         <source>Ev&amp;ent Recorder</source>
-        <translation type="unfinished"></translation>
+        <translation>事件记录器&amp;e</translation>
     </message>
 </context>
 <context>
@@ -4849,71 +4850,72 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="31"/>
         <source>Reverse debug</source>
-        <translation type="unfinished">反向调试</translation>
+        <translation>反向调试</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="39"/>
         <source>Record</source>
-        <translation type="unfinished">记录</translation>
+        <translation>记录</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="41"/>
         <source>Replay</source>
-        <translation type="unfinished">重放</translation>
+        <translation>重放</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="47"/>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="50"/>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
         <source>Reverse Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>反向调试</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="47"/>
         <source>Recored done.</source>
-        <translation type="unfinished"></translation>
+        <translation>记录完成。</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="50"/>
         <source>Recored Failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>记录失败.
+%1</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="82"/>
         <source>target not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>找不到目标！</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="113"/>
         <source>&amp;Application Output</source>
-        <translation type="unfinished">应用程序输出(&amp;A)</translation>
+        <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="115"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>开始在工作区“%3”中执行命令：“%1”“%2”</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="158"/>
         <source>Reverse debugger</source>
-        <translation type="unfinished"></translation>
+        <translation>反向调试</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
         <source>Can not find rr debugger, please install it first</source>
-        <translation type="unfinished"></translation>
+        <translation>没有找到rr-debugger，请先安装</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
         <source>Install by apt</source>
-        <translation type="unfinished"></translation>
+        <translation>通过apt安装</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
         <source>Install by Wget</source>
-        <translation type="unfinished"></translation>
+        <translation>通过wget安装</translation>
     </message>
 </context>
 <context>
@@ -5092,7 +5094,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/reversedebug/minidumpruncontrol.cpp" line="154"/>
         <source>Event Recorder</source>
-        <translation type="unfinished"></translation>
+        <translation>事件记录器</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/minidumpruncontrol.cpp" line="154"/>
@@ -5130,7 +5132,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebuggermgr.cpp" line="250"/>
         <source>Ev&amp;ent Recorder</source>
-        <translation type="unfinished"></translation>
+        <translation>事件记录器&amp;e</translation>
     </message>
 </context>
 <context>
