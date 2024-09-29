@@ -613,7 +613,7 @@
     <message>
         <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="449"/>
         <source>Binary Tools</source>
-        <translation type="unfinished">二进制工具</translation>
+        <translation>二进制工具</translation>
     </message>
     <message>
         <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="496"/>
@@ -1006,7 +1006,10 @@ storage: %2
 1.Check whether cmake is installed;
 2.Global Options &gt; CMake &gt; Select the CMake tool installed locally;
 3.If none of the above methods work, delete the &quot;.unioncode&quot; folder in the current project directory and open the project again.</source>
-        <translation type="unfinished"></translation>
+        <translation>项目构建命令%1为空！您可以通过以下方式解决此问题:
+1.检查是否安装了cmake;
+2.全局选项 &gt; CMake &gt; 选择本地安装的CMake工具;
+3.如果以上方法都不起作用，则删除当前工程目录下的“.unioncode”文件夹，然后再次打开项目。</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/builder/generator/cmakebuildergenerator.cpp" line="78"/>
@@ -1210,17 +1213,37 @@ storage: %2
  the installation process may take several minutes.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="370"/>
-        <source>The project has not established a file index or there are no files available to create an index. Please retry after reopening the project.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="450"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="442"/>
+        <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="447"/>
+        <source>Confirm</source>
+        <translation type="unfinished">确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="461"/>
+        <source>It may take servel minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="470"/>
+        <source>Indexing Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="501"/>
         <source>The error occurred when performing rag on project %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="534"/>
+        <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1605,52 +1628,52 @@ storage: %2
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1036"/>
         <source>&amp;File</source>
-        <translation type="unfinished">文件(&amp;F)</translation>
+        <translation>文件(&amp;F)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1050"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">编辑(&amp;E)</translation>
+        <translation>编辑(&amp;E)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1064"/>
         <source>&amp;Build</source>
-        <translation type="unfinished">编译(&amp;B)</translation>
+        <translation>编译(&amp;B)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1069"/>
         <source>&amp;Debug</source>
-        <translation type="unfinished">调试(&amp;D)</translation>
+        <translation>调试(&amp;D)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1074"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished">工具(&amp;T)</translation>
+        <translation>工具(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1079"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">帮助(&amp;H)</translation>
+        <translation>帮助(&amp;H)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1089"/>
         <source>Open File</source>
-        <translation type="unfinished">打开文件</translation>
+        <translation>打开文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1095"/>
         <source>Open Project</source>
-        <translation type="unfinished">打开工程</translation>
+        <translation>打开工程</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1104"/>
         <source>Report Bug</source>
-        <translation type="unfinished">报告Bug</translation>
+        <translation>报告Bug</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1111"/>
         <source>Help Documents</source>
-        <translation type="unfinished">帮助文档</translation>
+        <translation>帮助文档</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1158"/>
@@ -1667,8 +1690,8 @@ storage: %2
     <name>Copilot</name>
     <message>
         <location filename="../../src/plugins/codegeex/copilot.cpp" line="39"/>
-        <source>Line Chat</source>
-        <translation type="unfinished"></translation>
+        <source>Inline Chat</source>
+        <translation>内联聊天</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/copilot.cpp" line="111"/>
@@ -1995,7 +2018,7 @@ Delete anyway?</source>
         <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="66"/>
         <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="88"/>
         <source>New Debugger</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="134"/>
@@ -2064,17 +2087,17 @@ Delete anyway?</source>
 <context>
     <name>DetailPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="48"/>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="47"/>
         <source>Python interpreter: </source>
         <translation>Python解释器： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="56"/>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="55"/>
         <source>Executable File: </source>
         <translation>执行文件:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="66"/>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="65"/>
         <source>Run in terminal: </source>
         <translation>在终端中运行:</translation>
     </message>
@@ -2795,6 +2818,54 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
+    <name>InlineChatWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="334"/>
+        <source>  Press %1 to inline chat</source>
+        <translation>  按%1进行内联聊天</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="189"/>
+        <source>Esc to close</source>
+        <translation>Esc关闭</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="190"/>
+        <source>Submit Edit</source>
+        <translation>提交</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="191"/>
+        <source>quick question</source>
+        <translation>快问快答</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
+        <source>Accept</source>
+        <translation>接受</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
+        <source>Reject</source>
+        <translation>拒接</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="267"/>
+        <source>Ask a question here, press Enter to send</source>
+        <translation>在这里提问，按Enter键发送</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="276"/>
+        <source>Continue to ask a question, press Enter to send</source>
+        <translation>继续提问，按Enter键发送</translation>
+    </message>
+</context>
+<context>
     <name>InputEditWidget</name>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="163"/>
@@ -2838,12 +2909,12 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterModel</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="90"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="93"/>
         <source>Package</source>
         <translation>软件包</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="92"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="95"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
@@ -2851,9 +2922,40 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterWidget</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="142"/>
-        <source>Python Interperter:</source>
-        <translation>Python解释器：</translation>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="153"/>
+        <source>Python Interpreter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="160"/>
+        <source>Browse</source>
+        <translation type="unfinished">浏览</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="161"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="206"/>
+        <source>Remove</source>
+        <translation type="unfinished">删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="192"/>
+        <source>Select Local Interpreter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
+        <source>Confirm the removal of this interpreter?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="208"/>
+        <source>Yes</source>
+        <translation type="unfinished">确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="209"/>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
     </message>
 </context>
 <context>
@@ -3122,54 +3224,6 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
-    <name>LineChatWidget</name>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="168"/>
-        <source>Esc to close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="169"/>
-        <source>Submit Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="170"/>
-        <source>quick question</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="172"/>
-        <source>Stop</source>
-        <translation type="unfinished">停止</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="174"/>
-        <source>Accept</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="176"/>
-        <source>Reject</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="247"/>
-        <source>Ask here by pressing Enter to send your question</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="256"/>
-        <source>Follow-up or new code instructions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
-        <source>  Press %1 to line chat</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LocatorManager</name>
     <message>
         <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="285"/>
@@ -3393,7 +3447,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="276"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="285"/>
         <source>Show Reference</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4043,7 +4097,7 @@ repos path: %0</source>
         <translation>用户行为分析</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="430"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="421"/>
         <source>Select File</source>
         <translation type="unfinished">选择文件</translation>
     </message>
@@ -5266,77 +5320,77 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="34"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="37"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="40"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="43"/>
         <source>Left quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="46"/>
         <source>Right quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="49"/>
         <source>Function</source>
-        <translation type="unfinished">函数</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="52"/>
         <source>Variable</source>
-        <translation type="unfinished">变量名</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="55"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="58"/>
         <source>User defined</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="61"/>
         <source>WHILE block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="64"/>
         <source>FOREACH block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="67"/>
         <source>IF block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="70"/>
         <source>MACRO block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="73"/>
         <source>Variable within a string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="76"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5344,282 +5398,282 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="34"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="37"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="40"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="43"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="46"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="49"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="52"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="55"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="58"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="61"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="64"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="67"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="70"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="73"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="76"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="79"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="82"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="85"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="88"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="91"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="94"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="97"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="100"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="103"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="106"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="109"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="112"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="115"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="118"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="121"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="124"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="127"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="130"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="133"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="136"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="139"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="142"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="145"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="148"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="151"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="154"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="157"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="160"/>
         <source>Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="163"/>
         <source>Inactive Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="166"/>
         <source>Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="169"/>
         <source>Inactive Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="172"/>
         <source>Pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="175"/>
         <source>Inactive pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="178"/>
         <source>JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="181"/>
         <source>Inactive JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="184"/>
         <source>User-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="187"/>
         <source>Inactive user-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="190"/>
         <source>Task marker</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="193"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="196"/>
         <source>Escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="199"/>
         <source>Inactive escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5627,102 +5681,102 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="34"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="37"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="40"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="43"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="46"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="49"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="52"/>
         <source>Triple single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="55"/>
         <source>Triple double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="58"/>
         <source>Class name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="61"/>
         <source>Function or method name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="64"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="67"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="70"/>
         <source>Comment block</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="73"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="76"/>
         <source>Highlighted identifier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="79"/>
         <source>Decorator</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="82"/>
         <source>Double-quoted f-string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="85"/>
         <source>Single-quoted f-string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="88"/>
         <source>Triple single-quoted f-string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="91"/>
         <source>Triple double-quoted f-string</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5787,34 +5841,34 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="24"/>
         <source>Add Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>添加快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="26"/>
         <source>Press desired key combination to add shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>按下所需组合键来添加快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="51"/>
         <source>Cancel</source>
         <comment>button</comment>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="52"/>
         <source>Ok</source>
         <comment>button</comment>
-        <translation type="unfinished"></translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="66"/>
         <source>1 same shortcut command exist</source>
-        <translation type="unfinished"></translation>
+        <translation>已有1个快捷键与此相同</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="67"/>
         <source>%1 same shortcut commands exist</source>
-        <translation type="unfinished"></translation>
+        <translation>已有%1个快捷键与此相同</translation>
     </message>
 </context>
 <context>
@@ -5823,27 +5877,27 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="102"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
         <source>Type to search in keybindings</source>
-        <translation type="unfinished"></translation>
+        <translation>在此键入搜索的快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="109"/>
         <source>Record Keys</source>
-        <translation type="unfinished"></translation>
+        <translation>录制按键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="114"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>命令</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="114"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>标签</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="114"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="136"/>
@@ -5853,48 +5907,48 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="258"/>
         <source>Add Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>添加快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="262"/>
         <source>Change %1</source>
-        <translation type="unfinished"></translation>
+        <translation>修改 %1</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="269"/>
         <source>Remove %1</source>
-        <translation type="unfinished"></translation>
+        <translation>删除 %1</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="275"/>
         <source>Remove All Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>删除所有快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="278"/>
         <source>Reset Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>重置快捷键</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="343"/>
         <source>Export Keyboard Mapping Scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>导出键盘映射方案</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
-        <translation type="unfinished"></translation>
+        <translation>键盘映射方案</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="371"/>
         <source>Import Keyboard Mapping Scheme</source>
-        <translation type="unfinished"></translation>
+        <translation>导入键盘映射方案</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="409"/>
         <source>Recording Keys. Press Escape to exit</source>
-        <translation type="unfinished"></translation>
+        <translation>正在录制按键。按 Esc 退出</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="130"/>
@@ -6171,79 +6225,79 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="291"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="307"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="296"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="312"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="299"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="315"/>
         <source>Redo</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="304"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="320"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="308"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="324"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="312"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="328"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="315"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="331"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="320"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="336"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="336"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="352"/>
         <source>Remove Breakpoint</source>
         <translation>移除断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="338"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="354"/>
         <source>Disable Breakpoint</source>
         <translation>禁用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="340"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="356"/>
         <source>Enable Breakpoint</source>
         <translation>启用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="341"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="357"/>
         <source>Add Condition</source>
         <translation>添加条件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="343"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="359"/>
         <source>Add a breakpoint on line %1</source>
         <translation>在第 %1 行添加断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="351"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="367"/>
         <source>jump to %1 line</source>
         <translation>跳转到 %1 行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="352"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="368"/>
         <source>run to %1 line</source>
-        <translation type="unfinished"></translation>
+        <translation>运行到 %1 行</translation>
     </message>
 </context>
 <context>
@@ -6266,7 +6320,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="88"/>
         <source>New CMake</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="134"/>
@@ -6385,467 +6439,467 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="89"/>
         <source>Extend selection down one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将选区向下延伸一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="93"/>
         <source>Extend rectangular selection down one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将矩形选区向下延伸一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="97"/>
         <source>Scroll view down one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将视图向下滚动一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="101"/>
         <source>Extend selection up one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将选区向上延伸一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="105"/>
         <source>Extend rectangular selection up one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将矩形选区向上延伸一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="109"/>
         <source>Scroll view up one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将视图向上滚动一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="113"/>
         <source>Scroll to start of document</source>
-        <translation type="unfinished"></translation>
+        <translation>滚动到文档的开始</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="116"/>
         <source>Scroll to end of document</source>
-        <translation type="unfinished"></translation>
+        <translation>滚动到文档的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="119"/>
         <source>Scroll vertically to centre current line</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直滚动以使当前行居中</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="122"/>
         <source>Move down one paragraph</source>
-        <translation type="unfinished"></translation>
+        <translation>向下移动一个段落</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="126"/>
         <source>Extend selection down one paragraph</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到下一个段落</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="130"/>
         <source>Move up one paragraph</source>
-        <translation type="unfinished"></translation>
+        <translation>向上移动一个段落</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="134"/>
         <source>Extend selection up one paragraph</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到上一个段落</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="138"/>
         <source>Move left one character</source>
-        <translation type="unfinished"></translation>
+        <translation>向左移动一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="142"/>
         <source>Extend selection left one character</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到左边一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="146"/>
         <source>Extend rectangular selection left one character</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区到左边一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="150"/>
         <source>Move right one character</source>
-        <translation type="unfinished"></translation>
+        <translation>向右移动一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="154"/>
         <source>Extend selection right one character</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到右边一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="158"/>
         <source>Extend rectangular selection right one character</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区到右边一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="162"/>
         <source>Move left one word</source>
-        <translation type="unfinished"></translation>
+        <translation>向左移动一个单词</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="166"/>
         <source>Extend selection left one word</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到左边一个单词</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="170"/>
         <source>Move right one word</source>
-        <translation type="unfinished"></translation>
+        <translation>向右移动一个单词</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="174"/>
         <source>Extend selection right one word</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到右边一个单词</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="178"/>
         <source>Move to end of previous word</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到前一个单词的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="181"/>
         <source>Extend selection to end of previous word</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到前一个单词的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="184"/>
         <source>Move to end of next word</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到下一个单词的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="187"/>
         <source>Extend selection to end of next word</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到下一个单词的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="190"/>
         <source>Move left one word part</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到左边一个词的一部分</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="193"/>
         <source>Extend selection left one word part</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到左边一个词的一部分</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="197"/>
         <source>Move right one word part</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到右边一个词的一部分</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="201"/>
         <source>Extend selection right one word part</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到右边一个词的一部分</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="205"/>
         <source>Move to start of document line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文档行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="208"/>
         <source>Extend selection to start of document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到文档行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="211"/>
         <source>Extend rectangular selection to start of document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区到文档行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="214"/>
         <source>Move to start of display line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到显示行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="218"/>
         <source>Extend selection to start of display line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到显示行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="221"/>
         <source>Move to start of display or document line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到显示行或文档行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="224"/>
         <source>Extend selection to start of display or document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到显示行或文档行的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="227"/>
         <source>Move to first visible character in document line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文档行中第一个可见字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="231"/>
         <source>Extend selection to first visible character in document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到文档行中第一个可见字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="235"/>
         <source>Extend rectangular selection to first visible character in document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区到文档行中第一个可见字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="239"/>
         <source>Move to first visible character of display in document line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文档行中显示的第一个可见字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="242"/>
         <source>Extend selection to first visible character in display or document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到显示行或文档行中第一个可见字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="245"/>
         <source>Move to end of document line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文档行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="249"/>
         <source>Extend selection to end of document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到文档行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="253"/>
         <source>Extend rectangular selection to end of document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区到文档行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="257"/>
         <source>Move to end of display line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到显示行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="261"/>
         <source>Extend selection to end of display line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到显示行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="264"/>
         <source>Move to end of display or document line</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到显示行或文档行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="267"/>
         <source>Extend selection to end of display or document line</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到显示行或文档行的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="270"/>
         <source>Move to start of document</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文档的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="274"/>
         <source>Extend selection to start of document</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到文档的开头</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="278"/>
         <source>Move to end of document</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文档的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="282"/>
         <source>Extend selection to end of document</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区到文档的末尾</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="286"/>
         <source>Move up one page</source>
-        <translation type="unfinished"></translation>
+        <translation>向上移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="290"/>
         <source>Extend selection up one page</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区向上移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="294"/>
         <source>Extend rectangular selection up one page</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区向上移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="298"/>
         <source>Move down one page</source>
-        <translation type="unfinished"></translation>
+        <translation>向下移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="302"/>
         <source>Extend selection down one page</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展选区向下移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="306"/>
         <source>Extend rectangular selection down one page</source>
-        <translation type="unfinished"></translation>
+        <translation>扩展矩形选区向下移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="310"/>
         <source>Stuttered move up one page</source>
-        <translation type="unfinished"></translation>
+        <translation>逐步向上移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="313"/>
         <source>Stuttered extend selection up one page</source>
-        <translation type="unfinished"></translation>
+        <translation>逐步扩展选区向上移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="316"/>
         <source>Stuttered move down one page</source>
-        <translation type="unfinished"></translation>
+        <translation>逐步向下移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="319"/>
         <source>Stuttered extend selection down one page</source>
-        <translation type="unfinished"></translation>
+        <translation>逐步扩展选区向下移动一页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="322"/>
         <source>Delete current character</source>
-        <translation type="unfinished"></translation>
+        <translation>删除当前字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="326"/>
         <source>Delete previous character</source>
-        <translation type="unfinished"></translation>
+        <translation>删除前一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="330"/>
         <source>Delete previous character if not at start of line</source>
-        <translation type="unfinished"></translation>
+        <translation>如果不在行首，删除前一个字符</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="333"/>
         <source>Delete word to left</source>
-        <translation type="unfinished"></translation>
+        <translation>删除左侧的单词</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="337"/>
         <source>Delete word to right</source>
-        <translation type="unfinished"></translation>
+        <translation>删除右侧的单词</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="341"/>
         <source>Delete right to end of next word</source>
-        <translation type="unfinished"></translation>
+        <translation>删除到下一个单词末尾的内容</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="344"/>
         <source>Delete line to left</source>
-        <translation type="unfinished"></translation>
+        <translation>删除左侧的整行内容</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="348"/>
         <source>Delete line to right</source>
-        <translation type="unfinished"></translation>
+        <translation>删除右侧的整行内容</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="352"/>
         <source>Delete current line</source>
-        <translation type="unfinished"></translation>
+        <translation>删除当前行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="356"/>
         <source>Cut current line</source>
-        <translation type="unfinished"></translation>
+        <translation>剪切当前行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="360"/>
         <source>Copy current line</source>
-        <translation type="unfinished"></translation>
+        <translation>复制当前行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="364"/>
         <source>Transpose current and previous lines</source>
-        <translation type="unfinished"></translation>
+        <translation>交换当前行和前一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="367"/>
         <source>Duplicate the current line</source>
-        <translation type="unfinished"></translation>
+        <translation>复制当前行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="370"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>全选</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="374"/>
         <source>Move selected lines up one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将选中的行向上移动一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="377"/>
         <source>Move selected lines down one line</source>
-        <translation type="unfinished"></translation>
+        <translation>将选中的行向下移动一行</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="380"/>
         <source>Duplicate selection</source>
-        <translation type="unfinished"></translation>
+        <translation>复制选中的内容</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="384"/>
         <source>Convert selection to lower case</source>
-        <translation type="unfinished"></translation>
+        <translation>将选中的内容转换为小写字母</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="388"/>
         <source>Convert selection to upper case</source>
-        <translation type="unfinished"></translation>
+        <translation>将选中的内容转换为大写字母</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="392"/>
         <source>Cut selection</source>
-        <translation type="unfinished"></translation>
+        <translation>剪切选中的内容</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="397"/>
         <source>Copy selection</source>
-        <translation type="unfinished"></translation>
+        <translation>复制选中的内容</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="402"/>
         <source>Paste</source>
-        <translation type="unfinished">粘贴</translation>
+        <translation>粘贴</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="407"/>
         <source>Toggle insert/overtype</source>
-        <translation type="unfinished"></translation>
+        <translation>切换插入/覆盖模式</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="411"/>
         <source>Formfeed</source>
-        <translation type="unfinished"></translation>
+        <translation>换页</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="414"/>
         <source>De-indent one level</source>
-        <translation type="unfinished"></translation>
+        <translation>减少一个缩进级别</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="418"/>
         <source>Undo last command</source>
-        <translation type="unfinished"></translation>
+        <translation>撤销上一个命令</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="423"/>
         <source>Redo last command</source>
-        <translation type="unfinished"></translation>
+        <translation>重做上一个命令</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="427"/>
         <source>Zoom in</source>
-        <translation type="unfinished">放大</translation>
+        <translation>放大</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="431"/>
         <source>Zoom out</source>
-        <translation type="unfinished">缩小</translation>
+        <translation>缩小</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="547"/>

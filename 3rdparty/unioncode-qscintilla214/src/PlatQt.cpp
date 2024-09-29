@@ -35,6 +35,7 @@
 #include <qstring.h>
 #include <qtextlayout.h>
 #include <qwidget.h>
+#include <qpainterpath.h>
 
 #if !defined(Q_OS_WASM)
 #include <qlibrary.h>

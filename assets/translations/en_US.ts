@@ -1193,17 +1193,37 @@ storage: %2
  the installation process may take several minutes.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="370"/>
-        <source>The project has not established a file index or there are no files available to create an index. Please retry after reopening the project.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="450"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="442"/>
+        <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="447"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="461"/>
+        <source>It may take servel minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="470"/>
+        <source>Indexing Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="501"/>
         <source>The error occurred when performing rag on project %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="534"/>
+        <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1644,7 +1664,7 @@ storage: %2
     <name>Copilot</name>
     <message>
         <location filename="../../src/plugins/codegeex/copilot.cpp" line="39"/>
-        <source>Line Chat</source>
+        <source>Inline Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2034,17 +2054,17 @@ Delete anyway?</source>
 <context>
     <name>DetailPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="48"/>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="47"/>
         <source>Python interpreter: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="56"/>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="55"/>
         <source>Executable File: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="66"/>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="65"/>
         <source>Run in terminal: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2764,6 +2784,54 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
+    <name>InlineChatWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="334"/>
+        <source>  Press %1 to inline chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="189"/>
+        <source>Esc to close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="190"/>
+        <source>Submit Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="191"/>
+        <source>quick question</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
+        <source>Accept</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
+        <source>Reject</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="267"/>
+        <source>Ask a question here, press Enter to send</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="276"/>
+        <source>Continue to ask a question, press Enter to send</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InputEditWidget</name>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="163"/>
@@ -2807,12 +2875,12 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterModel</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="90"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="93"/>
         <source>Package</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="92"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="95"/>
         <source>Version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2820,8 +2888,39 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterWidget</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="142"/>
-        <source>Python Interperter:</source>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="153"/>
+        <source>Python Interpreter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="160"/>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="161"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="206"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="192"/>
+        <source>Select Local Interpreter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
+        <source>Confirm the removal of this interpreter?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="208"/>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="209"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3091,54 +3190,6 @@ need to manually copy the source code to this path</source>
     </message>
 </context>
 <context>
-    <name>LineChatWidget</name>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="168"/>
-        <source>Esc to close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="169"/>
-        <source>Submit Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="170"/>
-        <source>quick question</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="172"/>
-        <source>Stop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="174"/>
-        <source>Accept</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="176"/>
-        <source>Reject</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="247"/>
-        <source>Ask here by pressing Enter to send your question</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/linechatwidget.cpp" line="256"/>
-        <source>Follow-up or new code instructions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
-        <source>  Press %1 to line chat</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LocatorManager</name>
     <message>
         <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="285"/>
@@ -3360,7 +3411,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="276"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="285"/>
         <source>Show Reference</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4010,7 +4061,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="430"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="421"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6130,77 +6181,77 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="291"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="307"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="296"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="312"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="299"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="315"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="304"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="320"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="308"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="324"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="312"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="328"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="315"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="331"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="320"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="336"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="336"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="352"/>
         <source>Remove Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="338"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="354"/>
         <source>Disable Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="340"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="356"/>
         <source>Enable Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="341"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="357"/>
         <source>Add Condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="343"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="359"/>
         <source>Add a breakpoint on line %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="351"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="367"/>
         <source>jump to %1 line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="352"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="368"/>
         <source>run to %1 line</source>
         <translation type="unfinished"></translation>
     </message>
