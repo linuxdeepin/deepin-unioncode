@@ -36,8 +36,8 @@ Copilot::Copilot(QObject *parent)
     generateTimer = new QTimer(this);
     generateTimer->setSingleShot(true);
 
-    QAction *lineChatAct = new QAction(tr("Line Chat"), this);
-    lineChatCmd = ActionManager::instance()->registerAction(lineChatAct, "CodeGeeX.LineChat");
+    QAction *lineChatAct = new QAction(tr("Inline Chat"), this);
+    lineChatCmd = ActionManager::instance()->registerAction(lineChatAct, "CodeGeeX.InlineChat");
     lineChatCmd->setDefaultKeySequence(Qt::CTRL + Qt::Key_T);
     connect(lineChatAct, &QAction::triggered, this, &Copilot::startInlineChat);
 

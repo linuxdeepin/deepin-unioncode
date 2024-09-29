@@ -264,7 +264,7 @@ void InlineChatWidgetPrivate::setState(State s)
     q->setFocus();
     switch (s) {
     case Original:
-        edit->setPlaceholderText(InlineChatWidget::tr("Ask here by pressing Enter to send your question"));
+        edit->setPlaceholderText(InlineChatWidget::tr("Ask a question here, press Enter to send"));
         break;
     case SubmitStart:
     case QuestionStart:
@@ -273,7 +273,7 @@ void InlineChatWidgetPrivate::setState(State s)
     case SubmitComplete:
     case QuestionComplete:
         spinner->stop();
-        edit->setPlaceholderText(InlineChatWidget::tr("Follow-up or new code instructions"));
+        edit->setPlaceholderText(InlineChatWidget::tr("Continue to ask a question, press Enter to send"));
         break;
     default:
         break;
