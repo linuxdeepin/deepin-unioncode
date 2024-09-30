@@ -335,14 +335,18 @@ void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QStr
         setState(QuestionComplete);
     } else if (state == SubmitStart && event == "finish") {
         // Extract the code block in `response`
+        QString codePart;
         QRegularExpression regex(R"(```\w*\n((.*\n)*.*)\n```)");
         QRegularExpressionMatch match = regex.match(response);
-        if (!match.hasMatch()) {
+        if (match.hasMatch())
+            codePart = match.captured(1);
+
+        if (codePart.isEmpty()) {
             setState(Original);
             return;
         }
 
-        processGeneratedData(match.captured(1));
+        processGeneratedData(codePart);
         setState(SubmitComplete);
     }
 }
@@ -462,7 +466,11 @@ QList<Diff> InlineChatWidgetPrivate::diffText(const QString &str1, const QString
 void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
 {
     chatInfo.operationRange.clear();
-    chatInfo.diffList = diffText(chatInfo.originalText, data);
+    if (chatInfo.originalText.isEmpty())
+        chatInfo.diffList << Diff { INSERT, data };
+    else
+        chatInfo.diffList = diffText(chatInfo.originalText, data);
+
     int startLine = chatInfo.originalRange.start.line;
     int endLine = 0;
     QString tempText;
@@ -612,12 +620,6 @@ void InlineChatWidget::showEvent(QShowEvent *e)
 void InlineChatWidget::keyPressEvent(QKeyEvent *e)
 {
     switch (e->modifiers()) {
-    case Qt::ControlModifier:
-        if (e->key() == Qt::Key_Backspace && d->stopBtn->isVisible()) {
-            d->handleStop();
-            return;
-        }
-        break;
     case Qt::NoModifier:
         if (e->key() == Qt::Key_Escape) {
             d->handleReject();
@@ -671,6 +673,9 @@ bool InlineChatWidget::eventFilter(QObject *obj, QEvent *e)
             case Qt::Key_Backspace:
                 if (d->rejectBtn->isVisible()) {
                     d->handleReject();
+                    return true;
+                } else if (d->stopBtn->isVisible()) {
+                    d->handleStop();
                     return true;
                 }
                 break;
