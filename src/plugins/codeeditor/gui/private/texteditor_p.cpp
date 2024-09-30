@@ -602,6 +602,12 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
             if (eolStr.isEmpty() || !cpCache.second.contains(eolStr))
                 cpCache.first += added;
         }
+
+        // update eolannotation line
+        for (auto it = eOLAnnotationRecords.begin(); it != eOLAnnotationRecords.end(); ++it) {
+            if (it.value() >= line)
+                it.value() += added;
+        }
     }
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {
