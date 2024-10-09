@@ -57,7 +57,7 @@ class InputEditWidget : public DTK_WIDGET_NAMESPACE::DFrame
     Q_OBJECT
 public:
     explicit InputEditWidget(QWidget *parent);
-    QTextEdit *edit();
+    InputEdit *edit();
 
     void popupReference();
     void accept(const QModelIndex &index);

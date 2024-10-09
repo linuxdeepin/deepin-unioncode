@@ -10,10 +10,7 @@
 
 #include <QObject>
 #include <QMap>
-
-QT_BEGIN_NAMESPACE
-class QTimer;
-QT_END_NAMESPACE
+#include <QTimer>
 
 struct RecordData
 {
@@ -28,6 +25,11 @@ static const char *chatModelPro = "codegeex-chat-pro";
 
 static const char *completionModelLite = "codegeex-lite";
 static const char *completionModelPro = "codegeex-pro";
+
+#if defined(__x86_64__) || defined(__arm__)
+#define SUPPORTMINIFORGE
+#endif
+
 
 enum languageModel {
     Lite,
@@ -90,7 +92,7 @@ public:
     // Rag
     QString condaRootPath() const;
     void showIndexingWidget();
-    void installConda();
+    Q_INVOKABLE void installConda();
     void generateRag(const QString &projectPath);
     /*
      JsonObject:
@@ -116,7 +118,8 @@ Q_SIGNALS:
     void requestStop();
     void notify(int type, const QString &message);
     void showCustomWidget(QWidget *widget);
-    void generateDone(const QString &Path);
+    void generateDone(const QString &path, bool failed);
+    void quit();
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);
@@ -154,6 +157,7 @@ private:
     bool isConnecting { false };
     bool referenceCodebase { false };
     bool condaInstalled { false };
+    QTimer installCondaTimer;
     QStringList indexingProject {};
     QStringList referenceFiles {};
 };

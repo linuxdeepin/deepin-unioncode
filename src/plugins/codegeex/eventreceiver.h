@@ -6,6 +6,7 @@
 #define EVENTRECEIVER_H
 
 #include <framework/framework.h>
+
 #include <QObject>
 
 /**

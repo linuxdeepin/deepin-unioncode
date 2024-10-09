@@ -64,12 +64,14 @@ bool CodeGeex::start()
                 QStringList actions { "codegeex_login_default", CodeGeex::tr("Login") };
                 windowService->notify(0, "CodeGeex", CodeGeex::tr("Please login to use CodeGeeX."), actions);
             }
+#ifdef SUPPORTMINIFORGE
             if (!CodeGeeXManager::instance()->condaHasInstalled()) {
                 QStringList actions { "ai_rag_install", CodeGeex::tr("Install") };
                 windowService->notify(0, "AI", CodeGeex::tr("Install a Python Conda virtual environment for using the file indexing feature.\
                          Without it, there may be abnormalities in the @codebase and some AI functionalities."),
                                       actions);
             }
+#endif
         });
     });
 
