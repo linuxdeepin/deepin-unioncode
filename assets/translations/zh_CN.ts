@@ -1203,16 +1203,9 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="118"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="120"/>
         <source>Install</source>
         <translation>安装</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="120"/>
-        <source>The file indexing feature is not available, which may cause functions such as xx to not work properly.Please install the required environment.
- the installation process may take several minutes.</source>
-        <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常工作，请安装需要的环境.
-安装过程可能会耗费若干分钟.</translation>
     </message>
 </context>
 <context>
@@ -1233,19 +1226,31 @@ storage: %2
         <translation>该过程也许会耗费若干分钟</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="470"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="471"/>
         <source>Indexing Done</source>
         <translation>创建索引完成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="501"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="471"/>
+        <source>Indexing Failed</source>
+        <translation>建立索引失败</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="515"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="534"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="122"/>
+        <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
+ the installation process may take several minutes.</source>
+        <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常使用，请安装相应的环境。
+安装过程可能会耗费若干分钟。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="363"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
-        <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确</translation>
+        <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确.</translation>
     </message>
 </context>
 <context>
@@ -1303,12 +1308,12 @@ storage: %2
         <translation>请登录后使用CodeGeex.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="68"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="70"/>
         <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
         <translation>安装Python Conda虚拟环境，以用于文件索引功能。否则可能导致@codebase或部分Ai功能异常。</translation>
     </message>
@@ -2894,7 +2899,7 @@ need to manually copy the source code to this path</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="196"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="197"/>
         <source>CodeBase</source>
         <translation>代码库</translation>
     </message>
@@ -4098,7 +4103,7 @@ repos path: %0</source>
         <translation>用户行为分析</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="421"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="424"/>
         <source>Select File</source>
         <translation>选择文件</translation>
     </message>

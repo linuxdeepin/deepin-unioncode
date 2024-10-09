@@ -360,7 +360,7 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
         if (!chunks.isEmpty()) {
             CodeGeeXManager::instance()->cleanHistoryMessage(); // incase history is too big
             if (result["Completed"].toBool() == false)
-                CodeGeeXManager::instance()->notify(0, tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
+                CodeGeeXManager::instance()->notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
             jsonObject["history"] = QJsonArray();
             QString context;
             context += prompt;
