@@ -74,7 +74,7 @@ Program search(Category category, Kit kit, const Version &version)
                     program + QString::number(executeVersion.major.value());
                 }
 
-                if (executeVersion.major.has_value() && executeVersion.minor.has_value())
+                if (executeVersion.major.has_value() && executeVersion.minor.has_value()) {
                     ret.pkgsPath = QDir::homePath() + QDir::separator()
                             + ".local" + QDir::separator()
                             + "lib" + QDir::separator()
@@ -83,6 +83,8 @@ Program search(Category category, Kit kit, const Version &version)
                             + QString::number(executeVersion.minor.value())
                             + QDir::separator()
                             + "site-packages";
+                    ret.binsPath = QDir::homePath() + "/.local/bin";
+                }
             }
         }
     }
