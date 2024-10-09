@@ -346,25 +346,27 @@ void TextEditor::setRangeBackgroundColor(int startLine, int endLine, int marker)
     if (startLine > endLine)
         return;
 
+    d->markerCache.insert(marker, { startLine, endLine });
     for (; startLine <= endLine; ++startLine) {
         markerAdd(startLine, marker);
     }
 }
 
-void TextEditor::clearRangeBackgroundColor(int startLine, int endLine, int marker)
+void TextEditor::getBackgroundRange(int marker, int *startLine, int *endLine)
 {
-    startLine = qMax(startLine, 0);
-    endLine = qMin(endLine, lines() - 1);
-    if (startLine > endLine)
+    if (!d->markerCache.contains(marker))
         return;
 
-    for (; startLine <= endLine; ++startLine) {
-        markerDelete(startLine, marker);
-    }
+    if (!startLine || !endLine)
+        return;
+
+    *startLine = d->markerCache[marker].startLine;
+    *endLine = d->markerCache[marker].endLine;
 }
 
 void TextEditor::clearAllBackgroundColor(int marker)
 {
+    d->markerCache.remove(marker);
     markerDeleteAll(marker);
 }
 
@@ -911,6 +913,22 @@ void TextEditor::mouseMoveEvent(QMouseEvent *event)
     }
 
     QsciScintilla::mouseMoveEvent(event);
+}
+
+void TextEditor::mousePressEvent(QMouseEvent *event)
+{
+    if (event->buttons().testFlag(Qt::LeftButton))
+        d->leftButtonPressed = true;
+
+    QsciScintilla::mousePressEvent(event);
+}
+
+void TextEditor::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (!event->buttons().testFlag(Qt::LeftButton))
+        d->leftButtonPressed = false;
+
+    QsciScintilla::mouseReleaseEvent(event);
 }
 
 bool TextEditor::eventFilter(QObject *obj, QEvent *event)

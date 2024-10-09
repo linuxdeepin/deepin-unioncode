@@ -28,6 +28,7 @@ public:
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
     void setGenerateCodeEnabled(bool enabled);
+    bool getGenerateCodeEnabled() const;
     void setLocale(const QString &locale);
     void setCommitsLocale(const QString &locale);
     void setCurrentModel(CodeGeeX::languageModel model);
@@ -78,7 +79,7 @@ private:
     CodeGeeX::CopilotApi::GenerateType generateType;
     CodeGeeX::CopilotApi::GenerateType checkPrefixType(const QString &prefixCode);
 
-    bool generateCodeEnabled = true;
+    QAtomicInteger<bool> generateCodeEnabled = true;
 };
 
 #endif   // COPILOT_H

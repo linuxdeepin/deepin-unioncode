@@ -68,7 +68,7 @@ public:
     int cursorPosition();
     int backgroundMarkerDefine(const QColor &color, int defaultMarker);
     void setRangeBackgroundColor(int startLine, int endLine, int marker);
-    void clearRangeBackgroundColor(int startLine, int endLine, int marker);
+    void getBackgroundRange(int marker, int *startLine, int *endLine);
     void clearAllBackgroundColor(int marker);
     void showTips(const QString &tips);
     void showTips(int pos, const QString &tips);
@@ -122,6 +122,8 @@ protected:
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
     virtual bool event(QEvent *event) override;
 

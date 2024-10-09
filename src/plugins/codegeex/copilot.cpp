@@ -155,7 +155,14 @@ void Copilot::insterText(const QString &text)
 
 void Copilot::setGenerateCodeEnabled(bool enabled)
 {
+    if (!enabled && generateTimer->isActive())
+        generateTimer->stop();
     generateCodeEnabled = enabled;
+}
+
+bool Copilot::getGenerateCodeEnabled() const
+{
+    return generateCodeEnabled;
 }
 
 void Copilot::setLocale(const QString &locale)
@@ -175,6 +182,9 @@ void Copilot::setCurrentModel(CodeGeeX::languageModel model)
 
 void Copilot::handleTextChanged()
 {
+    if (!generateCodeEnabled)
+        return;
+
     editorService->setCompletion("");
     QMetaObject::invokeMethod(this, [this]() {
         generateTimer->start(500);

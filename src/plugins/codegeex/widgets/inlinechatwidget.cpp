@@ -18,6 +18,7 @@
 #include <DSpinner>
 #include <DLabel>
 #include <DPushButton>
+#include <DGuiApplicationHelper>
 
 #include <QAction>
 #include <QRegExp>
@@ -31,6 +32,7 @@ constexpr char UrlSSEChat[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat"
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 class InlineChatWidgetPrivate : public QObject
 {
@@ -101,6 +103,7 @@ public:
     void processGeneratedData(const QString &data);
     void updateButtonIcon();
     QString createPrompt(const QString &question, bool useChunk, bool useContext);
+    Edit::Range calculateTextRange(const QString &fileName, const Edit::Position &pos);
 
 public:
     InlineChatWidget *q;
@@ -125,8 +128,9 @@ public:
     State state { None };
     State prevState { None };
     CodeGeeX::AskApi askApi;
-    int deleteMarker = -1;
-    int insertMarker = -1;
+    int deleteMarker { -1 };
+    int insertMarker { -1 };
+    int selectionMarker { -1 };
 };
 
 InlineChatWidgetPrivate::InlineChatWidgetPrivate(InlineChatWidget *qq)
@@ -184,18 +188,18 @@ void InlineChatWidgetPrivate::initUI()
     QHBoxLayout *btnLayout = new QHBoxLayout;
     btnLayout->setContentsMargins(0, 0, 0, 0);
     spinner = new DSpinner(q);
-    spinner->setFixedSize({ 16, 16 });
+    spinner->setFixedSize({ 12, 12 });
     spinner->setProperty(VisibleProperty, SubmitStart | QuestionStart);
     escBtn = createButton(InlineChatWidget::tr("Esc to close"), PushButton, Original | QuestionComplete);
-    submitBtn = createButton(InlineChatWidget::tr("Submit Edit"), SuggestButton, ReadyAsk);
+    submitBtn = createButton(InlineChatWidget::tr("Submit Edit"), SuggestButton, None);
     questionBtn = createButton(InlineChatWidget::tr("quick question"), PushButton, ReadyAsk);
-    questionBtn->setIconSize({ 42, 16 });
+    questionBtn->setIconSize({ 24, 12 });
     stopBtn = createButton(InlineChatWidget::tr("Stop"), PushButton, SubmitStart | QuestionStart);
-    stopBtn->setIconSize({ 42, 16 });
+    stopBtn->setIconSize({ 36, 12 });
     acceptBtn = createButton(InlineChatWidget::tr("Accept"), SuggestButton, SubmitComplete);
-    acceptBtn->setIconSize({ 42, 16 });
+    acceptBtn->setIconSize({ 36, 12 });
     rejectBtn = createButton(InlineChatWidget::tr("Reject"), PushButton, SubmitComplete);
-    rejectBtn->setIconSize({ 42, 16 });
+    rejectBtn->setIconSize({ 36, 12 });
 
     btnLayout->addWidget(spinner);
     btnLayout->addWidget(escBtn);
@@ -219,8 +223,8 @@ void InlineChatWidgetPrivate::initUI()
 void InlineChatWidgetPrivate::initConnection()
 {
     connect(edit, &InputEdit::textChanged, this, &InlineChatWidgetPrivate::handleTextChanged);
-    connect(closeBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
-    connect(escBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
+    connect(closeBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleClose);
+    connect(escBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleClose);
     connect(submitBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleSubmitEdit);
     connect(questionBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleQuickQuestion);
     connect(acceptBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleAccept);
@@ -246,12 +250,13 @@ QAbstractButton *InlineChatWidgetPrivate::createButton(const QString &name, Butt
         break;
     }
 
+    btn->setFixedHeight(24);
     btn->setProperty(VisibleProperty, flags);
     if (!name.isEmpty())
         btn->setText(name);
 
     auto f = btn->font();
-    f.setPointSize(12);
+    f.setPixelSize(12);
     btn->setFont(f);
     return btn;
 }
@@ -315,6 +320,11 @@ void InlineChatWidgetPrivate::handleTextChanged()
 
 void InlineChatWidgetPrivate::handleSubmitEdit()
 {
+    if (state == FollowSubmit) {
+        handleReject();
+        setState(FollowSubmit);
+    }
+
     setState(SubmitStart);
     askForCodeGeeX();
 }
@@ -362,11 +372,14 @@ void InlineChatWidgetPrivate::handleAccept()
     if (!replaceText.endsWith('\n'))
         replaceText.append('\n');
 
+    bool enabled = Copilot::instance()->getGenerateCodeEnabled();
+    Copilot::instance()->setGenerateCodeEnabled(false);
     int endLineOffset = chatInfo.tempText.count('\n') - chatInfo.originalText.count('\n') - 1;
     Edit::Range replaceRange = chatInfo.originalRange;
     replaceRange.end.line += endLineOffset;
     editSrv->replaceRange(chatInfo.fileName, replaceRange, replaceText);
     handleClose();
+    Copilot::instance()->setGenerateCodeEnabled(enabled);
 }
 
 void InlineChatWidgetPrivate::handleReject()
@@ -376,12 +389,23 @@ void InlineChatWidgetPrivate::handleReject()
         if (!replaceText.endsWith('\n'))
             replaceText.append('\n');
 
+        bool enabled = Copilot::instance()->getGenerateCodeEnabled();
+        Copilot::instance()->setGenerateCodeEnabled(false);
         int endLineOffset = chatInfo.tempText.count('\n') - chatInfo.originalText.count('\n') - 1;
         Edit::Range replaceRange = chatInfo.originalRange;
         replaceRange.end.line += endLineOffset;
         editSrv->replaceRange(chatInfo.fileName, replaceRange, replaceText);
+        editSrv->setRangeBackgroundColor(chatInfo.fileName, chatInfo.originalRange.start.line,
+                                         chatInfo.originalRange.end.line, selectionMarker);
+        Copilot::instance()->setGenerateCodeEnabled(enabled);
     }
-    handleClose();
+
+    if (insertMarker != -1)
+        editSrv->clearAllBackgroundColor(chatInfo.fileName, insertMarker);
+    if (deleteMarker != -1)
+        editSrv->clearAllBackgroundColor(chatInfo.fileName, deleteMarker);
+    setState(Original);
+    q->setFocus();
 }
 
 void InlineChatWidgetPrivate::handleClose()
@@ -393,6 +417,7 @@ void InlineChatWidgetPrivate::handleStop()
 {
     setState(prevState);
     edit->setPlainText(questionLabel->text());
+    edit->moveCursor(QTextCursor::End);
     foreach (auto watcher, futureWatcherList) {
         if (!watcher->isFinished())
             watcher->cancel();
@@ -418,13 +443,23 @@ void InlineChatWidgetPrivate::defineBackgroundMarker(const QString &fileName)
 {
     QColor insBgColor(230, 240, 208);
     QColor delBgColor(242, 198, 196);
+    QColor selBgColor(227, 227, 227);
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+        insBgColor.setRgb(30, 78, 42);
+        delBgColor.setRgb(87, 32, 49);
+        selBgColor.setRgb(49, 53, 59);
+    }
 
     insertMarker = editSrv->backgroundMarkerDefine(fileName, insBgColor, insertMarker);
     deleteMarker = editSrv->backgroundMarkerDefine(fileName, delBgColor, deleteMarker);
+    selectionMarker = editSrv->backgroundMarkerDefine(fileName, selBgColor, selectionMarker);
 }
 
 void InlineChatWidgetPrivate::askForCodeGeeX()
 {
+    chatInfo.originalRange = editSrv->getBackgroundRange(chatInfo.fileName, selectionMarker);
+    chatInfo.originalText = editSrv->rangeText(chatInfo.fileName, chatInfo.originalRange);
+
     auto f = questionLabel->font();
     f.setUnderline(state == QuestionStart);
     questionLabel->setFont(f);
@@ -465,6 +500,7 @@ QList<Diff> InlineChatWidgetPrivate::diffText(const QString &str1, const QString
 
 void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
 {
+    editSrv->clearAllBackgroundColor(chatInfo.fileName, selectionMarker);
     chatInfo.operationRange.clear();
     if (chatInfo.originalText.isEmpty())
         chatInfo.diffList << Diff { INSERT, data };
@@ -490,15 +526,17 @@ void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
         tempText.append(diff.text);
     }
 
+    bool enabled = Copilot::instance()->getGenerateCodeEnabled();
+    Copilot::instance()->setGenerateCodeEnabled(false);
     chatInfo.tempText = tempText;
     editSrv->replaceRange(chatInfo.fileName, chatInfo.originalRange, tempText);
-    defineBackgroundMarker(chatInfo.fileName);
     auto iter = chatInfo.operationRange.cbegin();
     for (; iter != chatInfo.operationRange.cend(); ++iter) {
         const auto &range = iter.value();
         iter.key() == DELETE ? editSrv->setRangeBackgroundColor(chatInfo.fileName, range.start.line, range.end.line, deleteMarker)
                              : editSrv->setRangeBackgroundColor(chatInfo.fileName, range.start.line, range.end.line, insertMarker);
     }
+    Copilot::instance()->setGenerateCodeEnabled(enabled);
 }
 
 void InlineChatWidgetPrivate::updateButtonIcon()
@@ -560,6 +598,36 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
     return prompt.join('\n');
 }
 
+Edit::Range InlineChatWidgetPrivate::calculateTextRange(const QString &fileName, const Edit::Position &pos)
+{
+    Edit::Range textRange;
+    const auto &selRange = editSrv->selectionRange(fileName);
+    auto codeRange = editSrv->codeRange(fileName, pos);
+    if (selRange.start.line == -1) {
+        if (codeRange.start.line == -1) {
+            textRange.start.line = pos.line;
+            textRange.end.line = pos.line;
+        } else if (codeRange.start.line == pos.line) {
+            textRange.start.line = codeRange.start.line;
+            textRange.end.line = codeRange.end.line;
+        } else {
+            textRange.start.line = pos.line;
+            textRange.end.line = codeRange.end.line;
+        }
+    } else {
+        if (selRange.start.line == selRange.end.line
+            && selRange.start.line == codeRange.start.line) {
+            textRange.start.line = codeRange.start.line;
+            textRange.end.line = codeRange.end.line;
+        } else {
+            textRange.start.line = selRange.start.line;
+            textRange.end.line = selRange.end.line;
+        }
+    }
+
+    return textRange;
+}
+
 InlineChatWidget::InlineChatWidget(QWidget *parent)
     : QWidget(parent),
       d(new InlineChatWidgetPrivate(this))
@@ -580,33 +648,13 @@ void InlineChatWidget::start()
     if (d->chatInfo.fileName.isEmpty())
         return;
 
-    const auto &selRange = d->editSrv->selectionRange(d->chatInfo.fileName);
     auto pos = d->editSrv->cursorPosition();
-    auto codeRange = d->editSrv->codeRange(d->chatInfo.fileName, pos);
-    if (selRange.start.line == -1) {
-        if (codeRange.start.line == -1) {
-            d->chatInfo.originalRange.start.line = pos.line;
-            d->chatInfo.originalRange.end.line = pos.line;
-        } else if (codeRange.start.line == pos.line) {
-            d->chatInfo.originalRange.start.line = codeRange.start.line;
-            d->chatInfo.originalRange.end.line = codeRange.end.line;
-        } else {
-            d->chatInfo.originalRange.start.line = pos.line;
-            d->chatInfo.originalRange.end.line = codeRange.end.line;
-        }
-    } else {
-        if (selRange.start.line == selRange.end.line
-            && selRange.start.line == codeRange.start.line) {
-            d->chatInfo.originalRange.start.line = codeRange.start.line;
-            d->chatInfo.originalRange.end.line = codeRange.end.line;
-        } else {
-            d->chatInfo.originalRange.start.line = selRange.start.line;
-            d->chatInfo.originalRange.end.line = selRange.end.line;
-        }
-    }
+    const auto &textRange = d->calculateTextRange(d->chatInfo.fileName, pos);
+    d->editSrv->showLineWidget(textRange.start.line, this);
 
-    d->chatInfo.originalText = d->editSrv->rangeText(d->chatInfo.fileName, d->chatInfo.originalRange);
-    d->editSrv->showLineWidget(d->chatInfo.originalRange.start.line, this);
+    d->defineBackgroundMarker(d->chatInfo.fileName);
+    d->editSrv->setRangeBackgroundColor(d->chatInfo.fileName, textRange.start.line,
+                                        textRange.end.line, d->selectionMarker);
 }
 
 void InlineChatWidget::showEvent(QShowEvent *e)
@@ -622,7 +670,7 @@ void InlineChatWidget::keyPressEvent(QKeyEvent *e)
     switch (e->modifiers()) {
     case Qt::NoModifier:
         if (e->key() == Qt::Key_Escape) {
-            d->handleReject();
+            d->handleClose();
             return;
         }
     default:
@@ -633,10 +681,10 @@ void InlineChatWidget::keyPressEvent(QKeyEvent *e)
 
 void InlineChatWidget::hideEvent(QHideEvent *e)
 {
-    if (d->insertMarker != -1)
-        d->editSrv->clearAllBackgroundColor(d->chatInfo.fileName, d->insertMarker);
-    if (d->deleteMarker != -1)
-        d->editSrv->clearAllBackgroundColor(d->chatInfo.fileName, d->deleteMarker);
+    d->handleReject();
+    if (d->selectionMarker != -1)
+        d->editSrv->clearAllBackgroundColor(d->chatInfo.fileName, d->selectionMarker);
+
     QWidget::hideEvent(e);
 }
 
@@ -683,15 +731,26 @@ bool InlineChatWidget::eventFilter(QObject *obj, QEvent *e)
                 break;
             }
         }
+        case Qt::AltModifier: {
+            switch (ke->key()) {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+                if (d->edit->isVisible()) {
+                    d->edit->insertPlainText("\n");
+                    return true;
+                }
+                break;
+            default:
+                break;
+            }
+        }
         case Qt::NoModifier: {
             switch (ke->key()) {
             case Qt::Key_Enter:
             case Qt::Key_Return:
-                if (d->submitBtn->isVisible()) {
+                if (d->submitBtn->isVisible())
                     d->handleSubmitEdit();
-                    return true;
-                }
-                break;
+                return true;
             default:
                 break;
             }

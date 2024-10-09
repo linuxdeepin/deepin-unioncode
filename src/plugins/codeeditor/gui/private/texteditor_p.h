@@ -33,6 +33,12 @@ public:
         RuntimeLineBackground
     };
 
+    struct MarkerRange
+    {
+        int startLine = -1;
+        int endLine = -1;
+    };
+
     explicit TextEditorPrivate(TextEditor *qq);
 
     void init();
@@ -61,6 +67,7 @@ public:
     QWidget *mainWindow();
     void setContainerWidget(QWidget *widget);
     void updateLineWidgetPosition();
+    void updateCacheInfo(int pos, int added);
 
 public slots:
     void resetThemeColor();
@@ -98,6 +105,8 @@ public:
     QTimer selectionChangeTimer;
     DTK_WIDGET_NAMESPACE::DFloatingWidget *lineWidgetContainer { nullptr };
     int showAtLine { 0 };
+    bool leftButtonPressed { false };
+    QMap<int, MarkerRange> markerCache;
 };
 
 #endif   // TEXTEDITOR_P_H

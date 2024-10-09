@@ -55,7 +55,7 @@ void TextEditorPrivate::init()
     q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     selectionChangeTimer.setSingleShot(true);
-    selectionChangeTimer.setInterval(150);
+    selectionChangeTimer.setInterval(50);
 
     initWidgetContainer();
     initMargins();
@@ -220,8 +220,7 @@ void TextEditorPrivate::updateSettings()
 
 void TextEditorPrivate::onSelectionChanged()
 {
-    auto buttons = QApplication::mouseButtons();
-    if (buttons.testFlag(Qt::LeftButton))
+    if (leftButtonPressed)
         return;
 
     int lineFrom = -1, indexFrom = -1, lineTo = -1, indexTo = -1;
@@ -539,6 +538,44 @@ void TextEditorPrivate::updateLineWidgetPosition()
     lineWidgetContainer->move(point.x(), displayY);
 }
 
+void TextEditorPrivate::updateCacheInfo(int pos, int added)
+{
+    int line = 0, index = 0;
+    q->lineIndexFromPosition(pos, &line, &index);
+    editor.lineChanged(fileName, line, added);
+    if (lineWidgetContainer->isVisible()) {
+        if (showAtLine > line) {
+            showAtLine += added;
+            updateLineWidgetPosition();
+        }
+    }
+
+    if (cpCache.first != -1 && cpCache.first >= line) {
+        const auto &eolStr = q->eolAnnotation(cpCache.first);
+        if (eolStr.isEmpty() || !cpCache.second.contains(eolStr))
+            cpCache.first += added;
+    }
+
+    // update eolannotation line
+    for (auto it = eOLAnnotationRecords.begin(); it != eOLAnnotationRecords.end(); ++it) {
+        if (it.value() >= line)
+            it.value() += added;
+    }
+
+    auto iter = markerCache.begin();
+    for (; iter != markerCache.end(); ++iter) {
+        auto &range = iter.value();
+        if (range.endLine < line)
+            continue;
+        else if (range.startLine > line)
+            range.startLine += added;
+
+        range.endLine += added;
+        if (added > 0)
+            q->setRangeBackgroundColor(range.startLine, range.endLine, iter.key());
+    }
+}
+
 void TextEditorPrivate::resetThemeColor()
 {
     if (q->lexer()) {
@@ -586,29 +623,8 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
     if (isAutoCompletionEnabled && !text.isEmpty())
         editor.textChanged();
 
-    if (added != 0) {
-        int line = 0, index = 0;
-        q->lineIndexFromPosition(pos, &line, &index);
-        editor.lineChanged(fileName, line, added);
-        if (lineWidgetContainer->isVisible()) {
-            if (showAtLine > line) {
-                showAtLine += added;
-                updateLineWidgetPosition();
-            }
-        }
-
-        if (cpCache.first != -1 && cpCache.first >= line) {
-            const auto &eolStr = q->eolAnnotation(cpCache.first);
-            if (eolStr.isEmpty() || !cpCache.second.contains(eolStr))
-                cpCache.first += added;
-        }
-
-        // update eolannotation line
-        for (auto it = eOLAnnotationRecords.begin(); it != eOLAnnotationRecords.end(); ++it) {
-            if (it.value() >= line)
-                it.value() += added;
-        }
-    }
+    if (added != 0)
+        updateCacheInfo(pos, added);
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {
         emit q->textAdded(pos, len, added, text, line);

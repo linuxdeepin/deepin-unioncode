@@ -18,7 +18,6 @@
 
 constexpr char M_FIND[] = "Find.FindMenu";
 
-
 using namespace dpfservice;
 
 void FindPlugin::initialize()
@@ -59,11 +58,14 @@ void FindPlugin::registerShortcut()
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
     mFind->addAction(cmd, "Find.FindMenu.Advanced");
     connect(advancedFindAction, &QAction::triggered, qApp, [=] {
+        windowService->switchWidgetNavigation(MWNA_ADVANCEDSEARCH);
+        if (!advSearchWidget)
+            return;
+
         auto editSrv = dpfGetService(EditorService);
         const auto &selectedText = editSrv->getSelectedText();
         if (!selectedText.isEmpty())
             advSearchWidget->setSearchText(selectedText);
-        windowService->switchWidgetNavigation(MWNA_ADVANCEDSEARCH);
     });
 }
 
@@ -80,14 +82,13 @@ void FindPlugin::registerToSidebar()
     auto actionImpl = new AbstractAction(action);
     windowService->addNavigationItem(actionImpl, Priority::highest);
 
-    std::function<AbstractWidget *()> findCreator = []()->AbstractWidget * {
-        auto advancedSearchWidget = new AdvancedSearchWidget();
-        advancedSearchWidget->initOperator();
-        return new AbstractWidget(advancedSearchWidget);
+    std::function<AbstractWidget *()> findCreator = [this]() -> AbstractWidget * {
+        advSearchWidget = new AdvancedSearchWidget();
+        advSearchWidget->initOperator();
+        return new AbstractWidget(advSearchWidget);
     };
 
     windowService->registerWidgetCreator(MWNA_ADVANCEDSEARCH, findCreator);
-    
     windowService->setDockHeaderName(MWNA_ADVANCEDSEARCH, tr("ADVANCED SEARCH"));
     windowService->bindWidgetToNavigation(MWNA_ADVANCEDSEARCH, actionImpl);
 

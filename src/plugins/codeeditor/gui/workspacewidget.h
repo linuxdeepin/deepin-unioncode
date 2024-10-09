@@ -62,7 +62,7 @@ public:
 
     int backgroundMarkerDefine(const QString &fileName, const QColor &color, int defaultMarker);
     void setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker);
-    void clearRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker);
+    dpfservice::Edit::Range getBackgroundRange(const QString &fileName, int marker);
     void clearAllBackgroundColor(const QString &fileName, int marker);
     void showLineWidget(int line, QWidget *widget);
     void closeLineWidget();
