@@ -194,7 +194,20 @@ void InterpreterWidget::setupUi()
             return;
         auto name = QFileInfo(path).fileName();
         ToolChainData::ToolChainParam param {name, path};
-        auto index = d->interpreterComboBox->count();
+        int index = 0;
+        while (index < d->interpreterComboBox->count()) {
+            auto temp = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->itemData(index, Qt::UserRole + 1));
+            if (param == temp) {
+                DDialog dialog;
+                dialog.setMessage(tr("Selected Interpreter already exists"));
+                dialog.setWindowTitle(tr("Warning"));
+                dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+                dialog.addButton(tr("Yes"));
+                dialog.exec();
+                return;
+            }
+            index++;
+        }
         d->interpreterComboBox->insertItem(index, name + "(" + path + ")");
         d->interpreterComboBox->setItemData(index, QVariant::fromValue(param), Qt::UserRole + 1);
         d->interpreterComboBox->setCurrentIndex(index);
@@ -208,12 +221,20 @@ void InterpreterWidget::setupUi()
         dialog.insertButton(0, tr("Yes"));
         dialog.insertButton(1, tr("Cancel"));
         int code = dialog.exec();
-        if (code == 1)
-            return;
-
-        auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
-        d->customInterpreters.removeOne(param);
-        d->interpreterComboBox->removeItem(d->interpreterComboBox->currentIndex());
+        if (code == 0) {
+            auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
+            if (!d->customInterpreters.contains(param)) {
+                DDialog dialog;
+                dialog.setMessage(tr("Default Interpreter can`t be removed"));
+                dialog.setWindowTitle(tr("Warning"));
+                dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+                dialog.addButton(tr("Yes"));
+                dialog.exec();
+                return;
+            }
+            d->customInterpreters.removeOne(param);
+            d->interpreterComboBox->removeItem(d->interpreterComboBox->currentIndex());
+        }
     });
 }
 

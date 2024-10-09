@@ -569,5 +569,8 @@ QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &qu
     QJsonObject obj = document.object();
     if (indexingProject.contains(projectPath))
         obj["Completed"] = false;
+    else
+        obj["Completed"] = true;
+
     return obj;
 }
