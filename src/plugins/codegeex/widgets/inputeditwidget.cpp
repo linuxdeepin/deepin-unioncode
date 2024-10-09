@@ -191,11 +191,14 @@ void InputEditWidgetPrivate::initreferencePopup()
     ItemInfo openedFiles;
     openedFiles.type = reference_opened_files;
     openedFiles.displayName = InputEditWidget::tr("Opened Files");
-    ItemInfo codeBase;
-    codeBase.type = reference_codebase;
-    codeBase.displayName = InputEditWidget::tr("CodeBase");
-
-    defaultReferenceItems = QList { currentFile, selectFile, openedFiles, codeBase };
+#ifdef SUPPORTMINIFORGE
+        ItemInfo codeBase;
+        codeBase.type = reference_codebase;
+        codeBase.displayName = InputEditWidget::tr("CodeBase");
+        defaultReferenceItems = QList { currentFile, selectFile, openedFiles, codeBase };
+#else
+        defaultReferenceItems = QList { currentFile, selectFile, openedFiles };
+#endif
 }
 
 InputEdit::InputEdit(QWidget *parent)
@@ -379,7 +382,7 @@ bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
     return QObject::eventFilter(watched, event);
 }
 
-QTextEdit *InputEditWidget::edit()
+InputEdit *InputEditWidget::edit()
 {
     return d->edit;
 }

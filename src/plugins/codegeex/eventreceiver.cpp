@@ -72,13 +72,13 @@ void EventReceiverDemo::processActionInvokedEvent(const dpf::Event &event)
     if (actId == "codegeex_login_default")
         QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
     else if (actId == "ai_rag_install")
-        CodeGeeXManager::instance()->installConda();
+        QMetaObject::invokeMethod(CodeGeeXManager::instance(), "installConda", Qt::QueuedConnection);
 }
 
 void EventReceiverDemo::processOpenProjectEvent(const dpf::Event &event)
 {
     auto projectPath = event.property("workspace").toString();
     QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
-    if (results["chunks"].toArray().size() != 0) // project has generated, update it
+    if (results["Chunks"].toArray().size() != 0) // project has generated, update it
         CodeGeeXManager::instance()->generateRag(projectPath);
 }

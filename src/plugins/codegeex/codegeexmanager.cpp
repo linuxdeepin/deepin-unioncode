@@ -462,12 +462,14 @@ void CodeGeeXManager::showIndexingWidget()
         layout->addWidget(spinner);
         spinner->show();
         spinner->start();
+        confirmBtn->setEnabled(false);
     });
 
-    connect(this, &CodeGeeXManager::generateDone, spinner, [=](const QString &path) {
+    connect(this, &CodeGeeXManager::generateDone, spinner, [=](const QString &path, bool failed) {
         if (path == currentProject)
             spinner->hide();
-        layout->addWidget(new QLabel(tr("Indexing Done"), widget));
+        QString text = failed ? tr("Indexing Failed") : tr("Indexing Done");
+        layout->addWidget(new QLabel(text, widget));
     });
 
     emit showCustomWidget(widget);
@@ -475,18 +477,28 @@ void CodeGeeXManager::showIndexingWidget()
 
 void CodeGeeXManager::installConda()
 {
-    QString scriptPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag/install.sh";
-//    QProcess process;
-//    process.setProgram("bash");
-//    process.setArguments(QStringList() << scriptPath << condaRootPath());
-//    process.startDetached();
+    if (installCondaTimer.isActive())
+        return;
 
-    QMetaObject::invokeMethod(this, [=, scriptPath]() {
-        auto terminalServ = dpfGetService(dpfservice::TerminalService);
-        WindowService *windowService = dpfGetService(WindowService);
-        windowService->switchContextWidget(dpfservice::TERMINAL_TAB_TEXT);
-        terminalServ->executeCommand("install", "bash", QStringList() << scriptPath << condaRootPath(), condaRootPath(), QStringList());
-    });
+    QString scriptPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag/install.sh";
+    QProcess process;
+    process.setProgram("ps");
+    process.setArguments({ "aux" });
+    process.start();
+    process.waitForFinished();
+    QString output = process.readAll();
+
+    // check install script is running
+    bool exists = output.contains(scriptPath);
+    if (exists)
+        return;
+    auto terminalServ = dpfGetService(dpfservice::TerminalService);
+    WindowService *windowService = dpfGetService(WindowService);
+    windowService->switchContextWidget(dpfservice::TERMINAL_TAB_TEXT);
+    terminalServ->executeCommand("install", "bash", QStringList() << scriptPath << condaRootPath(), condaRootPath(), QStringList());
+
+    installCondaTimer.setSingleShot(true); // terminal may not execute it immediately. add timer to Prevent multiple triggers within a short period of time.
+    installCondaTimer.start(2000);
 }
 
 void CodeGeeXManager::generateRag(const QString &projectPath)
@@ -496,6 +508,8 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     bool failed = false;
     indexingProject.append(projectPath);
     QProcess process;
+    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this, [&process](){ process.terminate(); });
+
     QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&, projectPath]() {
         if (!failed) // only notify once
             emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
@@ -507,6 +521,7 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
                      this, [&](int exitCode, QProcess::ExitStatus exitStatus) {
                          qInfo() << "Python script finished with exit code" << exitCode  << "Exit!!!";
                      });
+
     qInfo() << "start rag project:" << projectPath;
 
     QString ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
@@ -519,7 +534,7 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     process.start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
     process.waitForFinished(-1);
     indexingProject.removeOne(projectPath);
-    emit generateDone(projectPath);
+    emit generateDone(projectPath, failed);
 }
 
 /*
@@ -530,10 +545,8 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
 */
 QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &query, int topItems)
 {
-    if (indexingProject.contains(projectPath))
-        emit notify(0, tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(projectPath));
-
     QProcess process;
+
     QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&]() {
         qInfo() << "Error:" << process.readAllStandardError() << "\n";
     });
@@ -544,14 +557,16 @@ QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &qu
         return {};
 
     auto modelPath = CustomPaths::CustomPaths::global(CustomPaths::Models);
-    QString ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
+    auto ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
     process.setWorkingDirectory(ragPath);
     auto queryPyPath = ragPath + "/query.py";
     process.start(pythonPath, QStringList() << queryPyPath << modelPath << projectPath << query << QString::number(topItems));
     process.waitForFinished();
-    auto test = process.readAll();
-    QJsonDocument document = QJsonDocument::fromJson(test);
+    auto result = process.readAll();
+    QJsonDocument document = QJsonDocument::fromJson(result);
 
-    auto obj = document.object();
+    QJsonObject obj = document.object();
+    if (indexingProject.contains(projectPath))
+        obj["Completed"] = false;
     return obj;
 }

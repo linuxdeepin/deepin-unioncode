@@ -60,9 +60,10 @@ class ChunkWithoutID:
 
 def code_chunker(filepath: str, contents: str, max_chunk_size: int) -> Generator[ChunkWithoutID, None, None]:
     parser = get_parser_by_extension(get_file_extension(filepath))
+    contentBytes = bytes(contents, "utf8")
     if (parser == None):
         return
-    tree = parser.parse(bytes(contents, "utf8"))
+    tree = parser.parse(contentBytes)
 
     FUNCTION_BLOCK_NODE_TYPES = ["block", "statement_block"]
     FUNCTION_DECLARATION_NODE_TYPES = [
@@ -93,14 +94,13 @@ def code_chunker(filepath: str, contents: str, max_chunk_size: int) -> Generator
 
     def construct_function_definition_chunk(node):
         body_node = node.children[-1]
-        func_text = contents[node.start_byte:body_node.start_byte] + \
+        func_text = contentBytes[node.start_byte:body_node.start_byte].decode('utf8') + \
             collapsed_replacement(body_node)
-
         if (node.parent and node.parent.type in ["block", "declaration_list"] and
                 node.parent.parent and node.parent.parent.type in ["class_definition", "impl_item"]):
             class_node = node.parent.parent
             class_block = node.parent
-            return (f"{contents[class_node.start_byte:class_block.start_byte]}...\n\n"
+            return (f"{contentBytes[class_node.start_byte:class_block.start_byte].decode('utf8')}...\n\n"
                     f"{' ' * node.start_point[1]}{func_text}")
         return func_text
 
@@ -115,7 +115,7 @@ def code_chunker(filepath: str, contents: str, max_chunk_size: int) -> Generator
     }
 
     def collapse_children(node, block_types, collapse_types, collapse_block_types):
-        code = contents[:node.end_byte]
+        code = contentBytes[:node.end_byte].decode('utf8')
         block = first_child(node, block_types)
         collapsed_children = []
 

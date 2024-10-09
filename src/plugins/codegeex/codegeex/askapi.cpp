@@ -112,15 +112,18 @@ void AskApi::postSSEChat(const QString &url,
                          const QString &talkId)
 {
     QJsonArray jsonArray = convertHistoryToJSONArray(history);
+
+#ifdef SUPPORTMINIFORGE
     auto impl = CodeGeeXManager::instance();
     impl->checkCondaInstalled();
-    if (impl->isReferenceCodebase() && !impl->condaHasInstalled()) {
+    if (impl->isReferenceCodebase() && !impl->condaHasInstalled()) { // if not x86 or arm. @codebase can not be use
         QStringList actions { "ai_rag_install", tr("Install") };
         dpfservice::WindowService *windowService = dpfGetService(dpfservice::WindowService);
-        windowService->notify(0, "AI", tr("The file indexing feature is not available, which may cause functions such as @codebase to not work properly."
+        windowService->notify(0, "AI", CodeGeeXManager::tr("The file indexing feature is not available, which may cause functions such as @codebase to not work properly."
                                           "Please install the required environment.\n the installation process may take several minutes."),
                               actions);
     }
+#endif
 
     QtConcurrent::run([prompt, machineId, jsonArray, talkId, url, token, this]() {
         QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
@@ -356,6 +359,8 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
         QJsonArray chunks = result["Chunks"].toArray();
         if (!chunks.isEmpty()) {
             CodeGeeXManager::instance()->cleanHistoryMessage(); // incase history is too big
+            if (result["Completed"].toBool() == false)
+                CodeGeeXManager::instance()->notify(0, tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
             jsonObject["history"] = QJsonArray();
             QString context;
             context += prompt;
