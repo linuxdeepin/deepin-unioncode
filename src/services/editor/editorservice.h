@@ -71,7 +71,7 @@ public:
     //       if the return value is -1, it indicates that the setting failed.
     DPF_INTERFACE(int, backgroundMarkerDefine, const QString &file, const QColor &color, int defaultMarker);
     DPF_INTERFACE(void, setRangeBackgroundColor, const QString &file, int startLine, int endLine, int marker);
-    DPF_INTERFACE(void, clearRangeBackgroundColor, const QString &file, int startLine, int endLine, int marker);
+    DPF_INTERFACE(Edit::Range, getBackgroundRange, const QString &file, int marker);
     DPF_INTERFACE(void, clearAllBackgroundColor, const QString &file, int marker);
     DPF_INTERFACE(void, showLineWidget, int line, QWidget *widget);
     DPF_INTERFACE(void, closeLineWidget);

@@ -80,7 +80,7 @@ public:
 
     int backgroundMarkerDefine(const QString &fileName, const QColor &color, int defaultMarker);
     bool setRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker);
-    bool clearRangeBackground(const QString &fileName, int startLine, int endLine, int marker);
+    dpfservice::Edit::Range getBackgroundRange(const QString &fileName, int marker, bool &found);
     bool clearAllBackground(const QString &fileName, int marker);
     void showLineWidget(int line, QWidget *widget);
     void closeLineWidget();

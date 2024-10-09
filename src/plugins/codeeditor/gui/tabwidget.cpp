@@ -943,14 +943,17 @@ bool TabWidget::setRangeBackgroundColor(const QString &fileName, int startLine, 
     return false;
 }
 
-bool TabWidget::clearRangeBackground(const QString &fileName, int startLine, int endLine, int marker)
+Edit::Range TabWidget::getBackgroundRange(const QString &fileName, int marker, bool &found)
 {
     if (auto editor = d->findEditor(fileName)) {
-        editor->clearRangeBackgroundColor(startLine, endLine, marker);
-        return true;
+        found = true;
+        Edit::Range range;
+        editor->getBackgroundRange(marker, &range.start.line, &range.end.line);
+        return range;
     }
 
-    return false;
+    found = false;
+    return {};
 }
 
 bool TabWidget::clearAllBackground(const QString &fileName, int marker)

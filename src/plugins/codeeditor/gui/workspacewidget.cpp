@@ -1312,12 +1312,17 @@ void WorkspaceWidget::setRangeBackgroundColor(const QString &fileName, int start
     }
 }
 
-void WorkspaceWidget::clearRangeBackgroundColor(const QString &fileName, int startLine, int endLine, int marker)
+Edit::Range WorkspaceWidget::getBackgroundRange(const QString &fileName, int marker)
 {
+    Edit::Range range;
     for (auto tabWidget : d->tabWidgetList) {
-        if (tabWidget->clearRangeBackground(fileName, startLine, endLine, marker))
+        bool found = false;
+        range = tabWidget->getBackgroundRange(fileName, marker, found);
+        if (found)
             break;
     }
+
+    return range;
 }
 
 void WorkspaceWidget::clearAllBackgroundColor(const QString &fileName, int marker)

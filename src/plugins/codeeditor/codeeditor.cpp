@@ -184,7 +184,7 @@ void CodeEditor::initEditorService()
     editorService->replaceRange = std::bind(&WorkspaceWidget::replaceRange, workspaceWidget, _1, _2, _3);
     editorService->backgroundMarkerDefine = std::bind(&WorkspaceWidget::backgroundMarkerDefine, workspaceWidget, _1, _2, _3);
     editorService->setRangeBackgroundColor = std::bind(&WorkspaceWidget::setRangeBackgroundColor, workspaceWidget, _1, _2, _3, _4);
-    editorService->clearRangeBackgroundColor = std::bind(&WorkspaceWidget::clearRangeBackgroundColor, workspaceWidget, _1, _2, _3, _4);
+    editorService->getBackgroundRange = std::bind(&WorkspaceWidget::getBackgroundRange, workspaceWidget, _1, _2);
     editorService->clearAllBackgroundColor = std::bind(&WorkspaceWidget::clearAllBackgroundColor, workspaceWidget, _1, _2);
     editorService->showLineWidget = std::bind(&WorkspaceWidget::showLineWidget, workspaceWidget, _1, _2);
     editorService->closeLineWidget = std::bind(&WorkspaceWidget::closeLineWidget, workspaceWidget);
