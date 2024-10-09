@@ -1183,14 +1183,8 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="118"/>
-        <source>Install</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="120"/>
-        <source>The file indexing feature is not available, which may cause functions such as xx to not work properly.Please install the required environment.
- the installation process may take several minutes.</source>
+        <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1212,17 +1206,28 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="470"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="471"/>
         <source>Indexing Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="501"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="471"/>
+        <source>Indexing Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="515"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="534"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="122"/>
+        <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
+ the installation process may take several minutes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="363"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1282,12 +1287,12 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="68"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="70"/>
         <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2859,7 +2864,7 @@ need to manually copy the source code to this path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="196"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="197"/>
         <source>CodeBase</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4061,7 +4066,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="421"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="424"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
