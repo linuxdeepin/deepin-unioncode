@@ -5945,7 +5945,7 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
-        <translation>键盘映射方案</translation>
+        <translation>键盘映射方案 (*.kms)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="371"/>
