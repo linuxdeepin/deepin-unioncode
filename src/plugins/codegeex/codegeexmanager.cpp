@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QApplication>
 
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
 //static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
