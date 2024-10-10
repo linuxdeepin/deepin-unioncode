@@ -1211,32 +1211,32 @@ storage: %2
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="442"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="443"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
         <translation>该工程还没有建立文件索引，@codebase无法正常使用.确认是否现在创建索引</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="447"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="448"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="461"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="462"/>
         <source>It may take servel minutes</source>
         <translation>该过程也许会耗费若干分钟</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="471"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="472"/>
         <source>Indexing Done</source>
         <translation>创建索引完成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="471"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="472"/>
         <source>Indexing Failed</source>
         <translation>建立索引失败</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="515"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
@@ -2408,12 +2408,12 @@ Delete anyway?</source>
 <context>
     <name>FindPlugin</name>
     <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="57"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="56"/>
         <source>Advanced Find</source>
         <translation>高级查找</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="91"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="92"/>
         <source>ADVANCED SEARCH</source>
         <translation>高级搜索</translation>
     </message>
@@ -2826,47 +2826,47 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="334"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="344"/>
         <source>  Press %1 to inline chat</source>
         <translation>  按%1进行内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="189"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
         <source>Esc to close</source>
         <translation>Esc关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="190"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="194"/>
         <source>Submit Edit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="191"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
         <source>quick question</source>
         <translation>快问快答</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="199"/>
         <source>Accept</source>
         <translation>接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="201"/>
         <source>Reject</source>
         <translation>拒绝</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="267"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="272"/>
         <source>Ask a question here, press Enter to send</source>
         <translation>在这里提问，按Enter键发送</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="276"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="281"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation>继续提问，按Enter键发送</translation>
     </message>
@@ -2939,7 +2939,7 @@ need to manually copy the source code to this path</source>
     </message>
     <message>
         <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="161"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="206"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="219"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
@@ -2949,17 +2949,35 @@ need to manually copy the source code to this path</source>
         <translation>选择本地解释器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="202"/>
+        <source>Selected Interpreter already exists</source>
+        <translation>选择的解释器已经存在</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="203"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="229"/>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="218"/>
         <source>Confirm the removal of this interpreter?</source>
         <translation>确认移除这个解释器？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="208"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="228"/>
+        <source>Default Interpreter can`t be removed</source>
+        <translation>默认解释器无法被删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="221"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="231"/>
         <source>Yes</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="222"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -4754,8 +4772,8 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="93"/>
-        <source>Only support C/C++, and some architectures of CPU may experience anomalies.</source>
-        <translation>只支持C/C++，部分架构的CPU可能会表现异常</translation>
+        <source>Only support C/C++, and some architectures of CPU may experience anomalies or not be usable. recommended to obtain a higher version of rr for use</source>
+        <translation>仅支持C/C++，部分架构的CPU可能无法正常工作甚至无法使用，建议获取高版本`rr`使用</translation>
     </message>
 </context>
 <context>
@@ -4870,7 +4888,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="47"/>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="50"/>
-        <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
+        <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="179"/>
         <source>Reverse Debug</source>
         <translation>反向调试</translation>
     </message>
@@ -4909,16 +4927,16 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
-        <source>Can not find rr debugger, please install it first</source>
-        <translation>没有找到rr-debugger，请先安装</translation>
+        <source>Can not find rr debugger, please install it first. If installation is not possible or the software does not work after installation, you can try installing a higher version of rr through GitHub and then attempt to use it.</source>
+        <translation>无法找到rr debugger，请先安装。如果无法安装或安装后无法正常使用，可以尝试通过Github安装高版本`rr`使用.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
+        <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="179"/>
         <source>Install by apt</source>
         <translation>通过apt安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="177"/>
+        <location filename="../../src/plugins/debugger/reversedebug/reversedebugger.cpp" line="179"/>
         <source>Install by Wget</source>
         <translation>通过wget安装</translation>
     </message>
@@ -6232,77 +6250,77 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="307"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="306"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="312"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="311"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="315"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="314"/>
         <source>Redo</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="320"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="319"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="324"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="323"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="328"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="327"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="331"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="330"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="336"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="335"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="352"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="351"/>
         <source>Remove Breakpoint</source>
         <translation>移除断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="354"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="353"/>
         <source>Disable Breakpoint</source>
         <translation>禁用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="356"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="355"/>
         <source>Enable Breakpoint</source>
         <translation>启用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="357"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="356"/>
         <source>Add Condition</source>
         <translation>添加条件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="359"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="358"/>
         <source>Add a breakpoint on line %1</source>
         <translation>在第 %1 行添加断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="367"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="366"/>
         <source>jump to %1 line</source>
         <translation>跳转到 %1 行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="368"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="367"/>
         <source>run to %1 line</source>
         <translation>运行到 %1 行</translation>
     </message>
