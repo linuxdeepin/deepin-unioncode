@@ -10,28 +10,28 @@
 
 #include <QMenu>
 
-EventReceiverDemo::EventReceiverDemo(QObject *parent)
-    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<EventReceiverDemo>()
+CodeGeeXReceiver::CodeGeeXReceiver(QObject *parent)
+    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<CodeGeeXReceiver>()
 {
     using namespace std::placeholders;
-    eventHandleMap.insert(editor.contextMenu.name, std::bind(&EventReceiverDemo::processContextMenuEvent, this, _1));
-    eventHandleMap.insert(editor.textChanged.name, std::bind(&EventReceiverDemo::processTextChangedEvent, this, _1));
-    eventHandleMap.insert(editor.selectionChanged.name, std::bind(&EventReceiverDemo::processSelectionChangedEvent, this, _1));
-    eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&EventReceiverDemo::processActionInvokedEvent, this, _1));
-    eventHandleMap.insert(project.openProject.name, std::bind(&EventReceiverDemo::processOpenProjectEvent, this, _1));
+    eventHandleMap.insert(editor.contextMenu.name, std::bind(&CodeGeeXReceiver::processContextMenuEvent, this, _1));
+    eventHandleMap.insert(editor.textChanged.name, std::bind(&CodeGeeXReceiver::processTextChangedEvent, this, _1));
+    eventHandleMap.insert(editor.selectionChanged.name, std::bind(&CodeGeeXReceiver::processSelectionChangedEvent, this, _1));
+    eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&CodeGeeXReceiver::processActionInvokedEvent, this, _1));
+    eventHandleMap.insert(project.openProject.name, std::bind(&CodeGeeXReceiver::processOpenProjectEvent, this, _1));
 }
 
-dpf::EventHandler::Type EventReceiverDemo::type()
+dpf::EventHandler::Type CodeGeeXReceiver::type()
 {
     return dpf::EventHandler::Type::Async;
 }
 
-QStringList EventReceiverDemo::topics()
+QStringList CodeGeeXReceiver::topics()
 {
     return { T_MENU, editor.topic, notifyManager.topic, project.topic };
 }
 
-void EventReceiverDemo::eventProcess(const dpf::Event &event)
+void CodeGeeXReceiver::eventProcess(const dpf::Event &event)
 {
     const auto &eventName = event.data().toString();
     if (!eventHandleMap.contains(eventName))
@@ -40,7 +40,7 @@ void EventReceiverDemo::eventProcess(const dpf::Event &event)
     eventHandleMap[eventName](event);
 }
 
-void EventReceiverDemo::processContextMenuEvent(const dpf::Event &event)
+void CodeGeeXReceiver::processContextMenuEvent(const dpf::Event &event)
 {
     QMenu *contextMenu = event.property("menu").value<QMenu *>();
     if (!contextMenu)
@@ -51,12 +51,12 @@ void EventReceiverDemo::processContextMenuEvent(const dpf::Event &event)
     });
 }
 
-void EventReceiverDemo::processTextChangedEvent(const dpf::Event &event)
+void CodeGeeXReceiver::processTextChangedEvent(const dpf::Event &event)
 {
     Copilot::instance()->handleTextChanged();
 }
 
-void EventReceiverDemo::processSelectionChangedEvent(const dpf::Event &event)
+void CodeGeeXReceiver::processSelectionChangedEvent(const dpf::Event &event)
 {
     QString fileName = event.property("fileName").toString();
     int lineFrom = event.property("lineFrom").toInt();
@@ -66,7 +66,7 @@ void EventReceiverDemo::processSelectionChangedEvent(const dpf::Event &event)
     Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
 }
 
-void EventReceiverDemo::processActionInvokedEvent(const dpf::Event &event)
+void CodeGeeXReceiver::processActionInvokedEvent(const dpf::Event &event)
 {
     auto actId = event.property("actionId").toString();
     if (actId == "codegeex_login_default")
@@ -75,7 +75,7 @@ void EventReceiverDemo::processActionInvokedEvent(const dpf::Event &event)
         QMetaObject::invokeMethod(CodeGeeXManager::instance(), "installConda", Qt::QueuedConnection);
 }
 
-void EventReceiverDemo::processOpenProjectEvent(const dpf::Event &event)
+void CodeGeeXReceiver::processOpenProjectEvent(const dpf::Event &event)
 {
     auto projectPath = event.property("workspace").toString();
     QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);

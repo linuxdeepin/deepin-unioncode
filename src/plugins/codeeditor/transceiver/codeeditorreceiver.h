@@ -6,7 +6,7 @@
 #define CODEEDITORRECEIVER_H
 
 #include "common/common.h"
-#include "framework.h"
+#include "framework/framework.h"
 
 class CodeEditorReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<CodeEditorReceiver>
 {

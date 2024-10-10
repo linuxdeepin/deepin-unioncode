@@ -30,7 +30,6 @@ static const char *completionModelPro = "codegeex-pro";
 #define SUPPORTMINIFORGE
 #endif
 
-
 enum languageModel {
     Lite,
     Pro

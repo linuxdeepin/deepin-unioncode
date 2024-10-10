@@ -26,8 +26,8 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     ${QtUseModules}
     ${PkgUserModules}
-    services
-    common
+    duc-services
+    duc-common
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

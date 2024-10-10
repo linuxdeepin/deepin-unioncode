@@ -1,1 +1,9 @@
 /usr/include/deepin-unioncode/*
+/usr/lib/*/pkgconfig/duc-common.pc
+/usr/lib/*/cmake/duc-common/*.cmake
+/usr/lib/*/pkgconfig/duc-services.pc
+/usr/lib/*/cmake/duc-services/*.cmake
+/usr/lib/*/pkgconfig/duc-base.pc
+/usr/lib/*/cmake/duc-base/*.cmake
+/usr/lib/*/pkgconfig/duc-framework.pc
+/usr/lib/*/cmake/duc-framework/*.cmake

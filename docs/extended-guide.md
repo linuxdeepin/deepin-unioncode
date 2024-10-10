@@ -22,31 +22,48 @@
 
 技术栈：**C/C++、Qt（5.11.3）、dpf(插件框架)**
 
+使用该插件模板有两种方式：
+
+1. （**推荐**）在任意目录创建，按照模板中用法，开发自己的插件。进行编译，将编译后得到的动态库文件放入`/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/deepin-unioncode/plugins`中。 
+
+2. 将插件模板放在`deepin-unioncode`源码目录下，通过编译运行`deepin-unioncode`来开发和调试插件。
+
+   其中第二种方式更加适合在开发过程中需要进一步进行调试的开发者。
+
 - 创建
 
-  打开菜单**文件** > **新建文件或工程** > **Projects** > **plugin**，填入工程名和存放路径，完成模板的创建。存放路径建议设置为 deepin-unioncode 源码的 src/plugins 目录，并在该目录下的 cmake 文件中添加模板工程。完成上述步骤后，新建的插件模板就显示到 IDE 的工程视图中。
+  打开菜单**文件** > **新建文件或工程** > **新建工程** >**CMake** >**plugin**，填入工程名和存放路径，完成模板的创建。
 
-  ![](./rc-guide/plugin-demo.png)
+  ![create-demo](rc-guide/create-demo.png)
 
 - CMakeLists.txt 文件
 
 
 ```cmake
 ...
+find_package(duc-base REQUIRED)
+find_package(duc-common REQUIRED)
+find_package(duc-framework REQUIRED)
+find_package(duc-services REQUIRED)
 target_link_libraries(${PROJECT_NAME}
-    framework # 插件框架
-    base # 基础类
-    services # 服务
-    common # 通用功能
+    ${duc-framework_LIBRARIES} # 基础框架
+    ${duc-base_LIBRARIES} # 基础类
+    ${duc-common_LIBRARIES} # 服务
+    ${duc-services_LIBRARIES} # 通用
     ${QtUseModules}
     ${PkgUserModules}
+    ${DtkWidget_LIBRARIES}
     )
-    
+
 # PLUGIN_INSTALL_PATH = /usr/lib/$Arch(x86_64-linux-gnu)/deepin-unioncode/plugins
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH}
+if(NOT PLUGIN_INSTALL_PATH)
+    set(PLUGIN_INSTALL_PATH "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/deepin-unioncode/plugins")
+endif()
+
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
 ```
 
-一般而言，上面几个库都需要链接，最后一行是将该插件安装到指定位置，才能被 `IDE` 发现调用。
+一般而言，上面几个库都需要链接，最后一行是将该插件安装到指定位置，需要执行`sudo make install`，才能被 `IDE` 发现调用。（通过第二种方式使用模板时，无需自己进行`make install`）
 
 - 元数据文件
 
@@ -71,15 +88,17 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH}
 }
 ```
 
-完成上述操作后，进行编译安装，一个 `IDE` 插件的接入就已经完成。
+- 编译安装（方式1）
 
-可以在菜单栏**帮助** > **关于插件...** 查看是否被正确加载。
+  此时可以进行编译安装，可以通过IDE提供的构建按钮，或在终端中执行`cmake .`，在目标目录进行构建，并生成动态链接库`libdemo.so`（如工程名为demo）。然后通过在终端执行`sudo make install`，可以将动态库安装到系统中`deepin-unioncode`的插件目录下。
 
-![](./rc-guide/plugin-manager.png)
+​		完成上述操作后，打开系统中安装的`deepin-unioncode`，可以在导航栏、底部窗口看到 Demo 控件：
 
-此时，可以在导航栏、菜单栏、底部窗口看到 Demo 控件：
+### ![demo-widget](rc-guide/demo-widget.jpg)
 
-![](./rc-guide/demo-widget.png)
+- 编译安装（方式2）
+
+  先拉取`deepin-unioncode`源码，假设源码存储的路径为`project-path`，在该源码可以编译运行的基础上，创建插件模板，将插件模板的源码整个放入`project-path/src/plugins`目录下，修改`project-path/src/plugins/CMakelists.txt`，在中加入`add_subdirectory(xx)`其中xx为插件工程目录名，直接使用`deepin-unioncode`工程。
 
 ### 2、功能接口
 
@@ -87,7 +106,7 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH}
 
 #### 2.1、services	
 
-services 是 IDE 提供的服务接口，该接口是通过动态绑定的形式实现，所以不存在插件依赖的问题。目前主要的服务接口包含为4个，分别是窗口服务、工程服务、选项服务和语言服务。	
+services 是 IDE 提供的服务接口，该接口是通过动态绑定的形式实现，所以不存在插件依赖的问题。目前主要的服务接口包含为4个，分别是窗口服务、工程服务、选项服务和语言服务。	新增服务及服务更新详见src/services目录下文件。
 
 | 接口类型        | 描述                                                         |
 | --------------- | ------------------------------------------------------------ |
@@ -95,55 +114,75 @@ services 是 IDE 提供的服务接口，该接口是通过动态绑定的形式
 | ProjectService  | 工程服务，可以获取工程相关的信息，比如工程目录、工程类型等   |
 | OptionService   | 选项服务，用于实现插件参数的统一配置，也就是 IDE 中的选项面板 |
 | LanguageService | 语言服务，调用该服务实现新语言的接入，如果有特殊的编译流程请结合 BuilderService 和 DebuggerService 使用。注意，新语言的接入往往还需要添加对应的 LSP 和 DAP 后端。 |
+| locatorService  | 定位器服务，注册自己编写的定位器，用以界面上方定位器的使用。 |
 
 以下针对每个服务进行说明：
 
 - WindowService	
 
-| 函数名                  | 参数                                                         | 描述                                     |
-| ----------------------- | ------------------------------------------------------------ | ---------------------------------------- |
-| addActionNavigation     | const QString &id, AbstractAction \*action                   | 添加导航栏action                         |
-| addMenu                 | AbstractMenu \*menu                                          | 添加菜单项                               |
-| addAction               | const QString &menuName, AbstractAction \*action             | 添加Action到其他由框架发布的可扩展menu   |
-| removeActions           | const QString &menuName                                      | 移除框架扩展menu中的Action               |
-| insertAction            | const QString &menuName, const QString &beforeActionName, AbstractAction \*action | 在指定Action之前插入Action到框架扩展menu |
-| addCentralNavigation    | const QString &name, AbstractCentral \*central               | 添加中心显示组件                         |
-| addWidgetWorkspace      | const QString &title, AbstractWidget \*widget                | 添加左侧工作空间组件                     |
-| setWidgetConsole        | AbstractConsole \*console                                    | 设置默认终端                             |
-| setWidgetEdit           | AbstractCentral \*widget                                     | 设置编辑器组件                           |
-| addContextWidget        | const QString &contextTab, AbstractWidget \*contextWidget, const QString &group | 添加交互组件                             |
-| removeContextWidget     | AbstractWidget \*contextWidget                               | 移除交互组件                             |
-| setStatusBar            | AbstractWidget \*statusBar                                   | 设置状态栏                               |
-| addWidgetToStatusBar    | QWidget \*widget                                             | 将组件添加到状态栏                       |
-| insertWidgetToStatusBar | int index, QWidget \*widget                                  | 在指定位置插入组件到状态栏               |
-| setWidgetWatch          | AbstractWidget \*widget                                      | 设置监视器组件                           |
-| addOpenProjectAction    | const QString &name, AbstractAction \*action                 | 添加打开工程的Action                     |
-| addFindToolBar          | AbstractWidget \*widget                                      | 添加查找工具栏                           |
-| showFindToolBar         | 无参数                                                       | 显示查找工具栏                           |
-| addToolBarActionItem    | const QString &id, QAction \*action, const QString &group    | 添加工具栏动作项                         |
-| addToolBarWidgetItem    | const QString &id, AbstractWidget \*widget, const QString &group | 添加工具栏组件项                         |
-| addToolBarSeparator     | const QString &group                                         | 添加工具栏分隔符                         |
-| removeToolBarItem       | const QString &id                                            | 移除工具栏项                             |
-| setToolBarItemDisable   | const QString &id, bool disable                              | 设置工具栏项是否禁用                     |
-| showMessageDisplay      | 无参数                                                       | 展示处理消息提示框                       |
-| appendProcessMessage    | const QString &mess, int currentPercent, int maxPrecent = 100 | 添加处理消息                             |
-| hideMessageDisplay      | 无参数                                                       | 隐藏处理消息提示框                       |
+  基础概念：
+
+  - 模式：`CM_EDIT / CM_RECENT / CM_DEBUG`，默认的三个模式，<u>`recent`模式待**改名**</u>。   不同模式下会显示默认的一些窗口，用以其他插件调用。
+
+  - 位置： `FullWindow`和`Central`本质一样，均为`QMainWindow`中间的主窗口，但`FullWindow`会先隐藏其他部分的`dock`窗口，再显示窗口。
+
+   ```c++
+   enum Position {
+       FullWindow = 0x0,
+       Left = 0x1,
+       Right = 0x2,
+       Top = 0x3,
+       Bottom = 0x4,
+       Central = 0x5
+   };
+   ```
+
+  - `dock`窗口：`QMainWindow`分为一个主窗口，和多个`dock`窗口，一般来说，中间的区域为主窗口，四周可以拖拽的窗口均为`dock`窗口，当注册窗口到`windowservice`且位置为四周时，都是基于该窗口生成一个`dock`窗口用以显示。所以部分对于原窗口的直接操作会失效，且`dock`窗口默认会进行拉伸，所以对原窗口的大小设置也将无效（`setMinimumSize`依然会限制`dock`窗口的最小Size）
+  - 部分窗口在插件加载阶段并不会创建成为`dock`窗口并初始化，如需要操作`dock`窗口，例如初始化大小等，需要等待`dock`窗口创建完成之后，例如页面加载后、或者插件全部加载完成后。
+  - AbstractWidget/AbstractAction/··· :用以传递窗口、快捷键，并非真正意义上的抽象类，后续可能会改名，对象中可以存储窗口的额外信息，例如图标、快捷键信息。
+
+| 函数名                    | 返回值        | 参数                                                         | 描述                                                         |
+| ------------------------- | ------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| raiseMode                 | void          | const QString &mode                                          | 调起模式                                                     |
+| registerWidget            | void          | const QString &name, AbstractWidget *abstractWidget          | 注册窗口                                                     |
+| registerWidgetCreator     | void          | const QString &name, std::function<AbstractWidget*()> &widgetCreateFunc | 注册后，窗口初始化时会调用回调函数                           |
+| showWidgetAtPosition      | void          | const QString &name, Position pos, bool replace              | 在指定位置显示窗口，replace为false的话，可以同一位置显示多个窗口 |
+| getCentralWidgetName      | QString       |                                                              | 获取当前主窗口名称                                           |
+| getCurrentDockName        | QStringList   |                                                              | 获取当前所有dock窗口名称                                     |
+| resizeDocks               | void          | const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation | 设置dock窗口的大小，按照 水平/竖直 的方向进行批量设置。需要等待窗口显示出来之后设置，否则可能不会生效。 |
+| setDockWidgetFeatures     | void          | const QString &name, QDockWidget::DockWidgetFeatures feature | 设置dock窗口的属性，需要dock窗口创建成功后设置，可以设置dock窗口是否可拖拽、浮动等属性。 |
+| splitWidgetOrientation    | void          | const QString &first, const QString &second, Qt::Orientation orientation | 调整dock窗口的位置                                           |
+| setDockHeaderName         | void          | const QString &dockName, const QString &headerName           | 设置dock窗口的header名称                                     |
+| setDockHeaderList         | void          | const QString &dockName, const QList<QAction *> &headers     | 设置dock窗口支持下拉的多个名称                               |
+| addToolBtnToDockHeader    | void          | const QString &name, DTK_WIDGET_NAMESPACE::DToolButton *btn  | 给dock窗口的header添加按钮                                   |
+| addNavigationItem         | void          | AbstractAction *action, quint8 priority                      | 添加导航项，优先级可以选Priority::lowest等或自行设置         |
+| addNavigationItemToBottom | void          | AbstractAction *action, quint8 priority                      | 在导航栏下方添加                                             |
+| switchWidgetNavigation    | void          | const QString &navName                                       | 切换导航项的窗口                                             |
+| bindWidgetToNavigation    | void          | const QString &dockName, AbstractAction *action              | 将窗口绑定到导航项，窗口隐藏后，点击导航项可显示。（默认隐藏后，在导航项下方中进行显示） |
+| getAllNavigationItemName  | QStringList   |                                                              | 获取导航栏所有导航项名称                                     |
+| addContextWidget          | void          | const QString &title, AbstractWidget *contextWidget, bool isVisible | 添加窗口至下方ContextWidget，可以设置默认是否显示            |
+| showContextWidget         | void          |                                                              | 显示下方ContextWidget                                        |
+| switchContextWidget       | void          | const QString &title                                         | 切换ContextWidget中的窗口                                    |
+| addWidgetToTopTool        | void          | AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority | 添加窗口到顶部工具栏                                         |
+| addTopToolItem            | DToolButton * | Command *action, bool addSeparator, quint8 priority          | 添加action到顶部工具栏，自动生成button并返回                 |
+| showStatusBar             | void          |                                                              | 显示状态栏                                                   |
+| hideStatusBar             | void          |                                                              | 隐藏状态栏                                                   |
+| addStatusBarItem          | void          | QWidget *item                                                | 添加状态栏项                                                 |
 
 - ProjectService
 
-| 函数名               | 参数                                             | 描述                                   |
-| -------------------- | ------------------------------------------------ | -------------------------------------- |
-| name                 | 无                                               | 返回服务的名称。                       |
-| supportGeneratorName | 无                                               | 返回支持的生成器名称的 QStringList。   |
-| implGenerator        | const QString &name, QString *errorString        | 导入具有给定名称的生成器对象。         |
-| createGenerator      | const QString &name, QString *errorString        | 创建具有给定名称的生成器对象。         |
-| name                 | T* value                                         | 返回与给定值相关联的名称。             |
-| values               | 无                                               | 返回值的 QList。                       |
-| getAllProjectInfo    | 无                                               | 检索所有项目信息的列表。               |
-| getProjectInfo       | const QString &kitName, const QString &workspace | 检索指定工具包名称和工作区的项目信息。 |
-| getActiveProjectInfo | 无                                               | 检索活动项目的项目信息。               |
-| getActiveTarget      | TargetType                                       | 检索指定类型的活动目标。               |
-| projectConfigureDone | const QString &buildDirectory                    | 表示项目配置已完成，并提供指定目录。   |
+| 函数名               | 返回值                         | 参数                                             | 描述                                   |
+| -------------------- | ------------------------------ | ------------------------------------------------ | -------------------------------------- |
+| name                 | QString                        | 无                                               | 返回服务的名称。                       |
+| supportGeneratorName |                                | 无                                               | 返回支持的生成器名称的 QStringList。   |
+| implGenerator        |                                | const QString &name, QString *errorString        | 导入具有给定名称的生成器对象。         |
+| createGenerator      |                                | const QString &name, QString *errorString        | 创建具有给定名称的生成器对象。         |
+| name                 |                                | T* value                                         | 返回与给定值相关联的名称。             |
+| values               | QList<T*>                      | 无                                               | 返回值的 QList。                       |
+| getAllProjectInfo    | QList<dpfservice::ProjectInfo> | 无                                               | 检索所有项目信息的列表。               |
+| getProjectInfo       | dpfservice::ProjectInfo        | const QString &kitName, const QString &workspace | 检索指定工具包名称和工作区的项目信息。 |
+| getActiveProjectInfo | dpfservice::ProjectInfo        | 无                                               | 检索活动项目的项目信息。               |
+| getActiveTarget      | Target                         | TargetType                                       | 检索指定类型的活动目标。               |
 
 - OptionService
 
@@ -195,6 +234,8 @@ services 是 IDE 提供的服务接口，该接口是通过动态绑定的形式
 ## 三、模板工程添加规则
 
 `IDE` 提供快速创建模板的能力，目前已支持三方扩展。扩展方式较为简单，修改两个配置文件然后将模板工程放置到指定位置即可实现。
+
+有改动，待更新，下述部分仅供参考，具体查看assets/templates/目录下文件
 
 ### 1、配置文件
 

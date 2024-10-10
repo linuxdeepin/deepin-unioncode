@@ -5,7 +5,7 @@
 #ifndef BASEFILELOCATOR_H
 #define BASEFILELOCATOR_H
 
-#include "abstractlocator.h"
+#include "base/abstractlocator.h"
 #include "common/util/fileutils.h"
 #include "services/project/projectservice.h"
 

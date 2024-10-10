@@ -5,7 +5,7 @@
 #ifndef CURRENTPROJECTLOCATOR_H
 #define CURRENTPROJECTLOCATOR_H
 
-#include "base/basefilelocator.h"
+#include "basefilelocator.h"
 #include "common/util/fileutils.h"
 
 #include <QObject>

@@ -5,11 +5,12 @@
 #include "demo.h"
 
 #include "common/common.h"
+#include "common/actionmanager/actionmanager.h"
+#include "common/actionmanager/actioncontainer.h"
 #include "services/window/windowservice.h"
 
 #include "base/abstractwidget.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractmenu.h"
 
 #include <QAction>
@@ -27,37 +28,59 @@ bool Demo::start()
 {
     auto windowService = dpfGetService(dpfservice::WindowService);
 
+    // add menu
+    auto mTools = ActionManager::instance()->actionContainer(M_TOOLS);
+    auto demoMenu = ActionManager::instance()->createContainer("demoMenu");
+    demoMenu->menu()->setTitle("demo menu");
+    QAction *demoAction = new QAction("demo", this);
+    auto cmd = ActionManager::instance()->registerAction(demoAction, "demo.demo");
+    demoMenu->addAction(cmd);
+    mTools->addMenu(demoMenu);
+
     if (windowService) {
-        QString title = "Demo";
+        QString contextTitle = "DemoContext";
+        QString dockTitle = "DemoDock";
+        QString mainWindowTitle = "DemoMainWindow";
         QString displayText = "Hello UnionCode!";
 
+        QAction *action = new QAction(mainWindowTitle, this);
+        action->setIcon(QIcon::fromTheme(":/demo/images/navigation.png"));
+        // Add navigation to navigationbar
+        windowService->addNavigationItem(new AbstractAction(action), Priority::lowest);
+
         // Add widget to bottom window
-        if (windowService->addContextWidget) {
-            QLabel *contextLabel = new QLabel(displayText);
-            contextLabel->setFont(QFont("", 100, 100, true));
-            windowService->addContextWidget(title, new AbstractWidget(contextLabel), title);
-        }
+        QLabel *contextLabel = new QLabel(displayText);
+        contextLabel->setFont(QFont("", 100, 100, true));
+        windowService->addContextWidget(contextTitle, new AbstractWidget(contextLabel), true);
 
-        // Add widget to left bar
-        if (windowService->addCentralNavigation) {
-            QLabel *navigationLabel = new QLabel(displayText);
-            navigationLabel->setFont(QFont("", 100, 100, true));
-            windowService->addActionNavigation(title, new AbstractAction(new QAction(QIcon(":/demo/images/navigation.png"), QAction::tr("Demo"))));
-            windowService->addCentralNavigation(title, new AbstractCentral(navigationLabel));
-        }
+        // Register mainWindow
+        QLabel *mainLabel = new QLabel(displayText);
+        auto impl = new AbstractWidget(mainLabel);
+        mainLabel->setFont(QFont("", 100, 100, true));
+        windowService->registerWidget(mainWindowTitle, impl);
 
-        // Add menu
-        if (windowService->addMenu) {
-            QMenu *menu = new QMenu(title);
-            QAction *action = new QAction("test event", menu);
-            connect(action, &QAction::triggered, [=](){
-                // send event to eventreceiver
-                sendEvent();
-            });
-            menu->addAction(action);
-            windowService->addMenu(new AbstractMenu(menu));
-        }
+        // register left dock
+        QLabel *dockLabel = new QLabel(displayText);
+        impl = new AbstractWidget(dockLabel);
+        windowService->registerWidget(dockTitle, impl);
+
+        // activated when triggered navigation
+        connect(action, &QAction::triggered, this, [=](){
+            // show mainwindow
+            windowService->showWidgetAtPosition(mainWindowTitle, dpfservice::Position::Central, true);
+
+            // show contextWidget
+            windowService->showContextWidget();
+            windowService->switchContextWidget(contextTitle);
+
+            // show left dock
+            windowService->setDockHeaderName(dockTitle, "demoDockHeader");
+            windowService->showWidgetAtPosition(dockTitle, dpfservice::Position::Left, true);
+
+            sendEvent(); //test
+        }, Qt::DirectConnection);
     }
+
     return true;
 }
 
@@ -74,3 +97,4 @@ void sendEvent()
     event.setProperty(P_ACTION_TEXT, "Event has been received successfully!");
     dpf::EventCallProxy::instance().pubEvent(event);
 }
+

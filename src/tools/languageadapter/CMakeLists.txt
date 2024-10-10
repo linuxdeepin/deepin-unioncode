@@ -50,8 +50,8 @@ add_executable(
     )
 
 target_link_libraries(${PROJECT_NAME}
-    common
-    framework
+    duc-common
+    duc-framework
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")
