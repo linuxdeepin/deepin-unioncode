@@ -2,7 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # use outside framework from deepin framework
 include_directories(${CMAKE_SOURCE_DIR})
 add_subdirectory(framework)
-link_libraries(framework)
+link_libraries(duc-framework)
 
 add_subdirectory(app)
 add_subdirectory(base)

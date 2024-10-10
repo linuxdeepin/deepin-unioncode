@@ -27,14 +27,12 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
-    base
-    services
+    duc-framework
+    duc-base
+    duc-services
     ${QtUseModules}
     ${PkgUserModules}
     ${DtkWidget_LIBRARIES}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
-
-

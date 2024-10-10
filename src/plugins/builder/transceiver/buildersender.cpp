@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "buildersender.h"
-#include "framework.h"
+#include "framework/framework.h"
 #include "common/common.h"
 
 BuilderSender::BuilderSender(QObject *parent)

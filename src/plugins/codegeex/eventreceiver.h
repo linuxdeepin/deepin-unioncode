@@ -13,12 +13,12 @@
  * @brief The EventReceiverDemo class
  * It will auto registered, and receive subscribed topics events.
  */
-class EventReceiverDemo : public dpf::EventHandler, dpf::AutoEventHandlerRegister<EventReceiverDemo>
+class CodeGeeXReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<CodeGeeXReceiver>
 {
-    friend class dpf::AutoEventHandlerRegister<EventReceiverDemo>;
+    friend class dpf::AutoEventHandlerRegister<CodeGeeXReceiver>;
 
 public:
-    explicit EventReceiverDemo(QObject *parent = nullptr);
+    explicit CodeGeeXReceiver(QObject *parent = nullptr);
     static Type type();
     static QStringList topics();
 

@@ -27,10 +27,10 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
-    base
-    common
-    services
+    duc-framework
+    duc-base
+    duc-services
+    duc-common
     ${QtUseModules}
     ${PkgUserModules}
     )

@@ -1,0 +1,7 @@
+Name: @PROJECT_NAME@
+Description:
+URL:
+Version:
+Cflags: -I "@INCLUDE_INSTALL_RPEFIX@/@PROJECT_NAME@"
+Libs: -L"@LIBRARY_INSTALL_PREFIX@" -l@PROJECT_NAME@ -lQtCore
+Libs.private: -L"@LIBRARY_INSTALL_PREFIX@" -l@PROJECT_NAME@ -lQtCore

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(framework)
+project(duc-framework)
 
 add_definitions(
     -DDPF_LIBRARY
@@ -79,19 +79,22 @@ add_library(${PROJECT_NAME} SHARED
     ${PUBLIC_CPP}
     )
 
+find_package(Dtk COMPONENTS Widget Core Gui REQUIRED)
+
 target_link_libraries(
     ${PROJECT_NAME}
     stdc++fs
     ${QtUseModules}
     ${PkgUseModules}
     ${DtkWidget_LIBRARIES}
+    ${DtkCore_LIBRARIES}
+    ${DtkGui_LIBRARIES}
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
-add_library(DFM::framework ALIAS ${PROJECT_NAME})
 
 #install library file
 install(TARGETS
@@ -107,3 +110,11 @@ install(DIRECTORY
     ${INCLUDE_INSTALL_RPEFIX}
     FILES_MATCHING PATTERN "*.h"
     )
+
+# config pkgconfig file
+configure_file(${CMAKE_SOURCE_DIR}/assets/dev/${PROJECT_NAME}/${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
+# config cmake file
+configure_file(${CMAKE_SOURCE_DIR}/assets/dev/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake.in ${PROJECT_NAME}Config.cmake @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})

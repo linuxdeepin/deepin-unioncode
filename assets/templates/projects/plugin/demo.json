@@ -9,8 +9,8 @@
     ],
     "Category" : "Demos",
     "Description" : "A plugin project demo for the unioncode.",
-    "UrlLink" : "https://www.Your company.com",
+    "UrlLink" : "https://uosdn.uniontech.com/#document2?dirid=656d40a9bd766615b0b02e5e",
     "Depends" : [
-        {"Name" : "plugin-codeeditor"}
+        {"Name" : "codeeditor"}
     ]
 }

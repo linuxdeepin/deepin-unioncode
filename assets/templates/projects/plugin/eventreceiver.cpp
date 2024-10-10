@@ -25,12 +25,11 @@ QStringList EventReceiverDemo::topics()
 void EventReceiverDemo::eventProcess(const dpf::Event &event)
 {
     QString data = event.data().toString();
-    if (event.topic() == T_MENU && event.data() == D_TSET) {
+    QMetaObject::invokeMethod(this, [event](){
+        if (event.topic() == T_MENU && event.data() == D_TSET) {
         QString displayText = event.property(P_ACTION_TEXT).toString();
         QMessageBox box;
         box.setText(displayText);
         box.exec();
-    }
+    }});
 }
-
-

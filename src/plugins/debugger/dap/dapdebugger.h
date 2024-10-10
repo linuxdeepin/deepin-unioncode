@@ -6,7 +6,6 @@
 #define DEBUGGER_H
 
 #include "debug.h"
-#include "event/event.h"
 #include "interface/stackframemodel.h"
 #include "interface/localtreemodel.h"
 #include "interface/localtreeitem.h"

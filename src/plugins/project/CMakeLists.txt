@@ -14,6 +14,7 @@ set(CXX_CPP
     mainframe/recent/recentopenwidget.cpp
     locator/allprojectfilelocator.cpp
     locator/currentprojectlocator.cpp
+    locator/basefilelocator.cpp
     transceiver/projectcorereceiver.cpp
     transceiver/sendevents.cpp
     projectcore.cpp
@@ -34,6 +35,7 @@ set(CXX_H
     transceiver/sendevents.h
     locator/allprojectfilelocator.h
     locator/currentprojectlocator.h
+    locator/basefilelocator.h
     projectcore.h
     )
 
@@ -45,10 +47,10 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
-    base
-    services
-    common
+    duc-framework
+    duc-base
+    duc-services
+    duc-common
     ${QtUseModules}
     ${PkgUserModules}
     )

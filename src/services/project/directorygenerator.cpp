@@ -6,6 +6,8 @@
 #include "directoryasynparse.h"
 #include "projectservice.h"
 
+#include <QtConcurrent>
+
 using namespace dpfservice;
 class DirectoryGeneratorPrivate
 {

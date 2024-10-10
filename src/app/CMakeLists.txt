@@ -8,8 +8,8 @@ add_definitions(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    framework
-    common
+    duc-framework
+    duc-common
     ${QtUseModules}
     ${PkgUseModule}
     ${DtkWidget_LIBRARIES}

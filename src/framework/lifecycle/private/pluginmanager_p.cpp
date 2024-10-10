@@ -357,7 +357,6 @@ void PluginManagerPrivate::scanfAllPlugin(PluginMetaQueue &destQueue,
 
         while (dirItera.hasNext()) {
             dirItera.next();
-
             PluginMetaObjectPointer metaObj(new PluginMetaObject);
             metaObj->d->loader->setFileName(dirItera.path() + QDir::separator() + dirItera.fileName());
             QJsonObject &&metaJson = metaObj->d->loader->metaData();

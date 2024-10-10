@@ -26,10 +26,10 @@ add_library(${PROJECT_NAME}
 
 
 target_link_libraries(${PROJECT_NAME}
-    framework # plug-in framework, must be set
-    base
-    services
-    common
+    duc-framework
+    duc-base
+    duc-services
+    duc-common
     ${QtUseModules}
     ${PkgUserModules}
     ${DtkWidget_LIBRARIES}

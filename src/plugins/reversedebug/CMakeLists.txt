@@ -37,10 +37,10 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
-    services
-    base
-    common
+    duc-framework
+    duc-services
+    duc-base
+    duc-common
     eventman
     ${QtUseModules}
     ${PkgUserModules}

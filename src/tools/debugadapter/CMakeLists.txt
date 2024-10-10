@@ -48,7 +48,7 @@ add_executable(${PROJECT_NAME} main.cpp
 
 target_link_libraries(${PROJECT_NAME}
   Qt5::DBus
-  common
+  duc-common
   )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")

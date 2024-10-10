@@ -6,7 +6,7 @@
 #define EVENTDEFINITIONS_H
 
 #include "common/lsp/protocol/newprotocol.h"
-#include "framework.h"
+#include "framework/framework.h"
 
 #include <QString>
 

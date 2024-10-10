@@ -29,9 +29,9 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
-    services
-    base
+    duc-framework
+    duc-base
+    duc-services
     ${QtUseModules}
     ${PkgUserModules}
     )

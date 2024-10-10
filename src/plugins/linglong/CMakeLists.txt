@@ -19,10 +19,10 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
-    base
-    services
-    common
+    duc-framework
+    duc-base
+    duc-services
+    duc-common
     ${QtUseModules}
     ${PkgUserModules}
     yaml-cpp
