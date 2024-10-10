@@ -83,11 +83,11 @@ public:
     QList<RecordData> sessionRecords() const;
 
     void connectToNetWork(bool connecting);
-    bool isConnectToNetWork() { return isConnecting; }
-    QStringList getReferenceFiles() { return referenceFiles; }
-    void setReferenceCodebase(bool on) { referenceCodebase = on; }
-    bool isReferenceCodebase() { return referenceCodebase; }
-    void setReferenceFiles(const QStringList &files) { referenceFiles = files; }
+    bool isConnectToNetWork() const;
+    QStringList getReferenceFiles() const;
+    void setReferenceCodebase(bool on);
+    bool isReferenceCodebase() const;
+    void setReferenceFiles(const QStringList &files);
 
     // Rag
     QString condaRootPath() const;
@@ -154,12 +154,9 @@ private:
     QTimer *queryTimer { nullptr };
     bool isLogin { false };
     bool isRunning { false };
-    bool isConnecting { false };
-    bool referenceCodebase { false };
     bool condaInstalled { false };
     QTimer installCondaTimer;
     QStringList indexingProject {};
-    QStringList referenceFiles {};
 };
 
 #endif   // CODEGEEXMANAGER_H

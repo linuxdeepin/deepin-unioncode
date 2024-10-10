@@ -1889,10 +1889,10 @@ void Editor::AddChar(char ch) {
 }
 
 void Editor::FilterSelections() {
-	if (!additionalSelectionTyping && (sel.Count() > 1)) {
+    if (!additionalSelectionTyping && (sel.Count() > 1)) {
 		InvalidateWholeSelection();
 		sel.DropAdditionalRanges();
-	}
+    }
 }
 
 // AddCharUTF inserts an array of bytes which may or may not be in UTF-8.
@@ -1906,6 +1906,9 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 		for (size_t r = 0; r < sel.Count(); r++) {
 			selPtrs.push_back(&sel.Range(r));
 		}
+        if (!sel.Empty()) {
+            ClearSelection();
+        }
 		// Order selections by position in document.
 		std::sort(selPtrs.begin(), selPtrs.end(),
 			[](const SelectionRange *a, const SelectionRange *b) {return *a < *b;});

@@ -10,24 +10,47 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 namespace CodeGeeX {
-struct websiteReference {
+struct websiteReference
+{
     QString citation;
     QString url;
     QString title;
     QString status;
 };
 
-struct Entry {
+struct Entry
+{
     QString type;
     QString text;
     QList<websiteReference> websites;
 };
 
+class AskApiPrivate;
 class AskApi : public QObject
 {
     Q_OBJECT
 public:
+    struct SessionRecord
+    {
+        QString prompt;
+        QString talkId;
+        QString createdTime;
+    };
+
+    struct MessageRecord
+    {
+        QString input;
+        QString output;
+    };
+
+    enum LoginState {
+        kLoginFailed,
+        kLoginSuccess,
+        kLoginOut
+    };
+
     explicit AskApi(QObject *parent = nullptr);
+    ~AskApi();
 
     void sendLoginRequest(const QString &sessionId,
                           const QString &machineId,
@@ -45,28 +68,16 @@ public:
                      const QMultiMap<QString, QString> &history,
                      const QString &talkId);
 
-    void postNewSession(
-            const QString &url,
-            const QString &token,
-            const QString &prompt,
-            const QString &talkId);
+    void postNewSession(const QString &url,
+                        const QString &token,
+                        const QString &prompt,
+                        const QString &talkId);
 
-    struct SessionRecord
-    {
-        QString prompt;
-        QString talkId;
-        QString createdTime;
-    };
     void getSessionList(const QString &url,
                         const QString &token,
                         int pageNumber = 1,
                         int pageSize = 10);
 
-    struct MessageRecord
-    {
-        QString input;
-        QString output;
-    };
     void getMessageList(const QString &url,
                         const QString &token,
                         int pageNumber = 1,
@@ -79,11 +90,12 @@ public:
 
     void setModel(const QString &model);
     void setLocale(const QString &locale);
-    enum LoginState {
-        kLoginFailed,
-        kLoginSuccess,
-        kLoginOut
-    };
+    void setNetworkEnabled(bool enabled);
+    bool networkEnabled() const;
+    void setReferenceFiles(const QStringList &fileList);
+    QStringList referenceFiles() const;
+    void setCodebaseEnabled(bool enabled);
+    bool codebaseEnabled() const;
 
 signals:
     void loginState(LoginState loginState);
@@ -101,28 +113,7 @@ public slots:
     void slotSendMessage(const QString url, const QString &token, const QByteArray &body);
 
 private:
-    QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);
-    QNetworkReply *getMessage(const QString &url, const QString &token);
-    void processResponse(QNetworkReply *reply);
-    Entry processJsonObject(const QString &event, QJsonObject *obj);
-
-    QByteArray assembleSSEChatBody(const QString &prompt,
-                                   const QString &machineId,
-                                   const QJsonArray &history,
-                                   const QString &talkId);
-
-    QByteArray assembleNewSessionBody(const QString &prompt,
-                                      const QString &talkId);
-
-    QByteArray assembleDelSessionBody(const QStringList &talkIds);
-
-    QByteArray jsonToByteArray(const QJsonObject &jsonObject);
-    QJsonObject toJsonOBject(QNetworkReply *reply);
-    QJsonArray parseFile(QStringList files);
-
-    QNetworkAccessManager *manager = nullptr;
-    QString model = "codegeex-chat-lite";
-    QString locale = "zh";
+    AskApiPrivate *const d;
 };
 }   // end namespace
 
