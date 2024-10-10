@@ -174,7 +174,9 @@ bool ReverseDebugger::checkRRInstalled()
         return true;
     } else {
         auto windowService = dpfGetService(dpfservice::WindowService);
-        windowService->notifyWithCallback(0, tr("Reverse Debug"), tr("Can not find rr debugger, please install it first"), QStringList{"apt", tr("Install by apt"), "wget", tr("Install by Wget")}, installRR);
+        QString message = tr("Can not find rr debugger, please install it first. "
+                             "If installation is not possible or the software does not work after installation, you can try installing a higher version of rr through GitHub and then attempt to use it.");
+        windowService->notifyWithCallback(0, tr("Reverse Debug"), message, QStringList{"apt", tr("Install by apt"), "wget", tr("Install by Wget")}, installRR);
         process.close();
         return false;
     }

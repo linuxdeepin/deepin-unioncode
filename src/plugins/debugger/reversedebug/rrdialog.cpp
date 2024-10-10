@@ -90,7 +90,7 @@ void RecordDialog::setupUi()
     if (activePrjInfo.language() != MWMFA_CXX)
         pbtnOK->setEnabled(false);
 
-    QLabel *message = new QLabel(tr("Only support C/C++, and some architectures of CPU may experience anomalies."), this);
+    QLabel *message = new QLabel(tr("Only support C/C++, and some architectures of CPU may experience anomalies or not be usable. recommended to obtain a higher version of rr for use"), this);
     message->setWordWrap(true);
     QPalette palette = message->palette();
     palette.setColor(QPalette::WindowText, Qt::red);
