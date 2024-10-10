@@ -67,7 +67,8 @@ void CodeGeeXManager::checkCondaInstalled()
         return;
     QProcess process;
     QStringList arguments;
-    arguments << "env" << "list";
+    arguments << "env"
+              << "list";
 
     process.start(condaRootPath() + "/miniforge/condabin/conda", arguments);
     process.waitForFinished();
@@ -135,7 +136,32 @@ void CodeGeeXManager::setCurrentModel(languageModel model)
 
 void CodeGeeXManager::connectToNetWork(bool connecting)
 {
-    isConnecting = connecting;
+    askApi.setNetworkEnabled(connecting);
+}
+
+bool CodeGeeXManager::isConnectToNetWork() const
+{
+    return askApi.networkEnabled();
+}
+
+QStringList CodeGeeXManager::getReferenceFiles() const
+{
+    return askApi.referenceFiles();
+}
+
+void CodeGeeXManager::setReferenceCodebase(bool on)
+{
+    askApi.setCodebaseEnabled(on);
+}
+
+bool CodeGeeXManager::isReferenceCodebase() const
+{
+    return askApi.codebaseEnabled();
+}
+
+void CodeGeeXManager::setReferenceFiles(const QStringList &files)
+{
+    askApi.setReferenceFiles(files);
 }
 
 void CodeGeeXManager::createNewSession()
@@ -328,9 +354,9 @@ void CodeGeeXManager::initConnections()
     connect(Copilot::instance(), &Copilot::messageSended, this, &CodeGeeXManager::startReceiving);
 
     connect(this, &CodeGeeXManager::requestStop, &askApi, &AskApi::stopReceive);
-    connect(this, &CodeGeeXManager::notify, this, [](int type, const QString &message){
+    connect(this, &CodeGeeXManager::notify, this, [](int type, const QString &message) {
         WindowService *windowService = dpfGetService(WindowService);
-        windowService->notify(type, "Ai", message, QStringList{});
+        windowService->notify(type, "Ai", message, QStringList {});
     });
 }
 
@@ -437,7 +463,7 @@ void CodeGeeXManager::showIndexingWidget()
 {
     emit chatFinished();
 
-    auto widget = new QWidget; // set parent in messageComponent
+    auto widget = new QWidget;   // set parent in messageComponent
     auto layout = new QVBoxLayout(widget);
 
     const QString tip(tr("This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now."));
@@ -457,7 +483,7 @@ void CodeGeeXManager::showIndexingWidget()
     ProjectService *prjServ = dpfGetService(ProjectService);
     auto currentProject = prjServ->getActiveProjectInfo().workspaceFolder();
     connect(confirmBtn, &QPushButton::clicked, widget, [=]() {
-        QtConcurrent::run([=](){ generateRag(currentProject); });
+        QtConcurrent::run([=]() { generateRag(currentProject); });
 
         layout->addWidget(new QLabel(tr("It may take servel minutes"), widget));
         layout->addWidget(spinner);
@@ -498,7 +524,7 @@ void CodeGeeXManager::installConda()
     windowService->switchContextWidget(dpfservice::TERMINAL_TAB_TEXT);
     terminalServ->executeCommand("install", "bash", QStringList() << scriptPath << condaRootPath(), condaRootPath(), QStringList());
 
-    installCondaTimer.setSingleShot(true); // terminal may not execute it immediately. add timer to Prevent multiple triggers within a short period of time.
+    installCondaTimer.setSingleShot(true);   // terminal may not execute it immediately. add timer to Prevent multiple triggers within a short period of time.
     installCondaTimer.start(2000);
 }
 
@@ -509,10 +535,10 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     bool failed = false;
     indexingProject.append(projectPath);
     QProcess process;
-    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this, [&process](){ process.terminate(); });
+    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this, [&process]() { process.terminate(); });
 
     QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&, projectPath]() {
-        if (!failed) // only notify once
+        if (!failed)   // only notify once
             emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
         failed = true;
         qInfo() << "Error:" << process.readAllStandardError() << "\n";
@@ -520,7 +546,7 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
 
     QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [&](int exitCode, QProcess::ExitStatus exitStatus) {
-                         qInfo() << "Python script finished with exit code" << exitCode  << "Exit!!!";
+                         qInfo() << "Python script finished with exit code" << exitCode << "Exit!!!";
                      });
 
     qInfo() << "start rag project:" << projectPath;
@@ -554,7 +580,7 @@ QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &qu
 
     // If modified, update the Python file accordingly.
     auto pythonPath = condaRootPath() + "/miniforge/envs/deepin_unioncode_env/bin/python";
-    if (!QFileInfo(pythonPath).exists() || !QFileInfo(condaRootPath() +"/index.sqlite").exists())
+    if (!QFileInfo(pythonPath).exists() || !QFileInfo(condaRootPath() + "/index.sqlite").exists())
         return {};
 
     auto modelPath = CustomPaths::CustomPaths::global(CustomPaths::Models);

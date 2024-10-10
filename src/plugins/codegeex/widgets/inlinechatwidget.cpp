@@ -102,7 +102,7 @@ public:
     QList<Diff> diffText(const QString &str1, const QString &str2);
     void processGeneratedData(const QString &data);
     void updateButtonIcon();
-    QString createPrompt(const QString &question, bool useChunk, bool useContext);
+    QString createPrompt(const QString &question, bool useChunk);
     Edit::Range calculateTextRange(const QString &fileName, const Edit::Position &pos);
 
 public:
@@ -191,7 +191,7 @@ void InlineChatWidgetPrivate::initUI()
     spinner->setFixedSize({ 12, 12 });
     spinner->setProperty(VisibleProperty, SubmitStart | QuestionStart);
     escBtn = createButton(InlineChatWidget::tr("Esc to close"), PushButton, Original | QuestionComplete);
-    submitBtn = createButton(InlineChatWidget::tr("Submit Edit"), SuggestButton, None);
+    submitBtn = createButton(InlineChatWidget::tr("Submit Edit"), SuggestButton, ReadyAsk);
     questionBtn = createButton(InlineChatWidget::tr("quick question"), PushButton, ReadyAsk);
     questionBtn->setIconSize({ 24, 12 });
     stopBtn = createButton(InlineChatWidget::tr("Stop"), PushButton, SubmitStart | QuestionStart);
@@ -346,7 +346,7 @@ void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QStr
     } else if (state == SubmitStart && event == "finish") {
         // Extract the code block in `response`
         QString codePart;
-        QRegularExpression regex(R"(```\w*\n((.*\n)*.*)\n```)");
+        QRegularExpression regex(R"(```\w*\n((.*\n)*?.*)\n```)");
         QRegularExpressionMatch match = regex.match(response);
         if (match.hasMatch())
             codePart = match.captured(1);
@@ -378,6 +378,7 @@ void InlineChatWidgetPrivate::handleAccept()
     Edit::Range replaceRange = chatInfo.originalRange;
     replaceRange.end.line += endLineOffset;
     editSrv->replaceRange(chatInfo.fileName, replaceRange, replaceText);
+    chatInfo.tempText.clear();
     handleClose();
     Copilot::instance()->setGenerateCodeEnabled(enabled);
 }
@@ -431,6 +432,7 @@ void InlineChatWidgetPrivate::handleCreatePromptFinished()
     if (!watcher->isCanceled()) {
         const auto &prompt = watcher->result();
         auto machineId = QSysInfo::machineUniqueId();
+        askApi.setReferenceFiles({ chatInfo.fileName });
         askApi.postSSEChat(UrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
                            prompt, machineId, {}, CodeGeeXManager::instance()->getTalkId());
     }
@@ -479,7 +481,7 @@ void InlineChatWidgetPrivate::askForCodeGeeX()
     answerLabel->clear();
 
     auto *futureWatcher = new QFutureWatcher<QString>();
-    futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, false, false));
+    futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, true));
     connect(futureWatcher, &QFutureWatcher<QString>::finished, this, &InlineChatWidgetPrivate::handleCreatePromptFinished);
     futureWatcherList << futureWatcher;
 }
@@ -548,7 +550,7 @@ void InlineChatWidgetPrivate::updateButtonIcon()
     rejectBtn->setIcon(q->hasFocus() ? QIcon::fromTheme("uc_codegeex_reject") : QIcon());
 }
 
-QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useChunk, bool useContext)
+QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useChunk)
 {
     QString workspace = chatInfo.fileName;
     ProjectService *prjSrv = dpfGetService(ProjectService);
@@ -571,12 +573,10 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
         prompt << "回答的内容中包含代码;";
     prompt << "生成的代码需要与上面提供代码的缩进保持一致";
 
-    if (useChunk || useContext) {
+    if (useChunk) {
         prompt << "回答内容不要使用下面的参考内容";
         prompt << "\n你可以使用下面这些文件和代码内容进行参考，但只针对上面这段代码进行回答";
-    }
 
-    if (useChunk) {
         QString query = "问题：%1\n内容：```%2```";
         auto result = CodeGeeXManager::instance()->query(workspace, query.arg(question, chatInfo.originalText), 10);
         QJsonArray chunks = result["Chunks"].toArray();
@@ -586,13 +586,6 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
             prompt << chunk.toObject()["content"].toString();
         }
         prompt << "```";
-    }
-
-    if (useContext) {
-        const QString &context = editSrv->fileText(chatInfo.fileName);
-        prompt << "上下文：\n```";
-        prompt << context;
-        prompt << "\n```";
     }
 
     return prompt.join('\n');

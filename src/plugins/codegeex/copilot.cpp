@@ -198,15 +198,12 @@ void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int 
             return;
 
         editorService->clearAllEOLAnnotation(lineChatTip);
+        if (lineFrom == -1)
+            return;
+
         Edit::Position pos = editorService->cursorPosition();
         if (pos.line < 0)
             return;
-
-        if (lineFrom == -1) {
-            auto text = editorService->lineText(fileName, pos.line);
-            if (!text.remove(QRegExp("\\s+")).isEmpty())
-                return;
-        }
 
         showLineChatTip(fileName, pos.line);
     });
