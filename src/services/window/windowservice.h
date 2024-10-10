@@ -159,7 +159,7 @@ public:
     DPF_INTERFACE(void, addWidgetToTopTool, AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);
 
     DPF_INTERFACE(DTK_WIDGET_NAMESPACE::DToolButton *, addTopToolItem, Command *action, bool addSeparator, quint8 priority);
-    DPF_INTERFACE(void, addTopToolItemToRight, Command *action, bool addSeparator, quint8 priority);
+    DPF_INTERFACE(DTK_WIDGET_NAMESPACE::DToolButton *, addTopToolItemToRight, Command *action, bool addSeparator, quint8 priority);
     DPF_INTERFACE(void, removeTopToolItem, Command *action);
     DPF_INTERFACE(void, setTopToolItemVisible, Command *action, bool visible);
 

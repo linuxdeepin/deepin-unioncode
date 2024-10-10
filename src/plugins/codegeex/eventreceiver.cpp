@@ -19,6 +19,7 @@ CodeGeeXReceiver::CodeGeeXReceiver(QObject *parent)
     eventHandleMap.insert(editor.selectionChanged.name, std::bind(&CodeGeeXReceiver::processSelectionChangedEvent, this, _1));
     eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&CodeGeeXReceiver::processActionInvokedEvent, this, _1));
     eventHandleMap.insert(project.openProject.name, std::bind(&CodeGeeXReceiver::processOpenProjectEvent, this, _1));
+    eventHandleMap.insert(uiController.switchToWidget.name, std::bind(&CodeGeeXReceiver::processSwitchToWidget, this, _1));
 }
 
 dpf::EventHandler::Type CodeGeeXReceiver::type()
@@ -28,7 +29,7 @@ dpf::EventHandler::Type CodeGeeXReceiver::type()
 
 QStringList CodeGeeXReceiver::topics()
 {
-    return { T_MENU, editor.topic, notifyManager.topic, project.topic };
+    return { T_MENU, editor.topic, notifyManager.topic, project.topic, uiController.topic };
 }
 
 void CodeGeeXReceiver::eventProcess(const dpf::Event &event)
@@ -81,4 +82,22 @@ void CodeGeeXReceiver::processOpenProjectEvent(const dpf::Event &event)
     QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
     if (results["Chunks"].toArray().size() != 0) // project has generated, update it
         CodeGeeXManager::instance()->generateRag(projectPath);
+}
+
+void CodeGeeXReceiver::processSwitchToWidget(const dpf::Event &event)
+{
+    auto widgetName = event.property("name").toString();
+    QMetaObject::invokeMethod(this, [=]() {
+        Q_EMIT CodeGeeXCallProxy::instance()->switchToWidget(widgetName);
+    });
+}
+
+CodeGeeXCallProxy::CodeGeeXCallProxy()
+{
+}
+
+CodeGeeXCallProxy *CodeGeeXCallProxy::instance()
+{
+    static CodeGeeXCallProxy proxy;
+    return &proxy;
 }

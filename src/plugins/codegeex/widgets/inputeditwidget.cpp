@@ -263,6 +263,9 @@ void InputEdit::onTextChanged()
 
 bool InputEdit::event(QEvent *e)
 {
+    if (e->type() == QEvent::Show)
+        setFocus();
+
     return DTextEdit::event(e);
 }
 

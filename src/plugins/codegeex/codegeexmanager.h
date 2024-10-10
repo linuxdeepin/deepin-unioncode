@@ -26,7 +26,7 @@ static const char *chatModelPro = "codegeex-chat-pro";
 static const char *completionModelLite = "codegeex-lite";
 static const char *completionModelPro = "codegeex-pro";
 
-#if defined(__x86_64__) || defined(__aarch64__)
+#if defined(__x86_64__)// || defined(__aarch64__)
 #define SUPPORTMINIFORGE
 #endif
 

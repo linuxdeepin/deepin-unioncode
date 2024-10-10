@@ -57,6 +57,7 @@ struct WidgetInfo
     QString name;
     QDockWidget *dockWidget { nullptr };
     QString headerName;
+    bool showHeader { true };
     QList<QAction *> headerList;
     QList<QWidget *> headerWidget;   // set button to header after create dock
     QIcon icon;
@@ -233,7 +234,7 @@ void Controller::registerService()
         windowService->setDockHeaderList = std::bind(&Controller::setDockHeaderList, this, _1, _2);
     }
     if (!windowService->deleteDockHeader) {
-        windowService->deleteDockHeader = std::bind(&MainWindow::deleteDockHeader, d->mainWindow, _1);
+        windowService->deleteDockHeader = std::bind(&Controller::deleteDockHeader, this, _1);
     }
     if (!windowService->addToolBtnToDockHeader) {
         windowService->addToolBtnToDockHeader = std::bind(&MainWindow::addWidgetToDockHeader, d->mainWindow, _1, _2);
@@ -353,7 +354,9 @@ void Controller::createDockWidget(WidgetInfo &info)
     else if (!info.headerList.isEmpty())
         d->mainWindow->setDockHeaderList(info.name, info.headerList);
 
-    if (!info.headerWidget.isEmpty()) {
+    if (!info.showHeader) {
+        d->mainWindow->deleteDockHeader(info.name);
+    } else if (!info.headerWidget.isEmpty()) {
         for (auto btn : info.headerWidget)
             d->mainWindow->addWidgetToDockHeader(info.name, btn);
     }
@@ -409,7 +412,7 @@ void Controller::replaceWidget(const QString &name, Position pos)
 
 void Controller::insertWidget(const QString &name, Position pos, Qt::Orientation orientation)
 {
-    if (d->allWidgets.contains(name)) {
+    if (!d->allWidgets.contains(name)) {
         qWarning() << "no widget named:" << name;
         return;
     }
@@ -556,6 +559,19 @@ void Controller::setDockHeaderName(const QString &dockName, const QString &heade
 
     if (info.created)
         d->mainWindow->setDockHeaderName(dockName, headerName);
+}
+
+void Controller::deleteDockHeader(const QString &dockName)
+{
+    if (!d->allWidgets.contains(dockName)) {
+        qWarning() << "No widget named: " << dockName;
+        return;
+    }
+    auto &info = d->allWidgets[dockName];
+    if (info.created)
+        d->mainWindow->deleteDockHeader(dockName);
+    else
+        info.showHeader = false;
 }
 
 void Controller::setDockHeaderList(const QString &dockName, const QList<QAction *> &actions)
@@ -781,13 +797,14 @@ DToolButton *Controller::addTopToolItem(Command *action, bool addSeparator, quin
     return iconBtn;
 }
 
-void Controller::addTopToolItemToRight(Command *action, bool addSeparator, quint8 priority)
+DToolButton *Controller::addTopToolItemToRight(Command *action, bool addSeparator, quint8 priority)
 {
     if (!action || !action->action())
-        return;
+        return nullptr;
 
     auto iconBtn = createIconButton(action->action());
     addWidgetToTopTool(new AbstractWidget(iconBtn), addSeparator, false, priority);
+    return iconBtn;
 }
 
 void Controller::showTopToolBar()

@@ -71,9 +71,11 @@ void NavigationBar::addNavItem(QAction *action, itemPositioin pos, quint8 priori
     if (pos == top) {
         auto btn = createToolBtn(action, true);
         topBtnsByPriority[priority].append(btn);
+        allBtns.insert(action->text(), btn);
     } else {
         auto btn = createToolBtn(action, false);
         bottomBtnsByPriority[priority].append(btn);
+        allBtns.insert(action->text(), btn);
     }
     updateUi();
 }
@@ -129,6 +131,11 @@ DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem
 
 void NavigationBar::setNavActionChecked(const QString &actionName, bool checked)
 {
+    if (!navBtns.contains(actionName) && allBtns.contains(actionName)) {
+        allBtns[actionName]->setChecked(checked);
+        return;
+    }
+
     for (auto it = navBtns.begin(); it != navBtns.end(); it++) {
         it.value()->setChecked(false);
         if (it.key() == actionName) {

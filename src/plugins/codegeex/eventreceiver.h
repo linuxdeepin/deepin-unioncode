@@ -30,9 +30,22 @@ private:
     void processSelectionChangedEvent(const dpf::Event &event);
     void processActionInvokedEvent(const dpf::Event &event);
     void processOpenProjectEvent(const dpf::Event &event);
+    void processSwitchToWidget(const dpf::Event &event);
 
 private:
     QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
+};
+
+class CodeGeeXCallProxy : public QObject
+{
+    Q_OBJECT
+    CodeGeeXCallProxy(const CodeGeeXCallProxy &) = delete;
+    CodeGeeXCallProxy();
+public:
+    static CodeGeeXCallProxy *instance();
+
+signals:
+    void switchToWidget(const QString &name);
 };
 
 #endif   // EVENTRECEIVER_H
