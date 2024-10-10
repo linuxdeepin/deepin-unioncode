@@ -45,6 +45,7 @@ private:
     DTK_WIDGET_NAMESPACE::DToolButton *createToolBtn(QAction *action, bool isNavigationItem);
 
     QHash<QString, DTK_WIDGET_NAMESPACE::DToolButton *> navBtns;
+    QHash<QString, DTK_WIDGET_NAMESPACE::DToolButton *> allBtns;
     QMap<quint8, QList<DTK_WIDGET_NAMESPACE::DToolButton *>> topBtnsByPriority;
     QMap<quint8, QList<DTK_WIDGET_NAMESPACE::DToolButton *>> bottomBtnsByPriority;
 };

@@ -57,14 +57,14 @@ bool DebuggerPlugin::start()
         auto localsPaneImpl =  new AbstractWidget(debugManager->getLocalsPane());
         localsPaneImpl->setDisplayIcon(QIcon::fromTheme("variable_watchers"));
         windowService->registerWidget(localsPane, localsPaneImpl);
+        windowService->deleteDockHeader(localsPane);
         connect(action, &QAction::triggered, this, [=]() {
             if (debugManager->getRunState() != AbstractDebugger::kNoRun)
-                windowService->showWidgetAtPosition(localsPane, Position::Right, true);
-            windowService->deleteDockHeader(localsPane);
+                windowService->showWidgetAtPosition(localsPane, Position::Right, false);
         }, Qt::DirectConnection);
         connect(debugManager, &DebugManager::debugStarted, this, [=](){
             uiController.doSwitch(MWNA_DEBUG);
-            windowService->showWidgetAtPosition(localsPane, Position::Right, true);
+            windowService->showWidgetAtPosition(localsPane, Position::Right, false);
             windowService->deleteDockHeader(localsPane);
             uiController.switchContext(tr("&Application Output"));
         }, Qt::DirectConnection);

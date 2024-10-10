@@ -47,6 +47,7 @@ public slots:
     void resizeDocks(const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation);
     void setDockHeaderName(const QString &dockName, const QString &headerName);
     void setDockHeaderList(const QString &dockName, const QList<QAction *> &actions);
+    void deleteDockHeader(const QString &dockName);
 
     void addNavigationItem(AbstractAction *action, quint8 priority);
     void addNavigationItemToBottom(AbstractAction *action, quint8 priority);
@@ -65,7 +66,7 @@ public slots:
     //topToolBar
     void addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);
     DToolButton *addTopToolItem(Command *action, bool addSeparator, quint8 priority);
-    void addTopToolItemToRight(Command *action, bool addSeparator, quint8 priority);
+    DToolButton *addTopToolItemToRight(Command *action, bool addSeparator, quint8 priority);
     void showTopToolBar();
     void removeTopToolItem(Command *action);
     void setTopToolItemVisible(Command *action, bool visible);
