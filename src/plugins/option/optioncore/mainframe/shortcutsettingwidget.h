@@ -27,6 +27,9 @@ public:
     void readConfig() override;
     void saveConfig() override;
 
+protected:
+    void hideEvent(QHideEvent *e) override;
+
 private:
     ShortcutSettingWidgetPrivate *const d;
 };

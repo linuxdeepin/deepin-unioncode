@@ -640,3 +640,13 @@ void ShortcutSettingWidget::saveConfig()
     d->apply();
     ActionManager::instance()->saveSettings();
 }
+
+void ShortcutSettingWidget::hideEvent(QHideEvent *e)
+{
+    if (d->recordKeyBtn->isChecked()) {
+        d->recordKeyBtn->setChecked(false);
+        d->searchEdit->setPlaceholderText(tr("Type to search in keybindings"));
+    }
+    d->searchEdit->clearEdit();
+    PageWidget::hideEvent(e);
+}
