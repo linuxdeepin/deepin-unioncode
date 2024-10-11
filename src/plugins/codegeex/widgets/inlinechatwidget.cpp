@@ -444,9 +444,7 @@ void InlineChatWidgetPrivate::handleCreatePromptFinished()
     if (!watcher->isCanceled()) {
         const auto &prompt = watcher->result();
         auto machineId = QSysInfo::machineUniqueId();
-        // After the reference file is added, the answer efficiency is low,
-        // so the method call is disabled
-        // askApi.setReferenceFiles({ chatInfo.fileName });
+        askApi.setReferenceFiles({ chatInfo.fileName });
         askApi.postSSEChat(UrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
                            prompt, machineId, {}, CodeGeeXManager::instance()->getTalkId());
     }
@@ -595,7 +593,6 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
     if (useChunk) {
         prompt << "回答内容不要使用下面的参考内容";
         prompt << "\n你可以使用下面这些文件和代码内容进行参考，但只针对上面这段代码进行回答";
-#if 0   // These chunks reduce answer efficiency and so disabled
         QString query = "问题：%1\n内容：```%2```";
         auto result = CodeGeeXManager::instance()->query(workspace, query.arg(question, chatInfo.originalText), 5);
         QJsonArray chunks = result["Chunks"].toArray();
@@ -604,12 +601,6 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
             prompt << chunk.toObject()["fileName"].toString();
             prompt << chunk.toObject()["content"].toString();
         }
-        prompt << "```";
-#endif
-        prompt << "当前文件内容为：";
-        prompt << "```";
-        const auto &fileText = editSrv->fileText(chatInfo.fileName);
-        prompt << fileText.mid(0, 5000);
         prompt << "```";
     }
 
