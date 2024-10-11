@@ -49,7 +49,7 @@ public:
     AskApi *q;
 
     QNetworkAccessManager *manager = nullptr;
-    QString model = "codegeex-chat-lite";
+    QString model = chatModelLite;
     QString locale = "zh";
     bool codebaseEnabled = false;
     bool networkEnabled = false;
@@ -104,6 +104,10 @@ void AskApiPrivate::processResponse(QNetworkReply *reply)
 
                     if (error.error != QJsonParseError::NoError) {
                         qCritical() << "JSON parse error: " << error.errorString();
+                        if (event == "finish") {
+                            emit q->response(id, "", event);
+                            return;
+                        }
                         continue;
                     }
 

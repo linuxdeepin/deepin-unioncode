@@ -20,7 +20,7 @@ struct RecordData
 };
 
 namespace CodeGeeX {
-static const char *chatModelLite = "codegeex-chat-lite";
+static const char *chatModelLite = "codegeex-4";
 static const char *chatModelPro = "codegeex-chat-pro";
 
 static const char *completionModelLite = "codegeex-lite";
