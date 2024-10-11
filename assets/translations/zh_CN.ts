@@ -2833,7 +2833,7 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
         <source>Esc to close</source>
-        <translation>Esc关闭</translation>
+        <translation>Esc 退出对话</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="194"/>

@@ -104,7 +104,7 @@ void AskApiPrivate::processResponse(QNetworkReply *reply)
 
                     if (error.error != QJsonParseError::NoError) {
                         qCritical() << "JSON parse error: " << error.errorString();
-                        return;
+                        continue;
                     }
 
                     QJsonObject jsonObject = jsonDocument.object();
