@@ -63,6 +63,7 @@ public:
         QList<Diff> diffList;
         QString fileName;
         QString originalText;
+        QString destText;
         QString tempText;
         Edit::Range originalRange;
         QMultiMap<Operation, Edit::Range> operationRange;
@@ -72,6 +73,7 @@ public:
             diffList.clear();
             fileName.clear();
             originalText.clear();
+            destText.clear();
             tempText.clear();
             originalRange = {};
             operationRange.clear();
@@ -363,10 +365,19 @@ void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QStr
 
 void InlineChatWidgetPrivate::handleAccept()
 {
-    diff_match_patch dmp;
-    auto patchs = dmp.patch_make(chatInfo.diffList);
-    auto dstInfo = dmp.patch_apply(patchs, chatInfo.originalText);
-    QString replaceText = dstInfo.first;
+    QString replaceText;
+    try {
+        diff_match_patch dmp;
+        auto patchs = dmp.patch_make(chatInfo.diffList);
+        auto dstInfo = dmp.patch_apply(patchs, chatInfo.originalText);
+        replaceText = dstInfo.first;
+    } catch (...) {
+        if (chatInfo.originalText.isEmpty())
+            replaceText = chatInfo.destText;
+        else
+            replaceText = chatInfo.originalText;
+    }
+
     if (replaceText.isEmpty())
         replaceText = chatInfo.originalText;
     if (!replaceText.endsWith('\n'))
@@ -393,6 +404,7 @@ void InlineChatWidgetPrivate::handleReject()
         bool enabled = Copilot::instance()->getGenerateCodeEnabled();
         Copilot::instance()->setGenerateCodeEnabled(false);
         int endLineOffset = chatInfo.tempText.count('\n') - chatInfo.originalText.count('\n') - 1;
+        chatInfo.tempText.clear();
         Edit::Range replaceRange = chatInfo.originalRange;
         replaceRange.end.line += endLineOffset;
         editSrv->replaceRange(chatInfo.fileName, replaceRange, replaceText);
@@ -432,7 +444,9 @@ void InlineChatWidgetPrivate::handleCreatePromptFinished()
     if (!watcher->isCanceled()) {
         const auto &prompt = watcher->result();
         auto machineId = QSysInfo::machineUniqueId();
-        askApi.setReferenceFiles({ chatInfo.fileName });
+        // After the reference file is added, the answer efficiency is low,
+        // so the method call is disabled
+        // askApi.setReferenceFiles({ chatInfo.fileName });
         askApi.postSSEChat(UrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
                            prompt, machineId, {}, CodeGeeXManager::instance()->getTalkId());
     }
@@ -488,14 +502,18 @@ void InlineChatWidgetPrivate::askForCodeGeeX()
 
 QList<Diff> InlineChatWidgetPrivate::diffText(const QString &str1, const QString &str2)
 {
-    diff_match_patch dmp;
-    auto a = dmp.diff_linesToChars(str1, str2);
-    auto lineText1 = a[0].toString();
-    auto lineText2 = a[1].toString();
-    auto lineArray = a[2].toStringList();
-    auto diffs = dmp.diff_main(lineText1, lineText2, false);
-    dmp.diff_charsToLines(diffs, lineArray);
-    dmp.diff_cleanupSemantic(diffs);
+    QList<Diff> diffs;
+    try {
+        diff_match_patch dmp;
+        auto a = dmp.diff_linesToChars(str1, str2);
+        auto lineText1 = a[0].toString();
+        auto lineText2 = a[1].toString();
+        auto lineArray = a[2].toStringList();
+        diffs = dmp.diff_main(lineText1, lineText2, false);
+        dmp.diff_charsToLines(diffs, lineArray);
+        dmp.diff_cleanupSemantic(diffs);
+    } catch (...) {
+    }
 
     return diffs;
 }
@@ -504,6 +522,7 @@ void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
 {
     editSrv->clearAllBackgroundColor(chatInfo.fileName, selectionMarker);
     chatInfo.operationRange.clear();
+    chatInfo.destText = data;
     if (chatInfo.originalText.isEmpty())
         chatInfo.diffList << Diff { INSERT, data };
     else
@@ -576,15 +595,21 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
     if (useChunk) {
         prompt << "回答内容不要使用下面的参考内容";
         prompt << "\n你可以使用下面这些文件和代码内容进行参考，但只针对上面这段代码进行回答";
-
+#if 0   // These chunks reduce answer efficiency and so disabled
         QString query = "问题：%1\n内容：```%2```";
-        auto result = CodeGeeXManager::instance()->query(workspace, query.arg(question, chatInfo.originalText), 10);
+        auto result = CodeGeeXManager::instance()->query(workspace, query.arg(question, chatInfo.originalText), 5);
         QJsonArray chunks = result["Chunks"].toArray();
         prompt << "代码：\n```";
         for (auto chunk : chunks) {
             prompt << chunk.toObject()["fileName"].toString();
             prompt << chunk.toObject()["content"].toString();
         }
+        prompt << "```";
+#endif
+        prompt << "当前文件内容为：";
+        prompt << "```";
+        const auto &fileText = editSrv->fileText(chatInfo.fileName);
+        prompt << fileText.mid(0, 5000);
         prompt << "```";
     }
 
