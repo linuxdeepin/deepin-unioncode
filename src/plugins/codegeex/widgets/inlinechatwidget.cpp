@@ -100,7 +100,7 @@ public:
     void handleCreatePromptFinished();
 
     void defineBackgroundMarker(const QString &fileName);
-    void askForCodeGeeX();
+    bool askForCodeGeeX();
     QList<Diff> diffText(const QString &str1, const QString &str2);
     void processGeneratedData(const QString &data);
     void updateButtonIcon();
@@ -328,13 +328,24 @@ void InlineChatWidgetPrivate::handleSubmitEdit()
     }
 
     setState(SubmitStart);
-    askForCodeGeeX();
+    if (!askForCodeGeeX()) {
+        qWarning() << "Failed to ask CodeGeeX";
+        setState(Original);
+    }
 }
 
 void InlineChatWidgetPrivate::handleQuickQuestion()
 {
+    if (state == FollowSubmit) {
+        handleReject();
+        setState(FollowSubmit);
+    }
+
     setState(QuestionStart);
-    askForCodeGeeX();
+    if (!askForCodeGeeX()) {
+        qWarning() << "Failed to ask CodeGeeX";
+        setState(Original);
+    }
 }
 
 void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QString &response, const QString &event)
@@ -469,9 +480,11 @@ void InlineChatWidgetPrivate::defineBackgroundMarker(const QString &fileName)
     selectionMarker = editSrv->backgroundMarkerDefine(fileName, selBgColor, selectionMarker);
 }
 
-void InlineChatWidgetPrivate::askForCodeGeeX()
+bool InlineChatWidgetPrivate::askForCodeGeeX()
 {
     chatInfo.originalRange = editSrv->getBackgroundRange(chatInfo.fileName, selectionMarker);
+    if (chatInfo.originalRange.start.line == -1 || chatInfo.originalRange.end.line == -1)
+        return false;
     chatInfo.originalText = editSrv->rangeText(chatInfo.fileName, chatInfo.originalRange);
 
     auto f = questionLabel->font();
@@ -496,6 +509,7 @@ void InlineChatWidgetPrivate::askForCodeGeeX()
     futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, true));
     connect(futureWatcher, &QFutureWatcher<QString>::finished, this, &InlineChatWidgetPrivate::handleCreatePromptFinished);
     futureWatcherList << futureWatcher;
+    return true;
 }
 
 QList<Diff> InlineChatWidgetPrivate::diffText(const QString &str1, const QString &str2)
