@@ -1203,7 +1203,7 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="120"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="382"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
@@ -1211,44 +1211,44 @@ storage: %2
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="443"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="469"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
         <translation>该工程还没有建立文件索引，@codebase无法正常使用.确认是否现在创建索引</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="448"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="474"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="462"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="488"/>
         <source>It may take servel minutes</source>
         <translation>该过程也许会耗费若干分钟</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="472"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="498"/>
         <source>Indexing Done</source>
         <translation>创建索引完成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="472"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="498"/>
         <source>Indexing Failed</source>
         <translation>建立索引失败</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="542"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="122"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="384"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常使用，请安装相应的环境。
 安装过程可能会耗费若干分钟。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="363"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="195"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确.</translation>
     </message>
@@ -2826,47 +2826,47 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="344"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
         <source>  Press %1 to inline chat</source>
         <translation>  按%1进行内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
         <source>Esc to close</source>
         <translation>Esc 退出对话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="196"/>
         <source>Submit Edit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
         <source>quick question</source>
         <translation>快问快答</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="199"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="199"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="201"/>
         <source>Accept</source>
         <translation>接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="201"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="203"/>
         <source>Reject</source>
         <translation>拒绝</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="272"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="274"/>
         <source>Ask a question here, press Enter to send</source>
         <translation>在这里提问，按Enter键发送</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="281"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="283"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation>继续提问，按Enter键发送</translation>
     </message>
@@ -3244,7 +3244,7 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="582"/>
         <source>%1: &lt;a href=&apos;repair&apos;&gt;Repair with %2&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: &lt;a href=&apos;repair&apos;&gt;使用 %2 修复&lt;/a&gt;</translation>
     </message>
 </context>
 <context>
@@ -5864,34 +5864,29 @@ not exists support files: %0</source>
 <context>
     <name>ShortcutDialog</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="24"/>
-        <source>Add Shortcut</source>
-        <translation>添加快捷键</translation>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="25"/>
+        <source>Press desired key combination to set shortcut</source>
+        <translation>按下所需组合键来设置快捷键</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="26"/>
-        <source>Press desired key combination to add shortcut</source>
-        <translation>按下所需组合键来添加快捷键</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="51"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="50"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="52"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="51"/>
         <source>Ok</source>
         <comment>button</comment>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="66"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="65"/>
         <source>1 same shortcut command exist</source>
         <translation>已有1个快捷键与此相同</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="67"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="66"/>
         <source>%1 same shortcut commands exist</source>
         <translation>已有%1个快捷键与此相同</translation>
     </message>
@@ -5900,7 +5895,8 @@ not exists support files: %0</source>
     <name>ShortcutSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="102"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="413"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="650"/>
         <source>Type to search in keybindings</source>
         <translation>在此键入搜索的快捷键</translation>
     </message>
@@ -5931,6 +5927,7 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="258"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="290"/>
         <source>Add Shortcut</source>
         <translation>添加快捷键</translation>
     </message>
@@ -5955,23 +5952,28 @@ not exists support files: %0</source>
         <translation>重置快捷键</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="343"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="308"/>
+        <source>Change Shortcut</source>
+        <translation>修改快捷键</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
         <source>Export Keyboard Mapping Scheme</source>
         <translation>导出键盘映射方案</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="347"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="375"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
         <translation>键盘映射方案 (*.kms)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="371"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
         <source>Import Keyboard Mapping Scheme</source>
         <translation>导入键盘映射方案</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="409"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
         <source>Recording Keys. Press Escape to exit</source>
         <translation>正在录制按键。按 Esc 退出</translation>
     </message>

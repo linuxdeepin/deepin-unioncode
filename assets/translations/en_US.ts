@@ -1183,7 +1183,7 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="120"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="382"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1191,43 +1191,43 @@ storage: %2
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="443"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="469"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="448"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="474"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="462"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="488"/>
         <source>It may take servel minutes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="472"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="498"/>
         <source>Indexing Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="472"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="498"/>
         <source>Indexing Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="542"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="122"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="384"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="363"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="195"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2791,47 +2791,47 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="344"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
         <source>  Press %1 to inline chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
         <source>Esc to close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="196"/>
         <source>Submit Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
         <source>quick question</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="199"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="199"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="201"/>
         <source>Accept</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="201"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="203"/>
         <source>Reject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="272"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="274"/>
         <source>Ask a question here, press Enter to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="281"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="283"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5818,34 +5818,29 @@ not exists support files: %0</source>
 <context>
     <name>ShortcutDialog</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="24"/>
-        <source>Add Shortcut</source>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="25"/>
+        <source>Press desired key combination to set shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="26"/>
-        <source>Press desired key combination to add shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="51"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="50"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="52"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="51"/>
         <source>Ok</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="66"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="65"/>
         <source>1 same shortcut command exist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="67"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutdialog.cpp" line="66"/>
         <source>%1 same shortcut commands exist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5854,7 +5849,8 @@ not exists support files: %0</source>
     <name>ShortcutSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="102"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="413"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="650"/>
         <source>Type to search in keybindings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5885,6 +5881,7 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="258"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="290"/>
         <source>Add Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5909,23 +5906,28 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="343"/>
-        <source>Export Keyboard Mapping Scheme</source>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="308"/>
+        <source>Change Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
+        <source>Export Keyboard Mapping Scheme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="347"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="375"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="371"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
         <source>Import Keyboard Mapping Scheme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="409"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
         <source>Recording Keys. Press Escape to exit</source>
         <translation type="unfinished"></translation>
     </message>

@@ -287,6 +287,7 @@ void ShortcutSettingWidgetPrivate::addShortcut(QTreeWidgetItem *item)
         return;
 
     ShortcutDialog dlg;
+    dlg.setWindowTitle(Tr::tr("Add Shortcut"));
     dlg.setConflictCheckHandler(std::bind(&ShortcutSettingWidgetPrivate::checkConflict,
                                           this, std::placeholders::_1, scItem->shortcutKeys.size()));
     if (dlg.exec() != 1)
@@ -304,6 +305,7 @@ void ShortcutSettingWidgetPrivate::changeShortcut(QTreeWidgetItem *item, int ind
         return;
 
     ShortcutDialog dlg;
+    dlg.setWindowTitle(Tr::tr("Change Shortcut"));
     dlg.setConflictCheckHandler(std::bind(&ShortcutSettingWidgetPrivate::checkConflict,
                                           this, std::placeholders::_1, index));
     if (dlg.exec() != 1)
