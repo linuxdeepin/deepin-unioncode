@@ -24,9 +24,16 @@ QString PIPInstaller::description()
 
 bool PIPInstaller::checkInstalled(const QString &package)
 {
+    // remove extra dependency
+    // e.g: python-package[all] -> python-package
+    QString pkgName = package;
+    QRegularExpression regex(R"(\[.*\])");
+    if (pkgName.contains(regex))
+        pkgName.remove(regex);
+
     QProcess process;
     QString cmd("pip3 show %1");
-    process.start(cmd.arg(package));
+    process.start(cmd.arg(pkgName));
     process.waitForFinished();
 
     QString output = process.readAllStandardOutput();
