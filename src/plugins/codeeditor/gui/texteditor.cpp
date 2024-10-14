@@ -786,7 +786,7 @@ bool TextEditor::showLineWidget(int line, QWidget *widget)
     if (line == 0)
         line += 1;
 
-    if (line < 0 || line >= lines() || !hasFocus())
+    if (line < 0 || line >= lines())
         return false;
 
     if (d->lineWidgetContainer->isVisible())
@@ -893,6 +893,9 @@ void TextEditor::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Tab && d->cpCache.first != -1)
         return applyCompletion();
+    
+    if (event->key() == Qt::Key_Escape && d->lineWidgetContainer->isVisible())
+        return closeLineWidget();
 
     if (d->completionWidget->processKeyPressEvent(event))
         return;
