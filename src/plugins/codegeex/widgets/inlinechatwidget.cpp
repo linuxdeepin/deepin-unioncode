@@ -534,6 +534,7 @@ void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
 {
     editSrv->clearAllBackgroundColor(chatInfo.fileName, selectionMarker);
     chatInfo.operationRange.clear();
+    chatInfo.diffList.clear();
     chatInfo.destText = data;
     if (chatInfo.originalText.isEmpty())
         chatInfo.diffList << Diff { INSERT, data };
@@ -594,15 +595,31 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
     }
 
     QStringList prompt;
+    prompt << "你是一位智能编程助手，你叫CodeGeeX。你会为用户回答关于编程、代码、计算机方面的任何问题，"
+              "并提供格式规范、可以执行、准确安全的代码，并在必要时提供详细的解释。任务：根据用户的Command作答。"
+              "\nYou are working on a task with User in a file and User send a message to you. "
+              "`【cursor】` indicate the current position of your cursor, delete it after modification."
+              "\n\nYour Workflow:\nStep 1: You should working on the command step-by-step:\n1. "
+              "Does the command is about to write program or comments in programming task? Write out the "
+              "type of the command: (Choose: Chat / Programming).\n- **Chat command**: When your aim to "
+              "reply through explanations, reminders, or requests for additional information. "
+              "\n- **Programming command**: The user command is clear and requires you to write program "
+              "or comments. \nStep 2: If it's a chat command, provide a thoughtful and clear response "
+              "{language} directly.\nStep 3: If it requires programming, you should complete the Task "
+              "according to the given file. \na. Understand the message in order to tackle it correctly: "
+              "is the task about coding or debugging?\n- For coding, add new code within the task to execute "
+              "the user's instructions correctly. \n- For debugging, improve the code to fix the bug, write "
+              "the reasons for the changes within your code as comments.\nb. You should complete the task "
+              "according to user request and comment in Chinese within your code to indicate changes. \nc. "
+              "You should place only the finished task in a single block as output without explain!!!\n\n"
+              "Reply in the template below:\nCommand Type: (Chat / Programming)\nResponse: (Your response / "
+              "Finished code in one block)\n\n";
+    
     prompt << "针对这段代码，回答我的问题。问题：";
     prompt << question;
     prompt << "代码：\n```";
     prompt << chatInfo.originalText;
     prompt << "```";
-    prompt << "要求：";
-    if (state == SubmitStart)
-        prompt << "回答的内容中包含代码;";
-    prompt << "生成的代码需要与上面提供代码的缩进保持一致";
 
     if (useChunk) {
         prompt << "回答内容不要使用下面的参考内容";
