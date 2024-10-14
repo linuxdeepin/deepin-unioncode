@@ -230,10 +230,17 @@ void ShortcutSettingWidgetPrivate::updateShortcut(QTreeWidgetItem *item, const Q
     if (!scItem)
         return;
 
-    setModified(item, scItem->cmd->defaultKeySequences() != keyList);
-    scItem->shortcutKeys = keyList;
+    // remove empty QKeySequence
+    QList<QKeySequence> tmpKeyList = keyList;
+    auto iter = std::remove_if(tmpKeyList.begin(), tmpKeyList.end(), [](const QKeySequence &key) {
+        return key.isEmpty();
+    });
+    tmpKeyList.erase(iter, tmpKeyList.end());
+
+    setModified(item, scItem->cmd->defaultKeySequences() != tmpKeyList);
+    scItem->shortcutKeys = tmpKeyList;
     commandWidget->removeItemWidget(item, 2);
-    if (keyList.isEmpty()) {
+    if (tmpKeyList.isEmpty()) {
         item->setText(2, "");
         return;
     }
@@ -385,14 +392,17 @@ void ShortcutSettingWidgetPrivate::importAction()
         const QVariant v = settings.value(key);
         if (QMetaType::Type(v.type()) == QMetaType::QStringList) {
             auto list = v.toStringList();
-            QList<QKeySequence> keySequenceList;
-            std::transform(list.begin(), list.end(), std::back_inserter(keySequenceList),
-                           [](const QString &s) {
-                               return QKeySequence::fromString(s);
-                           });
-            mapping.insert(key, keySequenceList);
+            for (const auto &str : list) {
+                auto shortcut = QKeySequence::fromString(str);
+                if (!shortcut.isEmpty() && shortcut.toString().isEmpty())
+                    continue;
+                mapping[key] << shortcut;
+            }
         } else {
-            mapping.insert(key, { QKeySequence::fromString(v.toString()) });
+            auto shortcut = QKeySequence::fromString(v.toString());
+            if (!shortcut.isEmpty() && shortcut.toString().isEmpty())
+                continue;
+            mapping[key] << shortcut;
         }
     }
     settings.endGroup();
