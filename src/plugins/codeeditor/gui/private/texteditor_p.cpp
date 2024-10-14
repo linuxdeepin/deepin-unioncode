@@ -546,6 +546,7 @@ void TextEditorPrivate::updateCacheInfo(int pos, int added)
     if (lineWidgetContainer->isVisible()) {
         if (showAtLine > line) {
             showAtLine += added;
+            showAtLine = qMax(showAtLine, 1);
             updateLineWidgetPosition();
         }
     }
