@@ -21,9 +21,8 @@ ShortcutDialog::ShortcutDialog(QWidget *parent)
 void ShortcutDialog::initUI()
 {
     setIcon(QIcon::fromTheme("ide"));
-    setWindowTitle(tr("Add Shortcut"));
     setWordWrapMessage(true);
-    setMessage(tr("Press desired key combination to add shortcut"));
+    setMessage(tr("Press desired key combination to set shortcut"));
     layout()->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     keyEdit = new DLineEdit(this);
