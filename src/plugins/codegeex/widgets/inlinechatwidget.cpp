@@ -506,7 +506,7 @@ bool InlineChatWidgetPrivate::askForCodeGeeX()
     answerLabel->clear();
 
     auto *futureWatcher = new QFutureWatcher<QString>();
-    futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, true));
+    futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, false));
     connect(futureWatcher, &QFutureWatcher<QString>::finished, this, &InlineChatWidgetPrivate::handleCreatePromptFinished);
     futureWatcherList << futureWatcher;
     return true;
