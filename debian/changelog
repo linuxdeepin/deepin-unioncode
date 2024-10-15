@@ -1,3 +1,12 @@
+deepin-unioncode (1.3.12) stable; urgency=medium
+
+  * Support intelligent questioning of project files and local warehouse codes
+  * Add inline chat function to support code editing and quick questions and answers
+  * Debugging supports running to line
+  * Support manual configuration of local tool chain 
+
+ -- luzhen <luzhen@uniontech.com>  Tue, 15 Oct 2024 16:33:53 +0800
+
 deepin-unioncode (1.3.11) unstable; urgency=medium
 
   * Add RAG
