@@ -27,8 +27,9 @@
 #include <QFutureWatcher>
 #include <QtConcurrent>
 
-constexpr char VisibleProperty[] { "VisibleProperty" };
-constexpr char UrlSSEChat[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
+constexpr char kVisibleProperty[] { "VisibleProperty" };
+constexpr char kUrlSSEChat[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
+constexpr int kCodeMaxLength = 10000;
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
@@ -178,12 +179,12 @@ void InlineChatWidgetPrivate::initUI()
     contentLayout->setContentsMargins(0, 0, 0, 0);
     questionLabel = new DLabel(q);
     questionLabel->setWordWrap(true);
-    questionLabel->setProperty(VisibleProperty, QuestionComplete | SubmitComplete | FollowQuestion | SubmitStart | QuestionStart | FollowQuestion | FollowSubmit);
+    questionLabel->setProperty(kVisibleProperty, QuestionComplete | SubmitComplete | FollowQuestion | SubmitStart | QuestionStart | FollowQuestion | FollowSubmit);
     answerLabel = new DLabel(q);
-    answerLabel->setProperty(VisibleProperty, QuestionComplete | FollowQuestion);
+    answerLabel->setProperty(kVisibleProperty, QuestionComplete | FollowQuestion);
     answerLabel->setWordWrap(true);
     edit = new InputEdit(q);
-    edit->setProperty(VisibleProperty, AllState & ~(SubmitStart | QuestionStart));
+    edit->setProperty(kVisibleProperty, AllState & ~(SubmitStart | QuestionStart));
     edit->installEventFilter(q);
     q->setFocusProxy(edit);
 
@@ -191,7 +192,7 @@ void InlineChatWidgetPrivate::initUI()
     btnLayout->setContentsMargins(0, 0, 0, 0);
     spinner = new DSpinner(q);
     spinner->setFixedSize({ 12, 12 });
-    spinner->setProperty(VisibleProperty, SubmitStart | QuestionStart);
+    spinner->setProperty(kVisibleProperty, SubmitStart | QuestionStart);
     escBtn = createButton(InlineChatWidget::tr("Esc to close"), PushButton, Original | QuestionComplete);
     submitBtn = createButton(InlineChatWidget::tr("Submit Edit"), SuggestButton, ReadyAsk);
     questionBtn = createButton(InlineChatWidget::tr("quick question"), PushButton, ReadyAsk);
@@ -253,7 +254,7 @@ QAbstractButton *InlineChatWidgetPrivate::createButton(const QString &name, Butt
     }
 
     btn->setFixedHeight(24);
-    btn->setProperty(VisibleProperty, flags);
+    btn->setProperty(kVisibleProperty, flags);
     if (!name.isEmpty())
         btn->setText(name);
 
@@ -293,7 +294,7 @@ void InlineChatWidgetPrivate::setState(State s)
         if (!w)
             continue;
 
-        auto property = child->property(VisibleProperty);
+        auto property = child->property(kVisibleProperty);
         if (!property.isValid())
             continue;
 
@@ -456,7 +457,7 @@ void InlineChatWidgetPrivate::handleCreatePromptFinished()
         const auto &prompt = watcher->result();
         auto machineId = QSysInfo::machineUniqueId();
         askApi.setReferenceFiles({ chatInfo.fileName });
-        askApi.postSSEChat(UrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
+        askApi.postSSEChat(kUrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
                            prompt, machineId, {}, CodeGeeXManager::instance()->getTalkId());
     }
 
@@ -618,7 +619,7 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
     prompt << "针对这段代码，回答我的问题。问题：";
     prompt << question;
     prompt << "代码：\n```";
-    prompt << chatInfo.originalText;
+    prompt << chatInfo.originalText.mid(0, kCodeMaxLength);
     prompt << "```";
 
     if (useChunk) {

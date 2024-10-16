@@ -270,7 +270,7 @@ QJsonArray AskApiPrivate::parseFile(QStringList files)
         obj["language"] = support_file::Language::id(file);
         QFile content(file);
         if (content.open(QIODevice::ReadOnly)) {
-            obj["content"] = QString(content.readAll());
+            obj["content"] = QString(content.read(20000));
         }
         result.append(obj);
     }
