@@ -88,6 +88,8 @@ QsciLexer *LexerManager::defaultSciLexer(const QString &language)
         lexer = new QsciLexerJavaScript();
     } else if (language.compare("shell", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerBash();
+    } else if (language.compare("html", Qt::CaseInsensitive) == 0) {
+        lexer = new QsciLexerHTML();
     }
 
     // The `lexer` is structured by `TextEditor`

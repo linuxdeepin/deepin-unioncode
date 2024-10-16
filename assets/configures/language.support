@@ -47,5 +47,8 @@
     },
     "shell" : {
         "mimeType" : ["application/x-shellscript"]
+    },
+    "html" : {
+        "mimeType" : ["text/html"]
     }
 }
