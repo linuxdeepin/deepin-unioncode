@@ -608,11 +608,15 @@ void TabWidget::replaceText(const QString &fileName, int line, int index, int le
 bool TabWidget::replaceRange(const QString &fileName, const dpfservice::Edit::Range &range, const QString &newText)
 {
     if (auto editor = d->findEditor(fileName)) {
-        editor->replaceRange(range.start.line, range.start.column == -1 ? 0 : range.start.column, range.end.line,
-                             range.end.column == -1
-                                     ? editor->lineLength(range.end.line)
-                                     : range.end.column,
-                             newText);
+        // When using the `lineLength()` function to get the length, it is calculated in bytes.
+        // When there are Chinese characters in the text, the length obtained is not correct.
+        int indexTo = range.end.column;
+        if (indexTo == -1) {
+            auto lineText = editor->text(range.end.line);
+            indexTo = lineText.length();
+        }
+        editor->replaceRange(range.start.line, range.start.column == -1 ? 0 : range.start.column,
+                             range.end.line, indexTo, newText);
         return true;
     }
 
