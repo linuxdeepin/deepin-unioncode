@@ -258,7 +258,7 @@ def _insert_chunks_sync(db: sqlite3.Connection, tag_string: str, chunks: List[Di
     finally:
         cursor.close()
 
-def _insert_embedding_sync(db: sqlite3.Connection, vector: bytes, chunk: Dict[str, Any]):
+def _insert_embedding_sync(db: sqlite3.Connection, embedding_map: Dict[str, bytes], chunks: List[Dict[str, Any]]):
     cursor = db.db.cursor()
     try:
         cursor.execute("BEGIN")
@@ -267,21 +267,20 @@ def _insert_embedding_sync(db: sqlite3.Connection, vector: bytes, chunk: Dict[st
             INSERT INTO lance_db_cache (uuid, cacheKey, path, artifact_id, vector, startLine, endLine, contents) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
-
-        cursor.execute(embedding_sql, (
-            uuid.uuid4().hex,
-            chunk["digest"],
-            chunk["filepath"],
-            #chunk["index"],
-            "all-MiniLM-L6-v2", 
-            vector,
-            chunk["startLine"],
-            chunk["endLine"],
-            chunk["content"]
-        ))
+        for chunk in chunks:
+            cursor.execute(embedding_sql, (
+                str(uuid.uuid4()),
+                chunk["digest"],
+                chunk["filepath"],
+                "lance",
+                embedding_map[chunk["digest"]],
+                chunk["startLine"],
+                chunk["endLine"],
+                chunk["content"]
+            ))
 
         if cursor.rowcount == 0:
-            raise Exception("Failed to insert into embeddings table")
+            raise Exception("Failed to insert any embeddings into the table")
 
         db.db.commit()
     except Exception as e:
@@ -324,6 +323,7 @@ def initDb(db: sqlite3.Connection):
 
 def embeddingDirectory(dir: str, provider: ONNXEmbeddingsProvider, db: sqlite3.Connection):
     for entry in os.listdir(dir):
+        embedding_map = {}
         full_path = os.path.join(dir, entry)
         if "/3rdparty/" in full_path or "/.unioncode/" in full_path:
             continue
@@ -335,14 +335,13 @@ def embeddingDirectory(dir: str, provider: ONNXEmbeddingsProvider, db: sqlite3.C
             code = file.read()
             max_chunk_size = 1024
             chunks = list(chunk_document(full_path, code, max_chunk_size))
-            _insert_chunks_sync(db, "test", chunks)
-
             for chunk in chunks:
                 content = chunk['content']
                 embedding = provider.embed_single(content)
                 provider.code_blocks.append(content)
-                _insert_embedding_sync(db, embedding.tobytes(), chunk)
-
+                embedding_map[chunk['digest']] = embedding.tobytes()
+            _insert_chunks_sync(db, "chunk", chunks)
+            _insert_embedding_sync(db, embedding_map, chunks)
         elif os.path.isdir(full_path):
             embeddingDirectory(full_path, provider, db)
 

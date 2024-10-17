@@ -1183,7 +1183,7 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="382"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="392"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1221,13 +1221,13 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="384"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="394"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="195"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="199"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1277,22 +1277,27 @@ storage: %2
 <context>
     <name>CodeGeex</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="64"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="42"/>
+        <source>Quick Open CodeGeeX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="74"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="65"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="75"/>
         <source>Please login to use CodeGeeX.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="79"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="70"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="80"/>
         <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1590,77 +1595,77 @@ storage: %2
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="801"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="818"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="909"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="926"/>
         <source>Hide ContextWidget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1009"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1026"/>
         <source>Show docks in this view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1036"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1053"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1050"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1067"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1064"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1081"/>
         <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1069"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1086"/>
         <source>&amp;Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1074"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1091"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1079"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1096"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1089"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1106"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1095"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1112"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1104"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1121"/>
         <source>Report Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1111"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1128"/>
         <source>Help Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1158"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1175"/>
         <source>Expand All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1164"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1181"/>
         <source>Fold All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2791,7 +2796,7 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="340"/>
         <source>  Press %1 to inline chat</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2956,41 +2961,46 @@ need to manually copy the source code to this path</source>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="71"/>
-        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Ctrl + T %2 to accept.</source>
+        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="72"/>
-        <source>Select code and %1 right-click %2 to add comments or translate code.</source>
+        <source>CodeGeeX provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="73"/>
+        <source>Select code and %1 right-click %2 to add comments or translate code.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="74"/>
         <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
         <source>Try the following questions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="85"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="86"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="86"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="87"/>
         <source>Write a quicksort function.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="87"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="88"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="93"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="94"/>
         <source>logout</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3335,7 +3345,7 @@ repos path: %0</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/mainwindow.cpp" line="220"/>
+        <location filename="../../src/plugins/core/uicontroller/mainwindow.cpp" line="221"/>
         <source>Hide Dock Widget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4084,7 +4094,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="424"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="432"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4502,7 +4512,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="54"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="64"/>
         <source>AI</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5849,8 +5859,8 @@ not exists support files: %0</source>
     <name>ShortcutSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="102"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="413"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="650"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="423"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="660"/>
         <source>Type to search in keybindings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5880,54 +5890,54 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="258"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="290"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="265"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="297"/>
         <source>Add Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="262"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="269"/>
         <source>Change %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="269"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="276"/>
         <source>Remove %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="275"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="282"/>
         <source>Remove All Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="278"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
         <source>Reset Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="308"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="315"/>
         <source>Change Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="352"/>
         <source>Export Keyboard Mapping Scheme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="347"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="375"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="354"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="382"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="380"/>
         <source>Import Keyboard Mapping Scheme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="421"/>
         <source>Recording Keys. Press Escape to exit</source>
         <translation type="unfinished"></translation>
     </message>

@@ -108,6 +108,7 @@ signals:
     void stopReceive();
     void syncSendMessage(const QString url, const QString &token, const QByteArray &body);
     void noChunksFounded();
+    void notify(int type, const QString &message);
 
 public slots:
     void slotSendMessage(const QString url, const QString &token, const QByteArray &body);

@@ -1203,7 +1203,7 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="382"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="392"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
@@ -1241,14 +1241,14 @@ storage: %2
         <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="384"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="394"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常使用，请安装相应的环境。
 安装过程可能会耗费若干分钟。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="195"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="199"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确.</translation>
     </message>
@@ -1298,22 +1298,27 @@ storage: %2
 <context>
     <name>CodeGeex</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="64"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="42"/>
+        <source>Quick Open CodeGeeX</source>
+        <translation>快捷使用CodeGeeX</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="74"/>
         <source>Login</source>
         <translation>登录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="65"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="75"/>
         <source>Please login to use CodeGeeX.</source>
         <translation>请登录后使用CodeGeex.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="79"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="70"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="80"/>
         <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
         <translation>安装Python Conda虚拟环境，以用于文件索引功能。否则可能导致@codebase或部分Ai功能异常。</translation>
     </message>
@@ -1617,77 +1622,77 @@ storage: %2
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="801"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="818"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="909"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="926"/>
         <source>Hide ContextWidget</source>
         <translation>隐藏内容区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1009"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1026"/>
         <source>Show docks in this view</source>
         <translation>当前视图中的窗口</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1036"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1053"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1050"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1067"/>
         <source>&amp;Edit</source>
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1064"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1081"/>
         <source>&amp;Build</source>
         <translation>编译(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1069"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1086"/>
         <source>&amp;Debug</source>
         <translation>调试(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1074"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1091"/>
         <source>&amp;Tools</source>
         <translation>工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1079"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1096"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1089"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1106"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1095"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1112"/>
         <source>Open Project</source>
         <translation>打开工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1104"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1121"/>
         <source>Report Bug</source>
         <translation>报告Bug</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1111"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1128"/>
         <source>Help Documents</source>
         <translation>帮助文档</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1158"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1175"/>
         <source>Expand All</source>
         <translation>展开所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1164"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1181"/>
         <source>Fold All</source>
         <translation>折叠所有</translation>
     </message>
@@ -2826,7 +2831,7 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="340"/>
         <source>  Press %1 to inline chat</source>
         <translation>  按%1进行内联聊天</translation>
     </message>
@@ -2991,41 +2996,46 @@ need to manually copy the source code to this path</source>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="71"/>
-        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Ctrl + T %2 to accept.</source>
-        <translation>CodeGeex在编辑器提供代码补全建议，按%1 Ctrl + T %2即可接受</translation>
+        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
+        <translation>CodeGeeX在编辑器中提供了代码补全建议，按%1 Tab %2即可接受.</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="72"/>
+        <source>CodeGeeX provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.</source>
+        <translation>CodeGeeX在编辑器中提供了内联聊天功能，按%1 Ctrl+T %2即可使用.</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="73"/>
         <source>Select code and %1 right-click %2 to add comments or translate code.</source>
         <translation>选择代码并%1点击右键%2以添加注释或翻译代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="73"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="74"/>
         <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
         <translation>在对话栏中直接%1向CodeGeeX提问%2</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
         <source>Try the following questions:</source>
         <translation>试试下面的问题：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="85"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="86"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation>如何在 Python 中遍历字典？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="86"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="87"/>
         <source>Write a quicksort function.</source>
         <translation>编写一个快速排序函数。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="87"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="88"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation>开始学习 JavaScript 的最佳方法是什么？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="93"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="94"/>
         <source>logout</source>
         <translation>退出登录</translation>
     </message>
@@ -3372,7 +3382,7 @@ repos path: %0</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/mainwindow.cpp" line="220"/>
+        <location filename="../../src/plugins/core/uicontroller/mainwindow.cpp" line="221"/>
         <source>Hide Dock Widget</source>
         <translation>隐藏驻留区</translation>
     </message>
@@ -4121,7 +4131,7 @@ repos path: %0</source>
         <translation>用户行为分析</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="424"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="432"/>
         <source>Select File</source>
         <translation>选择文件</translation>
     </message>
@@ -4541,7 +4551,7 @@ not exists support files: %0</source>
         <translation>目标</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="54"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="64"/>
         <source>AI</source>
         <translation></translation>
     </message>
@@ -5895,8 +5905,8 @@ not exists support files: %0</source>
     <name>ShortcutSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="102"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="413"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="650"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="423"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="660"/>
         <source>Type to search in keybindings</source>
         <translation>在此键入搜索的快捷键</translation>
     </message>
@@ -5926,54 +5936,54 @@ not exists support files: %0</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="258"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="290"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="265"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="297"/>
         <source>Add Shortcut</source>
         <translation>添加快捷键</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="262"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="269"/>
         <source>Change %1</source>
         <translation>修改 %1</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="269"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="276"/>
         <source>Remove %1</source>
         <translation>删除 %1</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="275"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="282"/>
         <source>Remove All Shortcut</source>
         <translation>删除所有快捷键</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="278"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
         <source>Reset Shortcut</source>
         <translation>重置快捷键</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="308"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="315"/>
         <source>Change Shortcut</source>
         <translation>修改快捷键</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="345"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="352"/>
         <source>Export Keyboard Mapping Scheme</source>
         <translation>导出键盘映射方案</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="347"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="375"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="354"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="382"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
         <translation>键盘映射方案 (*.kms)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="373"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="380"/>
         <source>Import Keyboard Mapping Scheme</source>
         <translation>导入键盘映射方案</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="411"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="421"/>
         <source>Recording Keys. Press Escape to exit</source>
         <translation>正在录制按键。按 Esc 退出</translation>
     </message>
