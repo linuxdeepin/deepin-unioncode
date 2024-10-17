@@ -53,6 +53,7 @@ public:
     QString locale = "zh";
     bool codebaseEnabled = false;
     bool networkEnabled = false;
+    bool terminated = false;
     QStringList referenceFiles;
 };
 
@@ -60,10 +61,13 @@ AskApiPrivate::AskApiPrivate(AskApi *qq)
     : q(qq),
       manager(new QNetworkAccessManager(qq))
 {
+    connect(q, &AskApi::stopReceive, this, [=](){ terminated = true; });
 }
 
 QNetworkReply *AskApiPrivate::postMessage(const QString &url, const QString &token, const QByteArray &body)
 {
+    if (terminated)
+        return nullptr;
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("code-token", token.toUtf8());
@@ -192,7 +196,7 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
         if (!chunks.isEmpty()) {
             CodeGeeXManager::instance()->cleanHistoryMessage();   // incase history is too big
             if (result["Completed"].toBool() == false)
-                CodeGeeXManager::instance()->notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
+                emit q->notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
             jsonObject["history"] = QJsonArray();
             QString context;
             context += prompt;
@@ -283,6 +287,11 @@ AskApi::AskApi(QObject *parent)
       d(new AskApiPrivate(this))
 {
     connect(this, &AskApi::syncSendMessage, this, &AskApi::slotSendMessage);
+    connect(this, &AskApi::notify, this, [](int type, const QString &message) {
+        using namespace dpfservice;
+        WindowService *windowService = dpfGetService(WindowService);
+        windowService->notify(type, "Ai", message, QStringList {});
+    });
 }
 
 AskApi::~AskApi()
@@ -373,6 +382,7 @@ void AskApi::postSSEChat(const QString &url,
                          const QMultiMap<QString, QString> &history,
                          const QString &talkId)
 {
+    d->terminated = false;
     QJsonArray jsonArray = convertHistoryToJSONArray(history);
 
 #ifdef SUPPORTMINIFORGE

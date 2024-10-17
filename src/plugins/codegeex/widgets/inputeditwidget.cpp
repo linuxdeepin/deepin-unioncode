@@ -227,6 +227,11 @@ void InputEdit::onTextChanged()
     QSet<QString> tagList;
     int last_pos = 0;
 
+    // bug: tag will removed when send message. and causes the tag to be reset before it is used.
+    // update tag when codegeex is not running
+    if (CodeGeeXManager::instance()->checkRunningState(true))
+        return;
+
     cursor.setPosition(0);
     formatList.clear();
 
