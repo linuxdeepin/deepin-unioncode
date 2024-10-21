@@ -65,7 +65,6 @@ if __name__ == "__main__":
         if not embeddings:
             db.db.close()
             sys.exit()
-
         similarities = cosine_similarity([query_embedding], embeddings)[0]
 
         top_indices = np.argsort(similarities)[-top_k:][::-1]

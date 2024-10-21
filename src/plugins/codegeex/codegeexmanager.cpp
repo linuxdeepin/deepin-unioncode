@@ -228,6 +228,14 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
 
     auto msgData = modifiedData(data);
     if (event == "finish") {
+        if (responseData.isEmpty() && !data.isEmpty()) {
+            responseData = msgData;
+            if (!curSessionMsg.contains(msgID))
+                curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
+            curSessionMsg[msgID].updateData(responseData);
+            Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
+        }
+
         responseData.clear();
         if (!currentChat.first.isEmpty() && currentChat.second.isEmpty()) {
             currentChat.second = msgData;
@@ -296,19 +304,14 @@ void CodeGeeXManager::showHistoryMessage(const QVector<AskApi::MessageRecord> &r
     for (auto index = records.size() - 1; index >= 0; index--) {
         auto messageId = QString::number(QDateTime::currentMSecsSinceEpoch());
         auto record = records[index];
+
         MessageData askData(messageId + "Ask", MessageData::Ask);
         askData.updateData(record.input);
         Q_EMIT requestMessageUpdate(askData);
 
-        //正常情况下，答案从网络回复中流式解析。这里如果一次性发送，无法解析代码，需要以流式方式发送，读的长度过长可能会导致解析"```"标志时吞掉其他字符
         MessageData ansData(messageId + "Anwser", MessageData::Anwser);
-        QTextStream stream(&record.output);
-        QString anwser;
-        while (!stream.atEnd()) {
-            anwser += stream.read(3);
-            ansData.updateData(anwser);
-            Q_EMIT requestMessageUpdate(ansData);
-        }
+        ansData.updateData(record.output);
+        Q_EMIT requestMessageUpdate(ansData);
     }
 }
 
@@ -354,6 +357,7 @@ void CodeGeeXManager::initConnections()
     connect(Copilot::instance(), &Copilot::messageSended, this, &CodeGeeXManager::startReceiving);
 
     connect(this, &CodeGeeXManager::requestStop, &askApi, &AskApi::stopReceive);
+    connect(this, &CodeGeeXManager::requestStop, Copilot::instance(), &Copilot::requestStop);
     connect(this, &CodeGeeXManager::notify, this, [](int type, const QString &message) {
         WindowService *windowService = dpfGetService(WindowService);
         windowService->notify(type, "Ai", message, QStringList {});

@@ -67,18 +67,38 @@ void CopilotApi::postComment(const QString &url,
     processResponse(reply);
 }
 
+void CopilotApi::postInlineChat(const QString &url,
+                                const QString &prompt,
+                                const InlineChatInfo &info,
+                                const QString &locale)
+{
+    QByteArray body = assembleInlineChatBody(prompt, info, locale);
+    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
+    reply->setProperty("responseType", CopilotApi::receiving_by_stream);
+
+    processResponse(reply);
+}
+
+void CopilotApi::postCommit(const QString &url,
+                            const CommitMessage &message,
+                            const QString &locale)
+{
+    QByteArray body = assembleCommitBody(message, locale);
+    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
+    reply->setProperty("responseType", CopilotApi::receiving_by_stream);
+
+    processResponse(reply);
+}
+
 void CopilotApi::postCommand(const QString &url,
                              const QString &code,
                              const QString &locale,
                              const QString &command)
 {
-    if (CodeGeeXManager::instance()->checkRunningState(true))
-        return;
     QByteArray body = assembleCommandBody(code, locale, command);
     QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
     reply->setProperty("responseType", CopilotApi::receiving_by_stream);
 
-    emit messageSended();
     processResponse(reply);
 }
 
@@ -141,6 +161,8 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
     }
 
     QJsonObject json;
+    json.insert("ide", qApp->applicationName());
+    json.insert("ide_version", version());
     json.insert("context", context);
     json.insert("model", completionModel);
     json.insert("lang", file.second);
@@ -156,6 +178,8 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
 QByteArray CopilotApi::assembleTranslateBody(const QString &code, const QString &dst_lang, const QString &locale)
 {
     QJsonObject json;
+    json.insert("ide", qApp->applicationName());
+    json.insert("ide_version", version());
     json.insert("lang", dst_lang);
     json.insert("code", code);
     json.insert("command", "translation");
@@ -166,9 +190,58 @@ QByteArray CopilotApi::assembleTranslateBody(const QString &code, const QString 
     return doc.toJson();
 }
 
+QByteArray CopilotApi::assembleInlineChatBody(const QString &prompt, const InlineChatInfo &info, const QString &locale)
+{
+    auto file = getCurrentFileInfo();
+
+    QJsonObject json;
+    json.insert("ide", qApp->applicationName());
+    json.insert("ide_version", version());
+    json.insert("lang", file.second);
+    json.insert("code", info.selectedCode);
+    json.insert("command", "inline_chat");
+    json.insert("locale", locale);
+    json.insert("model", chatModel);
+    json.insert("prompt", prompt);
+
+    QJsonObject inline_chat_obj;
+    inline_chat_obj.insert("is_ast", info.is_ast);
+    inline_chat_obj.insert("file_name", info.fileName);
+    inline_chat_obj.insert("package_code", info.package_code);
+    inline_chat_obj.insert("class_function", info.class_function);
+    inline_chat_obj.insert("context_code", info.contextCode);
+
+    json.insert("inline_chat", inline_chat_obj);
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
+
+QByteArray CopilotApi::assembleCommitBody(const CommitMessage &message, const QString &locale)
+{
+    QJsonObject json;
+    json.insert("ide", qApp->applicationName());
+    json.insert("ide_version", version());
+    json.insert("command", "commit_message_v1");
+    json.insert("talkId", CodeGeeXManager::instance()->getTalkId());
+    json.insert("locale", locale);
+    json.insert("model", chatModel);
+
+    QJsonObject commitObj;
+    commitObj.insert("git_diff", message.git_diff);
+    commitObj.insert("commit_history", message.commit_history);
+    commitObj.insert("commit_type", message.commit_type);
+
+    json.insert("commit_message", commitObj);
+
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
+
 QByteArray CopilotApi::assembleCommandBody(const QString &code, const QString &locale, const QString &command)
 {
     QJsonObject json;
+    json.insert("ide", qApp->applicationName());
+    json.insert("ide_version", version());
     json.insert("command", command);
     json.insert("code", code);
     json.insert("talkId", CodeGeeXManager::instance()->getTalkId());
@@ -182,7 +255,7 @@ QByteArray CopilotApi::assembleCommandBody(const QString &code, const QString &l
 void CopilotApi::processResponse(QNetworkReply *reply)
 {
     if (reply->property("responseType") == CopilotApi::receiving_by_stream) {
-        connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestStop, this, [=]() {
+        connect(this, &CopilotApi::requestStop, this, [=]() {
             reply->close();
         });
         connect(reply, &QNetworkReply::readyRead, this, [=]() {
@@ -257,6 +330,7 @@ void CopilotApi::slotReadReplyStream(QNetworkReply *reply)
         qCritical() << "Error:" << reply->errorString();
     } else {
         QString replyMsg = QString::fromUtf8(reply->readAll());
+        qInfo() << replyMsg;
         QStringList lines = replyMsg.split('\n');
         QString data;
         QString event;

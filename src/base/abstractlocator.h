@@ -16,7 +16,7 @@ struct baseLocatorItem
 {
 public:
     explicit baseLocatorItem(abstractLocator *parentLocator)
-        : locator(parentLocator) {}
+        : locator(parentLocator), displayName(""), id(""), extraInfo(""), tooltip(""), data(QVariant()), icon(QIcon()) {}
 
     QString displayName;
     QString id;

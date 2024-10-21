@@ -68,11 +68,13 @@ void MessageComponent::updateMessage(const MessageData &msgData)
                 messageLine = messageLine.replace(regex, "[\\1]");
             }
             curUpdateLabel->setText(messageLine);
+        } else if (messageData.messageLines().isEmpty()) {
+            curUpdateLabel->setText(msgData.messageData());
         }
         break;
     case CodeEdit:
         if (curUpdateEdit) {
-            int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```([a-z]*|[A-Z]*)"));
+            int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```(`|[a-z]*|[A-Z]*)")); // ```` ```python ```cpp
             if (startIndex != -1)
                 curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1), msgData.messageLines().mid(startIndex, 1).at(0));
         }
@@ -170,7 +172,7 @@ void MessageComponent::initConnect()
             });
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this,
             [=]() {
-                if (isConnecting)
+                if (isConnecting && !websites.isEmpty())
                     showWebsitesRefrences();
                 finished = true;
             });
