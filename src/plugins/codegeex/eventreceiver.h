@@ -26,7 +26,6 @@ private:
     virtual void eventProcess(const dpf::Event &event) override;
 
     void processContextMenuEvent(const dpf::Event &event);
-    void processTextChangedEvent(const dpf::Event &event);
     void processSelectionChangedEvent(const dpf::Event &event);
     void processActionInvokedEvent(const dpf::Event &event);
     void processOpenProjectEvent(const dpf::Event &event);

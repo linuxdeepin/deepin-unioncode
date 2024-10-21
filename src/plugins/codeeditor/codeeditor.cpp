@@ -10,6 +10,7 @@
 #include "gui/settings/editorsettingswidget.h"
 #include "lexer/lexermanager.h"
 #include "utils/editorutils.h"
+#include "utils/resourcemanager.h"
 #include "status/statusinfomanager.h"
 #include "symbol/symbollocator.h"
 #include "symbol/symbolwidget.h"
@@ -171,7 +172,6 @@ void CodeEditor::initEditorService()
     editorService->undo = std::bind(&WorkspaceWidget::undo, workspaceWidget);
     editorService->modifiedFiles = std::bind(&WorkspaceWidget::modifiedFiles, workspaceWidget);
     editorService->saveAll = std::bind(&WorkspaceWidget::saveAll, workspaceWidget);
-    editorService->setCompletion = std::bind(&WorkspaceWidget::setCompletion, workspaceWidget, _1);
     editorService->currentFile = std::bind(&WorkspaceWidget::currentFile, workspaceWidget);
     editorService->setText = std::bind(&WorkspaceWidget::setText, workspaceWidget, _1);
     editorService->registerWidget = std::bind(&WorkspaceWidget::registerWidget, workspaceWidget, _1, _2);
@@ -201,6 +201,7 @@ void CodeEditor::initEditorService()
     editorService->rangeText = std::bind(&WorkspaceWidget::rangeText, workspaceWidget, _1, _2);
     editorService->selectionRange = std::bind(&WorkspaceWidget::selectionRange, workspaceWidget, _1);
     editorService->codeRange = std::bind(&WorkspaceWidget::codeRange, workspaceWidget, _1, _2);
+    editorService->registerInlineCompletionProvider = std::bind(&ResourceManager::registerInlineCompletionProvider, ResourceManager::instance(), _1);
 
     LexerManager::instance()->init(editorService);
 }

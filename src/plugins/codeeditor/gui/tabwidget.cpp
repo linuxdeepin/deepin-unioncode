@@ -728,12 +728,6 @@ void TabWidget::undo()
         editor->undo();
 }
 
-void TabWidget::setCompletion(const QString &info)
-{
-    if (auto editor = d->currentTextEditor())
-        editor->setCompletion(info);
-}
-
 void TabWidget::gotoNextPosition()
 {
     if (d->nextPosRecord.isEmpty())

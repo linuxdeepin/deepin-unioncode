@@ -10,6 +10,7 @@
 #include "base/abstractdebugger.h"
 #include "base/abstractlexerproxy.h"
 #include "base/abstracteditwidget.h"
+#include "base/abstractinlinecompletionprovider.h"
 
 namespace dpfservice {
 
@@ -40,7 +41,6 @@ public:
     DPF_INTERFACE(void, showTips, const QString &tips);
     DPF_INTERFACE(void, undo);
     DPF_INTERFACE(void, setText, const QString &text);
-    DPF_INTERFACE(void, setCompletion, const QString &info);
     DPF_INTERFACE(QString, currentFile);
     DPF_INTERFACE(QStringList, openedFiles);
     DPF_INTERFACE(QString, fileText, const QString &file);
@@ -80,6 +80,7 @@ public:
     using RepairToolInfo = QMap<QString, RepairCallback>;
     DPF_INTERFACE(void, registerDiagnosticRepairTool, const QString &toolName, RepairCallback callback);
     DPF_INTERFACE(RepairToolInfo, getDiagnosticRepairTool);
+    DPF_INTERFACE(void, registerInlineCompletionProvider, AbstractInlineCompletionProvider *provider);
 };
 
 }   // namespace dpfservice
