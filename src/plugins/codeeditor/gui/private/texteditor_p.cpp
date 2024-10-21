@@ -57,6 +57,7 @@ void TextEditorPrivate::init()
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     selectionChangeTimer.setSingleShot(true);
     selectionChangeTimer.setInterval(50);
+    completionWidget->installEventFilter(q);
 
     initWidgetContainer();
     initMargins();
@@ -249,13 +250,7 @@ void TextEditorPrivate::setInlineCompletion()
 
         cancelInlineCompletion();
         inlineCompletionCache = qMakePair(pos.line, item.completion);
-        const auto &part1 = item.completion.mid(0, item.completion.indexOf('\n'));
-        const auto &part2 = item.completion.mid(item.completion.indexOf('\n') + 1);
-        QsciStyle cpStyle(1, "", Qt::gray, q->lexer() ? q->lexer()->defaultPaper(-1) : q->paper(),
-                          q->lexer() ? q->lexer()->defaultFont() : q->font());
-        q->eOLAnnotate(pos.line, part1, cpStyle);
-        if (part1 != part2)
-            q->annotate(pos.line, part2, cpStyle);
+        updateInlineCompletion();
         return;
     }
 }
@@ -650,6 +645,37 @@ void TextEditorPrivate::cancelInlineCompletion()
     q->clearAnnotations(inlineCompletionCache.first);
 
     inlineCompletionCache = qMakePair(-1, QString());
+}
+
+void TextEditorPrivate::updateInlineCompletion()
+{
+    int line = inlineCompletionCache.first;
+    QString completion = inlineCompletionCache.second;
+    if (line == -1)
+        return;
+
+    const auto &part1 = completion.mid(0, completion.indexOf('\n'));
+    QString part2 = completion.mid(completion.indexOf('\n') + 1);
+    QsciStyle cpStyle(1, "", Qt::gray, q->lexer() ? q->lexer()->defaultPaper(-1) : q->paper(),
+                      q->lexer() ? q->lexer()->defaultFont() : q->font());
+    q->eOLAnnotate(line, part1, cpStyle);
+    if (part1 != part2) {
+        if (!completionWidget->isCompletionActive()) {
+            q->annotate(line, part2, cpStyle);
+            return;
+        }
+
+        auto point = q->pointFromPosition(q->cursorPosition());
+        if (point.y() >= completionWidget->height()) {
+            completionWidget->updatePosition(true, CodeCompletionWidget::Top);
+        } else {
+            auto lineHeight = q->textHeight(line);
+            auto padding = completionWidget->height() / lineHeight;
+            part2.prepend(QString(padding, '\n'));
+        }
+
+        q->annotate(line, part2, cpStyle);
+    }
 }
 
 void TextEditorPrivate::resetThemeColor()

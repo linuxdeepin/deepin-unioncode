@@ -356,27 +356,43 @@ void CodeCompletionWidget::updateHeight()
     }
 
     geom.setHeight(baseHeight);
-    if (geometry() != geom)
+    if (geometry() != geom) {
         setGeometry(geom);
+        if (completionOrigin == Top)
+            updatePosition();
+    }
 
     QSize entryListSize = QSize(completionView->width(), baseHeight - 2 * frameWidth());
     if (completionView->size() != entryListSize)
         completionView->resize(entryListSize);
 }
 
-void CodeCompletionWidget::updatePosition(bool force)
+void CodeCompletionWidget::updatePosition(bool force, CompletionOrigin origin)
 {
     if (!force && !isCompletionActive())
         return;
 
-    auto cursorPosition = editor()->pointFromPosition(editor()->cursorPosition());
-    if (cursorPosition == QPoint(-1, -1)) {
-        abortCompletion();
-        return;
+    if (origin != completionOrigin)
+        completionOrigin = origin;
+
+    if (showPosition == QPoint(-1, -1)) {
+        showPosition = editor()->pointFromPosition(editor()->cursorPosition());
+        if (showPosition == QPoint(-1, -1)) {
+            abortCompletion();
+            return;
+        }
     }
 
-    QPoint p = editor()->mapToGlobal(cursorPosition);
-    p.setY(p.y() + editor()->fontMetrics().height() + 2);
+    QPoint p = editor()->mapToGlobal(showPosition);
+    switch (origin) {
+    case Bottom:
+        p.setY(p.y() + editor()->fontMetrics().height() + 2);
+        break;
+    case Top:
+        p.setY(p.y() - height());
+        break;
+    }
+
     move(p);
 }
 
@@ -476,6 +492,13 @@ void CodeCompletionWidget::focusOutEvent(QFocusEvent *event)
     Q_UNUSED(event)
 
     abortCompletion();
+}
+
+void CodeCompletionWidget::hideEvent(QHideEvent *event)
+{
+    showPosition = QPoint(-1, -1);
+    completionOrigin = Bottom;
+    QFrame::hideEvent(event);
 }
 
 void CodeCompletionWidget::onTextAdded(int pos, int len, int added, const QString &text, int line)

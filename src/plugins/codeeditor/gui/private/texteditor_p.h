@@ -73,6 +73,7 @@ public:
     void provideInlineCompletion(int pos, int added);
     void applyInlineCompletion();
     void cancelInlineCompletion();
+    void updateInlineCompletion();
 
 public slots:
     void resetThemeColor();
