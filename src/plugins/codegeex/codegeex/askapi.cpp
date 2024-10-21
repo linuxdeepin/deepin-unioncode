@@ -6,6 +6,8 @@
 #include "src/common/supportfile/language.h"
 #include "services/project/projectservice.h"
 #include "services/window/windowservice.h"
+#include "services/editor/editorservice.h"
+#include "common/type/constants.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -93,6 +95,7 @@ void AskApiPrivate::processResponse(QNetworkReply *reply)
             QStringList lines = replyMsg.split('\n');
             QString event;
             QString id;
+
             for (const auto &line : lines) {
                 auto index = line.indexOf(':');
                 auto key = line.mid(0, index);
@@ -106,17 +109,17 @@ void AskApiPrivate::processResponse(QNetworkReply *reply)
                     QJsonParseError error;
                     QJsonDocument jsonDocument = QJsonDocument::fromJson(value.toUtf8(), &error);
 
+                    QJsonObject jsonObject = jsonDocument.object();
+                    auto entry = processJsonObject(event, &jsonObject);
                     if (error.error != QJsonParseError::NoError) {
                         qCritical() << "JSON parse error: " << error.errorString();
                         if (event == "finish") {
-                            emit q->response(id, "", event);
+                            emit q->response(id, entry.text, event);
                             return;
                         }
                         continue;
                     }
 
-                    QJsonObject jsonObject = jsonDocument.object();
-                    auto entry = processJsonObject(event, &jsonObject);
                     if (entry.type == "crawl")
                         emit q->crawledWebsite(id, entry.websites);
                     else
@@ -178,10 +181,10 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
                                               const QJsonArray &history, const QString &talkId)
 {
     QJsonObject jsonObject;
-
+    jsonObject.insert("ide", qApp->applicationName());
+    jsonObject.insert("ide_version", version());
     jsonObject.insert("prompt", prompt);
     jsonObject.insert("machineId", machineId);
-    //jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
     jsonObject.insert("locale", locale);
     jsonObject.insert("model", model);
@@ -191,10 +194,9 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
     auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
 
     if (codebaseEnabled && currentProjectPath != "") {
-        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, prompt, 20);
+        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, prompt, 50);
         QJsonArray chunks = result["Chunks"].toArray();
         if (!chunks.isEmpty()) {
-            CodeGeeXManager::instance()->cleanHistoryMessage();   // incase history is too big
             if (result["Completed"].toBool() == false)
                 emit q->notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
             jsonObject["history"] = QJsonArray();
@@ -221,7 +223,7 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
         files["files"] = fileDatas;
         jsonObject.insert("files", files);
     } else if (networkEnabled)
-        jsonObject.insert("command", "online_search");
+        jsonObject.insert("command", "online_search_v1");
 
     if (!talkId.isEmpty())
         jsonObject.insert("talkId", talkId);
@@ -267,14 +269,22 @@ QJsonObject AskApiPrivate::toJsonOBject(QNetworkReply *reply)
 QJsonArray AskApiPrivate::parseFile(QStringList files)
 {
     QJsonArray result;
+    auto editorSrv = dpfGetService(dpfservice::EditorService);
 
     for (auto file : files) {
         QJsonObject obj;
         obj["name"] = QFileInfo(file).fileName();
         obj["language"] = support_file::Language::id(file);
-        QFile content(file);
-        if (content.open(QIODevice::ReadOnly)) {
-            obj["content"] = QString(content.read(20000));
+
+        QString fileContent = editorSrv->fileText(file);
+
+        if (fileContent.isEmpty()) {
+            QFile content(file);
+            if (content.open(QIODevice::ReadOnly)) {
+                obj["content"] = QString(content.read(20000));
+            }
+        } else {
+            obj["content"] = QString(fileContent.mid(0, 20000));
         }
         result.append(obj);
     }
@@ -409,6 +419,7 @@ void AskApi::postNewSession(const QString &url,
                             const QString &prompt,
                             const QString &talkId)
 {
+    d->terminated = false;
     QByteArray body = d->assembleNewSessionBody(prompt, talkId);
     QNetworkReply *reply = d->postMessage(url, token, body);
     connect(reply, &QNetworkReply::finished, [=]() {
@@ -481,6 +492,7 @@ void AskApi::getMessageList(const QString &url, const QString &token, int pageNu
 
 void AskApi::deleteSessions(const QString &url, const QString &token, const QStringList &talkIds)
 {
+    d->terminated = false;
     QByteArray body = d->assembleDelSessionBody(talkIds);
     QNetworkReply *reply = d->postMessage(url, token, body);
     connect(reply, &QNetworkReply::finished, [=]() {

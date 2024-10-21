@@ -20,9 +20,8 @@ static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/v3/comp
 static const char *lineChatTip = "LineChatTip";
 static const char *commandFixBug = "fixbug";
 static const char *commandExplain = "explain";
-static const char *commandReview = "review";
+static const char *commandReview = "code_check";
 static const char *commandTests = "tests";
-static const char *commandCommits = "commit_message";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
@@ -78,6 +77,7 @@ Copilot::Copilot(QObject *parent)
     connect(&copilotApi, &CopilotApi::responseByStream, this, &Copilot::response);
     connect(&copilotApi, &CopilotApi::messageSended, this, &Copilot::messageSended);
     connect(generateTimer, &QTimer::timeout, this, &Copilot::generateCode);
+    connect(this, &Copilot::requestStop, &copilotApi, &CopilotApi::requestStop);
 }
 
 QString Copilot::selectedText() const
@@ -240,32 +240,40 @@ void Copilot::translate()
 void Copilot::fixBug()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandFixBug);
-
+    if (CodeGeeXManager::instance()->checkRunningState(false)) {
+        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandFixBug);
+        emit messageSended();
+    }
     switchToCodegeexPage();
 }
 
 void Copilot::explain()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandExplain);
-
+    if (CodeGeeXManager::instance()->checkRunningState(false)) {
+        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandExplain);
+        emit messageSended();
+    }
     switchToCodegeexPage();
 }
 
 void Copilot::review()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandReview);
-
+    if (CodeGeeXManager::instance()->checkRunningState(false)) {
+        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandReview);
+        emit messageSended();
+    }
     switchToCodegeexPage();
 }
 
 void Copilot::tests()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandTests);
-
+    if (CodeGeeXManager::instance()->checkRunningState(false)) {
+        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandTests);
+        emit messageSended();
+    }
     switchToCodegeexPage();
 }
 
@@ -289,7 +297,12 @@ void Copilot::commits()
         auto diff = QString::fromUtf8(process.readAll());
         QString url = QString(kUrlSSEChat) + "?stream=true";
 
-        copilotApi.postCommand(url, diff, commitsLocale, commandCommits);
+        if (CodeGeeXManager::instance()->checkRunningState(false)) {
+            CommitMessage message;
+            message.git_diff = diff;
+            copilotApi.postCommit(url, message, commitsLocale);
+            emit messageSended();
+        }
         switchToCodegeexPage();
     });
 

@@ -112,6 +112,40 @@ static QList<QString> SupportLanguage {
     "agda",
 };
 
+static const QStringList ALL_AST_LANGS = {
+    "javascript",
+    "typescript",
+    "javascript jsx",
+    "javascriptreact",
+    "typescript jsx",
+    "typescriptreact",
+    "go",
+    "ruby",
+    "csharp",
+    "c#",
+    "c",
+    "cpp",
+    "c++",
+    "java",
+    "rust",
+    "python",
+};
+
+struct InlineChatInfo {
+    QString fileName { "" };
+    QString package_code { "" };   // eg: "10 import path \n11 import os \n15 import pygame"
+    QString class_function { "" };   // if is_ast is false, class_function do not be set. or set it to "all class and function definition in current file"
+    QString selectedCode { "" };  // need to contains [cursor]
+    QString contextCode { "" };  // linenumber before code
+    bool is_ast { false }; // true when above langs contains this file type and file content > 100 lines
+};
+
+struct CommitMessage {
+    QString git_diff { "" };
+    QString commit_history { "" };
+    QString commit_type { "conventional" };  // conventional / auto / default
+};
+
 class CopilotApi : public QObject
 {
     Q_OBJECT
@@ -131,10 +165,19 @@ public:
                      const QString &code,
                      const QString &locale);
 
+    void postInlineChat(const QString &url,
+                        const QString &prompt,
+                        const InlineChatInfo &info,
+                        const QString &locale);  // codegeex: this api is non-streaming. url need to be xxx/?stream=false
+
     void postTranslate(const QString &url,
                        const QString &code,
                        const QString &dst_lang,
                        const QString &locale);
+
+    void postCommit(const QString &url,
+                    const CommitMessage &message,
+                    const QString &locale);
 
     void postCommand(const QString &url,
                      const QString &code,
@@ -143,6 +186,7 @@ public:
 
     enum ResponseType {
         inline_completions,
+        inline_chat,
         multilingual_code_comment,
         multilingual_code_translate,
         receiving_by_stream
@@ -153,6 +197,7 @@ signals:
     void responseByStream(const QString &msgID, const QString &response, const QString &event);
     void asyncGenerateMessages(const QString &url, const QByteArray &body);
 
+    void requestStop();
     void messageSended();
 
 public slots:
@@ -170,6 +215,13 @@ private:
     QByteArray assembleTranslateBody(const QString &code,
                                      const QString &dst_lang,
                                      const QString &locale);
+
+    QByteArray assembleInlineChatBody(const QString &prompt,
+                                     const InlineChatInfo &info,
+                                     const QString &locale);
+
+    QByteArray assembleCommitBody(const CommitMessage &message,
+                                  const QString &locale);
 
     QByteArray assembleCommandBody(const QString &code,
                                    const QString &locale,

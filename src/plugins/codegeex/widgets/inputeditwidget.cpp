@@ -398,7 +398,6 @@ InputEdit *InputEditWidget::edit()
 void InputEditWidget::popupReference()
 {
     d->model.clear();
-    d->tagMap.clear();
     d->model.addItems(d->defaultReferenceItems);
     d->referencePopup->show();
     d->referencePopup->selectFirstRow();
@@ -476,7 +475,8 @@ void InputEditWidget::onTagRemoved(const QString &text)
     if (!d->tagMap.contains(text))
         return;
     for (auto item : d->tagMap[text])
-        d->selectedFiles.removeOne(item);
+        d->selectedFiles.removeAll(item);
+
     CodeGeeXManager::instance()->setReferenceFiles(d->selectedFiles);
 }
 

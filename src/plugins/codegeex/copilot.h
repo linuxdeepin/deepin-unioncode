@@ -46,6 +46,7 @@ signals:
 
     void response(const QString &msgID, const QString &response, const QString &event);
     void messageSended();
+    void requestStop();
 
 public slots:
     void addComment();
