@@ -10,6 +10,8 @@
 #include "lsp/languageclienthandler.h"
 #include "gui/completion/codecompletionwidget.h"
 
+#include "base/abstractinlinecompletionprovider.h"
+
 #include <Qsci/qscistyle.h>
 
 #include <DFloatingWidget>
@@ -68,6 +70,9 @@ public:
     void setContainerWidget(QWidget *widget);
     void updateLineWidgetPosition();
     void updateCacheInfo(int pos, int added);
+    void provideInlineCompletion(int pos, int added);
+    void applyInlineCompletion();
+    void cancelInlineCompletion();
 
 public slots:
     void resetThemeColor();
@@ -77,6 +82,7 @@ public slots:
                     int line, int foldNow, int foldPrev, int token, int annotationLinesAdded);
     void updateSettings();
     void onSelectionChanged();
+    void setInlineCompletion();
 
 public:
     TextEditor *q { nullptr };
@@ -98,7 +104,7 @@ public:
     int fontSize { 10 };
 
     using CompletionCache = QPair<int, QString>;
-    CompletionCache cpCache { -1, "" };
+    CompletionCache inlineCompletionCache { -1, "" };
     CodeCompletionWidget *completionWidget { nullptr };
     QMap<QString, QVariant> commentSettings;
 

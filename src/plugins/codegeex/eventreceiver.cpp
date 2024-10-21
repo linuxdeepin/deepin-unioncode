@@ -15,7 +15,6 @@ CodeGeeXReceiver::CodeGeeXReceiver(QObject *parent)
 {
     using namespace std::placeholders;
     eventHandleMap.insert(editor.contextMenu.name, std::bind(&CodeGeeXReceiver::processContextMenuEvent, this, _1));
-    eventHandleMap.insert(editor.textChanged.name, std::bind(&CodeGeeXReceiver::processTextChangedEvent, this, _1));
     eventHandleMap.insert(editor.selectionChanged.name, std::bind(&CodeGeeXReceiver::processSelectionChangedEvent, this, _1));
     eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&CodeGeeXReceiver::processActionInvokedEvent, this, _1));
     eventHandleMap.insert(project.openProject.name, std::bind(&CodeGeeXReceiver::processOpenProjectEvent, this, _1));
@@ -50,11 +49,6 @@ void CodeGeeXReceiver::processContextMenuEvent(const dpf::Event &event)
     QMetaObject::invokeMethod(this, [contextMenu]() {
         contextMenu->addMenu(Copilot::instance()->getMenu());
     });
-}
-
-void CodeGeeXReceiver::processTextChangedEvent(const dpf::Event &event)
-{
-    Copilot::instance()->handleTextChanged();
 }
 
 void CodeGeeXReceiver::processSelectionChangedEvent(const dpf::Event &event)

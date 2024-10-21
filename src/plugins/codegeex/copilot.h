@@ -15,6 +15,9 @@ namespace dpfservice {
 class EditorService;
 }
 
+namespace CodeGeeX {
+class CodeGeeXCompletionProvider;
+}
 class InlineChatWidget;
 class Command;
 class Copilot : public QObject
@@ -32,7 +35,6 @@ public:
     void setLocale(const QString &locale);
     void setCommitsLocale(const QString &locale);
     void setCurrentModel(CodeGeeX::languageModel model);
-    void handleTextChanged();
     void handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom,
                                 int lineTo, int indexTo);
 
@@ -76,10 +78,9 @@ private:
     QString generatedCode {};
     QString extractSingleLine();
 
+    CodeGeeX::CodeGeeXCompletionProvider *completionProvider = nullptr;
     CodeGeeX::CopilotApi::GenerateType generateType;
     CodeGeeX::CopilotApi::GenerateType checkPrefixType(const QString &prefixCode);
-
-    QAtomicInteger<bool> generateCodeEnabled = true;
 };
 
 #endif   // COPILOT_H

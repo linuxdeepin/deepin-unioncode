@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "copilot.h"
 #include "widgets/inlinechatwidget.h"
+#include "codegeex/codegeexcompletionprovider.h"
 #include "services/editor/editorservice.h"
 #include "services/option/optionmanager.h"
 #include "services/window/windowservice.h"
@@ -35,6 +36,8 @@ Copilot::Copilot(QObject *parent)
     }
     generateTimer = new QTimer(this);
     generateTimer->setSingleShot(true);
+    completionProvider = new CodeGeeXCompletionProvider(this);
+    editorService->registerInlineCompletionProvider(completionProvider);
 
     QAction *lineChatAct = new QAction(tr("Inline Chat"), this);
     lineChatCmd = ActionManager::instance()->registerAction(lineChatAct, "CodeGeeX.InlineChat");
@@ -60,10 +63,9 @@ Copilot::Copilot(QObject *parent)
                     completion = response;
                 }
 
-                if (editorService->setCompletion) {
-                    editorService->setCompletion(completion);
-                    generatedCode = completion;
-                }
+                generatedCode = completion;
+                completionProvider->setInlineCompletions({ completion });
+                emit completionProvider->finished();
             }
             break;
         case CopilotApi::multilingual_code_translate:
@@ -157,12 +159,12 @@ void Copilot::setGenerateCodeEnabled(bool enabled)
 {
     if (!enabled && generateTimer->isActive())
         generateTimer->stop();
-    generateCodeEnabled = enabled;
+    completionProvider->setInlineCompletionEnabled(enabled);
 }
 
 bool Copilot::getGenerateCodeEnabled() const
 {
-    return generateCodeEnabled;
+    return completionProvider->inlineCompletionEnabled();
 }
 
 void Copilot::setLocale(const QString &locale)
@@ -178,17 +180,6 @@ void Copilot::setCommitsLocale(const QString &locale)
 void Copilot::setCurrentModel(CodeGeeX::languageModel model)
 {
     copilotApi.setModel(model);
-}
-
-void Copilot::handleTextChanged()
-{
-    if (!generateCodeEnabled)
-        return;
-
-    editorService->setCompletion("");
-    QMetaObject::invokeMethod(this, [this]() {
-        generateTimer->start(500);
-    });
 }
 
 void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom, int lineTo, int indexTo)
@@ -219,23 +210,20 @@ void Copilot::addComment()
 
 void Copilot::generateCode()
 {
-    if (!generateCodeEnabled)
+    if (!completionProvider->inlineCompletionEnabled())
         return;
 
-    QString prefix = editorService->getCursorBeforeText();
-    QString suffix = editorService->getCursorBehindText();
-    if (!prefix.endsWith(generatedCode) || generateCache.isEmpty()) {
-        generateType = checkPrefixType(prefix);
+    const auto &context = completionProvider->inlineCompletionContext();
+    if (!context.prefix.endsWith(generatedCode) || generateCache.isEmpty()) {
+        generateType = checkPrefixType(context.prefix);
         copilotApi.postGenerate(kUrlGenerateMultiLine,
-                                prefix,
-                                suffix,
+                                context.prefix,
+                                context.suffix,
                                 generateType);
     } else {
-        QString completion = extractSingleLine();
-        if (editorService->setCompletion) {
-            editorService->setCompletion(completion);
-            generatedCode = completion;
-        }
+        generatedCode = extractSingleLine();
+        completionProvider->setInlineCompletions({ generatedCode });
+        emit completionProvider->finished();
     }
 }
 

@@ -5,6 +5,7 @@
 #include "texteditor_p.h"
 #include "utils/editorutils.h"
 #include "utils/colordefine.h"
+#include "utils/resourcemanager.h"
 #include "lexer/lexermanager.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
@@ -227,6 +228,36 @@ void TextEditorPrivate::onSelectionChanged()
     if (q->hasSelectedText())
         q->getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
     editor.selectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
+}
+
+void TextEditorPrivate::setInlineCompletion()
+{
+    auto provider = dynamic_cast<AbstractInlineCompletionProvider *>(sender());
+    if (!provider)
+        return;
+
+    // Take only one completion for now
+    const auto &items = provider->inlineCompletionItems();
+    for (const auto &item : items) {
+        if (item.completion.isEmpty())
+            continue;
+
+        AbstractInlineCompletionProvider::Position pos;
+        q->getCursorPosition(&pos.line, &pos.column);
+        if (item.pos != pos)
+            continue;
+
+        cancelInlineCompletion();
+        inlineCompletionCache = qMakePair(pos.line, item.completion);
+        const auto &part1 = item.completion.mid(0, item.completion.indexOf('\n'));
+        const auto &part2 = item.completion.mid(item.completion.indexOf('\n') + 1);
+        QsciStyle cpStyle(1, "", Qt::gray, q->lexer() ? q->lexer()->defaultPaper(-1) : q->paper(),
+                          q->lexer() ? q->lexer()->defaultFont() : q->font());
+        q->eOLAnnotate(pos.line, part1, cpStyle);
+        if (part1 != part2)
+            q->annotate(pos.line, part2, cpStyle);
+        return;
+    }
 }
 
 void TextEditorPrivate::loadLexer()
@@ -551,10 +582,10 @@ void TextEditorPrivate::updateCacheInfo(int pos, int added)
         }
     }
 
-    if (cpCache.first != -1 && cpCache.first >= line) {
-        const auto &eolStr = q->eolAnnotation(cpCache.first);
-        if (eolStr.isEmpty() || !cpCache.second.contains(eolStr))
-            cpCache.first += added;
+    if (inlineCompletionCache.first != -1 && inlineCompletionCache.first >= line) {
+        const auto &eolStr = q->eolAnnotation(inlineCompletionCache.first);
+        if (eolStr.isEmpty() || !inlineCompletionCache.second.contains(eolStr))
+            inlineCompletionCache.first += added;
     }
 
     // update eolannotation line
@@ -575,6 +606,50 @@ void TextEditorPrivate::updateCacheInfo(int pos, int added)
         if (added > 0)
             q->setRangeBackgroundColor(range.startLine, range.endLine, iter.key());
     }
+}
+
+void TextEditorPrivate::provideInlineCompletion(int pos, int added)
+{
+    auto providerList = ResourceManager::instance()->inlineCompletionProviders();
+    for (auto provider : providerList) {
+        if (!provider || !provider->inlineCompletionEnabled())
+            continue;
+
+        int cursorPos = pos + added;
+        AbstractInlineCompletionProvider::Position position;
+        q->lineIndexFromPosition(cursorPos, &position.line, &position.column);
+        int lineEndPos = q->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, position.line);
+        if (lineEndPos != cursorPos)
+            return;
+
+        connect(provider, &AbstractInlineCompletionProvider::finished,
+                this, &TextEditorPrivate::setInlineCompletion, Qt::UniqueConnection);
+        AbstractInlineCompletionProvider::InlineCompletionContext context;
+        context.prefix = q->text(0, cursorPos);
+        context.suffix = q->text(cursorPos, q->length());
+        provider->provideInlineCompletionItems(position, context);
+    }
+}
+
+void TextEditorPrivate::applyInlineCompletion()
+{
+    if (inlineCompletionCache.first == -1)
+        return;
+
+    const auto cpStr = inlineCompletionCache.second;
+    cancelInlineCompletion();
+    q->insertText(cpStr);
+}
+
+void TextEditorPrivate::cancelInlineCompletion()
+{
+    if (inlineCompletionCache.first == -1)
+        return;
+
+    q->clearEOLAnnotations(inlineCompletionCache.first);
+    q->clearAnnotations(inlineCompletionCache.first);
+
+    inlineCompletionCache = qMakePair(-1, QString());
 }
 
 void TextEditorPrivate::resetThemeColor()
@@ -628,6 +703,8 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
         updateCacheInfo(pos, added);
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {
+        if (!(mtype & (TextEditor::SC_PERFORMED_UNDO | TextEditor::SC_PERFORMED_REDO)))
+            provideInlineCompletion(pos, len);
         emit q->textAdded(pos, len, added, text, line);
     } else if (mtype & TextEditor::SC_MOD_DELETETEXT) {
         emit q->textRemoved(pos, len, -added, text, line);
