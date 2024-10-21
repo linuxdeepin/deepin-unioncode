@@ -850,7 +850,7 @@ void TextEditor::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Tab && d->inlineCompletionCache.first != -1)
         return d->applyInlineCompletion();
-    
+
     if (event->key() == Qt::Key_Escape && d->lineWidgetContainer->isVisible())
         return closeLineWidget();
 
@@ -897,6 +897,8 @@ bool TextEditor::eventFilter(QObject *obj, QEvent *event)
         d->updateLineWidgetPosition();
     } else if (obj == d->mainWindow() && event->type() == QEvent::Move) {
         d->updateLineWidgetPosition();
+    } else if (obj == d->completionWidget && event->type() == QEvent::Hide) {
+        d->updateInlineCompletion();
     }
 
     return QsciScintilla::eventFilter(obj, event);

@@ -21,6 +21,11 @@ class CodeCompletionWidget : public QFrame
 {
     Q_OBJECT
 public:
+    enum CompletionOrigin {
+        Bottom = 0,
+        Top
+    };
+
     explicit CodeCompletionWidget(TextEditor *parent);
 
     TextEditor *editor() const;
@@ -29,7 +34,7 @@ public:
     void startCompletion();
 
     void updateHeight();
-    void updatePosition(bool force = false);
+    void updatePosition(bool force = false, CompletionOrigin origin = Bottom);
     void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
 
 public slots:
@@ -40,7 +45,8 @@ public slots:
     void automaticInvocation();
 
 protected:
-    virtual void focusOutEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 
 private:
     void initUI();
@@ -68,14 +74,14 @@ private:
     CodeCompletionModel *completionModel { nullptr };
     CompletionSortFilterProxyModel *proxyModel { nullptr };
     CodeCompletionExtendWidget *completionExtWidget { nullptr };
-
     QTimer *automaticInvocationTimer { nullptr };
 
     QString automaticInvocationLine;
     int automaticInvocationAt;
-
     bool needShow { false };
     bool isCompletionInput { false };
+    QPoint showPosition { -1, -1 };
+    CompletionOrigin completionOrigin { Bottom };
 };
 
 #endif   // CODECOMPLETIONWIDGET_H
