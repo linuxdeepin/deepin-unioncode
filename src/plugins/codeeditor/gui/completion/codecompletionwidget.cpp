@@ -67,7 +67,7 @@ void CodeCompletionWidget::initConnection()
     connect(editor(), &TextEditor::textAdded, this, &CodeCompletionWidget::onTextAdded);
     connect(editor(), &TextEditor::textRemoved, this, &CodeCompletionWidget::onTextRemoved);
     connect(editor(), &TextEditor::focusOut, this, &CodeCompletionWidget::viewFocusOut);
-    connect(editor(), &TextEditor::cursorPositionChanged, this, &CodeCompletionWidget::cursorPositionChanged);
+    connect(editor(), &TextEditor::delayCursorPositionChanged, this, &CodeCompletionWidget::cursorPositionChanged);
     connect(editor()->verticalScrollBar(), &QScrollBar::valueChanged, this, [this] {
         abortCompletion();
     });
@@ -385,9 +385,11 @@ void CodeCompletionWidget::updatePosition(bool force, CompletionOrigin origin)
 
     QPoint p = editor()->mapToGlobal(showPosition);
     switch (origin) {
-    case Bottom:
-        p.setY(p.y() + editor()->fontMetrics().height() + 2);
-        break;
+    case Bottom: {
+        int line = 0, index = 0;
+        editor()->lineIndexFromPosition(editor()->cursorPosition(), &line, &index);
+        p.setY(p.y() + editor()->textHeight(line) + 2);
+    } break;
     case Top:
         p.setY(p.y() - height());
         break;

@@ -821,7 +821,7 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 {
     Q_UNUSED(line)
 
-    d->cancelInlineCompletion();
+    d->delayCursorTimer.start();
     editor.cursorPositionChanged(d->fileName, line, index);
     int pos = positionFromLineIndex(line, index);
 
