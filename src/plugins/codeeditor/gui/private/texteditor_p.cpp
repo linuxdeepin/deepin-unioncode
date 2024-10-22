@@ -57,6 +57,7 @@ void TextEditorPrivate::init()
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     selectionChangeTimer.setSingleShot(true);
     selectionChangeTimer.setInterval(50);
+    delayCursorTimer.setInterval(50);
     completionWidget->installEventFilter(q);
 
     initWidgetContainer();
@@ -81,6 +82,8 @@ void TextEditorPrivate::initConnection()
     connect(q, &TextEditor::SCN_MODIFIED, this, &TextEditorPrivate::onModified);
     connect(q, &TextEditor::selectionChanged, &selectionChangeTimer, qOverload<>(&QTimer::start));
     connect(&selectionChangeTimer, &QTimer::timeout, this, &TextEditorPrivate::onSelectionChanged);
+    connect(&delayCursorTimer, &QTimer::timeout, this, &TextEditorPrivate::handleDelayCursorChanged);
+    connect(q, &TextEditor::delayCursorPositionChanged, this, &TextEditorPrivate::cancelInlineCompletion);
 }
 
 void TextEditorPrivate::initMargins()
@@ -253,6 +256,16 @@ void TextEditorPrivate::setInlineCompletion()
         updateInlineCompletion();
         return;
     }
+}
+
+void TextEditorPrivate::handleDelayCursorChanged()
+{
+    if (leftButtonPressed)
+        return;
+    delayCursorTimer.stop();
+    int line = 0, index = 0;
+    q->getCursorPosition(&line, &index);
+    Q_EMIT q->delayCursorPositionChanged(line, index);
 }
 
 void TextEditorPrivate::loadLexer()
@@ -643,7 +656,6 @@ void TextEditorPrivate::cancelInlineCompletion()
 
     q->clearEOLAnnotations(inlineCompletionCache.first);
     q->clearAnnotations(inlineCompletionCache.first);
-
     inlineCompletionCache = qMakePair(-1, QString());
 }
 

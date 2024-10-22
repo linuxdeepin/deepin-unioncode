@@ -84,6 +84,7 @@ public slots:
     void updateSettings();
     void onSelectionChanged();
     void setInlineCompletion();
+    void handleDelayCursorChanged();
 
 public:
     TextEditor *q { nullptr };
@@ -96,7 +97,6 @@ public:
 
     LanguageClientHandler *languageClient { nullptr };
     bool isAutoCompletionEnabled { false };
-
     bool tipsDisplayable { true };
     bool contentsChanged { false };
     bool lastCursorNeedRecord { true };
@@ -109,6 +109,7 @@ public:
     CodeCompletionWidget *completionWidget { nullptr };
     QMap<QString, QVariant> commentSettings;
 
+    QTimer delayCursorTimer;
     QTimer selectionChangeTimer;
     DTK_WIDGET_NAMESPACE::DFloatingWidget *lineWidgetContainer { nullptr };
     int showAtLine { 0 };
