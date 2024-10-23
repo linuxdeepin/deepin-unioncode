@@ -19,6 +19,7 @@ public:
     void removeKit(const Kit &kit);
     QList<Kit> kitList() const;
     Kit findKit(const QString &id);
+    Kit defaultKit() const;
 
 private:
     explicit KitManager(QObject *parent = nullptr);

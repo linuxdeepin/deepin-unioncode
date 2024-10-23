@@ -11,6 +11,34 @@
 #include <QVector>
 #include <QMap>
 
+constexpr char kVersion[] { "version" };
+constexpr char kConfigVersion[] { "1.0" };
+constexpr char kKit[] { "kit" };
+constexpr char kKitId[] { "kitId" };
+constexpr char kLanguage[] { "language" };
+constexpr char kWorkspace[] { "workspace" };
+constexpr char kDefaultType[] { "defaultType" };
+constexpr char kTempSelType[] { "tempSelType" };
+constexpr char kBuildTypeConfigures[] { "buildTypeConfigures" };
+constexpr char kType[] { "type" };
+constexpr char kDirectory[] { "directory" };
+constexpr char kBuildConfigure[] { "buildConfigure" };
+constexpr char kEnvironmentItem[] { "environmentItem" };
+constexpr char kEnable[] { "enable" };
+constexpr char kEnvironments[] { "environments" };
+constexpr char kSteps[] { "steps" };
+constexpr char kActiveTargetName[] { "activeTargetName" };
+constexpr char kAllTargetNames[] { "allTargetNames" };
+constexpr char kBuildArguments[] { "buildArguments" };
+constexpr char kRunConfigure[] { "runConfigure" };
+constexpr char kDefaultTargetName[] { "defaultTargetName" };
+constexpr char kTargetsRunConfigure[] { "targetsRunConfigure" };
+constexpr char kTargetName[] { "targetName" };
+constexpr char kTargetPath[] { "targetPath" };
+constexpr char kArguments[] { "arguments" };
+constexpr char kWorkDirectory[] { "workDirectory" };
+constexpr char kRunInTermal[] { "runInTermal" };
+
 namespace config {
 
 enum ConfigType {
@@ -32,26 +60,30 @@ struct StepItem
     QStringList allTargetNames;
     QStringList buildArguments;
 
-    friend QDataStream &operator<<(QDataStream &stream, const StepItem &data)
+    inline void fromJson(const QJsonObject &obj)
     {
-        stream << data.type;
-        stream << data.activeTargetName;
-        stream << data.allTargetNames;
-        stream << data.buildArguments;
+        auto arrayToStringList = [](const QJsonArray &array) {
+            QStringList list;
+            for (const auto &value : array) {
+                list << value.toString();
+            }
+            return list;
+        };
 
-        return stream;
+        activeTargetName = obj.value(kActiveTargetName).toString();
+        type = static_cast<StepType>(obj.value(kType).toInt());
+        allTargetNames = arrayToStringList(obj.value(kAllTargetNames).toArray());
+        buildArguments = arrayToStringList(obj.value(kBuildArguments).toArray());
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, StepItem &data)
+    inline QJsonObject toJson() const
     {
-        int type = 0;
-        stream >> type;
-        data.type = static_cast<StepType>(type);
-        stream >> data.activeTargetName;
-        stream >> data.allTargetNames;
-        stream >> data.buildArguments;
-
-        return stream;
+        QJsonObject obj;
+        obj.insert(kType, type);
+        obj.insert(kActiveTargetName, activeTargetName);
+        obj.insert(kAllTargetNames, QJsonArray::fromStringList(allTargetNames));
+        obj.insert(kBuildArguments, QJsonArray::fromStringList(buildArguments));
+        return obj;
     }
 };
 
@@ -84,20 +116,18 @@ struct EnvironmentItem
         }
     }
 
-    friend QDataStream &operator<<(QDataStream &stream, const EnvironmentItem &data)
+    inline void fromJson(const QJsonObject &obj)
     {
-        stream << data.enable;
-        stream << data.environments;
-
-        return stream;
+        enable = obj.value(kEnable).toBool();
+        environments = obj.value(kEnvironments).toVariant().toMap();
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, EnvironmentItem &data)
+    inline QJsonObject toJson() const
     {
-        stream >> data.enable;
-        stream >> data.environments;
-
-        return stream;
+        QJsonObject obj;
+        obj.insert(kEnable, enable);
+        obj.insert(kEnvironments, QJsonObject::fromVariantMap(environments));
+        return obj;
     }
 };
 
@@ -110,28 +140,26 @@ struct TargetRunConfigure
     EnvironmentItem env;
     bool runInTermal { false };
 
-    friend QDataStream &operator<<(QDataStream &stream, const TargetRunConfigure &data)
+    inline void fromJson(const QJsonObject &obj)
     {
-        stream << data.targetName;
-        stream << data.targetPath;
-        stream << data.arguments;
-        stream << data.workDirectory;
-        stream << data.env;
-        stream << data.runInTermal;
-
-        return stream;
+        targetName = obj.value(kTargetName).toString();
+        targetPath = obj.value(kTargetPath).toString();
+        arguments = obj.value(kArguments).toString();
+        workDirectory = obj.value(kWorkDirectory).toString();
+        runInTermal = obj.value(kRunInTermal).toBool();
+        env.fromJson(obj.value(kEnvironmentItem).toObject());
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, TargetRunConfigure &data)
+    inline QJsonObject toJson() const
     {
-        stream >> data.targetName;
-        stream >> data.targetPath;
-        stream >> data.arguments;
-        stream >> data.workDirectory;
-        stream >> data.env;
-        stream >> data.runInTermal;
-
-        return stream;
+        QJsonObject obj;
+        obj.insert(kTargetName, targetName);
+        obj.insert(kTargetPath, targetPath);
+        obj.insert(kArguments, arguments);
+        obj.insert(kWorkDirectory, workDirectory);
+        obj.insert(kRunInTermal, runInTermal);
+        obj.insert(kEnvironmentItem, env.toJson());
+        return obj;
     }
 };
 
@@ -140,20 +168,28 @@ struct RunConfigure
     QString defaultTargetName;
     QVector<TargetRunConfigure> targetsRunConfigure;
 
-    friend QDataStream &operator<<(QDataStream &stream, const RunConfigure &data)
+    inline void fromJson(const QJsonObject &obj)
     {
-        stream << data.defaultTargetName;
-        stream << data.targetsRunConfigure;
-
-        return stream;
+        defaultTargetName = obj.value(kDefaultTargetName).toString();
+        const auto &array = obj.value(kTargetsRunConfigure).toArray();
+        for (const auto &value : array) {
+            TargetRunConfigure config;
+            config.fromJson(value.toObject());
+            targetsRunConfigure << config;
+        }
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, RunConfigure &data)
+    inline QJsonObject toJson() const
     {
-        stream >> data.defaultTargetName;
-        stream >> data.targetsRunConfigure;
+        QJsonObject obj;
+        obj.insert(kDefaultTargetName, defaultTargetName);
 
-        return stream;
+        QJsonArray array;
+        for (const auto &config : targetsRunConfigure) {
+            array.append(config.toJson());
+        }
+        obj.insert(kTargetsRunConfigure, array);
+        return obj;
     }
 };
 
@@ -162,20 +198,28 @@ struct BuildConfigue
     EnvironmentItem env;
     QVector<StepItem> steps;
 
-    friend QDataStream &operator<<(QDataStream &stream, const BuildConfigue &data)
+    inline void fromJson(const QJsonObject &obj)
     {
-        stream << data.env;
-        stream << data.steps;
-
-        return stream;
+        env.fromJson(obj.value(kEnvironmentItem).toObject());
+        const auto &array = obj.value(kSteps).toArray();
+        for (const auto &value : array) {
+            StepItem item;
+            item.fromJson(value.toObject());
+            steps << item;
+        }
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, BuildConfigue &data)
+    inline QJsonObject toJson() const
     {
-        stream >> data.env;
-        stream >> data.steps;
+        QJsonObject obj;
+        obj.insert(kEnvironmentItem, env.toJson());
 
-        return stream;
+        QJsonArray array;
+        for (const auto &step : steps) {
+            array.append(step.toJson());
+        }
+        obj.insert(kSteps, array);
+        return obj;
     }
 };
 
@@ -186,26 +230,22 @@ struct BuildTypeConfigure
     BuildConfigue buildConfigure;
     RunConfigure runConfigure;
 
-    friend QDataStream &operator<<(QDataStream &stream, const BuildTypeConfigure &data)
+    inline void fromJson(const QJsonObject &obj)
     {
-        stream << data.type;
-        stream << data.directory;
-        stream << data.buildConfigure;
-        stream << data.runConfigure;
-
-        return stream;
+        type = static_cast<ConfigType>(obj.value(kType).toInt());
+        directory = obj.value(kDirectory).toString();
+        buildConfigure.fromJson(obj.value(kBuildConfigure).toObject());
+        runConfigure.fromJson(obj.value(kRunConfigure).toObject());
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, BuildTypeConfigure &data)
+    inline QJsonObject toJson() const
     {
-        int type = 0;
-        stream >> type;
-        data.type = static_cast<ConfigType>(type);
-        stream >> data.directory;
-        stream >> data.buildConfigure;
-        stream >> data.runConfigure;
-
-        return stream;
+        QJsonObject obj;
+        obj.insert(kType, type);
+        obj.insert(kDirectory, directory);
+        obj.insert(kBuildConfigure, buildConfigure.toJson());
+        obj.insert(kRunConfigure, runConfigure.toJson());
+        return obj;
     }
 };
 
@@ -220,35 +260,45 @@ struct ProjectConfigure
     ConfigType tempSelType = Unknown;
     BuildTypeConfigures buildTypeConfigures;   // debug、release e.g
 
-    friend QDataStream &operator<<(QDataStream &stream, const ProjectConfigure &data)
+    inline bool fromJson(const QJsonObject &obj)
     {
-        stream << data.kit;
-        stream << data.kitId;
-        stream << data.language;
-        stream << data.workspace;
-        int type = data.defaultType;
-        stream << type;
-        type = data.tempSelType;
-        stream << type;
-        stream << data.buildTypeConfigures;
+        QString version = obj.value(kVersion).toString();
+        if (kConfigVersion != version)
+            return false;
 
-        return stream;
+        kit = obj.value(kKit).toString();
+        kitId = obj.value(kKitId).toString();
+        language = obj.value(kLanguage).toString();
+        workspace = obj.value(kWorkspace).toString();
+        defaultType = static_cast<ConfigType>(obj.value(kDefaultType).toInt());
+        tempSelType = static_cast<ConfigType>(obj.value(kTempSelType).toInt());
+
+        const auto &array = obj.value(kBuildTypeConfigures).toArray();
+        for (const auto &value : array) {
+            BuildTypeConfigure config;
+            config.fromJson(value.toObject());
+            buildTypeConfigures << config;
+        }
+        return true;
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, ProjectConfigure &data)
+    inline QJsonObject toJson() const
     {
-        stream >> data.kit;
-        stream >> data.kitId;
-        stream >> data.language;
-        stream >> data.workspace;
-        int type = 0;
-        stream >> type;
-        data.defaultType = static_cast<ConfigType>(type);
-        stream >> type;
-        data.tempSelType = static_cast<ConfigType>(type);
-        stream >> data.buildTypeConfigures;
+        QJsonObject obj;
+        obj.insert(kVersion, kConfigVersion);
+        obj.insert(kKit, kit);
+        obj.insert(kKitId, kitId);
+        obj.insert(kLanguage, language);
+        obj.insert(kWorkspace, workspace);
+        obj.insert(kDefaultType, defaultType);
+        obj.insert(kTempSelType, tempSelType);
 
-        return stream;
+        QJsonArray array;
+        for (const auto &config : buildTypeConfigures) {
+            array.append(config.toJson());
+        }
+        obj.insert(kBuildTypeConfigures, array);
+        return obj;
     }
 
     void clear()
@@ -284,7 +334,7 @@ public:
     void checkConfigInfo(const QString &buildType, const QString &directory);
     void configProject(const ProjectConfigure *param);
 
-    void readConfig(const QString &filePath, ProjectConfigure &param);
+    bool readConfig(const QString &filePath, ProjectConfigure &param);
     void saveConfig(const QString &filePath, const ProjectConfigure &param);
     bool updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectConfigure *param);
 

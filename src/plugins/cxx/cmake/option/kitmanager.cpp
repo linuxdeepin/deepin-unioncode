@@ -4,6 +4,11 @@
 
 #include "kitmanager.h"
 
+#include "services/option/toolchaindata.h"
+
+#include <QUuid>
+#include <QDebug>
+
 KitManager::KitManager(QObject *parent)
     : QObject(parent)
 {
@@ -38,4 +43,50 @@ Kit KitManager::findKit(const QString &id)
                              });
 
     return iter != allKit.cend() ? *iter : Kit();
+}
+
+Kit KitManager::defaultKit() const
+{
+    Kit kit;
+
+    ToolChainData toolCD;
+    QString retMsg;
+    bool ret = toolCD.readToolChainData(retMsg);
+    if (!ret) {
+        qWarning() << retMsg;
+        return kit;
+    }
+
+    const auto &data = toolCD.getToolChanins();
+    auto params = data.value(kCCompilers);
+    for (const auto &param : qAsConst(params)) {
+        kit.setCCompiler({ param.name, param.path });
+        if (param.name == "gcc")
+            break;
+    }
+
+    params = data.value(kCXXCompilers);
+    for (const auto &param : qAsConst(params)) {
+        kit.setCXXCompiler({ param.name, param.path });
+        if (param.name == "g++")
+            break;
+    }
+
+    params = data.value(kCCXXDebuggers);
+    for (const auto &param : qAsConst(params)) {
+        kit.setDebugger({ param.name, param.path });
+        if (param.name == "gdb")
+            break;
+    }
+
+    params = data.value(kCCXXBuildSystems);
+    for (const auto &param : qAsConst(params)) {
+        kit.setCMakeTool({ param.name, param.path });
+        if (param.name == "cmake")
+            break;
+    }
+
+    kit.setKitName("Desktop");
+    kit.setId(QUuid::createUuid().toString());
+    return kit;
 }
