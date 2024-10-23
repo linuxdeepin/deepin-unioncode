@@ -306,14 +306,24 @@ QString KitOptionWidget::configName() const
 
 void KitOptionWidget::setConfig(const QVariantMap &config)
 {
-    if (config.isEmpty() || !config.first().canConvert<QVariantMap>())
-        return;
+    auto tempConfig = config;
+    if (config.isEmpty()) {
+        auto kit = KitManager::instance()->defaultKit();
+        if (!kit.isValid())
+            return;
+        tempConfig.insert(kit.kitName(), kit.toVariantMap());
+    }
 
-    auto firstValue = config.first().toMap();
+    if (!tempConfig.first().canConvert<QVariantMap>()) {
+        tempConfig.clear();
+        return setConfig(tempConfig);
+    }
+
+    auto firstValue = tempConfig.first().toMap();
     if (firstValue.size() <= 2)
-        d->parseKitParamsV1(config);
+        d->parseKitParamsV1(tempConfig);
     else
-        d->parseKitParamsV2(config);
+        d->parseKitParamsV2(tempConfig);
 }
 
 QVariantMap KitOptionWidget::getConfig() const

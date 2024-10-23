@@ -16,6 +16,7 @@
 #include <QVector>
 #include <QFileInfo>
 #include <QDir>
+
 namespace config {
 
 class ConfigUtilPrivate
@@ -69,10 +70,15 @@ bool ConfigUtil::isNeedConfig(const QString &workspace, ProjectConfigure &param)
 {
     QString propertyFile = getConfigPath(workspace);
     if (QFileInfo(propertyFile).exists() || QFileInfo(propertyFile).isFile()) {
-        readConfig(propertyFile, param);
-        if (!param.buildTypeConfigures.isEmpty()) {
+        if (!readConfig(propertyFile, param))
+            return true;
+
+        auto kit = KitManager::instance()->findKit(param.kitId);
+        if (!kit.isValid())
+            return true;
+
+        if (!param.buildTypeConfigures.isEmpty())
             return false;
-        }
     }
     return true;
 }
@@ -155,25 +161,38 @@ QString ConfigUtil::getConfigPath(const QString &projectPath)
     return CustomPaths::projectCachePath(projectPath) + QDir::separator() + "project.properties";
 }
 
-void ConfigUtil::readConfig(const QString &filePath, ProjectConfigure &param)
+bool ConfigUtil::readConfig(const QString &filePath, ProjectConfigure &param)
 {
     param.clear();
     QFile file(filePath);
-    if (file.open(QIODevice::ReadOnly)) {
-        QDataStream stream(&file);
-        stream >> param;
-        file.close();
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Failed to read the project configuration: " << filePath;
+        return false;
     }
+    const auto &text = file.readAll();
+    file.close();
+
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(text, &error);
+    if (error.error != QJsonParseError::NoError) {
+        qWarning() << "Failed to parse the project configuration: " << filePath;
+        return false;
+    }
+
+    return param.fromJson(doc.object());
 }
 
 void ConfigUtil::saveConfig(const QString &filePath, const ProjectConfigure &param)
 {
     QFile file(filePath);
-    if (file.open(QIODevice::ReadWrite)) {
-        QDataStream stream(&file);
-        stream << param;
-        file.close();
+    if (!file.open(QIODevice::WriteOnly)) {
+        qWarning() << "Failed to write the project configuration: " << filePath;
+        return;
     }
+
+    QJsonDocument doc(param.toJson());
+    file.write(doc.toJson());
+    file.close();
 }
 
 bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectConfigure *param)
