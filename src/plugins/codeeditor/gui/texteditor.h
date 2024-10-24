@@ -137,6 +137,7 @@ signals:
     void focusOut();
     void cursorRecordChanged(int pos);
     void requestOpenFiles(const QList<QUrl> &fileList);
+    void delayCursorPositionChanged(int line, int index);
 
 private:
     void init();

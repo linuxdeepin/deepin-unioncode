@@ -21,6 +21,11 @@ QString CodeGeeXCompletionProvider::providerName() const
 
 void CodeGeeXCompletionProvider::provideInlineCompletionItems(const Position &pos, const InlineCompletionContext &c)
 {
+    for (const auto &item : qAsConst(completionItems)) {
+        if (c.prefix.endsWith(item.completion))
+            return;
+    }
+
     positon = pos;
     context = c;
     connect(&timer, &QTimer::timeout, Copilot::instance(), &Copilot::generateCode, Qt::UniqueConnection);

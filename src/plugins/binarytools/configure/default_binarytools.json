@@ -175,7 +175,7 @@
                         "channelData": "%{CurrentDocument:Content}",
                         "triggerEvent" : 0
                     }
-                }
+		}
             ]
         }
     ],
@@ -192,6 +192,6 @@
                 "hunspell",
                 "clang-format"
             ]
-        }
+	}
     ]
 }
