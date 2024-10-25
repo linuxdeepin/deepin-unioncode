@@ -1125,77 +1125,77 @@ storage: %2
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="39"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="41"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="41"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="42"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="90"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="91"/>
         <source>backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="98"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="99"/>
         <source>forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="128"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="129"/>
         <source>Close Current Editor</source>
         <translation>关闭当前编辑器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="133"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="134"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="137"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="138"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="141"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="142"/>
         <source>Toggle Breakpoint</source>
         <translation>切换断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="145"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="146"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="149"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="150"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="255"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="256"/>
         <source>Current document</source>
         <translation>当前文档</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="258"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="259"/>
         <source>Current document content</source>
         <translation>当前文档内容</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="118"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="119"/>
         <source>Backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="123"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="124"/>
         <source>Forward</source>
         <translation>前进</translation>
     </message>
@@ -1203,7 +1203,7 @@ storage: %2
 <context>
     <name>CodeGeeX::AskApi</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="392"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="402"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
@@ -1211,44 +1211,44 @@ storage: %2
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="469"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="473"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
         <translation>该工程还没有建立文件索引，@codebase无法正常使用.确认是否现在创建索引</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="474"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="478"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="488"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="492"/>
         <source>It may take servel minutes</source>
         <translation>该过程也许会耗费若干分钟</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="498"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="502"/>
         <source>Indexing Done</source>
         <translation>创建索引完成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="498"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="502"/>
         <source>Indexing Failed</source>
         <translation>建立索引失败</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="542"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="546"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="394"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="404"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常使用，请安装相应的环境。
 安装过程可能会耗费若干分钟。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="199"/>
+        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="201"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确.</translation>
     </message>
@@ -1700,42 +1700,42 @@ storage: %2
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="39"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="41"/>
         <source>Inline Chat</source>
         <translation>内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="111"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="113"/>
         <source>Add Comment</source>
         <translation>添加注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="112"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="114"/>
         <source>Translate</source>
         <translation>翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="113"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="115"/>
         <source>Fix Bug</source>
         <translation>修复bug</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="114"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="116"/>
         <source>Explain Code</source>
         <translation>解释代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="115"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="117"/>
         <source>Review Code</source>
         <translation>代码审查</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="116"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="118"/>
         <source>Generate Unit Tests</source>
         <translation>生成单元测试</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="117"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="119"/>
         <source>Generate git commits</source>
         <translation>生成git commits</translation>
     </message>
@@ -2831,47 +2831,47 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="340"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="341"/>
         <source>  Press %1 to inline chat</source>
         <translation>  按%1进行内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="195"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="196"/>
         <source>Esc to close</source>
         <translation>Esc 退出对话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="196"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
         <source>Submit Edit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="198"/>
         <source>quick question</source>
         <translation>快问快答</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="199"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="200"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="201"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="202"/>
         <source>Accept</source>
         <translation>接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="203"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="204"/>
         <source>Reject</source>
         <translation>拒绝</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="274"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="275"/>
         <source>Ask a question here, press Enter to send</source>
         <translation>在这里提问，按Enter键发送</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="283"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="284"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation>继续提问，按Enter键发送</translation>
     </message>
@@ -2879,34 +2879,40 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InputEditWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="163"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="178"/>
         <source>reference files</source>
         <translation>引用文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="169"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="184"/>
         <source>connect to network</source>
         <translation>联网</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="187"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="202"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="190"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="205"/>
         <source>Select File</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="208"/>
         <source>Opened Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="212"/>
         <source>CodeBase</source>
         <translation>代码库</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="446"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="458"/>
+        <source>No opened file</source>
+        <translation>没有打开的文件</translation>
     </message>
 </context>
 <context>
@@ -3471,17 +3477,17 @@ repos path: %0</source>
 <context>
     <name>MessageComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="130"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="132"/>
         <source>edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="195"/>
         <source>Online Searching</source>
         <translation>联网搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="285"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="287"/>
         <source>Show Reference</source>
         <translation>显示引用</translation>
     </message>
@@ -4131,7 +4137,7 @@ repos path: %0</source>
         <translation>用户行为分析</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="432"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="451"/>
         <source>Select File</source>
         <translation>选择文件</translation>
     </message>
@@ -4633,7 +4639,7 @@ not exists support files: %0</source>
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="222"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="223"/>
         <source>Search &amp;Results</source>
         <translation>查找结果(&amp;R)</translation>
     </message>
@@ -6262,77 +6268,77 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="306"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="345"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="311"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="350"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="314"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="353"/>
         <source>Redo</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="319"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="358"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="323"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="362"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="327"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="366"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="330"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="369"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="335"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="374"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="351"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="390"/>
         <source>Remove Breakpoint</source>
         <translation>移除断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="353"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="392"/>
         <source>Disable Breakpoint</source>
         <translation>禁用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="355"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="394"/>
         <source>Enable Breakpoint</source>
         <translation>启用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="356"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="395"/>
         <source>Add Condition</source>
         <translation>添加条件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="358"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="397"/>
         <source>Add a breakpoint on line %1</source>
         <translation>在第 %1 行添加断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="366"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="405"/>
         <source>jump to %1 line</source>
         <translation>跳转到 %1 行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="367"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="406"/>
         <source>run to %1 line</source>
         <translation>运行到 %1 行</translation>
     </message>

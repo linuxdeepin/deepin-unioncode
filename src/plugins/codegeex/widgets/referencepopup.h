@@ -69,11 +69,13 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     void addItems(const QList<ItemInfo> &items);
+    void setFilterText(const QString &filterText);
 
     QList<ItemInfo> getItems() const;
 
 private:
     QList<ItemInfo> items;
+    QList<ItemInfo> displayItems;
 };
 
 class PopupWidget : public DBlurEffectWidget

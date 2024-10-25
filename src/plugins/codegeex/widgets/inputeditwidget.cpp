@@ -6,6 +6,7 @@
 #include "referencepopup.h"
 #include "codegeexmanager.h"
 #include "services/editor/editorservice.h"
+#include "services/window/windowservice.h"
 
 #include <DTextEdit>
 #include <DToolButton>
@@ -19,6 +20,7 @@
 #include <QAbstractTextDocumentLayout>
 
 DWIDGET_USE_NAMESPACE
+using namespace dpfservice;
 
 static const int minInputEditHeight = 36;
 static const int maxInputEditHeight = 236;
@@ -131,7 +133,8 @@ void InputEditWidgetPrivate::initEdit()
 {
     edit = new InputEdit(q);
     InputEditWidget::connect(edit, &InputEdit::textChanged, q, [this]() {
-        if (edit->toPlainText().isEmpty())
+        auto currentText = edit->toPlainText();
+        if (currentText.isEmpty())
             sendButton->setEnabled(false);
         else
             sendButton->setEnabled(true);
@@ -140,6 +143,18 @@ void InputEditWidgetPrivate::initEdit()
         auto cursorPos = edit->textCursor().position();
         if (cursorPos > 0 && edit->document()->characterAt(cursorPos - 1) == "@")
             q->popupReference();
+
+        if (referencePopup->isVisible() && !currentText.endsWith('@')) {
+            auto start = currentText.indexOf('@');
+            auto firstSpace = currentText.indexOf(' ', start); // first space after `@`
+            if (start == -1 || (firstSpace != -1 && cursorPos > firstSpace))
+                referencePopup->hide();
+
+            auto filterText = currentText.mid(start + 1, cursorPos - start - 1);
+            model.setFilterText(filterText);
+        } else {
+            model.setFilterText("");
+        }
     });
 }
 
@@ -378,7 +393,6 @@ bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
                 else
                     emit handleKey(keyEvent);
                 return true;
-            case Qt::Key_Backspace:
             case Qt::Key_Space:
                 d->referencePopup->hide();
                 break;
@@ -411,9 +425,13 @@ void InputEditWidget::accept(const QModelIndex &index)
     if (row < 0 || row >= d->model.rowCount())
         return;
 
-    using dpfservice::EditorService;
     EditorService *editorSrv = dpfGetService(EditorService);
     ItemInfo item = d->model.getItems().at(row);
+
+    auto notify = [=](const QString &message){
+        WindowService *windowSrv = dpfGetService(WindowService);
+        windowSrv->notify(2, "CodeGeeX", message, {});
+    };
 
     auto appendTag = [=](const QString &filePath) {
         QFileInfo info(filePath);
@@ -424,8 +442,10 @@ void InputEditWidget::accept(const QModelIndex &index)
     };
     if (item.type == reference_current_file) {
         auto filePath = editorSrv->currentFile();
-        if (filePath.isEmpty())
+        if (filePath.isEmpty()) {
+            notify(tr("No opened file"));
             return;
+        }
         appendTag(filePath);
     } else if (item.type == reference_select_file) {
         QString result = QFileDialog::getOpenFileName(this, QAction::tr("Select File"), QDir::homePath());
@@ -434,8 +454,10 @@ void InputEditWidget::accept(const QModelIndex &index)
         appendTag(result);
     } else if (item.type == reference_opened_files) {
         auto openedFiles = editorSrv->openedFiles();
-        if (openedFiles.isEmpty())
+        if (openedFiles.isEmpty()) {
+            notify(tr("No opened file"));
             return;
+        }
         QList<ItemInfo> items;
         for (auto file : openedFiles) {
             ItemInfo item;

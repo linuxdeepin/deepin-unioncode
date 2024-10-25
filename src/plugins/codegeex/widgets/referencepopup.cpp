@@ -42,7 +42,6 @@ void DisplayItemDelegate::paint(QPainter *painter,
 
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
-
     paintItemBackground(painter, opt, index);
     paintItemColumn(painter, opt, index);
 }
@@ -130,27 +129,28 @@ void ItemModel::clear()
 {
     beginResetModel();
     items.clear();
+    displayItems.clear();
     endResetModel();
 }
 
 QVariant ItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= items.size())
+    if (!index.isValid() || index.row() >= displayItems.size())
         return QVariant();
 
     switch (role) {
     case Qt::DisplayRole:
         if (index.column() == DisplayNameColumn)
-            return items.at(index.row()).displayName;
+            return displayItems.at(index.row()).displayName;
         else if (index.column() == ExtraInfoColumn)
-            return items.at(index.row()).extraInfo;
+            return displayItems.at(index.row()).extraInfo;
         break;
     case Qt::ToolTipRole:
-        if (!items.at(index.row()).extraInfo.isEmpty())
-            return items.at(index.row()).extraInfo;
+        if (!displayItems.at(index.row()).extraInfo.isEmpty())
+            return displayItems.at(index.row()).extraInfo;
     case Qt::DecorationRole:
         if (index.column() == DisplayNameColumn)
-            return items[index.row()].icon;
+            return displayItems[index.row()].icon;
         break;
     };
     return QVariant();
@@ -160,26 +160,38 @@ void ItemModel::addItems(const QList<ItemInfo> &items)
 {
     beginInsertRows(QModelIndex(), this->items.size(), this->items.size() + items.size() - 1);
     this->items.append(items);
+    this->displayItems.append(items);
     endInsertRows();
+}
+
+void ItemModel::setFilterText(const QString &filterText)
+{
+    beginResetModel();
+    displayItems.clear();
+    for (auto item : items) {
+        if (item.displayName.startsWith(filterText))
+            displayItems.append(item);
+    }
+    endResetModel();
 }
 
 QList<ItemInfo> ItemModel::getItems() const
 {
-    return items;
+    return displayItems;
 }
 
 int ItemModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return items.size();
+    return displayItems.size();
 }
 
 int ItemModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    for (auto item : items)
+    for (auto item : displayItems)
         if (!item.extraInfo.isEmpty())
             return ColumnCount;
     return 1;
@@ -217,7 +229,6 @@ PopupWidget::PopupWidget(QWidget *parent)
 void PopupWidget::updateGeometry()
 {
     Q_ASSERT(parentWidget());
-
     const int border = list->frameWidth();
     QSize size = parentWidget()->size();
     auto itemHeight = fontMetrics().height() * 2 + 5;   // same as itemdelegate
@@ -225,6 +236,7 @@ void PopupWidget::updateGeometry()
     if (model && model->rowCount() < 10)
         height = model->rowCount() * itemHeight;
 
+    height = height < minimumHeight() ? minimumHeight() : height;
     const QRect rect(parentWidget()->mapToGlobal(QPoint(-border, -(height + 5))), QSize(size.width(), height));
     setGeometry(rect);
 }
@@ -301,7 +313,7 @@ void PopupWidget::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Return:
     case Qt::Key_Enter:
-        if (event->modifiers() == 0) {
+        if (event->modifiers() == 0 || event->modifiers() == Qt::KeypadModifier) {
             emit selectIndex(list->currentIndex());
             return;
         }
