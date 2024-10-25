@@ -186,7 +186,7 @@ void PopupWidget::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Return:
     case Qt::Key_Enter:
-        if (event->modifiers() == 0) {
+        if (event->modifiers() == 0 || event->modifiers() == Qt::KeypadModifier) {
             emit selectIndex(tree->currentIndex());
             return;
         }
