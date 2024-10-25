@@ -201,8 +201,14 @@ QByteArray CopilotApi::assembleInlineChatBody(const QString &prompt, const Inlin
     json.insert("code", info.selectedCode);
     json.insert("command", "inline_chat");
     json.insert("locale", locale);
+    json.insert("talkId", CodeGeeXManager::instance()->getTalkId());
     json.insert("model", chatModel);
-    json.insert("prompt", prompt);
+    QString promptWithType = prompt;
+    if (info.commandType == InlineChatInfo::Chat)
+        promptWithType.append(".use Chat type to answer me");
+    else if (info.commandType == InlineChatInfo::Programing)
+        promptWithType.append(".use Programing type to answer me");
+    json.insert("prompt", promptWithType);
 
     QJsonObject inline_chat_obj;
     inline_chat_obj.insert("is_ast", info.is_ast);

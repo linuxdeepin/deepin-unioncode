@@ -132,11 +132,16 @@ static const QStringList ALL_AST_LANGS = {
 };
 
 struct InlineChatInfo {
+    enum CommandType{
+        Programing,
+        Chat
+    };
     QString fileName { "" };
     QString package_code { "" };   // eg: "10 import path \n11 import os \n15 import pygame"
     QString class_function { "" };   // if is_ast is false, class_function do not be set. or set it to "all class and function definition in current file"
     QString selectedCode { "" };  // need to contains [cursor]
     QString contextCode { "" };  // linenumber before code
+    CommandType commandType { Programing };
     bool is_ast { false }; // true when above langs contains this file type and file content > 100 lines
 };
 
