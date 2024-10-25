@@ -487,8 +487,7 @@ void CodeGeeXManager::showIndexingWidget()
     ProjectService *prjServ = dpfGetService(ProjectService);
     auto currentProject = prjServ->getActiveProjectInfo().workspaceFolder();
     connect(confirmBtn, &QPushButton::clicked, widget, [=]() {
-        QtConcurrent::run([=]() { generateRag(currentProject); });
-
+        generateRag(currentProject);
         layout->addWidget(new QLabel(tr("It may take servel minutes"), widget));
         layout->addWidget(spinner);
         spinner->show();
@@ -536,36 +535,37 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
 {
     if (indexingProject.contains(projectPath))
         return;
-    bool failed = false;
     indexingProject.append(projectPath);
-    QProcess process;
-    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, this, [&process]() { process.terminate(); });
-
-    QObject::connect(&process, &QProcess::readyReadStandardError, &process, [&, projectPath]() {
-        if (!failed)   // only notify once
-            emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
-        failed = true;
-        qInfo() << "Error:" << process.readAllStandardError() << "\n";
+    QProcess *process = new QProcess;
+    QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, process, [process]() {
+        process->kill();
     });
 
-    QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                     this, [&](int exitCode, QProcess::ExitStatus exitStatus) {
+    QObject::connect(process, &QProcess::readyReadStandardError, process, [process]() {
+        qInfo() << "Error:" << process->readAllStandardError() << "\n";
+    });
+
+    QObject::connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                     process, [=](int exitCode, QProcess::ExitStatus exitStatus) {
                          qInfo() << "Python script finished with exit code" << exitCode << "Exit!!!";
+                         indexingProject.removeOne(projectPath);
+                         auto success = process->readAllStandardError().isEmpty();
+                         emit generateDone(projectPath, !success);
+                         if (!success)
+                            emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
+                         process->deleteLater();
                      });
 
     qInfo() << "start rag project:" << projectPath;
 
     QString ragPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/rag";
-    process.setWorkingDirectory(ragPath);
+    process->setWorkingDirectory(ragPath);
     auto generatePyPath = ragPath + "/generate.py";
     auto pythonPath = condaRootPath() + "/miniforge/envs/deepin_unioncode_env/bin/python";
     auto modelPath = CustomPaths::CustomPaths::global(CustomPaths::Models);
     if (!QFileInfo(pythonPath).exists())
         return;
-    process.start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
-    process.waitForFinished(-1);
-    indexingProject.removeOne(projectPath);
-    emit generateDone(projectPath, failed);
+    process->start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
 }
 
 /*
