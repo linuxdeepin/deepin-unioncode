@@ -75,7 +75,7 @@ void CodeGeeXReceiver::processOpenProjectEvent(const dpf::Event &event)
     auto projectPath = event.property("workspace").toString();
     QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
     if (results["Chunks"].toArray().size() != 0) // project has generated, update it
-        CodeGeeXManager::instance()->generateRag(projectPath);
+        QMetaObject::invokeMethod(CodeGeeXManager::instance(), "generateRag", Qt::QueuedConnection, Q_ARG(const QString &, projectPath));
 }
 
 void CodeGeeXReceiver::processSwitchToWidget(const dpf::Event &event)

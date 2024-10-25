@@ -92,7 +92,7 @@ public:
     QString condaRootPath() const;
     void showIndexingWidget();
     Q_INVOKABLE void installConda();
-    void generateRag(const QString &projectPath);
+    Q_INVOKABLE void generateRag(const QString &projectPath);
     /*
      JsonObject:
         Query: str
