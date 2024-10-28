@@ -20,6 +20,8 @@ public:
     void provideInlineCompletionItems(const Position &pos, const InlineCompletionContext &c) override;
     QList<InlineCompletionItem> inlineCompletionItems() const override;
     bool inlineCompletionEnabled() const override;
+    void accepted() override;
+    void rejected() override;
 
     InlineCompletionContext inlineCompletionContext() const;
     void setInlineCompletionEnabled(bool enabled);

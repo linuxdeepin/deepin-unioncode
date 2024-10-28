@@ -8,3 +8,16 @@ AbstractInlineCompletionProvider::AbstractInlineCompletionProvider(QObject *pare
     : QObject(parent)
 {
 }
+
+bool AbstractInlineCompletionProvider::inlineCompletionEnabled() const
+{
+    return false;
+}
+
+void AbstractInlineCompletionProvider::accepted()
+{
+}
+
+void AbstractInlineCompletionProvider::rejected()
+{
+}
