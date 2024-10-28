@@ -172,6 +172,11 @@ void Copilot::setLocale(const QString &locale)
     this->locale = locale;
 }
 
+QString Copilot::getLocale() const
+{
+    return locale;
+}
+
 void Copilot::setCommitsLocale(const QString &locale)
 {
     this->commitsLocale = locale;
@@ -180,6 +185,11 @@ void Copilot::setCommitsLocale(const QString &locale)
 void Copilot::setCurrentModel(CodeGeeX::languageModel model)
 {
     copilotApi.setModel(model);
+}
+
+languageModel Copilot::getCurrentModel() const
+{
+    return copilotApi.model();
 }
 
 void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom, int lineTo, int indexTo)

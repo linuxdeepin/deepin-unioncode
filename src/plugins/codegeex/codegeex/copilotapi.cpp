@@ -39,7 +39,7 @@ void CopilotApi::postGenerate(const QString &url, const QString &prefix, const Q
 {
     if (completionReply)
         completionReply->close();
-    QtConcurrent::run([prefix, suffix, type, url, this](){
+    QtConcurrent::run([prefix, suffix, type, url, this]() {
         QByteArray body = assembleGenerateBody(prefix, suffix, type);
         emit asyncGenerateMessages(url, body);
     });
@@ -74,7 +74,7 @@ void CopilotApi::postInlineChat(const QString &url,
 {
     QByteArray body = assembleInlineChatBody(prompt, info, locale);
     QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    reply->setProperty("responseType", CopilotApi::receiving_by_stream);
+    reply->setProperty("responseType", CopilotApi::inline_chat);
 
     processResponse(reply);
 }
@@ -260,10 +260,8 @@ QByteArray CopilotApi::assembleCommandBody(const QString &code, const QString &l
 
 void CopilotApi::processResponse(QNetworkReply *reply)
 {
+    connect(this, &CopilotApi::requestStop, this, [=]() { reply->close(); });
     if (reply->property("responseType") == CopilotApi::receiving_by_stream) {
-        connect(this, &CopilotApi::requestStop, this, [=]() {
-            reply->close();
-        });
         connect(reply, &QNetworkReply::readyRead, this, [=]() {
             slotReadReplyStream(reply);
         });
@@ -326,6 +324,9 @@ void CopilotApi::slotReadReply(QNetworkReply *reply)
         } else if (type == CopilotApi::multilingual_code_comment) {
             code = jsonObject.value("text").toString();
             emit response(CopilotApi::multilingual_code_comment, code, "");
+        } else if (type == CopilotApi::inline_chat) {
+            code = jsonObject.value("text").toString();
+            emit response(CopilotApi::inline_chat, code, "");
         }
     }
 }
@@ -378,6 +379,13 @@ void CopilotApi::setModel(languageModel model)
         chatModel = chatModelPro;
         completionModel = completionModelPro;
     }
+}
+
+languageModel CopilotApi::model() const
+{
+    if (chatModel == chatModelLite)
+        return Lite;
+    return Pro;
 }
 
 QPair<QString, QString> CopilotApi::getCurrentFileInfo()

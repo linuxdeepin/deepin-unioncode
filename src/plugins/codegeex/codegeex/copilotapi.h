@@ -163,6 +163,7 @@ public:
 
     CopilotApi(QObject *parent = nullptr);
     void setModel(languageModel model);
+    languageModel model() const;
 
     void postGenerate(const QString &url, const QString &prefix, const QString &suffix, GenerateType type);
 
