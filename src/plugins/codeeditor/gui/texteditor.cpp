@@ -8,6 +8,7 @@
 #include "common/common.h"
 #include "common/tooltip/tooltip.h"
 #include "settings/settingsdefine.h"
+#include "utils/resourcemanager.h"
 
 #include "services/editor/editor_define.h"
 
@@ -848,8 +849,13 @@ void TextEditor::focusOutEvent(QFocusEvent *event)
 
 void TextEditor::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Tab && d->inlineCompletionCache.first != -1)
-        return d->applyInlineCompletion();
+    if (event->key() == Qt::Key_Tab && d->inlineCompletionCache.first != -1) {
+        d->applyInlineCompletion();
+        auto providerList = ResourceManager::instance()->inlineCompletionProviders();
+        for (const auto provider : providerList)
+            provider->accepted();
+        return;
+    }
 
     if (event->key() == Qt::Key_Escape && d->lineWidgetContainer->isVisible())
         return closeLineWidget();
@@ -857,8 +863,13 @@ void TextEditor::keyPressEvent(QKeyEvent *event)
     if (d->completionWidget->processKeyPressEvent(event))
         return;
 
-    if (event->key() == Qt::Key_Escape && d->inlineCompletionCache.first != -1)
-        return d->cancelInlineCompletion();
+    if (event->key() == Qt::Key_Escape && d->inlineCompletionCache.first != -1) {
+        d->cancelInlineCompletion();
+        auto providerList = ResourceManager::instance()->inlineCompletionProviders();
+        for (const auto provider : providerList)
+            provider->rejected();
+        return;
+    }
 
     QsciScintilla::keyPressEvent(event);
 }

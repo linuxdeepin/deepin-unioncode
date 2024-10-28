@@ -44,7 +44,9 @@ public:
     virtual QString providerName() const = 0;
     virtual void provideInlineCompletionItems(const Position &pos, const InlineCompletionContext &contex) = 0;
     virtual QList<InlineCompletionItem> inlineCompletionItems() const = 0;
-    virtual bool inlineCompletionEnabled() const { return false; }
+    virtual bool inlineCompletionEnabled() const;
+    virtual void accepted();
+    virtual void rejected();
 
 Q_SIGNALS:
     void finished();

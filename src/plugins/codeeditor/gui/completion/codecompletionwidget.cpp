@@ -39,6 +39,7 @@ void CodeCompletionWidget::initUI()
     proxyModel->setSourceModel(completionModel);
     completionView->setModel(proxyModel);
     completionView->setFixedWidth(500);
+    completionView->setMaximumHeight(200);
     completionView->setVisible(false);
 
     completionExtWidget = new CodeCompletionExtendWidget(this);

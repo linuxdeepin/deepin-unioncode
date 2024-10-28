@@ -59,6 +59,16 @@ bool CodeGeeXCompletionProvider::inlineCompletionEnabled() const
     return completionEnabled;
 }
 
+void CodeGeeXCompletionProvider::accepted()
+{
+    completionItems.clear();
+}
+
+void CodeGeeXCompletionProvider::rejected()
+{
+    completionItems.clear();
+}
+
 AbstractInlineCompletionProvider::InlineCompletionContext CodeGeeXCompletionProvider::inlineCompletionContext() const
 {
     return context;
