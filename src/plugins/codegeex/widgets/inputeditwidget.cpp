@@ -144,14 +144,22 @@ void InputEditWidgetPrivate::initEdit()
         if (cursorPos > 0 && edit->document()->characterAt(cursorPos - 1) == "@")
             q->popupReference();
 
-        if (referencePopup->isVisible() && !currentText.endsWith('@')) {
+        if (!currentText.contains('@')) {
+            referencePopup->hide();
+        } else if (!currentText.endsWith('@')) {
             auto start = currentText.indexOf('@');
             auto firstSpace = currentText.indexOf(' ', start); // first space after `@`
-            if (start == -1 || (firstSpace != -1 && cursorPos > firstSpace))
+            if (start == -1 || (firstSpace != -1 && cursorPos > firstSpace)) {
                 referencePopup->hide();
+                return;
+            }
 
             auto filterText = currentText.mid(start + 1, cursorPos - start - 1);
             model.setFilterText(filterText);
+            if (model.getItems().isEmpty())
+                referencePopup->hide();
+            else
+                referencePopup->show();
         } else {
             model.setFilterText("");
         }
@@ -394,6 +402,7 @@ bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
                     emit handleKey(keyEvent);
                 return true;
             case Qt::Key_Space:
+            case Qt::Key_Escape:
                 d->referencePopup->hide();
                 break;
             default:

@@ -46,9 +46,9 @@ protected:
 
 struct ItemInfo
 {
-    QString type;
-    QString displayName;
-    QString extraInfo;
+    QString type { "" };
+    QString displayName { "" };
+    QString extraInfo { "" };
     QIcon icon;
 };
 

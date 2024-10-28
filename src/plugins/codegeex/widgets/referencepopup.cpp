@@ -169,7 +169,7 @@ void ItemModel::setFilterText(const QString &filterText)
     beginResetModel();
     displayItems.clear();
     for (auto item : items) {
-        if (item.displayName.startsWith(filterText))
+        if (item.displayName.startsWith(filterText, Qt::CaseInsensitive) || item.type.startsWith(filterText, Qt::CaseInsensitive))
             displayItems.append(item);
     }
     endResetModel();
