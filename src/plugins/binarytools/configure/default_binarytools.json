@@ -1,5 +1,5 @@
 {
-    "version" : "1.1",
+    "version" : "1.2",
     "groups": [
         {
             "name": "",
@@ -175,23 +175,48 @@
                         "channelData": "%{CurrentDocument:Content}",
                         "triggerEvent" : 0
                     }
+		},
+		{
+		    "addToToolbar": false,
+		    "arguments": "",
+		    "command": "deepin-wine-builder",
+		    "description": "一款专为Linux用户设计的便捷工具，可以轻松便捷地享受Windows应用程序",
+		    "environment": {},
+		    "errorOutputOption": 1,
+		    "icon": "binarytools_flag",
+		    "id": "deepin-wine-builder",
+		    "name": "UOS应用迁移助手",
+		    "outputOption": 1,
+		    "type": 0,
+		    "workingDirectory": "",
+		    "advance": {
+			"missingHint": "工具执行程序未找到，请通过商店搜索“UOS应用迁移助手”进行下载",
+			"installCommand": "",
+			"triggerEvent" : 0
+		    }
 		}
             ]
         }
     ],
     "update": [
-        {
-            "version": "1.0",
-            "list" : [
-                "deploy-development-environment"
-            ]
-        },
-        {
-            "version": "1.1",
-            "list" : [
-                "hunspell",
-                "clang-format"
-            ]
+	{
+	    "version": "1.0",
+	    "list" : [
+		"deploy-development-environment"
+	    ]
+	},
+	{
+	    "version": "1.1",
+	    "list" : [
+		"hunspell",
+		"clang-format"
+	    ]
+	},
+	{
+	    "version": "1.2",
+	    "list" : [
+		"deepin-wine-builder"
+	    ]
 	}
     ]
 }
