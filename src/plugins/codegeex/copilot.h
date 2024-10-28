@@ -33,8 +33,10 @@ public:
     void setGenerateCodeEnabled(bool enabled);
     bool getGenerateCodeEnabled() const;
     void setLocale(const QString &locale);
+    QString getLocale() const;
     void setCommitsLocale(const QString &locale);
     void setCurrentModel(CodeGeeX::languageModel model);
+    CodeGeeX::languageModel getCurrentModel() const;
     void handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom,
                                 int lineTo, int indexTo);
 

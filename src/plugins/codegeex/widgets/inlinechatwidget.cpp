@@ -6,7 +6,7 @@
 #include "inputeditwidget.h"
 #include "copilot.h"
 #include "diff_match_patch.h"
-#include "codegeex/askapi.h"
+#include "codegeex/copilotapi.h"
 #include "codegeexmanager.h"
 
 #include "services/editor/editorservice.h"
@@ -28,9 +28,9 @@
 #include <QtConcurrent>
 
 constexpr char kVisibleProperty[] { "VisibleProperty" };
-constexpr char kUrlSSEChat[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
-constexpr int kCodeMaxLength = 10000;
+constexpr char kInlineChatUrl[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat?stream=false";
 
+using namespace CodeGeeX;
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
@@ -81,6 +81,12 @@ public:
         }
     };
 
+    struct CodeInfo
+    {
+        bool isSelectEmpty { false };
+        int curosrLine;
+    };
+
     explicit InlineChatWidgetPrivate(InlineChatWidget *qq);
     ~InlineChatWidgetPrivate();
 
@@ -93,7 +99,8 @@ public:
     void handleTextChanged();
     void handleSubmitEdit();
     void handleQuickQuestion();
-    void handleAskFinished(const QString &msgID, const QString &response, const QString &event);
+    void handleAskFinished(CopilotApi::ResponseType type, const QString &response, const QString &dstLang);
+
     void handleAccept();
     void handleReject();
     void handleClose();
@@ -107,6 +114,8 @@ public:
     void updateButtonIcon();
     QString createPrompt(const QString &question, bool useChunk);
     Edit::Range calculateTextRange(const QString &fileName, const Edit::Position &pos);
+    QString addLineNumber(const QString &content, int start);
+    QString createFormatCode(const QString &file, const QString &code, const Edit::Range &range);
 
 public:
     InlineChatWidget *q;
@@ -128,9 +137,10 @@ public:
 
     QList<QFutureWatcher<QString> *> futureWatcherList;
     ChatInfo chatInfo;
+    CodeInfo codeInfo;
     State state { None };
     State prevState { None };
-    CodeGeeX::AskApi askApi;
+    CopilotApi copilotApi;
     int deleteMarker { -1 };
     int insertMarker { -1 };
     int selectionMarker { -1 };
@@ -234,7 +244,7 @@ void InlineChatWidgetPrivate::initConnection()
     connect(rejectBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
     connect(stopBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleStop);
 
-    connect(&askApi, &CodeGeeX::AskApi::response, this, &InlineChatWidgetPrivate::handleAskFinished);
+    connect(&copilotApi, &CopilotApi::response, this, &InlineChatWidgetPrivate::handleAskFinished);
 }
 
 QAbstractButton *InlineChatWidgetPrivate::createButton(const QString &name, ButtonType type, int flags)
@@ -349,18 +359,23 @@ void InlineChatWidgetPrivate::handleQuickQuestion()
     }
 }
 
-void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QString &response, const QString &event)
+void InlineChatWidgetPrivate::handleAskFinished(CopilotApi::ResponseType type, const QString &response, const QString &dstLang)
 {
-    if (state == QuestionStart || state == QuestionComplete) {
-        if (event == "add") {
-            auto answer = answerLabel->text();
-            answerLabel->setText(answer.append(response));
-        }
+    Q_UNUSED(dstLang)
+
+    if (type != CopilotApi::inline_chat) {
+        setState(Original);
+        return;
+    }
+
+    if (state == QuestionStart) {
+        auto answer = answerLabel->text();
+        answerLabel->setText(answer.append(response));
         setState(QuestionComplete);
-    } else if (state == SubmitStart && event == "finish") {
+    } else {
         // Extract the code block in `response`
         QString codePart;
-        QRegularExpression regex(R"(```\w*\n((.*\n)*?.*)\n```)");
+        QRegularExpression regex(R"(```.*\n((.*\n)*?.*)\n```)");
         QRegularExpressionMatch match = regex.match(response);
         if (match.hasMatch())
             codePart = match.captured(1);
@@ -369,6 +384,33 @@ void InlineChatWidgetPrivate::handleAskFinished(const QString &msgID, const QStr
             setState(Original);
             return;
         }
+
+        QStringList lines = codePart.split('\n');
+        int i = 0;
+        // Remove needless datas
+        if (codeInfo.isSelectEmpty) {
+            while (i < lines.size()) {
+                QRegExp rx("(\\d+)");
+                if (rx.indexIn(lines[i]) == -1) {
+                    ++i;
+                    continue;
+                }
+
+                int number = rx.cap(1).toInt();
+                if (number < codeInfo.curosrLine) {
+                    lines.removeAt(i);
+                    continue;
+                }
+                break;
+            }
+        }
+
+        // Remove numbers at the beginning of each line
+        for (int i = 0; i < lines.size(); ++i) {
+            lines[i] = lines[i].remove(QRegExp("^\\d+\\s{2}"));
+        }
+        codePart = lines.join('\n');
+        codePart.remove("【cursor】");
 
         processGeneratedData(codePart);
         setState(SubmitComplete);
@@ -447,7 +489,7 @@ void InlineChatWidgetPrivate::handleStop()
         if (!watcher->isFinished())
             watcher->cancel();
     }
-    Q_EMIT askApi.stopReceive();
+    Q_EMIT copilotApi.requestStop();
 }
 
 void InlineChatWidgetPrivate::handleCreatePromptFinished()
@@ -455,10 +497,16 @@ void InlineChatWidgetPrivate::handleCreatePromptFinished()
     auto watcher = static_cast<QFutureWatcher<QString> *>(sender());
     if (!watcher->isCanceled()) {
         const auto &prompt = watcher->result();
-        auto machineId = QSysInfo::machineUniqueId();
-        askApi.setReferenceFiles({ chatInfo.fileName });
-        askApi.postSSEChat(kUrlSSEChat, CodeGeeXManager::instance()->getSessionId(),
-                           prompt, machineId, {}, CodeGeeXManager::instance()->getTalkId());
+        InlineChatInfo info;
+        info.fileName = chatInfo.fileName;
+        info.is_ast = true;
+        info.commandType = state == QuestionStart ? InlineChatInfo::Chat : InlineChatInfo::Programing;
+        info.contextCode = addLineNumber(editSrv->fileText(info.fileName), 1);
+        const auto &code = createFormatCode(info.fileName, chatInfo.originalText, chatInfo.originalRange);
+        info.selectedCode = code;
+
+        copilotApi.setModel(Copilot::instance()->getCurrentModel());
+        copilotApi.postInlineChat(kInlineChatUrl, prompt, info, Copilot::instance()->getLocale());
     }
 
     futureWatcherList.removeAll(watcher);
@@ -524,7 +572,6 @@ QList<Diff> InlineChatWidgetPrivate::diffText(const QString &str1, const QString
         auto lineArray = a[2].toStringList();
         diffs = dmp.diff_main(lineText1, lineText2, false);
         dmp.diff_charsToLines(diffs, lineArray);
-        dmp.diff_cleanupSemantic(diffs);
     } catch (...) {
     }
 
@@ -585,44 +632,20 @@ void InlineChatWidgetPrivate::updateButtonIcon()
 
 QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useChunk)
 {
-    QString workspace = chatInfo.fileName;
-    ProjectService *prjSrv = dpfGetService(ProjectService);
-    const auto &allPrjInfo = prjSrv->getAllProjectInfo();
-    for (const auto &info : allPrjInfo) {
-        if (chatInfo.fileName.startsWith(info.workspaceFolder())) {
-            workspace = info.workspaceFolder();
-            break;
-        }
-    }
-
     QStringList prompt;
-    prompt << "你是一位智能编程助手，你叫CodeGeeX。你会为用户回答关于编程、代码、计算机方面的任何问题，"
-              "并提供格式规范、可以执行、准确安全的代码，并在必要时提供详细的解释。任务：根据用户的Command作答。"
-              "\nYou are working on a task with User in a file and User send a message to you. "
-              "`【cursor】` indicate the current position of your cursor, delete it after modification."
-              "\n\nYour Workflow:\nStep 1: You should working on the command step-by-step:\n1. "
-              "Does the command is about to write program or comments in programming task? Write out the "
-              "type of the command: (Choose: Chat / Programming).\n- **Chat command**: When your aim to "
-              "reply through explanations, reminders, or requests for additional information. "
-              "\n- **Programming command**: The user command is clear and requires you to write program "
-              "or comments. \nStep 2: If it's a chat command, provide a thoughtful and clear response "
-              "{language} directly.\nStep 3: If it requires programming, you should complete the Task "
-              "according to the given file. \na. Understand the message in order to tackle it correctly: "
-              "is the task about coding or debugging?\n- For coding, add new code within the task to execute "
-              "the user's instructions correctly. \n- For debugging, improve the code to fix the bug, write "
-              "the reasons for the changes within your code as comments.\nb. You should complete the task "
-              "according to user request and comment in Chinese within your code to indicate changes. \nc. "
-              "You should place only the finished task in a single block as output without explain!!!\n\n"
-              "Reply in the template below:\nCommand Type: (Chat / Programming)\nResponse: (Your response / "
-              "Finished code in one block)\n\n";
-    
-    prompt << "针对这段代码，回答我的问题。问题：";
     prompt << question;
-    prompt << "代码：\n```";
-    prompt << chatInfo.originalText.mid(0, kCodeMaxLength);
-    prompt << "```";
 
     if (useChunk) {
+        QString workspace = chatInfo.fileName;
+        ProjectService *prjSrv = dpfGetService(ProjectService);
+        const auto &allPrjInfo = prjSrv->getAllProjectInfo();
+        for (const auto &info : allPrjInfo) {
+            if (chatInfo.fileName.startsWith(info.workspaceFolder())) {
+                workspace = info.workspaceFolder();
+                break;
+            }
+        }
+
         prompt << "回答内容不要使用下面的参考内容";
         prompt << "\n你可以使用下面这些文件和代码内容进行参考，但只针对上面这段代码进行回答";
         QString query = "问题：%1\n内容：```%2```";
@@ -669,6 +692,46 @@ Edit::Range InlineChatWidgetPrivate::calculateTextRange(const QString &fileName,
     return textRange;
 }
 
+QString InlineChatWidgetPrivate::addLineNumber(const QString &content, int start)
+{
+    QStringList lines = content.split('\n');
+    for (int i = 0; i < lines.size(); ++i) {
+        QString lineNumber = "%1  ";
+        lines[i].prepend(lineNumber.arg(start++));
+    }
+    return lines.join('\n');
+}
+
+QString InlineChatWidgetPrivate::createFormatCode(const QString &file, const QString &code, const Edit::Range &range)
+{
+    if (state == QuestionStart)
+        return code;
+
+    codeInfo.isSelectEmpty = false;
+    QString tempCode = code;
+    tempCode.remove(QRegExp("\\s+"));
+    if (tempCode.isEmpty()) {
+        Edit::Range beforeRange = range;
+        beforeRange.start.line -= 3;
+        beforeRange.end.line -= 1;
+        QString beforeText = editSrv->rangeText(file, beforeRange);
+
+        Edit::Range laterRange = range;
+        laterRange.start.line += 1;
+        laterRange.end.line += 3;
+        QString laterText = editSrv->rangeText(file, laterRange);
+
+        codeInfo.isSelectEmpty = true;
+        codeInfo.curosrLine = range.end.line + 1;
+
+        QString format = "%1\n%2【cursor】\n%3";
+        return addLineNumber(format.arg(beforeText, code, laterText), beforeRange.start.line + 1);
+    }
+
+    QString format = "%1【cursor】";
+    return addLineNumber(format.arg(code), range.start.line + 1);
+}
+
 InlineChatWidget::InlineChatWidget(QWidget *parent)
     : QWidget(parent),
       d(new InlineChatWidgetPrivate(this))
@@ -691,8 +754,13 @@ void InlineChatWidget::start()
 
     auto pos = d->editSrv->cursorPosition();
     const auto &textRange = d->calculateTextRange(d->chatInfo.fileName, pos);
-    d->editSrv->showLineWidget(textRange.start.line, this);
+    // TODO: Inline chat in the blank space
+    auto rangeText = d->editSrv->rangeText(d->chatInfo.fileName, textRange);
+    rangeText.remove(QRegExp("\\s+"));
+    if (rangeText.isEmpty())
+        return;
 
+    d->editSrv->showLineWidget(textRange.start.line, this);
     d->defineBackgroundMarker(d->chatInfo.fileName);
     d->editSrv->setRangeBackgroundColor(d->chatInfo.fileName, textRange.start.line,
                                         textRange.end.line, d->selectionMarker);

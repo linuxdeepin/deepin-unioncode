@@ -551,6 +551,9 @@ QString TabWidget::rangeText(const QString &fileName, const dpfservice::Edit::Ra
         int endPos = range.end.column == -1
                 ? editor->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, range.end.line)
                 : editor->positionFromLineIndex(range.end.line, range.end.column);
+        if (startPos == -1 || endPos == -1)
+            return {};
+
         return editor->text(startPos, endPos);
     }
 
@@ -615,6 +618,7 @@ bool TabWidget::replaceRange(const QString &fileName, const dpfservice::Edit::Ra
             auto lineText = editor->text(range.end.line);
             indexTo = lineText.length();
         }
+
         editor->replaceRange(range.start.line, range.start.column == -1 ? 0 : range.start.column,
                              range.end.line, indexTo, newText);
         return true;
