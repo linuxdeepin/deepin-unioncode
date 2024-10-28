@@ -583,11 +583,10 @@ void TextEditorPrivate::updateCacheInfo(int pos, int added)
     q->lineIndexFromPosition(pos, &line, &index);
     editor.lineChanged(fileName, line, added);
     if (lineWidgetContainer->isVisible()) {
-        if (showAtLine > line && q->lines() != 1) {
-            if (added != q->lines() - 1) {
-                showAtLine += added;
-                showAtLine = qMax(showAtLine, 1);
-            }
+        if (showAtLine > line) {
+            showAtLine += added;
+            showAtLine = qMax(showAtLine, 1);
+
             updateLineWidgetPosition();
         }
     }
