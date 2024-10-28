@@ -613,14 +613,39 @@ bool TabWidget::replaceRange(const QString &fileName, const dpfservice::Edit::Ra
     if (auto editor = d->findEditor(fileName)) {
         // When using the `lineLength()` function to get the length, it is calculated in bytes.
         // When there are Chinese characters in the text, the length obtained is not correct.
-        int indexTo = range.end.column;
-        if (indexTo == -1) {
-            auto lineText = editor->text(range.end.line);
-            indexTo = lineText.length();
+        auto lineLength = [editor](int line, bool rmN) {
+            auto lineText = editor->text(line);
+            int len = lineText.length();
+            if (rmN && lineText.endsWith('\n'))
+                len -= 1;
+            return len;
+        };
+
+        editor->beginUndoAction();
+        auto lineTextList = newText.split('\n');
+        for (int i = 0; i < lineTextList.size(); ++i) {
+            int line = range.start.line + i;
+            int indexFrom = 0;
+            if (i == 0)
+                indexFrom = range.start.column == -1 ? 0 : range.start.column;
+            int indexTo = lineLength(line, true);
+            if (line == range.end.line && indexTo != range.end.column)
+                indexTo = range.end.column;
+
+            if (i == lineTextList.size() - 1 || line == range.end.line) {
+                indexTo = range.end.column;
+                if (indexTo == -1)
+                    indexTo = lineLength(range.end.line, false);
+                QStringList remainderLines;
+                std::copy(lineTextList.begin() + i, lineTextList.end(), std::back_inserter(remainderLines));
+                editor->replaceRange(line, indexFrom, range.end.line, indexTo, remainderLines.join('\n'));
+                break;
+            } else {
+                editor->replaceRange(line, indexFrom, line, indexTo, lineTextList[i]);
+            }
         }
 
-        editor->replaceRange(range.start.line, range.start.column == -1 ? 0 : range.start.column,
-                             range.end.line, indexTo, newText);
+        editor->endUndoAction();
         return true;
     }
 

@@ -62,6 +62,9 @@ Copilot::Copilot(QObject *parent)
                     completion = response;
                 }
 
+                if (completion.endsWith('\n'))
+                    completion.chop(1);
+
                 generatedCode = completion;
                 completionProvider->setInlineCompletions({ completion });
                 emit completionProvider->finished();
