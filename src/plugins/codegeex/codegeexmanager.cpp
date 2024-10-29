@@ -278,12 +278,6 @@ void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
     }
 }
 
-void CodeGeeXManager::recevieToTranslate(const QString &codeText)
-{
-    if (isLogin && !codeText.isEmpty())
-        Q_EMIT requestToTransCode(codeText);
-}
-
 void CodeGeeXManager::recevieSessionRecords(const QVector<AskApi::SessionRecord> &records)
 {
     sessionRecordList.clear();
@@ -352,7 +346,6 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::getMessageListResult, this, &CodeGeeXManager::showHistoryMessage);
     connect(&askApi, &AskApi::noChunksFounded, this, &CodeGeeXManager::showIndexingWidget);
 
-    connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
     connect(Copilot::instance(), &Copilot::response, this, &CodeGeeXManager::onResponse);
     connect(Copilot::instance(), &Copilot::messageSended, this, &CodeGeeXManager::startReceiving);
 

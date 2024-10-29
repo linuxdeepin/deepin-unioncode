@@ -31,6 +31,7 @@ public:
     explicit InputEdit(QWidget *parent = nullptr);
     QString toPlainText() const;
     void appendTag(const QString &text);
+    bool hasTag(const QString &text);
 
 signals:
     void pressedEnter();
@@ -67,6 +68,7 @@ signals:
     void handleKey(QKeyEvent *keyEvent);
 
 public slots:
+    void onCodeBaseBtnClicked();
     void onReferenceBtnClicked();
     void onNetWorkBtnClicked();
     void onTagAdded(const QString &text);

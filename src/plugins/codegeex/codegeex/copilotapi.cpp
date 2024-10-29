@@ -45,17 +45,6 @@ void CopilotApi::postGenerate(const QString &url, const QString &prefix, const Q
     });
 }
 
-void CopilotApi::postTranslate(const QString &url,
-                               const QString &code,
-                               const QString &dst_lang,
-                               const QString &locale)
-{
-    QByteArray body = assembleTranslateBody(code, dst_lang, locale);
-    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    reply->setProperty("responseType", CopilotApi::multilingual_code_translate);
-    processResponse(reply);
-}
-
 void CopilotApi::postComment(const QString &url,
                              const QString &code,
                              const QString &locale)
@@ -170,21 +159,6 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
         json.insert("max_new_tokens", 64);
     else
         json.insert("max_new_tokens", 128);
-
-    QJsonDocument doc(json);
-    return doc.toJson();
-}
-
-QByteArray CopilotApi::assembleTranslateBody(const QString &code, const QString &dst_lang, const QString &locale)
-{
-    QJsonObject json;
-    json.insert("ide", qApp->applicationName());
-    json.insert("ide_version", version());
-    json.insert("lang", dst_lang);
-    json.insert("code", code);
-    json.insert("command", "translation");
-    json.insert("locale", locale);
-    json.insert("model", chatModel);
 
     QJsonDocument doc(json);
     return doc.toJson();
@@ -307,20 +281,6 @@ void CopilotApi::slotReadReply(QNetworkReply *reply)
             if (code.split('\n', QString::SkipEmptyParts).isEmpty())
                 return;
             emit response(CopilotApi::inline_completions, code, "");
-        } else if (type == CopilotApi::multilingual_code_translate) {
-            auto codeLines = jsonObject.value("text").toString().split('\n');
-            QString lang = codeLines.first();
-
-            if (lang.startsWith("```"))
-                lang = lang.mid(3);
-            codeLines.removeFirst();
-            while (codeLines.last() == "")
-                codeLines.removeLast();
-            if (codeLines.last() == "```")
-                codeLines.removeLast();   //remove ```lang ```
-
-            code = codeLines.join('\n');
-            emit response(CopilotApi::multilingual_code_translate, code, lang);
         } else if (type == CopilotApi::multilingual_code_comment) {
             code = jsonObject.value("text").toString();
             emit response(CopilotApi::multilingual_code_comment, code, "");

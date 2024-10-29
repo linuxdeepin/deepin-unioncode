@@ -176,11 +176,6 @@ public:
                         const InlineChatInfo &info,
                         const QString &locale);  // codegeex: this api is non-streaming. url need to be xxx/?stream=false
 
-    void postTranslate(const QString &url,
-                       const QString &code,
-                       const QString &dst_lang,
-                       const QString &locale);
-
     void postCommit(const QString &url,
                     const CommitMessage &message,
                     const QString &locale);
@@ -194,7 +189,6 @@ public:
         inline_completions,
         inline_chat,
         multilingual_code_comment,
-        multilingual_code_translate,
         receiving_by_stream
     };
 
@@ -217,10 +211,6 @@ private:
     QByteArray assembleGenerateBody(const QString &prefix,
                                     const QString &suffix,
                                     GenerateType type);
-
-    QByteArray assembleTranslateBody(const QString &code,
-                                     const QString &dst_lang,
-                                     const QString &locale);
 
     QByteArray assembleInlineChatBody(const QString &prompt,
                                      const InlineChatInfo &info,

@@ -5,7 +5,6 @@
 #include "codegeexwidget.h"
 #include "askpagewidget.h"
 #include "historylistwidget.h"
-#include "translationpagewidget.h"
 #include "codegeexmanager.h"
 #include "copilot.h"
 
@@ -62,26 +61,6 @@ void CodeGeeXWidget::onNewSessionCreated()
 
     if (askPage)
         askPage->setIntroPage();
-}
-
-void CodeGeeXWidget::toTranslateCode(const QString &code)
-{
-    switchPage(pageState::TrasnlatePage);
-    transPage->setInputEditText(code);
-    transPage->cleanOutputEdit();
-}
-
-void CodeGeeXWidget::switchPage(pageState state)
-{
-    if (state == pageState::TrasnlatePage) {
-        tabBar->buttonList().at(0)->setChecked(false);
-        tabBar->buttonList().at(1)->setChecked(true);
-        stackWidget->setCurrentWidget(transPage);
-    } else {
-        tabBar->buttonList().at(0)->setChecked(true);
-        tabBar->buttonList().at(1)->setChecked(false);
-        stackWidget->setCurrentWidget(askPage);
-    }
 }
 
 void CodeGeeXWidget::onCloseHistoryWidget()
@@ -185,23 +164,10 @@ void CodeGeeXWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::logoutSuccessed, this, &CodeGeeXWidget::onLogOut);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestToTransCode, this, &CodeGeeXWidget::toTranslateCode);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, [=](){switchPage(pageState::AskPage);});
 }
 
 void CodeGeeXWidget::initAskWidget()
 {
-    QHBoxLayout *tabLayout = new QHBoxLayout;
-    tabLayout->setContentsMargins(0, 20, 0, 20);
-    tabLayout->setAlignment(Qt::AlignHCenter);
-
-    //套一层DWidget，用以登出时删除现有窗口。 直接使用layout会删不掉。
-    DWidget *tabWidget = new DWidget(this);
-    tabWidget->setLayout(tabLayout);
-
-    tabBar = new DButtonBox(this);
-    tabLayout->addWidget(tabBar, 0);
-
     stackWidget = new QStackedWidget(this);
     stackWidget->setContentsMargins(0, 0, 0, 0);
     stackWidget->setFrameShape(QFrame::NoFrame);
@@ -211,10 +177,8 @@ void CodeGeeXWidget::initAskWidget()
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    mainLayout->addWidget(tabWidget, 0);
-    mainLayout->addWidget(stackWidget, 1);
+    mainLayout->addWidget(stackWidget);
 
-    initTabBar();
     initStackWidget();
     initAskWidgetConnection();
 }
@@ -232,20 +196,9 @@ void CodeGeeXWidget::initHistoryWidget()
     initHistoryWidgetConnection();
 }
 
-void CodeGeeXWidget::initTabBar()
-{
-    DButtonBoxButton *askbtn = new DButtonBoxButton(tr("Ask CodeGeeX"), this);
-    askbtn->setCheckable(true);
-    askbtn->setChecked(true);
-    DButtonBoxButton *trsbtn = new DButtonBoxButton(tr("Translation"), this);
-
-    tabBar->setButtonList({ askbtn, trsbtn }, true);
-}
-
 void CodeGeeXWidget::initStackWidget()
 {
     askPage = new AskPageWidget(this);
-    transPage = new TranslationPageWidget(this);
 
     DWidget *creatingSessionWidget = new DWidget(this);
     QHBoxLayout *layout = new QHBoxLayout;
@@ -258,18 +211,11 @@ void CodeGeeXWidget::initStackWidget()
 
     stackWidget->insertWidget(0, creatingSessionWidget);
     stackWidget->insertWidget(1, askPage);
-    stackWidget->insertWidget(2, transPage);
     stackWidget->setCurrentIndex(0);
 }
 
 void CodeGeeXWidget::initAskWidgetConnection()
 {
-    connect(tabBar, &DButtonBox::buttonClicked, stackWidget, [=](QAbstractButton *button) {
-        if (button->text() == tr("Ask CodeGeeX"))
-            stackWidget->setCurrentWidget(askPage);
-        else
-            stackWidget->setCurrentWidget(transPage);
-    });
     connect(askPage, &AskPageWidget::requestShowHistoryPage, this, &CodeGeeXWidget::onShowHistoryWidget);
 }
 
