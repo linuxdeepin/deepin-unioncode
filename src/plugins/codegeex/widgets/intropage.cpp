@@ -5,17 +5,47 @@
 #include "intropage.h"
 #include "codegeexmanager.h"
 
-#include <DPushButton>
 #include <DScrollArea>
 #include <DCommandLinkButton>
+#include <DGuiApplicationHelper>
 
 #include <QAction>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFont>
 #include <QDebug>
+#include <QPaintEvent>
 
 DWIDGET_USE_NAMESPACE
+
+SuggestButton::SuggestButton(const QString &text, const QString &iconName, QWidget *parent)
+    : DPushButton(parent), originalText(text)
+{
+    setFixedHeight(36);
+    setText(text);
+    setToolTip(text);
+    setIcon(QIcon::fromTheme(iconName));
+    minimumWidth = minimumSizeHint().width();
+    setStyleSheet("text-align: left");
+
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+                     this, [this]() { setStyleSheet("text-align: left"); });
+}
+
+void SuggestButton::paintEvent(QPaintEvent *event)
+{
+    QFontMetrics fm(font());
+    if (event->rect().width() < minimumWidth) {
+        auto gap = minimumWidth - event->rect().width();
+        auto length = fm.width(originalText) - gap;
+        if (length < 0)
+            return DPushButton::paintEvent(event);
+        setText(fm.elidedText(text(), Qt::ElideRight, length));
+    } else if (text() != originalText) {
+        setText(originalText);
+    }
+    DPushButton::paintEvent(event);
+}
 
 IntroPage::IntroPage(QWidget *parent)
     : DWidget(parent)
@@ -70,7 +100,6 @@ void IntroPage::initIntroContent()
 
     appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>", "</font>"));
     appendDescLabel(introLayout, tr("CodeGeeX provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.").arg("<font style='color:dodgerblue;'>", "</font>"));
-    appendDescLabel(introLayout, tr("Select code and %1 right-click %2 to add comments or translate code.").arg("<font style='color:dodgerblue;'>", "</font>"));
     appendDescLabel(introLayout, tr("Also, you can directly %1 ask CodeGeeX any questions %2.").arg("<font style='color:dodgerblue;'>", "</font>"));
 }
 
@@ -127,13 +156,7 @@ void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
 
 void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text, const QString &iconName)
 {
-    DPushButton *suggestButton = new DPushButton(this);
-    suggestButton->setFixedHeight(36);
-    suggestButton->setStyleSheet("text-align: left");
-
-    suggestButton->setIcon(QIcon::fromTheme(iconName));
-
-    suggestButton->setText(text);
+    SuggestButton *suggestButton = new SuggestButton(text, iconName, this);
     layout->addWidget(suggestButton);
 
     connect(suggestButton, &DPushButton::clicked, [=] {

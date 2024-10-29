@@ -27,7 +27,6 @@ public:
     static Copilot *instance();
     QMenu *getMenu();
 
-    void translateCode(const QString &code, const QString &dstLanguage);
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
     void setGenerateCodeEnabled(bool enabled);
@@ -42,11 +41,6 @@ public:
     void handleInlineWidgetClosed();
 
 signals:
-    // the code will be tranlated.
-    void translatingText(const QString &text);
-    // the result has been tranlated.
-    void translatedResult(const QString &result, const QString &dstLang);
-
     void response(const QString &msgID, const QString &response, const QString &event);
     void messageSended();
     void requestStop();
@@ -55,7 +49,6 @@ public slots:
     void addComment();
     void generateCode();
     void login();
-    void translate();
     void fixBug();
     void explain();
     void review();

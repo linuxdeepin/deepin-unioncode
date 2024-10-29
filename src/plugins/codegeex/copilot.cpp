@@ -70,9 +70,6 @@ Copilot::Copilot(QObject *parent)
                 emit completionProvider->finished();
             }
             break;
-        case CopilotApi::multilingual_code_translate:
-            emit translatedResult(response, dstLang);
-            break;
         default:;
         }
     });
@@ -114,7 +111,6 @@ QMenu *Copilot::getMenu()
     menu->setTitle("CodeGeeX");
 
     QAction *addComment = new QAction(tr("Add Comment"));
-    QAction *translate = new QAction(tr("Translate"));
     QAction *fixBug = new QAction(tr("Fix Bug"));
     QAction *explain = new QAction(tr("Explain Code"));
     QAction *review = new QAction(tr("Review Code"));
@@ -122,7 +118,6 @@ QMenu *Copilot::getMenu()
     QAction *commits = new QAction(tr("Generate git commits"));
 
     menu->addAction(addComment);
-    menu->addAction(translate);
     menu->addAction(fixBug);
     menu->addAction(explain);
     menu->addAction(review);
@@ -130,7 +125,6 @@ QMenu *Copilot::getMenu()
     menu->addAction(commits);
 
     connect(addComment, &QAction::triggered, this, &Copilot::addComment);
-    connect(translate, &QAction::triggered, this, &Copilot::translate);
     connect(fixBug, &QAction::triggered, this, &Copilot::fixBug);
     connect(explain, &QAction::triggered, this, &Copilot::explain);
     connect(review, &QAction::triggered, this, &Copilot::review);
@@ -138,12 +132,6 @@ QMenu *Copilot::getMenu()
     connect(commits, &QAction::triggered, this, &Copilot::commits);
 
     return menu;
-}
-
-void Copilot::translateCode(const QString &code, const QString &dstLanguage)
-{
-    QString url = QString(kUrlSSEChat) + "?stream=false";   //receive all msg at once
-    copilotApi.postTranslate(url, code, dstLanguage, locale);
 }
 
 void Copilot::replaceSelectedText(const QString &text)
@@ -246,12 +234,6 @@ void Copilot::generateCode()
 
 void Copilot::login()
 {
-}
-
-void Copilot::translate()
-{
-    emit translatingText(selectedText());
-    switchToCodegeexPage();
 }
 
 void Copilot::fixBug()

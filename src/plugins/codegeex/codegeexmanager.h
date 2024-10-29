@@ -106,7 +106,6 @@ Q_SIGNALS:
     void logoutSuccessed();
     void createdNewSession();
     void requestMessageUpdate(const MessageData &msg);
-    void requestToTransCode(const QString &code);
     void chatStarted();
     void crawledWebsite(const QString &msgID, const QList<CodeGeeX::websiteReference> &websites);
     void searching(const QString &searchText);
@@ -124,7 +123,6 @@ public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);
     void onResponse(const QString &msgID, const QString &data, const QString &event);
     void recevieLoginState(CodeGeeX::AskApi::LoginState loginState);
-    void recevieToTranslate(const QString &codeText);
     void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
     void recevieDeleteResult(const QStringList &talkIds, bool success);
     void showHistoryMessage(const QVector<CodeGeeX::AskApi::MessageRecord> &records);

@@ -105,6 +105,7 @@ public:
     DToolButton *sendButton { nullptr };
     DToolButton *netWorkBtn { nullptr };
     DToolButton *referenceBtn { nullptr };
+    DToolButton *codeBaseBtn { nullptr };
 
     QWidget *buttonBox { nullptr };
 
@@ -175,10 +176,17 @@ void InputEditWidgetPrivate::initButtonBox()
     hLayout->setAlignment(Qt::AlignRight);
     hLayout->setSpacing(0);
 
+
     sendButton = new DToolButton(q);
     sendButton->setFixedSize(24, 24);
     sendButton->setIcon(QIcon::fromTheme("codegeex_send"));
     sendButton->setEnabled(false);
+
+    codeBaseBtn = new DToolButton(q);
+    codeBaseBtn->setFixedSize(24, 24);
+    codeBaseBtn->setIcon(QIcon::fromTheme("uc_codegeex_project_chat"));
+    codeBaseBtn->setToolTip(InputEditWidget::tr("reference codebase"));
+    codeBaseBtn->setCheckable(true);
 
     referenceBtn = new DToolButton(q);
     referenceBtn->setFixedSize(24, 24);
@@ -192,8 +200,10 @@ void InputEditWidgetPrivate::initButtonBox()
     netWorkBtn->setToolTip(InputEditWidget::tr("connect to network"));
 
     InputEditWidget::connect(sendButton, &DToolButton::clicked, q, &InputEditWidget::messageSended);
+    InputEditWidget::connect(codeBaseBtn, &DToolButton::clicked, q, &InputEditWidget::onCodeBaseBtnClicked);
     InputEditWidget::connect(referenceBtn, &DToolButton::clicked, q, &InputEditWidget::onReferenceBtnClicked);
     InputEditWidget::connect(netWorkBtn, &DToolButton::clicked, q, &InputEditWidget::onNetWorkBtnClicked);
+    hLayout->addWidget(codeBaseBtn);
     hLayout->addWidget(referenceBtn);
     hLayout->addWidget(netWorkBtn);
     hLayout->addWidget(sendButton);
@@ -332,9 +342,22 @@ void InputEdit::appendTag(const QString &text)
     textCursor().insertText(QString(QChar::ObjectReplacementCharacter), oldFormat);   //  to reset textCharFormat
 }
 
+bool InputEdit::hasTag(const QString &text)
+{
+    return formats.contains('@' + text);
+}
+
 void InputEditWidget::onReferenceBtnClicked()
 {
     d->edit->append("@");
+}
+
+void InputEditWidget::onCodeBaseBtnClicked()
+{
+    bool checked = d->codeBaseBtn->isChecked();
+    if (!checked && d->edit->hasTag(reference_codebase)) // cancel the button , but @codebase in edit
+        return;
+    CodeGeeXManager::instance()->setReferenceCodebase(checked);
 }
 
 void InputEditWidget::onNetWorkBtnClicked()
@@ -502,7 +525,7 @@ void InputEditWidget::onTagAdded(const QString &text)
 
 void InputEditWidget::onTagRemoved(const QString &text)
 {
-    if (text.mid(1) == reference_codebase) //remove @
+    if (text.mid(1) == reference_codebase && !d->codeBaseBtn->isChecked()) //remove @
         CodeGeeXManager::instance()->setReferenceCodebase(false);
     if (!d->tagMap.contains(text))
         return;
