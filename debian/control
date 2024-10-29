@@ -63,6 +63,6 @@ Package: libdeepin-unioncode-dev
 Architecture: any
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends},deepin-unioncode
 Description: IDE 'Union Code' devel library
  IDE 'Union Code' development can be carried out through this library
