@@ -486,11 +486,17 @@ void TextEditor::commentOperation()
     if (!hasSelectedText()) {
         int cursorLine = 0, cursorIndex = 0;
         getCursorPosition(&cursorLine, &cursorIndex);
-        int lineLastIndex = lineLength(cursorLine);
+        // The `lineLength` interface gets the byte length
+        // and needs to get the character length
+        const auto &lineText = text(cursorLine);
+        int lineLastIndex = lineText.length();
+        if (lineText.endsWith('\n'))
+            lineLastIndex--;
+
         if (hasUncommentedLines(cursorLine, cursorLine, 0, lineLastIndex, fileCommentSettings))
-            addCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex - 1, fileCommentSettings);
+            addCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex, fileCommentSettings);
         else
-            delCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex - 1, fileCommentSettings);
+            delCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex, fileCommentSettings);
         return;
     }
 
@@ -502,8 +508,9 @@ void TextEditor::commentOperation()
 
 QString TextEditor::getFileType()
 {
+    // Get mimetype using only the file name
     QMimeDatabase mimeDatabase;
-    QString mimeTypeName = mimeDatabase.mimeTypeForFile(d->fileName).name();
+    QString mimeTypeName = mimeDatabase.mimeTypeForFile(d->fileName, QMimeDatabase::MatchExtension).name();
     return mimeTypeName;
 }
 
