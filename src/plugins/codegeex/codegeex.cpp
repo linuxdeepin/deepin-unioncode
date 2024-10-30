@@ -30,33 +30,9 @@ bool CodeGeex::start()
 {
     auto windowService = dpfGetService(dpfservice::WindowService);
     if (windowService) {
-            auto codeGeex = new CodeGeeXWidget;
-            auto codeGeexImpl = new AbstractWidget(codeGeex);
-            windowService->registerWidget(MWNA_CODEGEEX, codeGeexImpl);
-            windowService->deleteDockHeader(MWNA_CODEGEEX); // do not hide by header.
-            DToolButton *button = new DToolButton(codeGeex);
-            button->setIcon(QIcon::fromTheme("codegeex-navigation"));
-            button->setToolTip(MWNA_CODEGEEX);
-            button->setCheckable(true);
-            windowService->addStatusBarItem(button);
-            auto scAction = new QAction(tr("Quick Open CodeGeeX"), codeGeex);
-            auto cmd = ActionManager::instance()->registerAction(scAction, "CodeGeeX.Quick.Open");
-            cmd->setDefaultKeySequence(QKeySequence(Qt::ALT + Qt::Key_L));
-
-            connect(scAction, &QAction::triggered, button, &DToolButton::clicked);
-            connect(button, &DToolButton::clicked, this, [=]() {
-                if (codeGeex->isVisible()) {
-                    windowService->hideWidget(MWNA_CODEGEEX);
-                    button->setChecked(false);
-                } else {
-                    windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Right, false);
-                    button->setChecked(true);
-                }
-            }, Qt::DirectConnection);
-            connect(CodeGeeXCallProxy::instance(), &CodeGeeXCallProxy::switchToWidget, this, [=](const QString &name){
-                if (button->isChecked())
-                    QMetaObject::invokeMethod(windowService, [=]() { windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Right, false);});
-            }, Qt::DirectConnection);
+        auto codeGeex = new CodeGeeXWidget;
+        auto codeGeexImpl = new AbstractWidget(codeGeex);
+        windowService->addWidgetRightspace(MWNA_CODEGEEX, codeGeexImpl, "");
     }
 
     auto optionService = dpfGetService(dpfservice::OptionService);

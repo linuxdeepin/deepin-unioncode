@@ -122,7 +122,8 @@ class ControllerPrivate
 {
     MainWindow *mainWindow { nullptr };
     loadingWidget *loadingwidget { nullptr };
-    WorkspaceWidget *workspace { nullptr };
+    WorkspaceWidget *workspace { nullptr }; // left default dock widget
+    WorkspaceWidget *rightspace { nullptr }; // right default dock widget
 
     DWidget *navigationToolBar { nullptr };
     NavigationBar *navigationBar { nullptr };
@@ -144,6 +145,8 @@ class ControllerPrivate
     QHBoxLayout *contextButtonLayout { nullptr };
 
     WindowStatusBar *statusBar { nullptr };
+    DToolButton *showContextBtn { nullptr };
+    DToolButton *showRightspaceBtn { nullptr };
 
     QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT };
     QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
@@ -183,6 +186,7 @@ Controller::Controller(QObject *parent)
     initMainWindow();
     initNavigationBar();
     initStatusBar();
+    initRightspaceWidget();
     initContextWidget();
     initWorkspaceWidget();
     initTopToolBar();
@@ -311,8 +315,17 @@ void Controller::registerService()
     if (!windowService->addWidgetWorkspace) {
         windowService->addWidgetWorkspace = std::bind(&WorkspaceWidget::addWorkspaceWidget, d->workspace, _1, _2, _3);
     }
+    if (!windowService->addWidgetRightspace) {
+        windowService->addWidgetRightspace = std::bind(&WorkspaceWidget::addWorkspaceWidget, d->rightspace, _1, _2, _3);
+    }
     if (!windowService->registerToolBtnToWorkspaceWidget) {
         windowService->registerToolBtnToWorkspaceWidget = std::bind(&WorkspaceWidget::registerToolBtnToWidget, d->workspace, _1, _2);
+    }
+    if (!windowService->registerToolBtnToRightspaceWidget) {
+        windowService->registerToolBtnToRightspaceWidget = std::bind(&WorkspaceWidget::registerToolBtnToWidget, d->rightspace, _1, _2);
+    }
+    if (!windowService->showWidgetAtRightspace) {
+        windowService->showWidgetAtRightspace = std::bind(&WorkspaceWidget::switchWidgetWorkspace, d->rightspace, _1);
     }
     if (!windowService->registerWidgetToDockHeader) {
         windowService->registerWidgetToDockHeader = std::bind(&Controller::registerWidgetToDockHeader, this, _1, _2);
@@ -400,6 +413,7 @@ void Controller::raiseMode(const QString &mode)
 
     showTopToolBar();
     showContextWidget();
+    showRightspace();
 
     d->mode = mode;
     uiController.modeRaised(mode);
@@ -711,6 +725,38 @@ void Controller::showContextWidget()
     d->currentDocks.append(WN_CONTEXTWIDGET);
 }
 
+void Controller::showRightspace()
+{
+    auto &rightSpaceInfo = d->allWidgets[WN_RIGHTSPACE];
+    if (!rightSpaceInfo.created) {
+        createDockWidget(d->allWidgets[WN_RIGHTSPACE]);
+        d->mainWindow->showWidget(WN_RIGHTSPACE);
+        d->mainWindow->resizeDock(WN_RIGHTSPACE, QSize(300, 300));
+
+        for (auto btn : d->rightspace->getAllToolBtn())
+            d->mainWindow->addWidgetToDockHeader(WN_RIGHTSPACE, btn);
+
+        auto titles = d->rightspace->allWidgetTitles();
+        QList<QAction *> headers;
+        for (auto title : titles) {
+            QAction *action = new QAction(title, d->rightspace);
+            connect(action, &QAction::triggered, this, [=]() { d->rightspace->switchWidgetWorkspace(title); });
+            headers.append(action);
+        }
+        d->mainWindow->setDockHeaderList(WN_RIGHTSPACE, headers);
+        d->mainWindow->setDockHeaderName(WN_RIGHTSPACE, d->rightspace->currentTitle());
+
+        d->rightspace->addedToController = true;
+        connect(d->rightspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title) {
+            d->mainWindow->setDockHeaderName(WN_RIGHTSPACE, title);
+        });
+        connect(rightSpaceInfo.dockWidget, &QDockWidget::visibilityChanged, d->showRightspaceBtn, [=](bool visible){ d->showRightspaceBtn->setChecked(visible); });
+    } else if (!rightSpaceInfo.hiddenByManual) {
+        d->mainWindow->showWidget(WN_RIGHTSPACE);
+    }
+    d->currentDocks.append(WN_RIGHTSPACE);
+}
+
 bool Controller::hasContextWidget(const QString &title)
 {
     return d->contextWidgets.contains(title);
@@ -956,9 +1002,9 @@ void Controller::initContextWidget()
     info.icon = QIcon::fromTheme("context_widget");
 
     if (d->statusBar) {
-        auto btn = createDockButton(info);
-        btn->setChecked(true);
-        d->statusBar->insertPermanentWidget(0, btn);
+        d->showContextBtn = createDockButton(info);
+        d->showContextBtn->setChecked(true);
+        d->statusBar->insertPermanentWidget(0, d->showContextBtn);
     }
 
     d->allWidgets.insert(WN_CONTEXTWIDGET, info);
@@ -970,6 +1016,7 @@ void Controller::initStatusBar()
         return;
     d->statusBar = new WindowStatusBar(d->mainWindow);
     d->statusBar->hide();
+
     d->mainWindow->setStatusBar(d->statusBar);
 }
 
@@ -986,6 +1033,31 @@ void Controller::initWorkspaceWidget()
     info.defaultPos = Position::Left;
     info.replace = true;
     d->allWidgets.insert(WN_WORKSPACE, info);
+}
+
+void Controller::initRightspaceWidget()
+{
+    if (d->rightspace)
+        return;
+
+    d->rightspace = new WorkspaceWidget(d->mainWindow);
+
+    WidgetInfo info;
+    info.name = WN_RIGHTSPACE;
+    info.setWidget(d->rightspace);
+    info.defaultPos = Position::Right;
+    info.replace = true;
+    info.icon = QIcon::fromTheme("uc_right_show");
+    d->allWidgets.insert(WN_RIGHTSPACE, info);
+
+    d->showRightspaceBtn = createDockButton(info);
+    d->showRightspaceBtn->setChecked(true);
+    auto scAction = new QAction(tr("Open rightspace"), d->rightspace);
+    auto cmd = ActionManager::instance()->registerAction(scAction, "Core.Open.Rightspace");
+    cmd->setDefaultKeySequence(QKeySequence(Qt::ALT + Qt::Key_L));
+    connect(scAction, &QAction::triggered, d->showRightspaceBtn, &DToolButton::clicked);
+
+    d->statusBar->insertPermanentWidget(0, d->showRightspaceBtn);
 }
 
 void Controller::initTopToolBar()
@@ -1276,6 +1348,8 @@ DToolButton *Controller::createDockButton(const WidgetInfo &info)
     btn->setCheckable(true);
     connect(btn, &DToolButton::clicked, this, [=]() {
         auto &dockInfo = d->allWidgets[info.name];
+        if (!dockInfo.dockWidget)
+            return;
         if (dockInfo.dockWidget->isVisible()) {
             d->mainWindow->hideWidget(dockInfo.name);
             btn->setChecked(false);

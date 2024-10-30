@@ -176,10 +176,12 @@ public:
      * \param widget
      */
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
+    DPF_INTERFACE(void, addWidgetRightspace, const QString &title, AbstractWidget *widget, const QString &iconName);
     DPF_INTERFACE(void, registerWidgetToDockHeader,const QString &dockName, QWidget *widget);
     DPF_INTERFACE(void, registerToolBtnToWorkspaceWidget, Dtk::Widget::DToolButton *btn, const QString &title);
+    DPF_INTERFACE(void, registerToolBtnToRightspaceWidget, Dtk::Widget::DToolButton *btn, const QString &title);
 
-    DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
+    DPF_INTERFACE(void, showWidgetAtRightspace, const QString &title);
 
     DPF_INTERFACE(QWidget *, createFindPlaceHolder, QWidget *owner, AbstractDocumentFind *docFind);
 
