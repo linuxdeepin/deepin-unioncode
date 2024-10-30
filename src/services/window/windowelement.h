@@ -30,6 +30,7 @@ inline const QString MWTG_DEBUG { "Debug" };
 // WN = window name
 inline const QString WN_CONTEXTWIDGET = "contextWidget";
 inline const QString WN_WORKSPACE = "workspaceWidget";
+inline const QString WN_RIGHTSPACE = "rightspaceWidget";
 
 // MWM = MW menu
 // MWMFA = MWM File Action

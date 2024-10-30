@@ -81,6 +81,7 @@ public slots:
     //workspace
     void switchWorkspace(const QString &titleName);
 
+    void showRightspace();
     void showCurrentDocksManager();
 
 private:
@@ -99,6 +100,7 @@ private:
     void initContextWidget();
     void initStatusBar();
     void initWorkspaceWidget();
+    void initRightspaceWidget();
     void initTopToolBar();
     void initModules();
     void initDocksManager();

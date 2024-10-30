@@ -117,7 +117,7 @@ void MainWindow::setDockHeaderName(const QString &dockName, const QString &heade
 
 void MainWindow::setDockHeaderList(const QString &dockName, const QList<QAction *> &actions)
 {
-    if (!d->dockList.contains(dockName))
+    if (!d->dockList.contains(dockName) || actions.isEmpty())
         return;
 
     auto dock = d->dockList[dockName];

@@ -17,7 +17,6 @@
 
 using namespace dpfservice;
 inline constexpr char mainWindow[] = "debugMainWindow";
-inline constexpr char localsPane[] = "debuggerWatcher";
 
 void DebuggerPlugin::initialize()
 {
@@ -55,21 +54,16 @@ bool DebuggerPlugin::start()
         windowService->bindWidgetToNavigation(mainWindow, actionImpl);
         windowService->setDockHeaderName(mainWindow, tr("debug"));
         auto localsPaneImpl =  new AbstractWidget(debugManager->getLocalsPane());
-        localsPaneImpl->setDisplayIcon(QIcon::fromTheme("variable_watchers"));
-        windowService->registerWidget(localsPane, localsPaneImpl);
-        windowService->deleteDockHeader(localsPane);
+        QString variablesPane = tr("Variables Watcher");
+        windowService->addWidgetRightspace(variablesPane, localsPaneImpl, "");
         connect(action, &QAction::triggered, this, [=]() {
             if (debugManager->getRunState() != AbstractDebugger::kNoRun)
-                windowService->showWidgetAtPosition(localsPane, Position::Right, false);
+                windowService->showWidgetAtRightspace(variablesPane);
         }, Qt::DirectConnection);
         connect(debugManager, &DebugManager::debugStarted, this, [=](){
             uiController.doSwitch(MWNA_DEBUG);
-            windowService->showWidgetAtPosition(localsPane, Position::Right, false);
-            windowService->deleteDockHeader(localsPane);
+            windowService->showWidgetAtRightspace(variablesPane);
             uiController.switchContext(tr("&Application Output"));
-        }, Qt::DirectConnection);
-        connect(debugManager, &DebugManager::debugStopped, this, [=](){
-            windowService->hideWidget(localsPane);
         }, Qt::DirectConnection);
     }
 
