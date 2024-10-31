@@ -97,7 +97,6 @@ QsciScintillaBase::QsciScintillaBase(QWidget *parent)
     connectHorizontalScrollBar();
 
     setAcceptDrops(true);
-    setFocusPolicy(Qt::WheelFocus);
     setAttribute(Qt::WA_KeyCompression);
     setAttribute(Qt::WA_InputMethodEnabled);
     setInputMethodHints(
