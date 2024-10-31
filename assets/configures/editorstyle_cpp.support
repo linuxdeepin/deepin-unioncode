@@ -90,7 +90,7 @@
             "Foreground": "#808000"
         },
         "Operators": {
-            "Foreground": "#faebd7"
+            "Foreground": "#00677c"
         },
         "Number": {
             "Foreground": "#000080"
