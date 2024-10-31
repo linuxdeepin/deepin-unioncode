@@ -7,6 +7,7 @@
 #include "copilot.h"
 #include "codegeexmanager.h"
 #include "services/project/projectservice.h"
+#include "services/window/windowservice.h"
 
 #include <QMenu>
 
@@ -87,7 +88,11 @@ void CodeGeeXReceiver::processOpenProjectEvent(const dpf::Event &event)
 void CodeGeeXReceiver::processSwitchToWidget(const dpf::Event &event)
 {
     auto widgetName = event.property("name").toString();
-    Q_EMIT CodeGeeXCallProxy::instance()->switchToWidget(widgetName);
+    using namespace dpfservice;
+    if (widgetName != MWNA_EDIT)
+        return;
+    auto windowService = dpfGetService(WindowService);
+    windowService->showWidgetAtRightspace(MWNA_CODEGEEX);
 }
 
 CodeGeeXCallProxy::CodeGeeXCallProxy()
