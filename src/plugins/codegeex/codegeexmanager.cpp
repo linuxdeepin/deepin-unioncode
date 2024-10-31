@@ -526,13 +526,17 @@ void CodeGeeXManager::installConda()
 
 void CodeGeeXManager::generateRag(const QString &projectPath)
 {
-    if (indexingProject.contains(projectPath))
+    mutex.lock();
+    if (indexingProject.contains(projectPath)) {
+        mutex.unlock();
         return;
+    }
     indexingProject.append(projectPath);
+    mutex.unlock();
     QProcess *process = new QProcess;
     QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, process, [process]() {
         process->kill();
-    });
+    }, Qt::DirectConnection);
 
     QObject::connect(process, &QProcess::readyReadStandardError, process, [process]() {
         qInfo() << "Error:" << process->readAllStandardError() << "\n";
@@ -541,7 +545,9 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     QObject::connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      process, [=](int exitCode, QProcess::ExitStatus exitStatus) {
                          qInfo() << "Python script finished with exit code" << exitCode << "Exit!!!";
+                         mutex.lock();
                          indexingProject.removeOne(projectPath);
+                         mutex.unlock();
                          auto success = process->readAllStandardError().isEmpty();
                          emit generateDone(projectPath, !success);
                          if (!success)
@@ -559,6 +565,8 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     if (!QFileInfo(pythonPath).exists())
         return;
     process->start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
+    if (QThread::currentThread() != qApp->thread()) // incase thread exit before process done. cause slot function can`t work
+        process->waitForFinished();
 }
 
 /*

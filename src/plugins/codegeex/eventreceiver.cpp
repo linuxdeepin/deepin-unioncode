@@ -76,10 +76,12 @@ void CodeGeeXReceiver::processActionInvokedEvent(const dpf::Event &event)
 
 void CodeGeeXReceiver::processOpenProjectEvent(const dpf::Event &event)
 {
-    auto projectPath = event.property("workspace").toString();
-    QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
-    if (results["Chunks"].toArray().size() != 0)   // project has generated, update it
-        CodeGeeXManager::instance()->generateRag(projectPath);
+    QtConcurrent::run([=](){
+        auto projectPath = event.property("workspace").toString();
+        QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
+        if (results["Chunks"].toArray().size() != 0)   // project has generated, update it
+            CodeGeeXManager::instance()->generateRag(projectPath);
+    });
 }
 
 void CodeGeeXReceiver::processSwitchToWidget(const dpf::Event &event)
