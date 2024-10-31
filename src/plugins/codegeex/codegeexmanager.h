@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QMap>
 #include <QTimer>
+#include <QMutex>
 
 struct RecordData
 {
@@ -153,6 +154,7 @@ private:
     bool isRunning { false };
     bool condaInstalled { false };
     QTimer installCondaTimer;
+    QMutex mutex;
     QStringList indexingProject {};
 };
 
