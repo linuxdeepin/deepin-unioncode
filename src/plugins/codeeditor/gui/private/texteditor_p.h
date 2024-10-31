@@ -85,6 +85,7 @@ public slots:
     void onSelectionChanged();
     void setInlineCompletion();
     void handleDelayCursorChanged();
+    void handleZoomValueChanged();
 
 public:
     TextEditor *q { nullptr };

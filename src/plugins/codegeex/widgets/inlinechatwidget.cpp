@@ -747,7 +747,7 @@ InlineChatWidget::~InlineChatWidget()
 
 void InlineChatWidget::start()
 {
-    d->chatInfo.clear();
+    reset();
     d->chatInfo.fileName = d->editSrv->currentFile();
     if (d->chatInfo.fileName.isEmpty())
         return;
@@ -766,12 +766,17 @@ void InlineChatWidget::start()
                                         textRange.end.line, d->selectionMarker);
 }
 
-void InlineChatWidget::showEvent(QShowEvent *e)
+void InlineChatWidget::reset()
 {
-    d->edit->setFocus();
+    if (d->chatInfo.fileName.isEmpty())
+        return;
+
     d->edit->clear();
-    d->setState(InlineChatWidgetPrivate::Original);
-    QWidget::showEvent(e);
+    d->handleReject();
+    if (d->selectionMarker != -1)
+        d->editSrv->clearAllBackgroundColor(d->chatInfo.fileName, d->selectionMarker);
+    d->prevState = InlineChatWidgetPrivate::Original;
+    d->chatInfo.clear();
 }
 
 void InlineChatWidget::keyPressEvent(QKeyEvent *e)
@@ -786,15 +791,6 @@ void InlineChatWidget::keyPressEvent(QKeyEvent *e)
         break;
     }
     QWidget::keyPressEvent(e);
-}
-
-void InlineChatWidget::hideEvent(QHideEvent *e)
-{
-    d->handleReject();
-    if (d->selectionMarker != -1)
-        d->editSrv->clearAllBackgroundColor(d->chatInfo.fileName, d->selectionMarker);
-
-    QWidget::hideEvent(e);
 }
 
 bool InlineChatWidget::eventFilter(QObject *obj, QEvent *e)

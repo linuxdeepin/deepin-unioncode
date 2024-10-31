@@ -39,6 +39,7 @@ public:
     CodeGeeX::languageModel getCurrentModel() const;
     void handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom,
                                 int lineTo, int indexTo);
+    void handleInlineWidgetClosed();
 
 signals:
     // the code will be tranlated.

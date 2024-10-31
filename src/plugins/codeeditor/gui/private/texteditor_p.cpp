@@ -76,7 +76,7 @@ void TextEditorPrivate::initConnection()
     });
 
     connect(q->verticalScrollBar(), &QScrollBar::valueChanged, this, &TextEditorPrivate::updateLineWidgetPosition);
-    connect(q, &TextEditor::SCN_ZOOM, q, &TextEditor::zoomValueChanged);
+    connect(q, &TextEditor::SCN_ZOOM, this, &TextEditorPrivate::handleZoomValueChanged);
     connect(q, &TextEditor::SCN_DWELLSTART, this, &TextEditorPrivate::onDwellStart);
     connect(q, &TextEditor::SCN_DWELLEND, this, &TextEditorPrivate::onDwellEnd);
     connect(q, &TextEditor::SCN_MODIFIED, this, &TextEditorPrivate::onModified);
@@ -266,6 +266,12 @@ void TextEditorPrivate::handleDelayCursorChanged()
     int line = 0, index = 0;
     q->getCursorPosition(&line, &index);
     Q_EMIT q->delayCursorPositionChanged(line, index);
+}
+
+void TextEditorPrivate::handleZoomValueChanged()
+{
+    updateLineWidgetPosition();
+    Q_EMIT q->zoomValueChanged();
 }
 
 void TextEditorPrivate::loadLexer()

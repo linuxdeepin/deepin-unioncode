@@ -68,6 +68,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(textChanged)
            OPI_INTERFACE(cursorPositionChanged, "fileName", "line", "index")
            OPI_INTERFACE(selectionChanged, "fileName", "lineFrom", "indexFrom", "lineTo", "indexTo")
+           OPI_INTERFACE(inlineWidgetClosed)
 
            //right-cliked menu,  Related to debugging
            OPI_INTERFACE(setBreakpointCondition, "fileName", "line")

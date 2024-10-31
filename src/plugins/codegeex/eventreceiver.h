@@ -27,6 +27,7 @@ private:
 
     void processContextMenuEvent(const dpf::Event &event);
     void processSelectionChangedEvent(const dpf::Event &event);
+    void processInlineWidgetClosedEvent(const dpf::Event &event);
     void processActionInvokedEvent(const dpf::Event &event);
     void processOpenProjectEvent(const dpf::Event &event);
     void processSwitchToWidget(const dpf::Event &event);
