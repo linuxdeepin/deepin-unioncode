@@ -197,20 +197,24 @@ languageModel Copilot::getCurrentModel() const
 
 void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom, int lineTo, int indexTo)
 {
-    QMetaObject::invokeMethod(this, [=] {
-        if (!CodeGeeXManager::instance()->isLoggedIn())
-            return;
+    if (!CodeGeeXManager::instance()->isLoggedIn())
+        return;
 
-        editorService->clearAllEOLAnnotation(lineChatTip);
-        if (lineFrom == -1)
-            return;
+    editorService->clearAllEOLAnnotation(lineChatTip);
+    if (lineFrom == -1)
+        return;
 
-        Edit::Position pos = editorService->cursorPosition();
-        if (pos.line < 0)
-            return;
+    Edit::Position pos = editorService->cursorPosition();
+    if (pos.line < 0)
+        return;
 
-        showLineChatTip(fileName, pos.line);
-    });
+    showLineChatTip(fileName, pos.line);
+}
+
+void Copilot::handleInlineWidgetClosed()
+{
+    if (inlineChatWidget)
+        inlineChatWidget->reset();
 }
 
 void Copilot::addComment()
@@ -361,6 +365,7 @@ void Copilot::startInlineChat()
     if (!CodeGeeXManager::instance()->isLoggedIn())
         return;
 
+    editorService->closeLineWidget();
     editorService->clearAllEOLAnnotation(lineChatTip);
     if (!inlineChatWidget) {
         inlineChatWidget = new InlineChatWidget;

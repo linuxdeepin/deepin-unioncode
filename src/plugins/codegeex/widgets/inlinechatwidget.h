@@ -15,16 +15,16 @@ public:
     explicit InlineChatWidget(QWidget *parent = nullptr);
     ~InlineChatWidget();
 
+public Q_SLOTS:
     void start();
+    void reset();
 
 protected:
-    void showEvent(QShowEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
-    void hideEvent(QHideEvent *e) override;
     bool eventFilter(QObject *obj, QEvent *e) override;
 
 private:
     InlineChatWidgetPrivate *const d;
 };
 
-#endif // INLINECHATWIDGET_H
+#endif   // INLINECHATWIDGET_H

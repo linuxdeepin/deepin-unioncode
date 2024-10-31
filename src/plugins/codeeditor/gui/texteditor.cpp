@@ -759,8 +759,12 @@ bool TextEditor::showLineWidget(int line, QWidget *widget)
 
 void TextEditor::closeLineWidget()
 {
+    if (!d->lineWidgetContainer->isVisible())
+        return;
+
     d->lineWidgetContainer->setVisible(false);
     clearAnnotations(d->showAtLine - 1);
+    editor.inlineWidgetClosed();
 }
 
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)

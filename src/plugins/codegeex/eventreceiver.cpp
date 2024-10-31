@@ -16,6 +16,7 @@ CodeGeeXReceiver::CodeGeeXReceiver(QObject *parent)
     using namespace std::placeholders;
     eventHandleMap.insert(editor.contextMenu.name, std::bind(&CodeGeeXReceiver::processContextMenuEvent, this, _1));
     eventHandleMap.insert(editor.selectionChanged.name, std::bind(&CodeGeeXReceiver::processSelectionChangedEvent, this, _1));
+    eventHandleMap.insert(editor.inlineWidgetClosed.name, std::bind(&CodeGeeXReceiver::processInlineWidgetClosedEvent, this, _1));
     eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&CodeGeeXReceiver::processActionInvokedEvent, this, _1));
     eventHandleMap.insert(project.openProject.name, std::bind(&CodeGeeXReceiver::processOpenProjectEvent, this, _1));
     eventHandleMap.insert(uiController.switchToWidget.name, std::bind(&CodeGeeXReceiver::processSwitchToWidget, this, _1));
@@ -23,7 +24,7 @@ CodeGeeXReceiver::CodeGeeXReceiver(QObject *parent)
 
 dpf::EventHandler::Type CodeGeeXReceiver::type()
 {
-    return dpf::EventHandler::Type::Async;
+    return dpf::EventHandler::Type::Sync;
 }
 
 QStringList CodeGeeXReceiver::topics()
@@ -46,9 +47,7 @@ void CodeGeeXReceiver::processContextMenuEvent(const dpf::Event &event)
     if (!contextMenu)
         return;
 
-    QMetaObject::invokeMethod(this, [contextMenu]() {
-        contextMenu->addMenu(Copilot::instance()->getMenu());
-    });
+    contextMenu->addMenu(Copilot::instance()->getMenu());
 }
 
 void CodeGeeXReceiver::processSelectionChangedEvent(const dpf::Event &event)
@@ -61,29 +60,32 @@ void CodeGeeXReceiver::processSelectionChangedEvent(const dpf::Event &event)
     Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
 }
 
+void CodeGeeXReceiver::processInlineWidgetClosedEvent(const dpf::Event &event)
+{
+    Copilot::instance()->handleInlineWidgetClosed();
+}
+
 void CodeGeeXReceiver::processActionInvokedEvent(const dpf::Event &event)
 {
     auto actId = event.property("actionId").toString();
     if (actId == "codegeex_login_default")
-        QMetaObject::invokeMethod(CodeGeeXManager::instance(), "login", Qt::QueuedConnection);
+        CodeGeeXManager::instance()->login();
     else if (actId == "ai_rag_install")
-        QMetaObject::invokeMethod(CodeGeeXManager::instance(), "installConda", Qt::QueuedConnection);
+        CodeGeeXManager::instance()->installConda();
 }
 
 void CodeGeeXReceiver::processOpenProjectEvent(const dpf::Event &event)
 {
     auto projectPath = event.property("workspace").toString();
     QJsonObject results = CodeGeeXManager::instance()->query(projectPath, "", 1);
-    if (results["Chunks"].toArray().size() != 0) // project has generated, update it
-        QMetaObject::invokeMethod(CodeGeeXManager::instance(), "generateRag", Qt::QueuedConnection, Q_ARG(const QString &, projectPath));
+    if (results["Chunks"].toArray().size() != 0)   // project has generated, update it
+        CodeGeeXManager::instance()->generateRag(projectPath);
 }
 
 void CodeGeeXReceiver::processSwitchToWidget(const dpf::Event &event)
 {
     auto widgetName = event.property("name").toString();
-    QMetaObject::invokeMethod(this, [=]() {
-        Q_EMIT CodeGeeXCallProxy::instance()->switchToWidget(widgetName);
-    });
+    Q_EMIT CodeGeeXCallProxy::instance()->switchToWidget(widgetName);
 }
 
 CodeGeeXCallProxy::CodeGeeXCallProxy()
