@@ -191,7 +191,7 @@ void InputEditWidgetPrivate::initButtonBox()
     referenceBtn = new DToolButton(q);
     referenceBtn->setFixedSize(24, 24);
     referenceBtn->setIcon(QIcon::fromTheme("codegeex_files"));
-    referenceBtn->setToolTip(InputEditWidget::tr("reference files"));
+    referenceBtn->setToolTip(InputEditWidget::tr("reference"));
 
     netWorkBtn = new DToolButton(q);
     netWorkBtn->setFixedSize(24, 24);
