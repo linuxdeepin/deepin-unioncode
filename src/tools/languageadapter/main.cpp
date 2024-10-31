@@ -91,11 +91,6 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
     if (key.language != newlsp::Python)
         return nullptr;
 
-    QString jdtlsNativePkgPath = env::pkg::native::path(env::package::Category::get()->jdtls);
-    ProcessUtil::execute("pip3", {"install", "python-language-server[all]"}, [=](const QByteArray &data){
-        lspServOut << QString(data);
-    });
-
     auto proc = new QProcess();
     proc->setProgram("/usr/bin/bash");
     proc->setArguments({"-c","pyls -v"});
