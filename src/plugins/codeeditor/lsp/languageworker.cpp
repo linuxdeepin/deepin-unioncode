@@ -45,6 +45,11 @@ void LanguageWorker::handleDocumentSemanticTokens(const QList<lsp::Data> &tokens
         QString sourceText = textEditor->text(startPos, endPos);
         if (!sourceText.isEmpty()) {
             QString tokenValue = clientHandler->tokenToDefine(val.tokenType);
+            if (tokenValue.startsWith("operator")) {
+                QRegularExpression re("^[A-Za-z]+$");
+                if (re.match(sourceText).hasMatch())
+                    continue;
+            }
             QColor color = clientHandler->symbolIndicColor(tokenValue, {});
 #if 0
             qInfo() << "line:" << cacheLine;
