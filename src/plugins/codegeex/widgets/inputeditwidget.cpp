@@ -231,6 +231,7 @@ InputEdit::InputEdit(QWidget *parent)
     setFixedHeight(minInputEditHeight);
     setLineWrapMode(QTextEdit::WidgetWidth);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setAcceptRichText(false);
     document()->documentLayout()->registerHandler(QTextFormat::UserObject + 1, new TagObjectInterface);
 
     connect(this, &DTextEdit::textChanged, this, &InputEdit::onTextChanged);
