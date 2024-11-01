@@ -155,14 +155,14 @@ void RemoteChecker::doCheckPyls(const QString &language)
     checkPylsFlag = true;
 
     // virtualenv not support, use user env
-    QString pip3PackageName {"python-language-server[all]"};
-    QString executeProgram {"pyls"};
+    QString pip3PackageName {"python-lsp-server[all]"};
+    QString executeProgram {"pylsp"};
 
     QString userLocalBinPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
             + QDir::separator() + ".local" + QDir::separator() + "bin";
     if (!QFileInfo(userLocalBinPath + QDir::separator() + executeProgram).exists()) {
         Pip3Dialog pip3Dialog;
-        pip3Dialog.install("python-language-server[all]");
+        pip3Dialog.install("python-lsp-server[all]");
         pip3Dialog.exec();
     }
 }
