@@ -482,9 +482,10 @@ void InlineChatWidgetPrivate::handleClose()
 
 void InlineChatWidgetPrivate::handleStop()
 {
-    setState(prevState);
+    setState(Original);
     edit->setPlainText(questionLabel->text());
     edit->moveCursor(QTextCursor::End);
+    questionLabel->clear();
     foreach (auto watcher, futureWatcherList) {
         if (!watcher->isFinished())
             watcher->cancel();
@@ -549,6 +550,7 @@ bool InlineChatWidgetPrivate::askForCodeGeeX()
 
     QSignalBlocker blk(edit);
     edit->clear();
+    edit->onTextChanged();
     questionLabel->setEnabled(true);
     answerLabel->setEnabled(true);
     questionLabel->setText(question);
