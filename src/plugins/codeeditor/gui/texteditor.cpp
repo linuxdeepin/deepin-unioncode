@@ -659,6 +659,7 @@ void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int index
 
 void TextEditor::replaceRange(int startPosition, int endPosition, const QString &text)
 {
+    SendScintilla(SCI_CLEARSELECTIONS);
     SendScintilla(SCI_SETTARGETSTART, startPosition);
     SendScintilla(SCI_SETTARGETEND, endPosition);
     SendScintilla(SCI_REPLACETARGET, -1, textAsBytes(text).constData());

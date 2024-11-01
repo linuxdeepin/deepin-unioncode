@@ -248,22 +248,25 @@ void CopilotApi::processResponse(QNetworkReply *reply)
 
 void CopilotApi::slotReadReply(QNetworkReply *reply)
 {
-    if (reply->error()) {
-        qCritical() << "Error:" << reply->errorString();
+    if (reply->error() != QNetworkReply::NoError) {
+        qCritical() << "Error:" << reply->errorString() << reply->error();
+        if (reply->error() != QNetworkReply::OperationCanceledError) {
+            auto type = reply->property("responseType").value<CopilotApi::ResponseType>();
+            emit response(type, "", "");
+        }
     } else {
         QString replyMsg = QString::fromUtf8(reply->readAll());
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(replyMsg.toUtf8(), &error);
-
+        auto type = reply->property("responseType").value<CopilotApi::ResponseType>();
         if (error.error != QJsonParseError::NoError) {
             qCritical() << "JSON parse error: " << error.errorString();
+            emit response(type, "", "");
             return;
         }
 
         QJsonObject jsonObject = jsonDocument.object();
         QString code {};
-
-        auto type = reply->property("responseType").value<CopilotApi::ResponseType>();
         if (type == CopilotApi::inline_completions) {
             auto content = jsonObject.value("inline_completions").toArray().at(0).toObject();
             code = content.value("text").toString();

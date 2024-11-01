@@ -113,7 +113,7 @@ void TextEditorPrivate::initMargins()
 void TextEditorPrivate::initWidgetContainer()
 {
     lineWidgetContainer = new DFloatingWidget(q);
-    lineWidgetContainer->setFramRadius(6);
+    lineWidgetContainer->setFramRadius(18);
     lineWidgetContainer->setVisible(false);
     QHBoxLayout *layout = new QHBoxLayout(lineWidgetContainer);
     layout->setContentsMargins(0, 0, 0, 0);
