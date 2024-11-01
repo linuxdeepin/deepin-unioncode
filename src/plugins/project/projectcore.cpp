@@ -9,6 +9,7 @@
 #include "mainframe/projecttree.h"
 #include "mainframe/recent/recentopenwidget.h"
 #include "common/common.h"
+#include "common/util/macroexpander.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractwidget.h"
@@ -81,6 +82,7 @@ bool ProjectCore::start()
 
     initProject(ctx);
     initLocator(ctx);
+    registerVariables();
 
     return true;
 }
@@ -217,6 +219,16 @@ void ProjectCore::initProject(dpf::PluginServiceContext &ctx)
             projectService->getActiveProjectItem = std::bind(&ProjectTree::getActiveProjectItem, treeView);
         }
     }
+}
+
+void ProjectCore::registerVariables()
+{
+    globalMacroExpander()->registerFileVariables("CurrentProject",
+                                                 tr("Current project"),
+                                                 [] {
+                                                     auto info = ProjectKeeper::instance()->treeView()->getActiveProjectInfo();
+                                                     return QFileInfo(info.workspaceFolder());
+                                                 });
 }
 
 dpf::Plugin::ShutdownFlag ProjectCore::stop()

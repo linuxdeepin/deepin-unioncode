@@ -28,6 +28,7 @@ public:
 
     void initLocator(dpf::PluginServiceContext& ctx);
     void initProject(dpf::PluginServiceContext& ctx);
+    void registerVariables();
 
 private slots:
     void pluginsStartedMain();
