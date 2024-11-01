@@ -635,6 +635,7 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "function-finished"
                 || event.reason == "end-stepping-range"
                 || event.reason == "goto"
+                || event.reason == "pause" // python send it when pauseing
                 || signalStopped
                 || (event.reason == "unknown" && attaching)) {
             //when attaching to running program . it won`t receive initialized event and event`s reason is "unknwon"
@@ -650,7 +651,6 @@ void DAPDebugger::registerDapHandlers()
                 updateThreadList(curThreadID, threads);
                 switchCurrentThread(static_cast<int>(d->threadId));
             }
-            QApplication::setActiveWindow(d->variablesPane);
             updateRunState(DAPDebugger::RunState::kStopped);
         } else if (event.reason == "exception") {
             QString name;
@@ -854,8 +854,8 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
     } else if (event.data() == project.deletedProject.name) {
         auto prjInfo = event.property("projectInfo").value<dpfservice::ProjectInfo>();
         if (d->projectInfo.isSame(prjInfo)) {
-            d->activeProjectKitName.clear();
             abortDebug();
+            d->activeProjectKitName.clear();
         }
     } else if (event.data() == editor.switchedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
@@ -1293,13 +1293,15 @@ void DAPDebugger::exitDebug()
 {
     // Change UI.
     editor.removeDebugLine();
-    d->variablesPane->hide();
+    d->watchsModel.clear();
+    d->localsModel.clear();
 
     d->localsModel.clear();
     d->stackModel.removeAll();
 
     d->threadId = 0;
 
+    d->threads.clear();
     d->threadSelector->clear();
 }
 
@@ -1316,7 +1318,6 @@ void DAPDebugger::updateRunState(DAPDebugger::RunState state)
         case kRunning:
         case kCustomRunning:
             d->pausing = false;
-            QMetaObject::invokeMethod(d->variablesPane, "show");
             break;
         case kStopped:
             break;
@@ -1345,9 +1346,6 @@ QString DAPDebugger::requestBuild()
 
 void DAPDebugger::start()
 {
-    if(!d->variablesPane->isVisible())
-        d->variablesPane->show();
-
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
