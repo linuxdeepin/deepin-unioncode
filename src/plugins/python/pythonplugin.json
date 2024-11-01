@@ -18,7 +18,7 @@
             "InstallerName" : "pip",
             "Packages" : [
                 "debugpy",
-		"python-language-server[all]"
+		"python-lsp-server[all]"
             ]
         }
     ]

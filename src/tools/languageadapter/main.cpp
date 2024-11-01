@@ -93,10 +93,10 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
 
     auto proc = new QProcess();
     proc->setProgram("/usr/bin/bash");
-    proc->setArguments({"-c","pyls -v"});
+    proc->setArguments({"-c","pylsp -v"});
     env::lang::Version pyVer;
     pyVer.major = 3;
-    if (!ProcessUtil::exists("pyls")) {
+    if (!ProcessUtil::exists("pylsp")) {
         auto python3Env = env::lang::get(env::lang::Category::User, env::lang::Python, pyVer);
         proc->setProcessEnvironment(python3Env);
     }
