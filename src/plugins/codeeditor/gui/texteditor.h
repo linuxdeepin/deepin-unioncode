@@ -90,8 +90,8 @@ public:
     bool selectionStatus(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo);
     QPoint pointFromPosition(int position);
     int positionFromPoint(int x, int y);
-    void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
-    void replaceRange(int startPosition, int endPosition, const QString &text);
+    void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text, bool changePos = false);
+    void replaceRange(int startPosition, int endPosition, const QString &text, bool changePos = false);
     void insertText(const QString &text);
     LanguageClientHandler *languageClient() const;
     int wordStartPositoin(int position);

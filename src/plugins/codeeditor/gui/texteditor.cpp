@@ -650,19 +650,21 @@ int TextEditor::positionFromPoint(int x, int y)
     return pos;
 }
 
-void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text)
+void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text, bool changePos)
 {
     int startPos = positionFromLineIndex(lineFrom, indexFrom);
     int endPos = positionFromLineIndex(lineTo, indexTo);
-    replaceRange(startPos, endPos, text);
+    replaceRange(startPos, endPos, text, changePos);
 }
 
-void TextEditor::replaceRange(int startPosition, int endPosition, const QString &text)
+void TextEditor::replaceRange(int startPosition, int endPosition, const QString &text, bool changePos)
 {
     SendScintilla(SCI_CLEARSELECTIONS);
     SendScintilla(SCI_SETTARGETSTART, startPosition);
     SendScintilla(SCI_SETTARGETEND, endPosition);
     SendScintilla(SCI_REPLACETARGET, -1, textAsBytes(text).constData());
+    if (changePos)
+        SendScintilla(SCI_GOTOPOS, startPosition + text.length());
 }
 
 void TextEditor::insertText(const QString &text)

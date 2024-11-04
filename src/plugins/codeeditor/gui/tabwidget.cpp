@@ -605,7 +605,7 @@ void TabWidget::replaceAll(const QString &fileName, const QString &oldText,
 void TabWidget::replaceText(const QString &fileName, int line, int index, int length, const QString &after)
 {
     if (auto editor = d->findEditor(fileName))
-        editor->replaceRange(line, index, line, index + length, after);
+        editor->replaceRange(line, index, line, index + length, after, true);
 }
 
 bool TabWidget::replaceRange(const QString &fileName, const dpfservice::Edit::Range &range, const QString &newText)

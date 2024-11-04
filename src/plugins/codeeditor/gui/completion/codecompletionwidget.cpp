@@ -206,7 +206,7 @@ void CodeCompletionWidget::executeWithTextEdit(lsp::CompletionItem *item)
     textToBeInserted += extraCharacters;
     auto range = item->textEdit.range;
     editor()->replaceRange(range.start.line, range.start.character,
-                           curLine, curIndex, textToBeInserted);
+                           curLine, curIndex, textToBeInserted, true);
     if (cursorOffset) {
         editor()->lineIndexFromPosition(editor()->cursorPosition(), &curLine, &curIndex);
         editor()->setCursorPosition(curLine, curIndex + cursorOffset);
@@ -234,7 +234,8 @@ void CodeCompletionWidget::executeWithoutTextEdit(lsp::CompletionItem *item)
     QRegularExpressionMatch match = identifier.match(text);
     int matchLength = match.hasMatch() ? match.capturedLength(0) : 0;
     length = qMax(length, matchLength);
-    editor()->replaceRange(pos - length, pos, textToInsert);
+    int startPos = pos - length;
+    editor()->replaceRange(startPos, pos, textToInsert, true);
 }
 
 void CodeCompletionWidget::modelContentChanged()
