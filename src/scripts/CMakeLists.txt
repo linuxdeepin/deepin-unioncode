@@ -21,3 +21,6 @@ install(DIRECTORY prettyprinters/
 
 install(DIRECTORY rag/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/rag")
+
+install(DIRECTORY compiledb/
+    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/compiledb")

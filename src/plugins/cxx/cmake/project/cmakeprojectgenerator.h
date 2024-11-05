@@ -38,7 +38,7 @@ signals:
 private slots:
     void actionTriggered();
     void setRootItemToView(QStandardItem *root);
-    void doBuildCmdExecuteEnd(const BuildCommandInfo &info, int status);
+    void onCMakeFinished(const BuildCommandInfo &info, int status);
     void runCMake(QStandardItem *root, const QPair<QString, QStringList> &files);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
     void recursionRemoveItem(QStandardItem *item);
@@ -49,6 +49,7 @@ private:
     void createBuildMenu(QMenu *menu);
     void clearCMake(QStandardItem *root);
     void removeWatcher(QStandardItem *root);
+    void updateCompileCommands(const dpfservice::ProjectInfo &info);
 
     QMutex mutex;
     QStandardItem *rootItem = nullptr;
