@@ -55,7 +55,7 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     // when execute command end can create root Item
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::buildExecuteEnd,
-                     this, &CmakeProjectGenerator::doBuildCmdExecuteEnd);
+                     this, &CmakeProjectGenerator::onCMakeFinished);
 
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::fileDeleted,
@@ -482,12 +482,13 @@ void CmakeProjectGenerator::setRootItemToView(QStandardItem *root)
     }
 }
 
-void CmakeProjectGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, int status)
+void CmakeProjectGenerator::onCMakeFinished(const BuildCommandInfo &info, int status)
 {
     // configure function cached info
     if (d->configureProjectInfo.isEmpty())
         return;
 
+    updateCompileCommands(d->configureProjectInfo);
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -666,4 +667,19 @@ void CmakeProjectGenerator::removeWatcher(QStandardItem *root)
     d->projectWatchers.remove(root);
     if (d->projectsWaitingUpdate.contains(root))
         d->projectsWaitingUpdate.removeOne(root);
+}
+
+void CmakeProjectGenerator::updateCompileCommands(const dpfservice::ProjectInfo &info)
+{
+    // update comile_commands.json
+    QString scriptRootPath = CustomPaths::global(CustomPaths::Scripts);
+    QProcess process;
+    QStringList compileArgs;
+    compileArgs << scriptRootPath + "/compiledb/update_compile_commands.py";
+    compileArgs << info.buildFolder() + "/compile_commands.json";
+
+    process.setProgram("python3");
+    process.setArguments(compileArgs);
+    process.start();
+    process.waitForFinished();
 }
