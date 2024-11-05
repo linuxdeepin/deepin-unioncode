@@ -120,6 +120,7 @@ class InterpreterWidgetPrivate
 
     InterpreterModel *model = nullptr;
     QSharedPointer<ToolChainData> toolChainData;
+    QMutex mutex;
 };
 
 InterpreterWidget::InterpreterWidget(QWidget *parent)
@@ -264,7 +265,7 @@ void InterpreterWidget::findPackages(const QString &cmd)
 {
     QProcess process;
     connect(&process, static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
-            [&](int exitcode, QProcess::ExitStatus exitStatus) {
+            &process, [&](int exitcode, QProcess::ExitStatus exitStatus) {
         if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
             QString output = QString(process.readAllStandardOutput());
 
@@ -282,6 +283,7 @@ void InterpreterWidget::findPackages(const QString &cmd)
                     dataVector.append(QPair<QString, QString>(sublist.at(0).trimmed(), sublist.at(1).trimmed()));
                 }
             }
+            QMutexLocker lk(&d->mutex);
             d->model->setCustomData(dataVector);
         } else {
             qInfo() << "Error" << exitcode << exitStatus;

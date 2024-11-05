@@ -55,6 +55,8 @@ void ToolOptionWidgetPrivate::initTools()
     const auto &data = toolCD.getToolChanins();
     ToolChainData::Params params = data.value(kCCXXBuildSystems);
     for (const auto &param : params) {
+        if (param.name.isEmpty() || param.path.isEmpty())
+            continue;
         appendTool(param.name, param.path, Detected);
     }
 }

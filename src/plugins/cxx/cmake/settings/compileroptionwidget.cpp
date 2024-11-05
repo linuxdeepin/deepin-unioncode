@@ -70,11 +70,15 @@ void CompilerOptionWidgetPrivate::initCompilers()
     const auto &data = toolCD.getToolChanins();
     ToolChainData::Params cParams = data.value(kCCompilers);
     for (const auto &param : cParams) {
+        if (param.name.isEmpty() || param.path.isEmpty())
+            continue;
         appendCompiler(param.name, param.path, DetectedCCompiler);
     }
 
     ToolChainData::Params cxxParams = data.value(kCXXCompilers);
     for (const auto &param : cxxParams) {
+        if (param.name.isEmpty() || param.path.isEmpty())
+            continue;
         appendCompiler(param.name, param.path, DetectedCXXCompiler);
     }
 }

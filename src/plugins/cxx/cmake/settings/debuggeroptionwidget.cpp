@@ -55,6 +55,8 @@ void DebuggerOptionWidgetPrivate::initDebuggers()
     const auto &data = toolCD.getToolChanins();
     ToolChainData::Params params = data.value(kCCXXDebuggers);
     for (const auto &param : params) {
+        if (param.name.isEmpty() || param.path.isEmpty())
+            continue;
         appendDebugger(param.name, param.path, Detected);
     }
 }
