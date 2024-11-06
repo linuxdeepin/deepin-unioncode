@@ -144,6 +144,7 @@ public:
     int deleteMarker { -1 };
     int insertMarker { -1 };
     int selectionMarker { -1 };
+    bool isPreinputStatus { false };
 };
 
 InlineChatWidgetPrivate::InlineChatWidgetPrivate(InlineChatWidget *qq)
@@ -315,6 +316,12 @@ void InlineChatWidgetPrivate::setState(State s)
 
 void InlineChatWidgetPrivate::handleTextChanged()
 {
+    // Preinput status is not a real user input
+    if (isPreinputStatus) {
+        isPreinputStatus = false;
+        return;
+    }
+
     const auto &text = edit->toPlainText();
     questionLabel->setEnabled(text.isEmpty());
     answerLabel->setEnabled(text.isEmpty());
@@ -865,6 +872,9 @@ bool InlineChatWidget::eventFilter(QObject *obj, QEvent *e)
         }
     } else if (e->type() == QEvent::FocusIn || e->type() == QEvent::FocusOut) {
         d->updateButtonIcon();
+    } else if (e->type() == QEvent::InputMethod) {
+        auto imEvent = static_cast<QInputMethodEvent *>(e);
+        d->isPreinputStatus = imEvent->commitString().isEmpty();
     }
 
     return QWidget::eventFilter(obj, e);
