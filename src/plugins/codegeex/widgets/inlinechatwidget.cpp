@@ -851,6 +851,7 @@ bool InlineChatWidget::eventFilter(QObject *obj, QEvent *e)
                 break;
             }
         }
+        case Qt::KeypadModifier:
         case Qt::NoModifier: {
             switch (ke->key()) {
             case Qt::Key_Enter:
