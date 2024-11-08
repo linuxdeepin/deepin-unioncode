@@ -3,15 +3,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "pythondebug.h"
+#include "utils/utils.h"
+#include "installer/pipinstaller.h"
 
 #include "project/properties/configutil.h"
 #include "services/option/optionmanager.h"
+#include "services/window/windowservice.h"
 #include "common/util/custompaths.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QUuid>
 #include <QProcess>
+
+using namespace dpfservice;
+
+constexpr char kCancelActId[] { "cancel" };
+constexpr char kInstallActId[] { "install_default" };
 
 class PythonDebugPrivate
 {
@@ -20,10 +28,8 @@ class PythonDebugPrivate
 };
 
 PythonDebug::PythonDebug(QObject *parent)
-    : QObject(parent)
-    , d(new PythonDebugPrivate())
+    : QObject(parent), d(new PythonDebugPrivate())
 {
-
 }
 
 PythonDebug::~PythonDebug()
@@ -35,32 +41,30 @@ PythonDebug::~PythonDebug()
 bool PythonDebug::prepareDebug(const QString &fileName, QString &retMsg)
 {
     if (fileName.isEmpty()) {
-        retMsg = tr("There is no opened python file, please open.");
+        metaObject()->invokeMethod(this, "notifyMessage",
+                                   Qt::QueuedConnection,
+                                   Q_ARG(QString, tr("There is no opened python file, please open.")));
         return false;
     }
 
     d->interpreterPath = config::ConfigUtil::instance()->getConfigureParamPointer()->pythonVersion.path;
     if (d->interpreterPath.isEmpty()) //project has not set interpreter to config. use default interpreter
         d->interpreterPath = OptionManager::getInstance()->getPythonToolPath();
-    if (!d->interpreterPath.contains("python3")) {
-        retMsg = tr("The python3 is needed, please select it in options dialog or install it.");
+    if (d->interpreterPath.isEmpty()) {
+        metaObject()->invokeMethod(this, "notifyMessage",
+                                   Qt::QueuedConnection,
+                                   Q_ARG(QString, tr("An interpreter is necessary. Please select it in options dialog or install it.")));
         return false;
     }
 
-    QProcess process;
-    QStringList options;
-    options << "-c" << "pip3 show -- debugpy";
-    process.start("/bin/bash", options);
-    if (process.waitForReadyRead()) {
-        QString output = process.readAllStandardOutput();
-        if (output.contains("debugpy"))
-            return true;
+    PIPInstaller installer;
+    if (!installer.checkInstalled(d->interpreterPath, "debugpy")) {
+        metaObject()->invokeMethod(this, &PythonDebug::notifyToInstall);
+        return false;
     }
 
-    retMsg = tr("The debugpy is needed, please use command \"pip3 install debugpy\" install and retry.");
-    return false;
+    return true;
 }
-
 
 bool PythonDebug::requestDAPPort(const QString &ppid, const QString &kit,
                                  const QString &projectPath,
@@ -128,3 +132,32 @@ bool PythonDebug::isStopDAPManually()
     return true;
 }
 
+void PythonDebug::notifyMessage(const QString &msg)
+{
+    auto winSrv = dpfGetService(WindowService);
+    if (!winSrv)
+        return;
+
+    winSrv->notify(2, "Python", msg, {});
+}
+
+void PythonDebug::notifyToInstall()
+{
+    auto winSrv = dpfGetService(WindowService);
+    if (!winSrv)
+        return;
+
+    auto handleInstall = [this](const QString &id) {
+        if (id == kInstallActId) {
+            PIPInstaller installer;
+            InstallInfo info { "", "python", { "debugpy" } };
+            installer.install(d->interpreterPath, info);
+        }
+    };
+
+    QStringList acts { kCancelActId, tr("Cancel"),
+                       kInstallActId, tr("Install") };
+    winSrv->notifyWithCallback(2, "Python",
+                               tr("You need the corresponding version of the debugger. Please install it and try again."),
+                               acts, handleInstall);
+}

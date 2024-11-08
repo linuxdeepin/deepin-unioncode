@@ -13,6 +13,39 @@
 
 #include <iostream>
 
+static QString packageInstallPath(const QString &python)
+{
+    auto getVersion = [](const QString &output) -> QString {
+        static QRegularExpression regex(R"((\d{1,3}(?:\.\d{1,3}){0,2}))");
+        if (output.isEmpty())
+            return "";
+
+        QRegularExpressionMatch match = regex.match(output);
+        if (match.hasMatch())
+            return match.captured(1);
+
+        return "";
+    };
+
+    QProcess process;
+    process.start(python, { "--version" });
+    process.waitForFinished();
+
+    QString output = process.readAllStandardOutput();
+    QString version = getVersion(output);
+    if (version.isEmpty()) {
+        output = process.readAllStandardError();
+        version = getVersion(output);
+        if (version.isEmpty()) {
+            int index = python.lastIndexOf('/') + 1;
+            output = python.mid(index, python.length() - index);
+            version = getVersion(output);
+        }
+    }
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+            + "/.unioncode/packages/Python" + version;
+}
+
 // setting from clangd trismit
 QProcess *createCxxServ(const newlsp::ProjectKey &key)
 {
@@ -36,7 +69,7 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
 
     auto proc = new QProcess();
     proc->setProgram("/usr/bin/bash");
-    proc->setArguments({"-c", procAs.join(" ")});
+    proc->setArguments({ "-c", procAs.join(" ") });
 
     return proc;
 }
@@ -57,10 +90,10 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
         } else {
             lspServOut << "unzip install native package..." << noRuntimeChilds;
             QString jdtlsNativePkgPath = env::pkg::native::path(env::package::Category::get()->jdtls);
-            ProcessUtil::execute("tar", {"zxvf", jdtlsNativePkgPath, "-C", "."}, runtimePath,
-                                 [=](const QByteArray &data){
-                lspServOut << QString(data);
-            });
+            ProcessUtil::execute("tar", { "zxvf", jdtlsNativePkgPath, "-C", "." }, runtimePath,
+                                 [=](const QByteArray &data) {
+                                     lspServOut << QString(data);
+                                 });
         }
     }
 
@@ -75,11 +108,13 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
                          "--add-modules=ALL-SYSTEM "
                          "--add-opens java.base/java.util=ALL-UNNAMED "
                          "--add-opens java.base/java.lang=ALL-UNNAMED "
-                         "-jar " + runtimePath + "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar "
-                                                 "-configuration " + runtimePath + "/config_linux "
+                         "-jar "
+            + runtimePath + "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar "
+                            "-configuration "
+            + runtimePath + "/config_linux "
             + QString("-data %0").arg(dataDir);
     proc->setProgram("/usr/bin/bash");
-    proc->setArguments({"-c", lanuchLine});
+    proc->setArguments({ "-c", lanuchLine });
 
     return proc;
 }
@@ -92,14 +127,11 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
         return nullptr;
 
     auto proc = new QProcess();
-    proc->setProgram("/usr/bin/bash");
-    proc->setArguments({"-c","pylsp -v"});
-    env::lang::Version pyVer;
-    pyVer.major = 3;
-    if (!ProcessUtil::exists("pylsp")) {
-        auto python3Env = env::lang::get(env::lang::Category::User, env::lang::Python, pyVer);
-        proc->setProcessEnvironment(python3Env);
-    }
+    auto env = proc->processEnvironment();
+    env.insert("PYTHONPATH", packageInstallPath("python3"));
+    proc->setProcessEnvironment(env);
+    proc->setProgram("python3");
+    proc->setArguments({ "-m", "pylsp", "-v" });
 
     return proc;
 }
@@ -122,18 +154,17 @@ QProcess *createJSServ(const newlsp::ProjectKey &key)
 
     auto proc = new QProcess();
     proc->setProgram(nodePath);
-    proc->setArguments({serverPath, "--stdio"});
+    proc->setArguments({ serverPath, "--stdio" });
 
     return proc;
 }
-
 
 void selectLspServer(const QJsonObject &params)
 {
     QString language = params.value(QString::fromStdString(newlsp::language)).toString();
     QString workspace = params.value(QString::fromStdString(newlsp::workspace)).toString();
     QString output = params.value(QString::fromStdString(newlsp::output)).toString();
-    newlsp::ProjectKey projectKey {language.toStdString(), workspace.toStdString(), output.toStdString()};
+    newlsp::ProjectKey projectKey { language.toStdString(), workspace.toStdString(), output.toStdString() };
     JsonRpcCallProxy::ins().setSelect(projectKey);
     QProcess *proc = JsonRpcCallProxy::ins().value(projectKey);
 
@@ -145,7 +176,7 @@ void selectLspServer(const QJsonObject &params)
             lspServOut << "save backend process";
             JsonRpcCallProxy::ins().save(projectKey, proc);
             lspServOut << "selected ProjectKey{language:" << projectKey.language
-                       <<  ", workspace:" << projectKey.workspace << "}";
+                       << ", workspace:" << projectKey.workspace << "}";
             JsonRpcCallProxy::ins().setSelect(projectKey);
         }
     }
