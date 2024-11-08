@@ -10,8 +10,43 @@
 #include <QDBusMessage>
 #include <QApplication>
 #include <QDir>
+#include <QRegularExpression>
+#include <QStandardPaths>
 
 #include "unistd.h"
+
+static QString packageInstallPath(const QString &python)
+{
+    auto getVersion = [](const QString &output) -> QString {
+        static QRegularExpression regex(R"((\d{1,3}(?:\.\d{1,3}){0,2}))");
+        if (output.isEmpty())
+            return "";
+
+        QRegularExpressionMatch match = regex.match(output);
+        if (match.hasMatch())
+            return match.captured(1);
+
+        return "";
+    };
+
+    QProcess process;
+    process.start(python, { "--version" });
+    process.waitForFinished();
+
+    QString output = process.readAllStandardOutput();
+    QString version = getVersion(output);
+    if (version.isEmpty()) {
+        output = process.readAllStandardError();
+        version = getVersion(output);
+        if (version.isEmpty()) {
+            int index = python.lastIndexOf('/') + 1;
+            output = python.mid(index, python.length() - index);
+            version = getVersion(output);
+        }
+    }
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+           + "/.unioncode/packages/Python" + version;
+}
 
 class PythonDebuggerPrivate {
     friend class PythonDebugger;
@@ -103,6 +138,9 @@ void PythonDebugger::initialize(const QString &pythonExecute,
 
     QStringList options;
     options << "-c" << param;
+    auto env = d->process.processEnvironment();
+    env.insert("PYTHONPATH", packageInstallPath(pythonExecute));
+    d->process.setProcessEnvironment(env);
     d->process.start("/bin/bash", options);
     d->process.waitForStarted();
 }

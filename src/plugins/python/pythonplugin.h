@@ -18,6 +18,7 @@ public:
 
 private:
     void registEditorService();
+    void registerPIPInstaller();
 };
 
 #endif // PYTHONPLUGIN_H

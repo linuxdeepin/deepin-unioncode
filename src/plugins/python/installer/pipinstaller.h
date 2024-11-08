@@ -21,6 +21,9 @@ public:
     bool checkInstalled(const QString &package) override;
     void install(const InstallInfo &info) override;
 
+    bool checkInstalled(const QString &python, const QString &package);
+    void install(const QString &python, const InstallInfo &info);
+
 private:
     dpfservice::TerminalService *termSrv { nullptr };
 };

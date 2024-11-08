@@ -7,12 +7,14 @@
 #include "python/project/pythonprojectgenerator.h"
 #include "python/option/optionpythongenerator.h"
 #include "lexer/scilexerpython.h"
+#include "installer/pipinstaller.h"
 
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
 #include "services/option/optiondatastruct.h"
 #include "services/editor/editorservice.h"
+#include "services/window/windowservice.h"
 
 using namespace dpfservice;
 
@@ -53,6 +55,7 @@ bool PythonPlugin::start()
     optionService->implGenerator<OptionPythonGenerator>(option::GROUP_LANGUAGE, OptionPythonGenerator::kitName());
 
     registEditorService();
+    registerPIPInstaller();
     return true;
 }
 
@@ -71,4 +74,14 @@ void PythonPlugin::registEditorService()
 
     SciLexerPython *lexerPython = new SciLexerPython;
     editorSvc->registerSciLexerProxy(lexerPython->language(), lexerPython);
+}
+
+void PythonPlugin::registerPIPInstaller()
+{
+    auto winSrv = dpfGetService(WindowService);
+    if (!winSrv)
+        return;
+
+    auto installer = new PIPInstaller(qApp);
+    winSrv->registerInstaller("pip", installer);
 }

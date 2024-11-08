@@ -26,9 +26,9 @@ public:
     bool isRestartDAPManually();
     bool isStopDAPManually();
 
-signals:
-
-private slots:
+private Q_SLOTS:
+    void notifyMessage(const QString &msg);
+    void notifyToInstall();
 
 private:
     PythonDebugPrivate *const d;

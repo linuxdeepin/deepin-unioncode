@@ -4,7 +4,6 @@
 
 #include "dependencemodule.h"
 #include "depend/aptinstaller.h"
-#include "depend/pipinstaller.h"
 
 #include "services/window/windowservice.h"
 
@@ -27,7 +26,6 @@ void DependenceModule::initialize(Controller *_uiController)
 void DependenceModule::initDefaultInstaller()
 {
     manager->registerInstaller("apt", new APTInstaller(this));
-    manager->registerInstaller("pip", new PIPInstaller(this));
 }
 
 void DependenceModule::initInterfaces()
