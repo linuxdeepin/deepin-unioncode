@@ -1076,22 +1076,22 @@ storage: %2
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="554"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="555"/>
         <source>Project Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="564"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="565"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="565"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="566"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="566"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="567"/>
         <source>Kit</source>
         <translation>套件</translation>
     </message>
@@ -1490,19 +1490,19 @@ storage: %2
         <translation>手动设置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="87"/>
-        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="125"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="91"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="129"/>
         <source>New C++ Compiler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="88"/>
-        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="122"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="92"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="126"/>
         <source>New C Compiler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/compileroptionwidget.cpp" line="201"/>
         <source>Compilers</source>
         <translation>编译器</translation>
     </message>
@@ -1868,29 +1868,29 @@ The debugee has Terminated.
         <translation>断点列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1357"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1355"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation>请先编译工程。
 编译：Ctrl + B</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1369"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1367"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation>正在加载依赖项，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1398"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1396"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation>正在获取dap端口，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1410"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1408"/>
         <source>Requesting debug port...</source>
         <translation>请求调试端口...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1472"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1470"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -1899,22 +1899,22 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1476"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1474"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1581"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1579"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1584"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1582"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1590"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1588"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
@@ -2010,13 +2010,13 @@ Delete anyway?</source>
         <translation>手动设置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="66"/>
-        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="88"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="68"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="90"/>
         <source>New Debugger</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="134"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/debuggeroptionwidget.cpp" line="136"/>
         <source>Debuggers</source>
         <translation>调试器</translation>
     </message>
@@ -2825,42 +2825,42 @@ need to manually copy the source code to this path</source>
         <translation>  按%1进行内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="206"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="207"/>
         <source>Esc to close</source>
         <translation>Esc 退出对话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="207"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="208"/>
         <source>Submit Edit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="208"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="209"/>
         <source>quick question</source>
         <translation>快问快答</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="210"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="211"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="212"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="213"/>
         <source>Accept</source>
         <translation>接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="214"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="215"/>
         <source>Reject</source>
         <translation>拒绝</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="285"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="286"/>
         <source>Ask a question here, press Enter to send</source>
         <translation>在这里提问，按Enter键发送</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="294"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="295"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation>继续提问，按Enter键发送</translation>
     </message>
@@ -2933,56 +2933,56 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterWidget</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="153"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="154"/>
         <source>Python Interpreter:</source>
         <translation>Python解释器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="160"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="161"/>
         <source>Browse</source>
         <translation>浏览</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="161"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="219"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="162"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="220"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="192"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="193"/>
         <source>Select Local Interpreter</source>
         <translation>选择本地解释器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="202"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="203"/>
         <source>Selected Interpreter already exists</source>
         <translation>选择的解释器已经存在</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="203"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="229"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="204"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="230"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="218"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="219"/>
         <source>Confirm the removal of this interpreter?</source>
         <translation>确认移除这个解释器？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="228"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="229"/>
         <source>Default Interpreter can`t be removed</source>
         <translation>默认解释器无法被删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="221"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="231"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="206"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="222"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="232"/>
         <source>Yes</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="222"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="223"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3606,7 +3606,7 @@ repos path: %0</source>
 <context>
     <name>PIPInstaller</name>
     <message>
-        <location filename="../../src/plugins/core/depend/pipinstaller.cpp" line="22"/>
+        <location filename="../../src/plugins/python/installer/pipinstaller.cpp" line="24"/>
         <source>Install packages by pip</source>
         <translation>通过PIP安装包</translation>
     </message>
@@ -3687,42 +3687,47 @@ repos path: %0</source>
 <context>
     <name>ProjectCore</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="152"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="154"/>
         <source>Open activted project`s property dialog</source>
         <translation>打开已激活的工程属性对话框</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="123"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="125"/>
         <source>Auto Focus</source>
         <translation>自动聚焦</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="118"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="120"/>
         <source>Opened Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="128"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="130"/>
         <source>Focus File</source>
         <translation>聚焦文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="296"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="227"/>
+        <source>Current project</source>
+        <translation>当前工程</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
         <source>Config</source>
         <translation>配置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="302"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="314"/>
         <source>Project Type:</source>
         <translation>工程类型：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="308"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="320"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="309"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="321"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
@@ -3860,22 +3865,32 @@ repos path: %0</source>
 <context>
     <name>PythonDebug</name>
     <message>
-        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="38"/>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="46"/>
         <source>There is no opened python file, please open.</source>
         <translation>没有打开的python文件，请打开。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="46"/>
-        <source>The python3 is needed, please select it in options dialog or install it.</source>
-        <translation>需要python3，请在选项对话框中选择它或安装它。</translation>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="56"/>
+        <source>An interpreter is necessary. Please select it in options dialog or install it.</source>
+        <translation>需要一个解释器。请在选项对话框中选择它或安装它。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="60"/>
-        <source>The debugpy is needed, please use command &quot;pip3 install debugpy&quot; install and retry.</source>
-        <translation>需要debugpy，请使用命令pip3 install debugpy安装并重试。</translation>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="158"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="83"/>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="159"/>
+        <source>Install</source>
+        <translation>安装</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="161"/>
+        <source>You need the corresponding version of the debugger. Please install it and try again.</source>
+        <translation>需要安装相应版本的调试器。请安装后重试。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="87"/>
         <source>Request python dap port failed, please retry.</source>
         <translation>请求python dap端口失败，请重试。</translation>
     </message>
@@ -4176,7 +4191,7 @@ not exists support files: %0</source>
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore.cpp" line="283"/>
+        <location filename="../../src/plugins/project/projectcore.cpp" line="295"/>
         <source>Open Project Directory</source>
         <translation>打开工程目录</translation>
     </message>
@@ -6345,17 +6360,17 @@ not exists support files: %0</source>
         <translation>手动设置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="66"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="68"/>
         <source>New Tool</source>
         <translation>新工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="88"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="90"/>
         <source>New CMake</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="134"/>
+        <location filename="../../src/plugins/cxx/cmake/settings/tooloptionwidget.cpp" line="136"/>
         <source>CMake Tools</source>
         <translation>CMake工具</translation>
     </message>
