@@ -68,6 +68,7 @@ class DebuggerPrivate
     QString currentBuildUuid;
     QString requestDAPPortPpid;
     QString userKitName;
+    QString currentDebugKit;
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     DEBUG::DebugSession *localSession { nullptr };
@@ -347,8 +348,7 @@ void DAPDebugger::abortDebug()
         auto &ctx = dpfInstance.serviceContext();
         LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
         if (service) {
-            QString kitName = (d->runState == kCustomRunning) ? d->userKitName : d->activeProjectKitName;
-            auto generator = service->create<LanguageGenerator>(kitName);
+            auto generator = service->create<LanguageGenerator>(d->currentDebugKit);
             if (generator) {
                 if (generator->isStopDAPManually()) {
                     stopDAP();
@@ -367,6 +367,10 @@ void DAPDebugger::restartDebug()
         auto &ctx = dpfInstance.serviceContext();
         LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
         if (service) {
+            if (d->activeProjectKitName != d->currentDebugKit) {
+                abortDebug();
+                return;
+            }
             auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
             if (generator) {
                 if (generator->isRestartDAPManually()) {
@@ -1295,6 +1299,7 @@ void DAPDebugger::exitDebug()
     editor.removeDebugLine();
     d->watchsModel.clear();
     d->localsModel.clear();
+    d->currentDebugKit.clear();
 
     d->localsModel.clear();
     d->stackModel.removeAll();
@@ -1476,6 +1481,7 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
             .arg(port);
     printOutput(launchTip);
 
+    d->currentDebugKit = kitName;
     auto iniRequet = d->rtCfgProvider->initalizeRequest();
     bool bSuccess = false;
     if (!d->isRemote)
