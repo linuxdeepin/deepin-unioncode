@@ -1477,7 +1477,7 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     }
 
     printOutput(tr("Debugging starts"));
-    QString launchTip = QString("Launch dap session with port %1 ...")
+    QString launchTip = tr("Launch dap session with port %1 ...")
             .arg(port);
     printOutput(launchTip);
 

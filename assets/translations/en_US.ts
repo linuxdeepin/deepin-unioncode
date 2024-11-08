@@ -1709,179 +1709,184 @@ storage: %2
     <name>DAPDebugger</name>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="361"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="670"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="714"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="674"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="718"/>
         <source>
 The debugee has Terminated.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="688"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="692"/>
         <source>The debugee has Exited.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="903"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="907"/>
         <source>Input Condition Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="905"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="909"/>
         <source>Condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="906"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="910"/>
         <source>When the breakpoint is reached, it will be hit only when the expression is true</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="281"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="907"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1139"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="282"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="911"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1143"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="279"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="280"/>
         <source>can`t attaching to debugee when debuging other application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="295"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="296"/>
         <source>The gdb is required, please install it in console with &quot;sudo apt install gdb&quot;, and then restart the tool, reselect the CMake Debugger in Options Dialog...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="312"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="313"/>
         <source>Request cxx dap port failed, please retry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="908"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1140"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="912"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1144"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1071"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1075"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1073"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1077"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1074"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1078"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1080"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1084"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1136"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1140"/>
         <source>New Evaluator Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1137"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1141"/>
         <source>Enter an expression to evaluate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1179"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1187"/>
         <source>Stack List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1256"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1260"/>
         <source>Add New Expression Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1257"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1261"/>
         <source>Remove This Evaluator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1273"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1277"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1273"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1277"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1273"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1277"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1214"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1218"/>
         <source>Breakpoint List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1355"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1360"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1367"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1372"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1396"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1401"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1408"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1413"/>
         <source>Requesting debug port...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1470"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1475"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1474"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1479"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1579"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1480"/>
+        <source>Launch dap session with port %1 ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1585"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1582"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1588"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1588"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1594"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>

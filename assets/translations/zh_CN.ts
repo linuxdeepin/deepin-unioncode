@@ -1736,8 +1736,8 @@ storage: %2
     <name>DAPDebugger</name>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="361"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="670"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="714"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="674"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="718"/>
         <source>
 The debugee has Terminated.
 </source>
@@ -1746,151 +1746,151 @@ The debugee has Terminated.
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="688"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="692"/>
         <source>The debugee has Exited.
 </source>
         <translation>调试已退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="903"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="907"/>
         <source>Input Condition Expression</source>
         <translation>输入条件表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="905"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="909"/>
         <source>Condition</source>
         <translation>条件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="906"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="910"/>
         <source>When the breakpoint is reached, it will be hit only when the expression is true</source>
         <translation>当断点到达，仅在表达式为真时触发</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="281"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="907"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1139"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="282"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="911"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1143"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="279"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="280"/>
         <source>can`t attaching to debugee when debuging other application</source>
         <translation>调试其他应用程序时不能附加到进程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="295"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="296"/>
         <source>The gdb is required, please install it in console with &quot;sudo apt install gdb&quot;, and then restart the tool, reselect the CMake Debugger in Options Dialog...</source>
         <translation>gdb尚未安装，请在控制台中使用“sudo apt install gdb”将其安装，然后重新启动工具，在选项对话框中重新选择CMake调试器...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="312"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="313"/>
         <source>Request cxx dap port failed, please retry.</source>
         <translation>请求cxx dap端口失败，请重新尝试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="908"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1140"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="912"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1144"/>
         <source>Ok</source>
         <translation>确认</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1071"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1075"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1073"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1077"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1074"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1078"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;p&gt;下位机停止，因为它收到了来自操作系统的信号。&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;信号名： &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;信号含义： &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1080"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1084"/>
         <source>Signal Received</source>
         <translation>信号已接收</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1136"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1140"/>
         <source>New Evaluator Expression</source>
         <translation>新评估表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1137"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1141"/>
         <source>Enter an expression to evaluate</source>
         <translation>输入求值表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1179"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
         <source>Threads:</source>
         <translation>线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1183"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1187"/>
         <source>Stack List</source>
         <translation>堆栈列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1256"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1260"/>
         <source>Add New Expression Evaluator</source>
         <translation>添加新评估表达式</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1257"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1261"/>
         <source>Remove This Evaluator</source>
         <translation>删除评估</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1273"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1277"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1273"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1277"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1273"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1277"/>
         <source>Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1214"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1218"/>
         <source>Breakpoint List</source>
         <translation>断点列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1355"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1360"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation>请先编译工程。
 编译：Ctrl + B</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1367"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1372"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation>正在加载依赖项，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1396"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1401"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation>正在获取dap端口，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1408"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1413"/>
         <source>Requesting debug port...</source>
         <translation>请求调试端口...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1470"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1475"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -1899,22 +1899,27 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1474"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1479"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1579"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1480"/>
+        <source>Launch dap session with port %1 ...</source>
+        <translation>通过端口%1启动dap会话...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1585"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1582"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1588"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1588"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1594"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
