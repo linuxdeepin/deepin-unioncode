@@ -22,6 +22,7 @@
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
 #include "services/language/languageservice.h"
+#include "services/window/windowservice.h"
 #include "unistd.h"
 #include "base/baseitemdelegate.h"
 
@@ -56,6 +57,12 @@ using namespace dap;
 using namespace DEBUG_NAMESPACE;
 using namespace dpfservice;
 using DTK_WIDGET_NAMESPACE::DSpinner;
+
+void notify(uint type, const QString &message) // type 0-infomation, 1-warning, 2-error
+{
+    auto wdService = dpfGetService(WindowService);
+    wdService->notify(type, QObject::tr("Debug"), message, {});
+}
 
 class DebuggerPrivate
 {
@@ -1494,6 +1501,8 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
                                            iniRequet);
 
     if (!bSuccess) {
+        updateRunState(DAPDebugger::RunState::kNoRun);
+        notify(2, tr("Debugging service initialization failed"));
         qCritical() << "startDebug failed!";
         return;
     }
@@ -1550,6 +1559,8 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     }
 
     if (!bSuccess) {
+        updateRunState(DAPDebugger::RunState::kNoRun);
+        notify(2, tr("Debugger startup failed"));
         qCritical() << "startDebug failed!";
     } else {
         debugService->getModel()->clear();
