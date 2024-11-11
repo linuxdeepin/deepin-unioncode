@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QThread>
 
 #include "unistd.h"
 
@@ -143,6 +144,7 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     d->process.setProcessEnvironment(env);
     d->process.start("/bin/bash", options);
     d->process.waitForStarted();
+    QThread::msleep(500);  // The port may not start listening immediately when Python starts, resulting in the IDE being unable to connect. Wait for 500ms.
 }
 
 void PythonDebugger::slotReceiveClientInfo(const QString &ppid,
