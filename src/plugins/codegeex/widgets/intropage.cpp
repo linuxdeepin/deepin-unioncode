@@ -160,7 +160,7 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text, co
     layout->addWidget(suggestButton);
 
     connect(suggestButton, &DPushButton::clicked, [=] {
-        emit suggestionToSend(suggestButton->text());
+        emit suggestionToSend(text);
     });
 }
 

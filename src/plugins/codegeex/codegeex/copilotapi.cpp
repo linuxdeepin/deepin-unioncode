@@ -300,7 +300,6 @@ void CopilotApi::slotReadReplyStream(QNetworkReply *reply)
         qCritical() << "Error:" << reply->errorString();
     } else {
         QString replyMsg = QString::fromUtf8(reply->readAll());
-        qInfo() << replyMsg;
         QStringList lines = replyMsg.split('\n');
         QString data;
         QString event;

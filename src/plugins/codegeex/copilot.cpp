@@ -313,7 +313,7 @@ void Copilot::switchToCodegeexPage()
 {
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Right, false);
+    windowService->showWidgetAtRightspace(MWNA_CODEGEEX);
 }
 
 QString Copilot::assembleCodeByCurrentFile(const QString &code)
