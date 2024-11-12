@@ -5,22 +5,21 @@
 #include "pythonoptionwidget.h"
 #include "interpreterwidget.h"
 
-#include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
 #include <QHBoxLayout>
 #include <DTabWidget>
 
-class PythonOptionWidgetPrivate {
-    DTabWidget* tabWidget = nullptr;
+class PythonOptionWidgetPrivate
+{
+    DTabWidget *tabWidget = nullptr;
 
     friend class PythonOptionWidget;
 };
 
 PythonOptionWidget::PythonOptionWidget(QWidget *parent)
-    : PageWidget(parent)
-    , d(new PythonOptionWidgetPrivate())
+    : PageWidget(parent), d(new PythonOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new DTabWidget();
@@ -44,33 +43,25 @@ PythonOptionWidget::~PythonOptionWidget()
 
 void PythonOptionWidget::saveConfig()
 {
-    for (int index = 0; index < d->tabWidget->count(); index++)
-    {
-        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+    for (int index = 0; index < d->tabWidget->count(); index++) {
+        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
             QMap<QString, QVariant> map;
             pageWidget->getUserConfig(map);
-            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(),
-                                          option::CATEGORY_PYTHON, itemNode, map);
-
-            OptionManager::getInstance()->updateData();
+            OptionManager::getInstance()->setValue(option::CATEGORY_PYTHON, itemNode, map);
         }
     }
 }
 
 void PythonOptionWidget::readConfig()
 {
-    for (int index = 0; index < d->tabWidget->count(); index++)
-    {
-        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+    for (int index = 0; index < d->tabWidget->count(); index++) {
+        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-            QMap<QString, QVariant> map;
-            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
-                                         option::CATEGORY_PYTHON, itemNode, map);
+            QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(option::CATEGORY_PYTHON, itemNode).toMap();
             pageWidget->setUserConfig(map);
         }
     }
 }
-

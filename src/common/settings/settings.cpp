@@ -129,9 +129,14 @@ bool SettingsPrivate::isRemovable(const QString &group, const QString &key) cons
     return settingData.values.value(group).contains(key);
 }
 
-Settings::Settings(const QString &defaultFile, const QString &settingFile, QObject *parent)
+Settings::Settings(QObject *parent)
     : QObject(parent),
-      d(new SettingsPrivate())
+      d(new SettingsPrivate)
+{
+}
+
+Settings::Settings(const QString &defaultFile, const QString &settingFile, QObject *parent)
+    : Settings(parent)
 {
     d->settingFile = settingFile;
     d->fromJsonFile(settingFile, &d->settingData);
@@ -208,10 +213,13 @@ void Settings::setValue(const QString &group, const QString &key, const QVariant
         changed = this->value(group, key, value) != value;
     }
 
+    if (!changed)
+        return;
+
     d->settingData.setValue(group, key, value);
     d->enableSync(true);
 
-    if (notify && changed)
+    if (notify)
         Q_EMIT valueChanged(group, key, value);
 }
 
@@ -241,6 +249,16 @@ void Settings::remove(const QString &group, const QString &key)
     const auto &newValue = value(group, key);
     if (oldValue != newValue)
         Q_EMIT valueChanged(group, key, newValue);
+}
+
+void Settings::load(const QString &defaultFile, const QString &settingFile)
+{
+    d->defaultData.values.clear();
+    d->settingData.values.clear();
+
+    d->settingFile = settingFile;
+    d->fromJsonFile(defaultFile, &d->defaultData);
+    d->fromJsonFile(settingFile, &d->settingData);
 }
 
 void Settings::clear()

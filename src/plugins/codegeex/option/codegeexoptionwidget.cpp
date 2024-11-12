@@ -5,7 +5,6 @@
 #include "codegeexoptionwidget.h"
 #include "detailwidget.h"
 
-#include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
@@ -19,13 +18,12 @@ static const char *kCATEGORY_CODEGEEX = "CodeGeeX";
 
 class CodeGeeXOptionWidgetPrivate
 {
-    DTabWidget* tabWidget = nullptr;
+    DTabWidget *tabWidget = nullptr;
     friend class CodeGeeXOptionWidget;
 };
 
 CodeGeeXOptionWidget::CodeGeeXOptionWidget(QWidget *parent)
-    : PageWidget(parent)
-    , d(new CodeGeeXOptionWidgetPrivate())
+    : PageWidget(parent), d(new CodeGeeXOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new DTabWidget();
@@ -50,14 +48,12 @@ CodeGeeXOptionWidget::~CodeGeeXOptionWidget()
 void CodeGeeXOptionWidget::saveConfig()
 {
     for (int index = 0; index < d->tabWidget->count(); index++) {
-        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
             QMap<QString, QVariant> map;
             pageWidget->getUserConfig(map);
-            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), kCATEGORY_CODEGEEX, itemNode, map);
-
-            OptionManager::getInstance()->updateData();
+            OptionManager::getInstance()->setValue(kCATEGORY_CODEGEEX, itemNode, map);
         }
     }
 }
@@ -65,14 +61,11 @@ void CodeGeeXOptionWidget::saveConfig()
 void CodeGeeXOptionWidget::readConfig()
 {
     for (int index = 0; index < d->tabWidget->count(); index++) {
-        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-            QMap<QString, QVariant> map;
-            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
-                                         kCATEGORY_CODEGEEX, itemNode, map);
+            QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(kCATEGORY_CODEGEEX, itemNode).toMap();
             pageWidget->setUserConfig(map);
         }
     }
 }
-

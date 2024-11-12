@@ -8,7 +8,6 @@
 #include "debuggeroptionwidget.h"
 #include "tooloptionwidget.h"
 
-#include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
@@ -134,9 +133,7 @@ void CMakeSettingsWidget::saveConfig()
         Q_ASSERT(option);
 
         const auto &map = option->getConfig();
-        OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(),
-                                      option::CATEGORY_CMAKE, option->configName(), map);
-        OptionManager::getInstance()->updateData();
+        OptionManager::getInstance()->setValue(option::CATEGORY_CMAKE, option->configName(), map);
     }
 }
 
@@ -149,9 +146,7 @@ void CMakeSettingsWidget::readConfig()
         auto option = dynamic_cast<BaseOption *>(widget);
         Q_ASSERT(option);
 
-        QMap<QString, QVariant> map;
-        OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
-                                     option::CATEGORY_CMAKE, option->configName(), map);
+        QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(option::CATEGORY_CMAKE, option->configName()).toMap();
         option->setConfig(map);
         auto optWidget = dynamic_cast<BaseOptionWidgetHelper *>(widget);
         if (optWidget)

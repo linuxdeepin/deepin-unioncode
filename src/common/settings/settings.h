@@ -13,6 +13,7 @@ class Settings : public QObject
 {
     Q_OBJECT
 public:
+    Settings(QObject *parent = nullptr);
     explicit Settings(const QString &defaultFile, const QString &settingFile, QObject *parent = nullptr);
     ~Settings();
 
@@ -24,6 +25,7 @@ public:
     void setValue(const QString &group, const QString &key, const QVariant &value, bool notify = false);
     void removeGroup(const QString &group);
     void remove(const QString &group, const QString &key);
+    void load(const QString &defaultFile, const QString &settingFile);
     void clear();
     void reload();
     bool sync();

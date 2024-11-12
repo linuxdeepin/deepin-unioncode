@@ -8,7 +8,6 @@
 #include "commentconfigwidget.h"
 #include "settingsdefine.h"
 
-#include "services/option/optionutils.h"
 #include "services/option/optionmanager.h"
 
 #include <QVBoxLayout>
@@ -66,7 +65,7 @@ void EditorSettingsWidgetPrivate::saveConfig(PageWidget *page, const QString &no
 {
     QMap<QString, QVariant> map;
     page->getUserConfig(map);
-    OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), EditorConfig, node, map);
+    OptionManager::getInstance()->setValue(EditorConfig, node, map);
 }
 
 void EditorSettingsWidgetPrivate::readConfig(PageWidget *page)
@@ -91,7 +90,6 @@ void EditorSettingsWidget::saveConfig()
     d->saveConfig(d->fontColorWidget, Node::FontColor);
     d->saveConfig(d->behaviorWidget, Node::Behavior);
     d->saveConfig(d->commentConfigWidget, Node::MimeTypeConfig);
-    OptionManager::getInstance()->updateData();
 }
 
 void EditorSettingsWidget::readConfig()

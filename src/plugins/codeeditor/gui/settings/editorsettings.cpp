@@ -5,7 +5,7 @@
 #include "editorsettings.h"
 #include "settingsdefine.h"
 
-#include "services/option/optionutils.h"
+#include "services/option/optionmanager.h"
 
 #include <QMap>
 
@@ -51,10 +51,7 @@ void EditorSettingsPrivate::loadConfig()
     isLoad = true;
 
     for (const auto &node : nodeList) {
-        QMap<QString, QVariant> map;
-        OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
-                                     EditorConfig, node, map);
-
+        QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(EditorConfig, node).toMap();
         auto iter = map.begin();
         for (; iter != map.end(); ++iter)
             loadConfig(node, iter.key(), iter.value().toMap());
@@ -82,8 +79,7 @@ void EditorSettingsPrivate::saveConfig()
         for (const auto &settings : settingList) {
             map.insert(settings.group, settings.data);
         }
-        OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(),
-                                          EditorConfig, iter.key(), map);
+        OptionManager::getInstance()->setValue(EditorConfig, iter.key(), map);
     }
 }
 
@@ -156,7 +152,7 @@ QVariant EditorSettings::value(const QString &node, const QString &group, const 
     return iter->data.value(key, defaultValue);
 }
 
-QMap<QString, QVariant> EditorSettings::getMap(const QString &node) 
+QMap<QString, QVariant> EditorSettings::getMap(const QString &node)
 {
     const auto &stList = d->settingDatas.value(node);
     QMap<QString, QVariant> map;
@@ -164,4 +160,3 @@ QMap<QString, QVariant> EditorSettings::getMap(const QString &node)
         map.insert(st.group, st.data);
     return map;
 }
-

@@ -7,6 +7,7 @@
 #include "cmake/builder/parser/gnumakeparser.h"
 #include "cmake/builder/parser/gccparser.h"
 #include "cmake/builder/parser/cmakeparser.h"
+#include "cmake/option/kitmanager.h"
 
 #include "services/builder/builderservice.h"
 #include "base/abstractoutputparser.h"
@@ -42,7 +43,7 @@ BuildCommandInfo CMakeBuilderGenerator::getMenuCommand(const BuildMenuType build
 
     info.program = projectInfo.buildProgram();
     if (info.program.isEmpty()) {
-        info.program = OptionManager::getInstance()->getCMakeToolPath();
+        info.program = KitManager::instance()->defaultKit().cmakeTool().path;
     }
 
     info.workingDir = projectInfo.buildFolder();
