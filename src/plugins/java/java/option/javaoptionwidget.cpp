@@ -5,7 +5,6 @@
 #include "javaoptionwidget.h"
 #include "jdkwidget.h"
 
-#include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
@@ -53,9 +52,7 @@ void JavaOptionWidget::saveConfig()
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
             QMap<QString, QVariant> map;
             pageWidget->getUserConfig(map);
-            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), option::CATEGORY_JAVA, itemNode, map);
-
-            OptionManager::getInstance()->updateData();
+            OptionManager::getInstance()->setValue(option::CATEGORY_JAVA, itemNode, map);
         }
     }
 }
@@ -67,9 +64,7 @@ void JavaOptionWidget::readConfig()
         PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-            QMap<QString, QVariant> map;
-            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
-                                         option::CATEGORY_JAVA, itemNode, map);
+            QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(option::CATEGORY_JAVA, itemNode).toMap();
             pageWidget->setUserConfig(map);
         }
     }

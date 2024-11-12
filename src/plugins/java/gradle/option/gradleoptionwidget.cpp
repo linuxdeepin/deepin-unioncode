@@ -5,7 +5,6 @@
 #include "gradleoptionwidget.h"
 #include "gradlewidget.h"
 
-#include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
@@ -15,15 +14,15 @@
 #include <QStylePainter>
 DWIDGET_USE_NAMESPACE
 
-class GradleOptionWidgetPrivate {
-    DTabWidget* tabWidget = nullptr;
+class GradleOptionWidgetPrivate
+{
+    DTabWidget *tabWidget = nullptr;
 
     friend class GradleOptionWidget;
 };
 
 GradleOptionWidget::GradleOptionWidget(QWidget *parent)
-    : PageWidget(parent)
-    , d(new GradleOptionWidgetPrivate())
+    : PageWidget(parent), d(new GradleOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new DTabWidget();
@@ -49,33 +48,25 @@ GradleOptionWidget::~GradleOptionWidget()
 
 void GradleOptionWidget::saveConfig()
 {
-    for (int index = 0; index < d->tabWidget->count(); index++)
-    {
-        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+    for (int index = 0; index < d->tabWidget->count(); index++) {
+        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
             QMap<QString, QVariant> map;
             pageWidget->getUserConfig(map);
-            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(),
-                                          option::CATEGORY_GRADLE, itemNode, map);
-
-            OptionManager::getInstance()->updateData();
+            OptionManager::getInstance()->setValue(option::CATEGORY_GRADLE, itemNode, map);
         }
     }
 }
 
 void GradleOptionWidget::readConfig()
 {
-    for (int index = 0; index < d->tabWidget->count(); index++)
-    {
-        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+    for (int index = 0; index < d->tabWidget->count(); index++) {
+        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(index));
         if (pageWidget) {
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-            QMap<QString, QVariant> map;
-            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
-                                         option::CATEGORY_GRADLE, itemNode, map);
+            QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(option::CATEGORY_GRADLE, itemNode).toMap();
             pageWidget->setUserConfig(map);
         }
     }
 }
-

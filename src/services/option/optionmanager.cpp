@@ -3,25 +3,39 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "optionmanager.h"
-#include "optionutils.h"
 #include "optiondatastruct.h"
 
-#include <QVariant>
+#include "common/settings/settings.h"
+#include "common/util/custompaths.h"
 
-static OptionManager *m_instance = nullptr;
+#include <QVariant>
+#include <QDir>
 
 class OptionManagerPrivate final
 {
-    friend class OptionManager;
+public:
+    QString configFile() const;
 
-    QMap<QString, QVariant> dataMap;
+    Settings optionSettings;
 };
 
-OptionManager::OptionManager(QObject *parent)
-    : QObject(parent)
-    , d(new OptionManagerPrivate())
+QString OptionManagerPrivate::configFile() const
 {
-    updateData();
+    const QString configDir = CustomPaths::user(CustomPaths::Flags::Configures);
+    const QString oldConfigPath = configDir + QDir::separator() + "optionparam.support";
+    const QString newConfigPath = configDir + QDir::separator() + "deepin-unioncode.json";
+
+    QFile oldFile(oldConfigPath);
+    if (oldFile.exists())
+        oldFile.rename(newConfigPath);
+
+    return newConfigPath;
+}
+
+OptionManager::OptionManager(QObject *parent)
+    : QObject(parent), d(new OptionManagerPrivate())
+{
+    d->optionSettings.load("", d->configFile());
 }
 
 OptionManager::~OptionManager()
@@ -33,75 +47,54 @@ OptionManager::~OptionManager()
 
 OptionManager *OptionManager::getInstance()
 {
-    if (!m_instance) {
-        m_instance = new OptionManager();
-    }
-    return m_instance;
+    static OptionManager ins;
+    return &ins;
 }
 
-void OptionManager::updateData()
+QString OptionManager::getMavenToolPath() const
 {
-    OptionUtils::readAll(OptionUtils::getJsonFilePath(), d->dataMap);
+    const auto &maven = d->optionSettings.value(option::CATEGORY_MAVEN, "Maven");
+    return maven.toMap().value("version").toMap().value("path").toString();
 }
 
-QString OptionManager::getMavenToolPath()
+QString OptionManager::getJdkToolPath() const
 {
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_MAVEN).toMap();
-    return map.value("Maven").toMap().value("version").toMap().value("path").toString();
+    const auto &jdk = d->optionSettings.value(option::CATEGORY_JAVA, "JDK");
+    return jdk.toMap().value("version").toMap().value("path").toString();
 }
 
-QString OptionManager::getJdkToolPath()
+QString OptionManager::getGradleToolPath() const
 {
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_JAVA).toMap();
-    return map.value("JDK").toMap().value("version").toMap().value("path").toString();
-}
-
-QString OptionManager::getGradleToolPath()
-{
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_GRADLE).toMap();
-    int useWrapper = map.value("Gradle").toMap().value("useWrapper").toInt();
+    const auto &gradle = d->optionSettings.value(option::CATEGORY_GRADLE, "Gradle");
+    int useWrapper = gradle.toMap().value("useWrapper").toInt();
     if (useWrapper) {
         return "./gradlew";
     }
 
-    return map.value("Gradle").toMap().value("version").toMap().value("path").toString();
+    return gradle.toMap().value("version").toMap().value("path").toString();
 }
 
-QString OptionManager::getPythonToolPath()
+QString OptionManager::getPythonToolPath() const
 {
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_PYTHON).toMap();
-    return map.value("Interpreter").toMap().value("version").toMap().value("path").toString();
+    const auto &python = d->optionSettings.value(option::CATEGORY_PYTHON, "Interpreter");
+    return python.toMap().value("version").toMap().value("path").toString();
 }
 
-QString OptionManager::getCMakeToolPath()
+QString OptionManager::getNinjaToolPath() const
 {
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_CMAKE).toMap();
-    return map.value("Kits").toMap().value("cmake").toMap().value("path").toString();
+    const auto &ninja = d->optionSettings.value(option::CATEGORY_NINJA, "Ninja");
+    return ninja.toMap().value("version").toMap().value("path").toString();
 }
 
-QString OptionManager::getNinjaToolPath()
+QString OptionManager::getJSToolPath() const
 {
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_NINJA).toMap();
-    return map.value("Ninja").toMap().value("version").toMap().value("path").toString();
+    const auto &js = d->optionSettings.value(option::CATEGORY_JS, "Interpreter");
+    return js.toMap().value("version").toMap().value("path").toString();
 }
 
-QString OptionManager::getCxxDebuggerToolPath()
+QString OptionManager::getToolPath(const QString &kit) const
 {
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_CMAKE).toMap();
-    return map.value("Kits").toMap().value("debugger").toMap().value("path").toString();
-}
-
-QString OptionManager::getJSToolPath()
-{
-    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_JS).toMap();
-    return map.value("Interpreter").toMap().value("version").toMap().value("path").toString();
-}
-
-QString OptionManager::getToolPath(const QString &kit)
-{
-    if (kit == option::CATEGORY_CMAKE) {
-        return getCMakeToolPath();
-    } else if (kit == option::CATEGORY_NINJA) {
+    if (kit == option::CATEGORY_NINJA) {
         return getNinjaToolPath();
     } else if (kit == option::CATEGORY_MAVEN) {
         return getMavenToolPath();
@@ -115,12 +108,12 @@ QString OptionManager::getToolPath(const QString &kit)
     return "";
 }
 
-QVariant OptionManager::getValue(const QString &category, const QStringList &properties)
+QVariant OptionManager::getValue(const QString &category, const QString &key) const
 {
-    QVariant tmp = d->dataMap.value(category).toMap();
-    for (auto property : properties) {
-        tmp = tmp.toMap().value(property);
-    }
-    return tmp;
+    return d->optionSettings.value(category, key);
 }
 
+void OptionManager::setValue(const QString &category, const QString &key, const QVariant &value)
+{
+    d->optionSettings.setValue(category, key, value);
+}

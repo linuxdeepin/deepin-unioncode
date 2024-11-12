@@ -11,7 +11,6 @@
 #include "common/common.h"
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
-#include "services/option/optionutils.h"
 #include "services/editor/editor_define.h"
 #include "services/debugger/debuggerservice.h"
 

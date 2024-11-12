@@ -18,19 +18,15 @@ class SERVICE_EXPORT OptionManager : public QObject
 public:
     static OptionManager *getInstance();
 
-    void updateData();
-
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
-    QString getCxxDebuggerToolPath();
-    QString getJSToolPath();
-    QString getToolPath(const QString &kit);
-    QVariant getValue(const QString &category, const QStringList &properties);
-signals:
+    QString getMavenToolPath() const;
+    QString getJdkToolPath() const;
+    QString getGradleToolPath() const;
+    QString getPythonToolPath() const;
+    QString getNinjaToolPath() const;
+    QString getJSToolPath() const;
+    QString getToolPath(const QString &kit) const;
+    QVariant getValue(const QString &category, const QString &key) const;
+    void setValue(const QString &category, const QString &key, const QVariant& value);
 
 private:
     explicit OptionManager(QObject *parent = nullptr);
