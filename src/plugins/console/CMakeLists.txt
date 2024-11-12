@@ -9,6 +9,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR true)
 set(CXX_CPP
     consolewidget.cpp
     consolemanager.cpp
+    generateinput.cpp
     console.cpp
     console.json
     )
@@ -16,6 +17,7 @@ set(CXX_CPP
 set(CXX_H
     consolewidget.h
     consolemanager.h
+    generateinput.h
     console.h
     )
 
