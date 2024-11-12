@@ -164,6 +164,36 @@ void CodeGeeXManager::setReferenceFiles(const QStringList &files)
     askApi.setReferenceFiles(files);
 }
 
+void CodeGeeXManager::independentAsking(const QString &prompt, QIODevice *pipe)
+{
+    if (!isLoggedIn()) {
+        emit notify(1, tr("CodeGeeX is not avaliable, please logging in"));
+        pipe->close();
+        return;
+    }
+    AskApi *api = new AskApi;
+    api->postSSEChat(kUrlSSEChat, sessionId, prompt, QSysInfo::machineUniqueId(), {}, currentTalkID);
+    QTimer::singleShot(10000, api, [=](){
+        if (pipe && pipe->isOpen()) {
+            qWarning() << "timed out, close pipe";
+            pipe->close();
+            api->deleteLater();
+            emit notify(1, tr("Request timed out, please check the network or if the model is available."));
+        }
+    });
+
+    connect(api, &AskApi::response, api, [=](const QString &msgID, const QString &data, const QString &event) {
+        QString msgData = modifiedData(data);
+        if (event == "finish") {
+            api->deleteLater();
+            pipe->close();
+            return;
+        } else if (event == "add") {
+            pipe->write(msgData.toUtf8());
+        }
+    });
+}
+
 void CodeGeeXManager::createNewSession()
 {
     QString currentMSecsStr = QString::number(QDateTime::currentMSecsSinceEpoch());

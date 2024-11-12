@@ -11,6 +11,7 @@
 #include "common/common.h"
 #include "services/window/windowservice.h"
 #include "services/option/optionservice.h"
+#include "services/ai/aiservice.h"
 #include "copilot.h"
 
 #include "base/abstractwidget.h"
@@ -24,6 +25,12 @@ using namespace dpfservice;
 
 void CodeGeex::initialize()
 {
+    // load Ai service.
+    QString errStr;
+    auto &ctx = dpfInstance.serviceContext();
+    if (!ctx.load(AiService::name(), &errStr)) {
+        qCritical() << errStr;
+    }
 }
 
 bool CodeGeex::start()
@@ -60,6 +67,11 @@ bool CodeGeex::start()
 #endif
         });
     });
+
+    using namespace std::placeholders;
+    auto aiService = dpfGetService(dpfservice::AiService);
+    aiService->available = std::bind(&CodeGeeXManager::isLoggedIn, CodeGeeXManager::instance());
+    aiService->askQuestion = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, _2);
 
     return true;
 }
