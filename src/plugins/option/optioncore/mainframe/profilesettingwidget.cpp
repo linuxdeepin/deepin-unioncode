@@ -4,6 +4,7 @@
 
 #include "profilesettingwidget.h"
 #include "common/common.h"
+#include "services/option/optionmanager.h"
 
 #include <DLabel>
 #include <DComboBox>
@@ -13,6 +14,11 @@
 #include <QBoxLayout>
 
 DWIDGET_USE_NAMESPACE
+
+constexpr char kGeneralGroup[] { "General" };
+constexpr char kLanguageKey[] { "Language" };
+constexpr char kName[] { "name" };
+constexpr char kPath[] { "path" };
 
 class ProfileSettingWidgetPrivate
 {
@@ -44,7 +50,7 @@ QString ProfileSettingWidget::translateFilePath()
             + QDir::separator() + QString("translate.support");
 }
 
-QString ProfileSettingWidget::languageFilePath()
+Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除") QString ProfileSettingWidget::languageFilePath()
 {
     return CustomPaths::user(CustomPaths::Flags::Configures)
             + QDir::separator() + QString("chooselanguage.support");
@@ -57,23 +63,14 @@ const LanguagePaths &ProfileSettingWidget::getLanguagePaths() const
 
 void ProfileSettingWidget::saveConfig()
 {
-    QFile file(languageFilePath());
-    QTextStream txtInput(&file);
-    QString chooseFileName = d->languagePaths.value(d->cbChooseLanguage->currentText());
-    QString currentFileName;
-    if (file.open(QIODevice::ReadOnly)) {
-        currentFileName = txtInput.readLine();
-        file.close();
-    }
-    if (chooseFileName == currentFileName) {
+    QVariantMap map = OptionManager::getInstance()->getValue(kGeneralGroup, kLanguageKey).toMap();
+    auto languageName = d->cbChooseLanguage->currentText();
+    if (map.value(kName) == languageName)
         return;
-    }
 
-    if (file.open(QFile::WriteOnly)) {
-
-        file.write(chooseFileName.toUtf8());
-        file.close();
-    }
+    map.insert(kName, languageName);
+    map.insert(kPath, d->languagePaths.value(languageName));
+    OptionManager::getInstance()->setValue(kGeneralGroup, kLanguageKey, map);
 
     DDialog msgBox;
     msgBox.addButton(tr("Ok"));
@@ -84,20 +81,26 @@ void ProfileSettingWidget::saveConfig()
 
 void ProfileSettingWidget::readConfig()
 {
+    QString languageName;
     QFile file(languageFilePath());
-    QTextStream txtInput(&file);
-    QString fileName;
-    if (file.open(QIODevice::ReadOnly)) {
-        fileName = txtInput.readLine();
-        file.close();
-    }
-    d->cbChooseLanguage->setCurrentIndex(0);
-    for (int i = 0; i < d->cbChooseLanguage->count(); i++) {
-        if (d->languagePaths.value(d->cbChooseLanguage->itemText(i)) == fileName) {
-            d->cbChooseLanguage->setCurrentIndex(i);
-            break;
+     if (file.exists()) {
+        QTextStream txtInput(&file);
+        if (file.open(QIODevice::ReadOnly)) {
+            languageName = d->languagePaths.key(txtInput.readLine());
+            file.close();
+            file.remove();
         }
+        QVariantMap map;
+        map.insert(kName, languageName);
+        map.insert(kPath, d->languagePaths.value(languageName));
+
+        OptionManager::getInstance()->setValue(kGeneralGroup, kLanguageKey, map);
+    } else {
+        const auto &map = OptionManager::getInstance()->getValue(kGeneralGroup, kLanguageKey).toMap();
+        languageName = map.value(kName).toString();
     }
+
+    d->cbChooseLanguage->setCurrentText(languageName);
 }
 
 void ProfileSettingWidget::setupUi()

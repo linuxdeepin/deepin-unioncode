@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/common.h"
+#include "common/settings/settings.h"
 
 #include <framework/framework.h>
 #include <framework/lifecycle/pluginsetting.h>
@@ -32,7 +33,7 @@ static bool loadPlugins()
 
     QString pluginsPath = CustomPaths::global(CustomPaths::Plugins);
     qInfo() << QString("run application in %0").arg(pluginsPath);
-    lifeCycle.setPluginPaths({pluginsPath});
+    lifeCycle.setPluginPaths({ pluginsPath });
 
     qInfo() << "Depend library paths:" << QApplication::libraryPaths();
     qInfo() << "Load plugin paths: " << dpf::LifeCycle::pluginPaths();
@@ -66,27 +67,19 @@ void installTranslator(DApplication &a)
 {
     QTranslator *translator = new QTranslator(&a);
 
-    auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
-    QFile file(CustomPaths::user(CustomPaths::Flags::Configures)
-                                     + QDir::separator() + QString("chooselanguage.support"));
+    auto translationFileDir = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
+    QString configFile = CustomPaths::user(CustomPaths::Flags::Configures)
+            + QDir::separator() + "deepin-unioncode.json";
 
-    if (!file.exists()) {
-       if (file.open(QFile::ReadWrite)) {
-           QLocale locale;
-           QString fileName = locale.name() + ".qm";
-           a.loadTranslator(QList<QLocale>() << locale.system());
-           file.write(fileName.toUtf8());
-           file.close();
-       }
-    }
-    if (file.open(QFile::ReadOnly)) {
-        QTextStream txtInput(&file);
-        QString language = txtInput.readLine();
-        QString name = language.left(language.indexOf("."));
-        a.loadTranslator(QList<QLocale>() << QLocale(name));
-        file.close();
-        translator->load(result + language);
-    }
+    Settings settings("", configFile);
+    auto map = settings.value("General", "Language").toMap();
+    QString language = map.value("path").toString();
+    if (language.isEmpty())
+        language = QLocale().name() + ".qm";
+
+    QString name = language.left(language.indexOf("."));
+    a.loadTranslator(QList<QLocale>() << QLocale(name));
+    translator->load(translationFileDir + language);
     a.installTranslator(translator);
 }
 
@@ -111,22 +104,21 @@ int main(int argc, char *argv[])
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
     }
-    
+
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     DApplication a(argc, argv);
     installTranslator(a);
 
     QString buildDateInfo = a.translate("Application", "<br/>Built on %1 %2 in %3<br/>")
-            .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
+                                    .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
     a.setOrganizationName("deepin");
     a.setApplicationDisplayName(a.translate("Application", "deepin-unioncode"));
     a.setApplicationVersion(version());
     a.setProductIcon(QIcon::fromTheme("about_logo"));
     a.setApplicationDescription(a.translate("Application",
                                             "Deepin Union Code is a lightweight integrated development environment,\
-                                            featured with multilingual and cross platform compatibility."
-                                            ));
+                                            featured with multilingual and cross platform compatibility."));
     CommandParser::instance().process();
 
     // TODO(Any): put to command processor
@@ -152,7 +144,7 @@ int main(int argc, char *argv[])
     if (!CommandParser::instance().projectDirectory().isEmpty()) {
         auto directory = CommandParser::instance().projectDirectory().first();   // only process first argument
         QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, &a, [directory, &a]() {
-            QTimer::singleShot(100, &a, [directory](){ openProject(directory); });
+            QTimer::singleShot(100, &a, [directory]() { openProject(directory); });
         });
     }
 

@@ -31,7 +31,7 @@ CodeGeeXOptionWidget::CodeGeeXOptionWidget(QWidget *parent)
     d->tabWidget->setDocumentMode(true);
     layout->addWidget(d->tabWidget);
 
-    d->tabWidget->addTab(new DetailWidget(), tr("CodeGeeX"));
+    d->tabWidget->addTab(new DetailWidget(), "Detail");
     QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
