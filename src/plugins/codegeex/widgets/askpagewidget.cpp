@@ -77,7 +77,7 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
 void AskPageWidget::slotMessageSend()
 {
     if (inputEdit) {
-        auto prompt = inputEdit->edit()->toPlainText();
+        auto prompt = inputEdit->edit()->toConvertedText();
         if (prompt.isEmpty())
             return;
         askQuestion(prompt);

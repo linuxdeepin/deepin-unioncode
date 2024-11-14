@@ -15,7 +15,6 @@
 #include <QDebug>
 #include <QProcess>
 #include <QFile>
-#include <QJsonObject>
 #include <QJsonDocument>
 #include <QMultiMap>
 #include <QUuid>
@@ -632,6 +631,11 @@ QJsonObject CodeGeeXManager::query(const QString &projectPath, const QString &qu
         obj["Completed"] = false;
     else
         obj["Completed"] = true;
+
+    if (isReferenceCodebase())
+        currentChunks = obj;
+    else
+        currentChunks = QJsonObject();
 
     return obj;
 }

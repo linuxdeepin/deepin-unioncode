@@ -194,7 +194,8 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
     auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
 
     if (codebaseEnabled && currentProjectPath != "") {
-        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, prompt, 50);
+        QString queryText = prompt;
+        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, queryText.remove("@CodeBase"), 50);
         QJsonArray chunks = result["Chunks"].toArray();
         if (!chunks.isEmpty()) {
             if (result["Completed"].toBool() == false)
@@ -202,7 +203,7 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
             jsonObject["history"] = QJsonArray();
             QString context;
             context += prompt;
-            context += "\n 参考下面这些代码片段，回答上面的问题。不要参考其他的代码和上下文，数据不够充分的情况下提示用户\n";
+            context += "\n参考下面这些代码片段，回答上面的问题， @CodeBase表示针对这些代码所属的代码工程进行提问，其不属于真正的问题内容，回答时忽略@CodeBase。不要参考其他的代码和上下文，数据不够充分的情况下提示用户.\n";
             for (auto chunk : chunks) {
                 context += chunk.toObject()["fileName"].toString();
                 context += '\n';
