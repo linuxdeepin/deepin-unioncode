@@ -4,6 +4,9 @@
 
 #include "messagecomponent.h"
 #include "codeeditcomponent.h"
+#include "common/util/eventdefinitions.h"
+
+#include <cmark.h>
 
 #include <DLabel>
 #include <DPushButton>
@@ -23,12 +26,45 @@
 #include <QFrame>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QJsonArray>
 
 MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
     : DFrame(parent),
       messageData(msgData)
 {
     initUI();
+}
+
+/*
+ Due to the use of multiple DLabels to display text in this module,
+ the ordered list is always parsed starting from 1.
+ To avoid this issue, we have implemented some circumvention measures.
+ */
+QString convertOlToParagraph(const QString &input)
+{
+    QString result = input;
+
+    static QRegularExpression olRegex(
+            R"(<ol(?:\s+start="(\d+)\")?\s*>\s*<li>(.*?)</li>\s*</ol>)",
+            QRegularExpression::DotMatchesEverythingOption
+            );
+
+    QRegularExpressionMatch match = olRegex.match(input);
+    if (match.hasMatch()) {
+        QString startNum = match.captured(1);
+        QString content = match.captured(2);
+
+        QString replacement;
+        if (startNum.isEmpty()) {
+            replacement = QString("<p>1. %1</p>").arg(content);
+        } else {
+            replacement = QString("<p>%1. %2</p>").arg(startNum).arg(content);
+        }
+
+        result = result.replace(match.captured(0), replacement);
+    }
+
+    return result;
 }
 
 void MessageComponent::updateMessage(const MessageData &msgData)
@@ -39,7 +75,9 @@ void MessageComponent::updateMessage(const MessageData &msgData)
         curUpdateLabel->setWordWrap(true);
         curUpdateLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
         msgLayout->addWidget(curUpdateLabel);
-        curUpdateLabel->setText(msgData.messageData());
+        auto originText = msgData.messageData().toStdString();
+        QString convertedHtml = cmark_markdown_to_html(originText.c_str(), originText.size(), CMARK_OPT_SMART);
+        curUpdateLabel->setText(convertedHtml);
         return;
     }
 
@@ -61,20 +99,24 @@ void MessageComponent::updateMessage(const MessageData &msgData)
         }
         if (!messageData.messageLines().isEmpty() && msgData.messageLines().last() != messageData.messageLines().last()) {
             auto messageLine = msgData.messageLines().last();
-            // TODO(Mozart): use markdown format
-            messageLine.replace("`", "");
             if (isConnecting && messageLine.contains("citation")) {
                 QRegularExpression regex("\\[\\[citation:(\\d+)\\]\\]");
                 messageLine = messageLine.replace(regex, "[\\1]");
             }
-            curUpdateLabel->setText(messageLine);
+            auto originText = messageLine.toStdString();
+            QString convertedHtml = cmark_markdown_to_html(originText.c_str(), originText.size(), CMARK_OPT_SMART);
+            if (convertedHtml.contains("<ol"))
+                convertedHtml = convertOlToParagraph(convertedHtml);
+            curUpdateLabel->setText(convertedHtml);
         } else if (messageData.messageLines().isEmpty()) {
-            curUpdateLabel->setText(msgData.messageData());
+            auto originText = msgData.messageData().toStdString();
+            auto convertedHtml = cmark_markdown_to_html(originText.c_str(), originText.size(), CMARK_OPT_SMART);
+            curUpdateLabel->setText(convertedHtml);
         }
         break;
     case CodeEdit:
         if (curUpdateEdit) {
-            int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```(`|[a-z]*|[A-Z]*)")); // ```` ```python ```cpp
+            int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression(R"(\s*```(`|[a-z]*|[A-Z]*))")); // ```` ```python ```cpp
             if (startIndex != -1)
                 curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1), msgData.messageLines().mid(startIndex, 1).at(0));
         }
@@ -173,7 +215,9 @@ void MessageComponent::initConnect()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this,
             [=]() {
                 if (isConnecting && !websites.isEmpty())
-                    showWebsitesRefrences();
+                    showWebsitesReferences();
+                if (CodeGeeXManager::instance()->isReferenceCodebase())
+                    showChunksReferences();
                 finished = true;
             });
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this,
@@ -233,9 +277,8 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
     QStringList addedLines = newLines.mid(oldLines.count());
 
     for (int i = 0; i < addedLines.count(); ++i) {
-        QString addedLine = addedLines.at(i);
-
-        if (addedLine.contains("`")) {
+        QString addedLine = addedLines.at(i).trimmed();
+        if (addedLine.contains("`") || addedLine.isEmpty()) {
             if (i != 0) {
                 MessageData addedMsgData = messageData;
                 addedMsgData.appendData(addedLines.mid(0, i));
@@ -276,9 +319,9 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
     return true;
 }
 
-void MessageComponent::showWebsitesRefrences()
+void MessageComponent::showWebsitesReferences()
 {
-    if (finished)
+    if (finished || messageData.messageType() == MessageData::Ask)
         return;
 
     auto separator = new QHBoxLayout;
@@ -310,6 +353,64 @@ void MessageComponent::showWebsitesRefrences()
         auto website = websites[index.row()];
         if (!QDesktopServices::openUrl(website.url))
             qWarning() << "can not open url: " << website.url;
+    });
+    connect(toggleBtn, &DPushButton::clicked, this, [=]() {
+        if (view->isVisible()) {
+            msgLayout->removeWidget(view);
+            view->hide();
+        } else {
+            view->show();
+            msgLayout->addWidget(view);
+        }
+    });
+}
+
+void MessageComponent::showChunksReferences()
+{
+    if (finished || messageData.messageType() == MessageData::Ask)
+        return;
+
+    QJsonArray chunks = CodeGeeXManager::instance()->getCurrentChunks()["Chunks"].toArray();
+    if (chunks.isEmpty())
+        return;
+
+    auto separator = new QHBoxLayout;
+    separator->setContentsMargins(0, 0, 0, 0);
+    auto toggleBtn = new DPushButton(this);
+    toggleBtn->setText(tr("Show Reference"));
+    toggleBtn->setFlat(true);
+    toggleBtn->setIcon(QIcon::fromTheme("uc_codegeex_project_chat"));
+    separator->addWidget(toggleBtn);
+    msgLayout->addLayout(separator);
+
+    DListView *view = new DListView(this);
+    view->setItemSpacing(2);
+    view->setSelectionMode(DListView::NoSelection);
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setEditTriggers(DListView::EditTrigger::NoEditTriggers);
+    view->setTextElideMode(Qt::ElideLeft);
+    auto listModel = new QStringListModel(this);
+    QStringList stringList;
+    view->setModel(listModel);
+
+    for (auto chunk : chunks) {
+        QString title = chunk.toObject()["fileName"].toString();
+        stringList.append(title);
+        view->addItem(title);
+    }
+    listModel->setStringList(stringList);
+    msgLayout->addWidget(view);
+
+    connect(view, &DListView::doubleClicked, this, [=](const QModelIndex &index) {
+        auto codeRange = index.data().toString();
+        QRegularExpression re("(.+)\\[(\\d+)-\\d+\\]");
+        QRegularExpressionMatch match = re.match(codeRange);
+
+        if (match.hasMatch()) {
+            QString filePath = match.captured(1);
+            int startLine = match.captured(2).toInt();
+            editor.gotoLine(filePath, startLine);
+        }
     });
     connect(toggleBtn, &DPushButton::clicked, this, [=]() {
         if (view->isVisible()) {

@@ -45,7 +45,8 @@ private:
     void initMessageSection();
     void initConnect();
 
-    void showWebsitesRefrences();
+    void showWebsitesReferences();
+    void showChunksReferences();
     void createCurrentUpdateWidget();
     bool createCodeEdit(const MessageData &newData);
 

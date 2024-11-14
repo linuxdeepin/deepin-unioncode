@@ -5,6 +5,7 @@
 #include "inputeditwidget.h"
 #include "referencepopup.h"
 #include "codegeexmanager.h"
+#include "eventreceiver.h"
 #include "services/editor/editorservice.h"
 #include "services/window/windowservice.h"
 
@@ -133,6 +134,7 @@ InputEditWidgetPrivate::InputEditWidgetPrivate(InputEditWidget *qq)
 void InputEditWidgetPrivate::initEdit()
 {
     edit = new InputEdit(q);
+    edit->setAutoSelectCode(true);
     InputEditWidget::connect(edit, &InputEdit::textChanged, q, [this]() {
         auto currentText = edit->toPlainText();
         if (currentText.isEmpty())
@@ -175,7 +177,6 @@ void InputEditWidgetPrivate::initButtonBox()
     hLayout->setContentsMargins(6, 6, 6, 6);
     hLayout->setAlignment(Qt::AlignRight);
     hLayout->setSpacing(0);
-
 
     sendButton = new DToolButton(q);
     sendButton->setFixedSize(24, 24);
@@ -245,6 +246,27 @@ InputEdit::InputEdit(QWidget *parent)
     document()->documentLayout()->registerHandler(QTextFormat::UserObject + 1, new TagObjectInterface);
 
     connect(this, &DTextEdit::textChanged, this, &InputEdit::onTextChanged);
+    connect(CodeGeeXCallProxy::instance(), &CodeGeeXCallProxy::selectionChanged, this, [=](){
+        if (!autoSelectCode)
+            return;
+        auto editorService = dpfGetService(EditorService);
+        QString currentFile = editorService->currentFile();
+        QString selectedCode = editorService->getSelectedText();
+        if (currentFile.isEmpty() || selectedCode.isEmpty())
+            return;
+
+        Edit::Range selectedRange = editorService->selectionRange(currentFile);
+        QString tagText = QString("%1:L%2C%3-L%4C%5").arg(QFileInfo(currentFile).fileName(),
+                                                          QString::number(selectedRange.start.line + 1),
+                                                          QString::number(selectedRange.start.column + 1),
+                                                          QString::number(selectedRange.end.line + 1),
+                                                          QString::number(selectedRange.end.column + 1));
+
+        removeTag(selectedCodeTag);
+        appendTag(tagText);
+        this->selectedCode = selectedCode;
+        this->selectedCodeTag = tagText;
+    });
 }
 
 void InputEdit::onTextChanged()
@@ -314,37 +336,100 @@ void InputEdit::focusOutEvent(QFocusEvent *e)
     emit focusOut();
 }
 
-QString InputEdit::toPlainText() const
+QString InputEdit::toConvertedText() const
 {
-    return DTextEdit::toPlainText().remove(QChar::ObjectReplacementCharacter);
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::Start);
+
+    QString text;
+    while (!cursor.atEnd()) {
+        auto format = cursor.charFormat();
+        auto currentText = cursor.selectedText();
+        text.append(cursor.selectedText());
+
+        if (format.type() == QTextFormat::InvalidFormat && (currentText == QString(QChar::ObjectReplacementCharacter))) {
+            auto innerText = format.property(QTextFormat::UserProperty).toString();
+            if (innerText.mid(1) == selectedCodeTag) {
+                text.append("\n```\n" + innerText + "\n" + selectedCode + "\n```\n");
+            } else if (!innerText.isEmpty()) {
+                text.append('`' + innerText + '`');
+            }
+        }
+
+        cursor.clearSelection();
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+    }
+
+    text.append(cursor.selectedText());
+    return text.remove(QChar::ObjectReplacementCharacter);
 }
 
 void InputEdit::appendTag(const QString &text)
 {
-    auto currentCursor = textCursor();
-    while (currentCursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
-        if (currentCursor.selectedText().at(0) == "@")
-            break;
+    QTextCursor cursor = textCursor();
+    QTextCharFormat originalFormat = cursor.charFormat();
+
+    if (toPlainText().contains('@')) {
+        while (cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
+            if (cursor.selectedText().at(0) == "@")
+                break;
+        }
     }
 
-    auto selectedText = currentCursor.selectedText();
+    auto selectedText = cursor.selectedText();
     if (selectedText.startsWith('@'))
-        currentCursor.removeSelectedText();
+        cursor.removeSelectedText();
 
-    auto tagText = "@" + text;
+    QString tagText = text;
+    if (!text.startsWith('@'))
+        tagText.prepend('@');
+    TagTextFormat tagFormat;
+    tagFormat.setText(tagText);
+    formats.insert(tagText, tagFormat);
 
-    auto oldFormat = textCursor().charFormat();
-    TagTextFormat format;
-    format.setText(tagText);
-    formats.insert(tagText, format);
+    cursor.insertText(QString(QChar::ObjectReplacementCharacter), originalFormat);
+    cursor.insertText(QString(QChar::ObjectReplacementCharacter), tagFormat);
+    cursor.insertText(QString(QChar::ObjectReplacementCharacter), originalFormat);
+}
 
-    textCursor().insertText(QString(QChar::ObjectReplacementCharacter), format);
-    textCursor().insertText(QString(QChar::ObjectReplacementCharacter), oldFormat);   //  to reset textCharFormat
+void InputEdit::removeTag(const QString &tag)
+{
+    if (!hasTag(tag))
+        return;
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    auto target = '@' + tag;
+    while (!cursor.atEnd()) {
+        auto format = cursor.charFormat();
+        if (format.type() == QTextFormat::InvalidFormat) { // tagTextFormat set it to
+            if (target == format.property(QTextFormat::UserProperty).toString()) {
+                cursor.removeSelectedText();
+                formats.remove(target);
+                cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+                cursor.removeSelectedText(); // remove original format at left
+                cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+                format = cursor.charFormat();
+                // remove original format and abnormal text at Right
+                while (format.type() == QTextFormat::InvalidFormat && (target == format.property(QTextFormat::UserProperty).toString())) {
+                    format = cursor.charFormat();
+                    cursor.removeSelectedText();
+                    cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+                    format = cursor.charFormat();
+                }
+                cursor.removeSelectedText();
+            }
+        }
+        cursor.clearSelection();
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+    }
 }
 
 bool InputEdit::hasTag(const QString &text)
 {
-    return formats.contains('@' + text);
+    if (text.startsWith('@'))
+        return formats.contains(text);
+    else
+        return formats.contains('@' + text);
 }
 
 void InputEditWidget::onReferenceBtnClicked()

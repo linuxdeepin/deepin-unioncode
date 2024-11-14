@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QMutex>
 #include <QIODevice>
+#include <QJsonObject>
 
 struct RecordData
 {
@@ -96,6 +97,7 @@ public:
     void showIndexingWidget();
     Q_INVOKABLE void installConda();
     Q_INVOKABLE void generateRag(const QString &projectPath);
+    QJsonObject getCurrentChunks() const { return currentChunks; }
     /*
      JsonObject:
         Query: str
@@ -158,6 +160,7 @@ private:
     QTimer installCondaTimer;
     QMutex mutex;
     QStringList indexingProject {};
+    QJsonObject currentChunks;
 };
 
 #endif   // CODEGEEXMANAGER_H

@@ -45,6 +45,7 @@ public:
     static CodeGeeXCallProxy *instance();
 
 signals:
+    void selectionChanged();
     void switchToWidget(const QString &name);
 };
 

@@ -59,6 +59,7 @@ void CodeGeeXReceiver::processSelectionChangedEvent(const dpf::Event &event)
     int lineTo = event.property("lineTo").toInt();
     int indexTo = event.property("indexTo").toInt();
     Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
+    emit CodeGeeXCallProxy::instance()->selectionChanged();;
 }
 
 void CodeGeeXReceiver::processInlineWidgetClosedEvent(const dpf::Event &event)

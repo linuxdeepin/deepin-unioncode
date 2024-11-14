@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(codegeex)
 
 find_package(KF5SyntaxHighlighting)
+pkg_check_modules(CMARK REQUIRED libcmark)
 
 FILE(GLOB CODEGEEX_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
@@ -34,11 +35,13 @@ target_link_libraries(${PROJECT_NAME}
     ${PkgUserModules}
     ${DtkWidget_LIBRARIES}
     KF5::SyntaxHighlighting
+    ${CMARK_LIBRARIES}
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         "${CMAKE_SOURCE_DIR}/3rdparty/diff-match-patch"
+        ${CMARK_INCLUDE_DIRS}
 )
 
 install_logo(${PROJECT_NAME}.svg)

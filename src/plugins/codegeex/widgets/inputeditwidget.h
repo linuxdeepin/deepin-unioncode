@@ -29,9 +29,11 @@ class InputEdit : public DTK_WIDGET_NAMESPACE::DTextEdit
     Q_OBJECT
 public:
     explicit InputEdit(QWidget *parent = nullptr);
-    QString toPlainText() const;
+    QString toConvertedText() const;
     void appendTag(const QString &text);
+    void removeTag(const QString &tag);
     bool hasTag(const QString &text);
+    void setAutoSelectCode(bool enable) { autoSelectCode = enable; }
 
 signals:
     void pressedEnter();
@@ -50,6 +52,10 @@ protected:
 private:
     QStringList formatList;
     QMap<QString, TagTextFormat> formats;
+    QString selectedCodeTag;
+    QString selectedCode;
+
+    bool autoSelectCode = false;
 };
 
 class InputEditWidgetPrivate;
