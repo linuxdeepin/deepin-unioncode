@@ -43,6 +43,7 @@ private:
 
 DPF_END_NAMESPACE
 
+// use this define instead of long expression
 #define dpfInstance ::dpf::Framework::instance()
 #define dpfContext dpfInstance.serviceContext()
 #define dpfGetService(T) dpfInstance.serviceContext().service<T>(T::name())
