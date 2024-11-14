@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef DISPLAYITEMDELEGATE_H
-#define DISPLAYITEMDELEGATE_H
+#ifndef ITEMDELEGATE_H
+#define ITEMDELEGATE_H
 
 #include <DStyledItemDelegate>
 
 DWIDGET_USE_NAMESPACE
 
-class DisplayItemDelegate : public DStyledItemDelegate
+class ItemDelegate : public DStyledItemDelegate
 {
 public:
     static inline Qt::Alignment visualAlignment(Qt::LayoutDirection direction, Qt::Alignment alignment)
@@ -26,7 +26,7 @@ public:
     static QPixmap getIconPixmap(const QIcon &icon, const QSize &size, qreal pixelRatio,
                                  QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off);
 
-    explicit DisplayItemDelegate(QAbstractItemView *parent = nullptr);
+    explicit ItemDelegate(QAbstractItemView *parent = nullptr);
 
 protected:
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -43,4 +43,4 @@ protected:
                          const QModelIndex &index, const QRectF &iconRect) const;
 };
 
-#endif // DISPLAYITEMDELEGATE_H
+#endif // ITEMDELEGATE_H

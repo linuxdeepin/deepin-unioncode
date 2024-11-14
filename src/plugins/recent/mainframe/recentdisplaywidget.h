@@ -2,26 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef RECENTDISPLAY_H
-#define RECENTDISPLAY_H
+#ifndef RECENTDISPLAYWIDGET_H
+#define RECENTDISPLAYWIDGET_H
 
 #include <DWidget>
 #include "common/common.h"
 
-class RecentDisplayPrivate;
-class RecentDisplay : public DTK_WIDGET_NAMESPACE::DWidget
+class RecentDisplayWidgetPrivate;
+class RecentDisplayWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
-    RecentDisplayPrivate *const d;
+    RecentDisplayWidgetPrivate *const d;
+
 public:
-    enum ItemRole{
-        ProjectKitName = Qt::ItemDataRole::UserRole,
-        ProjectLanguage,
-        ProjectWorkspace,
-    };
-    explicit RecentDisplay(DTK_WIDGET_NAMESPACE::DWidget *parent = nullptr);
-    virtual ~RecentDisplay() override;
-    static RecentDisplay *instance();
+    explicit RecentDisplayWidget(DTK_WIDGET_NAMESPACE::DWidget *parent = nullptr);
+    virtual ~RecentDisplayWidget() override;
+    static RecentDisplayWidget *instance();
 
 public slots:
     void addDocument(const QString &filePath);
@@ -39,12 +35,15 @@ private slots:
 
     void clearDocList();
     void clearProList();
+
 private:
     void initializeUi();
     void initConnect();
+    void initData();
     bool isProAndDocNull();
+    QVariantMap parseProjectInfo(const QJsonObject &obj);
 
     void showEvent(QShowEvent *event) override;
 };
 
-#endif // RECENTDISPLAY_H
+#endif   // RECENTDISPLAYWIDGET_H
