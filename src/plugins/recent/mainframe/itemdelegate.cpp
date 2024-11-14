@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "displayitemdelegate.h"
-#include "displayrecentview.h"
+#include "itemdelegate.h"
+#include "itemlistview.h"
 
 #include <DApplication>
 #include <DGuiApplicationHelper>
@@ -30,12 +30,12 @@ inline constexpr int kIconHeight = { 30 };
 inline constexpr int kIconLeftMargin = { 10 };
 inline constexpr int kTextLeftMargin = { 8 };
 
-DisplayItemDelegate::DisplayItemDelegate(QAbstractItemView *parent)
+ItemDelegate::ItemDelegate(QAbstractItemView *parent)
     : DStyledItemDelegate(parent)
 {
 }
 
-void DisplayItemDelegate::paint(QPainter *painter,
+void ItemDelegate::paint(QPainter *painter,
                                 const QStyleOptionViewItem &option,
                                 const QModelIndex &index) const
 {
@@ -57,7 +57,7 @@ void DisplayItemDelegate::paint(QPainter *painter,
     painter->setOpacity(1);
 }
 
-QSize DisplayItemDelegate::sizeHint(const QStyleOptionViewItem &option,
+QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
     if (index.isValid()) {
@@ -71,7 +71,7 @@ QSize DisplayItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     return DStyledItemDelegate::sizeHint(option, index);
 }
 
-void DisplayItemDelegate::paintItemBackground(QPainter *painter, const QStyleOptionViewItem &option,
+void ItemDelegate::paintItemBackground(QPainter *painter, const QStyleOptionViewItem &option,
                                               const QModelIndex &index) const
 {
     painter->save();
@@ -110,7 +110,7 @@ void DisplayItemDelegate::paintItemBackground(QPainter *painter, const QStyleOpt
     painter->restore();
 }
 
-QRectF DisplayItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionViewItem &option,
+QRectF ItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionViewItem &option,
                                           const QModelIndex &index) const
 {
     painter->save();
@@ -149,7 +149,7 @@ QRectF DisplayItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionV
     return iconRect;
 }
 
-QPixmap DisplayItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size, qreal pixelRatio = 1.0, QIcon::Mode mode, QIcon::State state)
+QPixmap ItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size, qreal pixelRatio = 1.0, QIcon::Mode mode, QIcon::State state)
 {
     if (icon.isNull())
         return QPixmap();
@@ -164,7 +164,7 @@ QPixmap DisplayItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size,
     return px;
 }
 
-void DisplayItemDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem &option,
+void ItemDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem &option,
                                           const QModelIndex &index, const QRectF &iconRect) const
 {
     painter->save();

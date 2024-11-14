@@ -7,7 +7,7 @@
 #include "base/abstractaction.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
-#include "mainframe/recentdisplay.h"
+#include "mainframe/recentdisplaywidget.h"
 #include "transceiver/recentreceiver.h"
 
 #include <QAction>
@@ -28,15 +28,15 @@ bool Recent::start()
 
     if (windowService) {
         QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedProject,
-                         RecentDisplay::instance(), &RecentDisplay::addProject);
+                         RecentDisplayWidget::instance(), &RecentDisplayWidget::addProject);
         QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedFile,
-                         RecentDisplay::instance(), &RecentDisplay::addDocument);
+                         RecentDisplayWidget::instance(), &RecentDisplayWidget::addDocument);
 
         QAction *action = new QAction(MWNA_RECENT, this);
         action->setIcon(QIcon::fromTheme("recent-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), Priority::highest);
 
-        auto recentWidgetImpl = new AbstractWidget(RecentDisplay::instance());
+        auto recentWidgetImpl = new AbstractWidget(RecentDisplayWidget::instance());
         windowService->registerWidgetToMode("recentWindow", recentWidgetImpl, CM_RECENT, Position::FullWindow, true, true);
     }
     return true;
