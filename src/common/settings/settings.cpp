@@ -210,7 +210,7 @@ void Settings::setValue(const QString &group, const QString &key, const QVariant
     if (d->isRemovable(group, key)) {
         changed = d->settingData.value(group, key) != value;
     } else {
-        changed = this->value(group, key, value) != value;
+        changed = this->value(group, key) != value;
     }
 
     if (!changed)

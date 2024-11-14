@@ -111,26 +111,22 @@ void DetailWidget::setControlValue(const QMap<QString, QVariant> &map)
 
 bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map)
 {
-    QMap<QString, QVariant> apiKey;
-    apiKey.insert(kCodeCompletion, config.codeCompletionEnabled);
-    apiKey.insert(kGlobalLanguage, config.globalLanguage);
-    apiKey.insert(kCommitsLanguage, config.commitsLanguage);
-
-    map.insert("Detail", apiKey);
+    map.insert(kCodeCompletion, config.codeCompletionEnabled);
+    map.insert(kGlobalLanguage, config.globalLanguage);
+    map.insert(kCommitsLanguage, config.commitsLanguage);
 
     return true;
 }
 
 bool DetailWidget::mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig &config)
 {
-    QMap<QString, QVariant> detail = map.value("Detail").toMap();
-    auto var = detail.value(kCodeCompletion);
+    auto var = map.value(kCodeCompletion);
     if (var.isValid())
         config.codeCompletionEnabled = var.toBool();
-    var = detail.value(kGlobalLanguage);
+    var = map.value(kGlobalLanguage);
     if (var.isValid())
         config.globalLanguage = var.value<CodeGeeX::locale>();
-    var = detail.value(kCommitsLanguage);
+    var = map.value(kCommitsLanguage);
     if (var.isValid())
         config.commitsLanguage = var.value<CodeGeeX::locale>();
 

@@ -9,6 +9,7 @@
 #include "services/window/windowelement.h"
 #include "services/terminal/terminalservice.h"
 #include "services/project/projectservice.h"
+#include "services/option/optionmanager.h"
 
 #include <DSpinner>
 
@@ -83,33 +84,37 @@ bool CodeGeeXManager::condaHasInstalled()
 
 void CodeGeeXManager::saveConfig(const QString &sessionId, const QString &userId)
 {
-    QJsonObject config;
-    config["sessionId"] = sessionId;
-    config["userId"] = userId;
+    QVariantMap map { { "sessionId", sessionId },
+                      { "userId", userId } };
 
-    QJsonDocument document(config);
-
-    QFile file(configFilePath());
-    file.open(QIODevice::WriteOnly);
-    file.write(document.toJson());
-    file.close();
+    OptionManager::getInstance()->setValue("CodeGeeX", "Id", map);
 }
 
-void CodeGeeXManager::loadConfig()
+Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除") void CodeGeeXManager::loadConfig()
 {
     QFile file(configFilePath());
-    if (!file.exists())
-        return;
+    if (!file.exists()) {
+        const auto map = OptionManager::getInstance()->getValue("CodeGeeX", "Id").toMap();
+        if (map.isEmpty())
+            return;
 
-    file.open(QIODevice::ReadOnly);
-    QString data = QString::fromUtf8(file.readAll());
-    file.close();
+        sessionId = map.value("sessionId").toString();
+        userId = map.value("userId").toString();
+    } else {
+        // ------------------Deprecated start--------------------
+        file.open(QIODevice::ReadOnly);
+        QString data = QString::fromUtf8(file.readAll());
+        file.close();
+        file.remove();
 
-    QJsonDocument document = QJsonDocument::fromJson(data.toUtf8());
-    QJsonObject config = document.object();
-    if (!config.empty()) {
-        sessionId = config["sessionId"].toString();
-        userId = config["userId"].toString();
+        QJsonDocument document = QJsonDocument::fromJson(data.toUtf8());
+        QJsonObject config = document.object();
+        if (!config.empty()) {
+            sessionId = config["sessionId"].toString();
+            userId = config["userId"].toString();
+            saveConfig(sessionId, userId);
+        }
+        // ------------------Deprecated end--------------------
     }
 }
 
@@ -565,7 +570,8 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     QProcess *process = new QProcess;
     QObject::connect(QApplication::instance(), &QApplication::aboutToQuit, process, [process]() {
         process->kill();
-    }, Qt::DirectConnection);
+    },
+                     Qt::DirectConnection);
 
     QObject::connect(process, &QProcess::readyReadStandardError, process, [process]() {
         qInfo() << "Error:" << process->readAllStandardError() << "\n";
@@ -580,7 +586,7 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
                          auto success = process->readAllStandardError().isEmpty();
                          emit generateDone(projectPath, !success);
                          if (!success)
-                            emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
+                             emit notify(2, tr("The error occurred when performing rag on project %1.").arg(projectPath));
                          process->deleteLater();
                      });
 
@@ -594,7 +600,7 @@ void CodeGeeXManager::generateRag(const QString &projectPath)
     if (!QFileInfo(pythonPath).exists())
         return;
     process->start(pythonPath, QStringList() << generatePyPath << modelPath << projectPath);
-    if (QThread::currentThread() != qApp->thread()) // incase thread exit before process done. cause slot function can`t work
+    if (QThread::currentThread() != qApp->thread())   // incase thread exit before process done. cause slot function can`t work
         process->waitForFinished();
 }
 
