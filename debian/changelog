@@ -1,3 +1,9 @@
+deepin-unioncode (1.3.17) stable; urgency=medium
+
+  * bugfix
+
+ -- luzhen <luzhen@uniontech.com>  Thu, 14 Nov 2024 21:08:04 +0800
+
 deepin-unioncode (1.3.16) unstable; urgency=medium
 
   * Optimize AI plugin
