@@ -61,6 +61,7 @@ void SearchResultWidgetPrivate::initUI()
     resultView->setFrameShape(QFrame::NoFrame);
     resultView->setIconSize({ 16, 16 });
     resultView->setIndentation(0);
+    resultView->setMouseTracking(true);
 
     mainLayout->addWidget(msgLabel);
     mainLayout->addWidget(resultView);

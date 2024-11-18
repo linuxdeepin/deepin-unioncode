@@ -164,7 +164,8 @@ void SearchResultModel::remove(const QModelIndex &index)
         auto item = findItem(index);
         if (!item)
             return;
-        removeItem(item->filePathName, *item);
+        const auto group = item->filePathName;
+        removeItem(group, *item);
     }
 }
 

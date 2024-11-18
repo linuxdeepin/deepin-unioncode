@@ -40,8 +40,8 @@ DockHeader::DockHeader(QWidget *parent)
     d->select->hide();
 
     d->mainLayout = new QHBoxLayout(this);
-    d->mainLayout->setContentsMargins(0, 0, 0, 5);
-    d->mainLayout->setSpacing(0);
+    d->mainLayout->setContentsMargins(10, 7, 8, 7);
+    d->mainLayout->setSpacing(2);
     d->mainLayout->setAlignment(Qt::AlignRight);
 
     auto nameLayout = new QHBoxLayout;

@@ -20,7 +20,7 @@ public:
 
 protected:
     bool helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index) override;
-    bool eventFilter(QObject *object, QEvent *event) override;
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index) override;
 
 private:
     QTreeView *view() const;
@@ -30,12 +30,13 @@ private:
                           const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QRect drawResultCount(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QRect drawOptionButton(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void drawOptionBackground(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const;
     void drawNameItem(QPainter *painter, const QStyleOptionViewItem &option,
                       const QModelIndex &index, const QRect &iconRect) const;
     void drawContextItem(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
     void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect,
-                     const QString &text, const QList<QTextLayout::FormatRange> &format) const;
+                     const QString &text, const QList<QTextLayout::FormatRange> &formatList) const;
     QSizeF doTextLayout(QTextLayout *textLayout, int width) const;
     QRect iconRect(const QRect &itemRect) const;
     QRect arrowRect(const QRect &iconRect) const;
