@@ -42,9 +42,9 @@ void SearchResultItemDelegate::paint(QPainter *painter, const QStyleOptionViewIt
 
     QStyleOptionViewItem opt = option;
     DStyledItemDelegate::initStyleOption(&opt, index);
+
     opt.rect.adjust(0, 0, -10, 0);
     painter->setRenderHint(QPainter::Antialiasing);
-
     drawBackground(painter, opt);
     if (!index.parent().isValid()) {
         const auto &iconRect = drawFileIcon(painter, opt, index);
@@ -86,17 +86,20 @@ bool SearchResultItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *v
     return DStyledItemDelegate::helpEvent(event, view, option, index);
 }
 
-bool SearchResultItemDelegate::eventFilter(QObject *object, QEvent *event)
+bool SearchResultItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    if (event->type() == QEvent::MouseButtonPress && object == view()->viewport()) {
+    if (!index.isValid())
+        return DStyledItemDelegate::editorEvent(event, model, option, index);
+
+    switch (event->type()) {
+    case QEvent::MouseMove:
+    case QEvent::MouseButtonPress:
+        view()->update(index);
+        break;
+    case QEvent::MouseButtonRelease: {
         auto mouseEvent = dynamic_cast<QMouseEvent *>(event);
-        auto index = view()->indexAt(mouseEvent->pos());
-        if (!index.isValid())
-            return DStyledItemDelegate::eventFilter(object, event);
-
-        auto itemRect = view()->visualRect(index);
+        auto itemRect = option.rect;
         itemRect.adjust(0, 0, -10, 0);
-
         auto arrowRect = this->arrowRect(iconRect(itemRect));
         if (arrowRect.contains(mouseEvent->pos())) {
             if (view()->isExpanded(index)) {
@@ -109,24 +112,27 @@ bool SearchResultItemDelegate::eventFilter(QObject *object, QEvent *event)
 
         auto replaceRect = replaceButtonRect(itemRect);
         if (replaceRect.contains(mouseEvent->pos())) {
-            auto model = qobject_cast<SearchResultModel *>(view()->model());
-            if (model) {
-                Q_EMIT model->requestReplace(index);
+            auto viewModel = qobject_cast<SearchResultModel *>(model);
+            if (viewModel) {
+                Q_EMIT viewModel->requestReplace(index);
                 return true;
             }
         }
 
         auto closeRect = closeButtonRect(itemRect);
         if (closeRect.contains(mouseEvent->pos())) {
-            auto model = qobject_cast<SearchResultModel *>(view()->model());
-            if (model) {
-                model->remove(index);
+            auto viewModel = qobject_cast<SearchResultModel *>(model);
+            if (viewModel) {
+                viewModel->remove(index);
                 return true;
             }
         }
+    } break;
+    default:
+        break;
     }
 
-    return DStyledItemDelegate::eventFilter(object, event);
+    return DStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
 QTreeView *SearchResultItemDelegate::view() const
@@ -234,8 +240,8 @@ QRect SearchResultItemDelegate::drawOptionButton(QPainter *painter, const QStyle
 
     // draw close button
     QRect iconRect = closeButtonRect(opt.rect);
-    QIcon closeIcon = DStyle::standardIcon(opt.widget->style(), DStyle::SP_CloseButton);
-    drawIcon(painter, opt, closeIcon, iconRect);
+    drawOptionBackground(painter, option, iconRect);
+    drawIcon(painter, opt, QIcon::fromTheme("common_close"), iconRect);
 
     // draw replace button
     QIcon replaceIcon;
@@ -245,9 +251,37 @@ QRect SearchResultItemDelegate::drawOptionButton(QPainter *painter, const QStyle
         replaceIcon = QIcon::fromTheme("replace");
 
     iconRect = replaceButtonRect(opt.rect);
+    drawOptionBackground(painter, option, iconRect);
     drawIcon(painter, opt, replaceIcon, iconRect);
-
     return iconRect;
+}
+
+void SearchResultItemDelegate::drawOptionBackground(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const
+{
+    QPoint mousePos = view()->mapFromGlobal(QCursor::pos());
+    if (!rect.contains(mousePos))
+        return;
+
+    if (QApplication::mouseButtons() & Qt::LeftButton) {
+        QColor bgColor(255, 255, 255, qRound(255 * 0.15));
+        painter->save();
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(bgColor);
+        painter->drawRoundedRect(rect, 6, 6);
+        painter->restore();
+    } else if (option.state.testFlag(QStyle::State_MouseOver)) {
+        QColor bgColor(0, 0, 0, qRound(255 * 0.08));
+        if (option.state.testFlag(QStyle::State_Selected)) {
+            bgColor.setRgba(qRgba(255, 255, 255, qRound(255 * 0.2)));
+        } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+            bgColor.setRgba(qRgba(255, 255, 255, qRound(255 * 0.08)));
+        }
+        painter->save();
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(bgColor);
+        painter->drawRoundedRect(rect, 6, 6);
+        painter->restore();
+    }
 }
 
 void SearchResultItemDelegate::drawNameItem(QPainter *painter, const QStyleOptionViewItem &option,
@@ -341,7 +375,9 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
             replaceBackground.setNamedColor("#57965C");
             replaceBackground.setAlpha(180);
         }
-        formats << createFormatRange(opt, column, matchedLength, {}, matchedBackground);
+        auto matchedRange = createFormatRange(opt, column, matchedLength, {}, matchedBackground);
+        matchedRange.format.setFontStrikeOut(true);
+        formats << matchedRange;
         formats << createFormatRange(opt, replaceTextOffset, replaceText.length(), {}, replaceBackground);
     } else {
         QColor background;
@@ -358,7 +394,7 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
 }
 
 void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect,
-                                           const QString &text, const QList<QTextLayout::FormatRange> &format) const
+                                           const QString &text, const QList<QTextLayout::FormatRange> &formatList) const
 {
     if (option.state & QStyle::State_Selected) {
         painter->setPen(option.palette.color(QPalette::Normal, QPalette::HighlightedText));
@@ -366,7 +402,8 @@ void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
         painter->setPen(option.palette.color(QPalette::Normal, QPalette::Text));
     }
 
-    if (text.isEmpty())
+    QString displayText = text.trimmed();
+    if (displayText.isEmpty())
         return;
 
     const QStyleOptionViewItem opt = option;
@@ -375,46 +412,24 @@ void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     QStyle *style = widget ? widget->style() : QApplication::style();
     const int textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, nullptr, widget) + 1;
     QRect textRect = rect.adjusted(textMargin, 0, -textMargin, 0);   // remove width padding
-    const bool wrapText = opt.features & QStyleOptionViewItem::WrapText;
     QTextOption textOption;
-    textOption.setWrapMode(wrapText ? QTextOption::WordWrap : QTextOption::ManualWrap);
+    textOption.setWrapMode(QTextOption::NoWrap);
     textOption.setTextDirection(option.direction);
     textOption.setAlignment(QStyle::visualAlignment(option.direction, option.displayAlignment));
     QTextLayout textLayout;
     textLayout.setTextOption(textOption);
     textLayout.setFont(option.font);
-    textLayout.setText(text);
+    textLayout.setText(displayText);
+    textLayout.setFormats(formatList.toVector());
 
     QSizeF textLayoutSize = doTextLayout(&textLayout, textRect.width());
-
-    if (textRect.width() < textLayoutSize.width()
-        || textRect.height() < textLayoutSize.height()) {
-        QString elided;
-        int start = 0;
-        int end = text.indexOf(QChar::LineSeparator, start);
-        if (end == -1) {
-            elided += option.fontMetrics.elidedText(text, option.textElideMode, textRect.width());
-        } else {
-            while (end != -1) {
-                elided += option.fontMetrics.elidedText(text.mid(start, end - start),
-                                                        option.textElideMode, textRect.width());
-                elided += QChar::LineSeparator;
-                start = end + 1;
-                end = text.indexOf(QChar::LineSeparator, start);
-            }
-            // let's add the last line (after the last QChar::LineSeparator)
-            elided += option.fontMetrics.elidedText(text.mid(start),
-                                                    option.textElideMode, textRect.width());
-        }
-        textLayout.setText(elided);
-        textLayoutSize = doTextLayout(&textLayout, textRect.width());
+    if (textRect.width() < textLayoutSize.width()) {
+        displayText = option.fontMetrics.elidedText(displayText, Qt::ElideRight, textRect.width());
+        textLayout.setText(displayText);
+        doTextLayout(&textLayout, textRect.width());
     }
 
-    const QSize layoutSize(textRect.width(), int(textLayoutSize.height()));
-    const QRect layoutRect = QStyle::alignedRect(option.direction, option.displayAlignment,
-                                                 layoutSize, textRect);
-
-    textLayout.draw(painter, layoutRect.topLeft(), format.toVector(), layoutRect);
+    textLayout.draw(painter, textRect.topLeft());
 }
 
 QSizeF SearchResultItemDelegate::doTextLayout(QTextLayout *textLayout, int width) const
@@ -462,8 +477,8 @@ QRect SearchResultItemDelegate::replaceButtonRect(const QRect &itemRect) const
 {
     QRect replaceButtonRect = itemRect;
 
-    replaceButtonRect.setSize(view()->iconSize());
-    replaceButtonRect.moveLeft(itemRect.right() - 2 * view()->iconSize().width() - 2 * ItemMargin);
+    replaceButtonRect.setSize({ 20, 20 });
+    replaceButtonRect.moveLeft(itemRect.right() - 2 * 20 - 5);
     replaceButtonRect.moveTop(replaceButtonRect.top() + ((itemRect.bottom() - replaceButtonRect.bottom()) / 2));
 
     return replaceButtonRect;
@@ -473,8 +488,8 @@ QRect SearchResultItemDelegate::closeButtonRect(const QRect &itemRect) const
 {
     QRect closeButtonRect = itemRect;
 
-    closeButtonRect.setSize(view()->iconSize());
-    closeButtonRect.moveLeft(itemRect.right() - view()->iconSize().width() - ItemMargin);
+    closeButtonRect.setSize({ 20, 20 });
+    closeButtonRect.moveLeft(itemRect.right() - 20 - 3);
     closeButtonRect.moveTop(closeButtonRect.top() + ((itemRect.bottom() - closeButtonRect.bottom()) / 2));
 
     return closeButtonRect;
@@ -501,7 +516,7 @@ void SearchResultItemDelegate::drawIcon(QPainter *painter, const QStyleOptionVie
     if (option.state.testFlag(QStyle::State_Selected))
         iconMode = QIcon::Selected;
 
-    auto px = icon.pixmap({ 18, 18 }, iconMode);
+    auto px = icon.pixmap(view()->iconSize(), iconMode);
     px.setDevicePixelRatio(qApp->devicePixelRatio());
 
     qreal x = rect.x();
