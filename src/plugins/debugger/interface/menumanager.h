@@ -43,6 +43,7 @@ private:
     QSharedPointer<QAction> stepOut;
     QSharedPointer<QAction> stepBack;
     QSharedPointer<QAction> remoteDebug;
+    QSharedPointer<QAction> conenctToServerDebug;
 };
 
 #endif // MENUMANAGER_H

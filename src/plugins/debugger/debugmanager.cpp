@@ -9,6 +9,7 @@
 #include "interface/menumanager.h"
 #include "interface/attachinfodialog.h"
 #include "reversedebug/reversedebugger.h"
+#include "remotedebug/connecttoserverdlg.h"
 
 #include "services/debugger/debuggerservice.h"
 #include "services/window/windowservice.h"
@@ -52,6 +53,15 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
 
     if (!debuggerService->getDebugState) {
         debuggerService->getDebugState = std::bind(&DebugManager::getRunState, this);
+    }
+
+    if (!debuggerService->requestConnectToGdbServer) {
+        debuggerService->requestConnectToGdbServer = std::bind([=](const GDBServerPreParam &param){
+            auto dialog = new ConnectToServerDlg();
+            dialog->setAttribute(Qt::WA_DeleteOnClose);
+            dialog->setParam(param);
+            dialog->exec();
+        }, _1);
     }
 
     return true;
@@ -129,7 +139,7 @@ void DebugManager::run()
     }
 }
 
-void DebugManager::remoteDebug(RemoteInfo info)
+void DebugManager::remoteDebug(const RemoteInfo &info)
 {
     if (!currentDebugger) {
         LanguageService *service = dpfGetService(LanguageService);
@@ -148,6 +158,14 @@ void DebugManager::remoteDebug(RemoteInfo info)
     
     AsynInvokeWithParam(currentDebugger->startDebugRemote, info);
 }
+
+void DebugManager::connectToGdbServer(const GdbserverInfo &info)
+{
+    // only support gdb.
+    auto dapDebuger = qobject_cast<DAPDebugger *>(currentDebugger);
+    QtConcurrent::run([dapDebuger, &info]() {
+        dapDebuger->connectToGdbServer(info);
+    });}
 
 void DebugManager::attachDebug()
 {

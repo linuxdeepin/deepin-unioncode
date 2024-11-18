@@ -35,6 +35,7 @@ void DirectoryAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
     emit itemsModified(d->rows);
+    emit parseDone();
 }
 
 QSet<QString> DirectoryAsynParse::getFilelist()

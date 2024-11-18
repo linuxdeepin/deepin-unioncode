@@ -14,6 +14,7 @@ class DirectoryGeneratorPrivate
     friend class dpfservice::DirectoryGenerator;
     QStandardItem *configureRootItem { nullptr };
     QHash<QStandardItem *, DirectoryAsynParse *> projectParses {};
+    QMap<QStandardItem *, dpfservice::ProjectInfo> allProjectInfo;
     dpfservice::ProjectInfo prjInfo;
 };
 
@@ -54,6 +55,8 @@ bool DirectoryGenerator::configure(const dpfservice::ProjectInfo &projectInfo)
     dpfservice::ProjectGenerator::configure(projectInfo);
 
     auto root = createRootItem(projectInfo);
+    d->allProjectInfo.insert(root, projectInfo);
+    ProjectInfo::set(root, projectInfo);
     ProjectService *projectService = dpfGetService(ProjectService);
     if (projectService && root) {
         projectService->addRootItem(root);
@@ -74,7 +77,13 @@ QStandardItem *DirectoryGenerator::createRootItem(const dpfservice::ProjectInfo 
     QObject::connect(d->projectParses[rootItem],
                      &DirectoryAsynParse::itemsModified,
                      this, &DirectoryGenerator::doProjectChildsModified,
-                     Qt::ConnectionType::UniqueConnection);
+                     Qt::UniqueConnection);
+    QObject::connect(d->projectParses[rootItem],
+                     &DirectoryAsynParse::parseDone,
+                     this, [&info](){
+                         project.activeProject(info.kitName(), info.language(), info.workspaceFolder());
+                     },
+                     Qt::UniqueConnection);
     QtConcurrent::run(parser, &DirectoryAsynParse::parseProject, info);
 
     return rootItem;
@@ -99,11 +108,16 @@ void DirectoryGenerator::removeRootItem(QStandardItem *root)
 
 void DirectoryGenerator::doProjectChildsModified(const QList<QStandardItem *> &info)
 {
-    auto sourceFiles = d->projectParses[d->configureRootItem]->getFilelist();
-    ProjectInfo tempInfo = prjInfo;
+    auto modifiedItem = d->configureRootItem;
+    if (sender() && (d->projectParses[d->configureRootItem] != sender())) {
+        auto parser = qobject_cast<DirectoryAsynParse *>(sender());
+        modifiedItem = d->projectParses.key(parser);
+    }
+    auto sourceFiles = d->projectParses[modifiedItem]->getFilelist();
+    auto modifiedProjectInfo = ProjectInfo::get(modifiedItem);
+    ProjectInfo tempInfo = modifiedProjectInfo;
     tempInfo.setSourceFiles(sourceFiles);
-    ProjectInfo::set(d->configureRootItem, tempInfo);
-    project.activeProject(tempInfo.kitName(), tempInfo.language(), tempInfo.workspaceFolder());
+    ProjectInfo::set(modifiedItem, tempInfo);
 
     auto rootItem = d->projectParses.key(qobject_cast<DirectoryAsynParse *>(sender()));
     if (rootItem) {

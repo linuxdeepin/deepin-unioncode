@@ -81,7 +81,7 @@ void GenerateDialog::initUi()
     d->versionEdit = new DLineEdit(this);
     d->versionEdit->setPlaceholderText(tr("0.0.0.1"));
     d->kindCbBox = new DComboBox(this);
-    d->kindCbBox->addItem("App");
+    d->kindCbBox->addItem("app");
     d->dependsCbBox = new DComboBox(this);
     d->dependsCbBox->addItems({ Depends_Version_V20, Depends_Version_V23 });
     d->descriptionEdit = new DLineEdit(this);
@@ -161,8 +161,8 @@ void GenerateDialog::generate()
         base["base"] = "org.deepin.foundation/20.0.0";
         runtime["runtime"] = "org.deepin.Runtime/20.0.0";
     } else {
-        base["base"] = "org.deepin.foundation/23.0.0";
-        runtime["runtime"] = "org.deepin.Runtime/23.0.1";
+        base["base"] = "org.deepin.base/23.1.0";
+        runtime["runtime"] = "org.deepin.runtime.dtk/23.1.1";
     }
     YAML::Node command;
     for (auto cmd : d->commandEdit->text().split(","))

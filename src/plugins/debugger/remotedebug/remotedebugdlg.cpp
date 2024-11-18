@@ -7,6 +7,7 @@
 #include <DDialog>
 #include <DLabel>
 #include <DPushButton>
+#include <DSuggestButton>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -44,11 +45,13 @@ void RemoteDebugDlg::on_pbtnCancel_clicked()
 void RemoteDebugDlg::setupUi()
 {
     setWindowTitle(tr("Remote Debug"));
+    setIcon(QIcon::fromTheme("ide"));
     resize(400, 196);
     auto verticalLayout = static_cast<QVBoxLayout *>(this->layout());
     verticalLayout->setSpacing(6);
     verticalLayout->setContentsMargins(11, 11, 11, 11);
     auto gridLayout = new QGridLayout();
+    gridLayout->setContentsMargins(0, 0, 10, 0);
     gridLayout->setSpacing(6);
     auto lbDebuggee = new DLabel(this);
     lbDebuggee->setText(tr("Debuggee:"));
@@ -94,23 +97,23 @@ void RemoteDebugDlg::setupUi()
 
     verticalLayout->addLayout(gridLayout);
 
-    auto horizontalLayout = new QHBoxLayout();
-    horizontalLayout->setSpacing(6);
-    auto horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    horizontalLayout->addItem(horizontalSpacer);
-
-    auto pbtnOK = new DPushButton(this);
-    pbtnOK->setText(tr("OK"));
-    pbtnOK->setObjectName(QStringLiteral("pbtnOK"));
-
-    horizontalLayout->addWidget(pbtnOK);
-
+    auto horizontalLayout = new QHBoxLayout;
     auto pbtnCancel = new DPushButton(this);
+    pbtnCancel->setFixedWidth(173);
     pbtnCancel->setText("Cancel");
     pbtnCancel->setObjectName(QStringLiteral("pbtnCancel"));
-
     horizontalLayout->addWidget(pbtnCancel);
+
+    DVerticalLine *vLine = new DVerticalLine;
+    vLine->setObjectName("VLine");
+    vLine->setFixedHeight(30);
+    horizontalLayout->addWidget(vLine);
+
+    auto pbtnOK = new DSuggestButton(this);
+    pbtnOK->setFixedWidth(173);
+    pbtnOK->setText(tr("OK"));
+    pbtnOK->setObjectName(QStringLiteral("pbtnOK"));
+    horizontalLayout->addWidget(pbtnOK);
 
     verticalLayout->addLayout(horizontalLayout);
 

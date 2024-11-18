@@ -168,6 +168,7 @@ void DebugManager::execute()
     foreach (auto arg, d->debugger->preArguments()) {
         d->arguments.prepend(arg);
     }
+    d->arguments.removeAll("");
     d->process->setArguments(d->arguments);
     d->process->setProgram(d->debugger->program());
     d->process->setEnvironment(d->environment);

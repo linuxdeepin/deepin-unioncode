@@ -7,6 +7,8 @@
 
 #include "llglobal.h"
 #include "services/language/languagegenerator.h"
+#include "services/terminal/terminalservice.h"
+#include "services/debugger/debuggerservice.h"
 
 class LLGenerator : public dpfservice::LanguageGenerator
 {
@@ -32,6 +34,9 @@ public:
 
     dpfservice::RunCommandInfo getRunArguments(const dpfservice::ProjectInfo &projectInfo,
                                                const QString &currentFile) override;
+private:
+    dpfservice::TerminalService *terminalSrv { nullptr };
+    dpfservice::DebuggerService *debuggerSrv { nullptr };
 };
 
 #endif   // LLGENERATOR_H

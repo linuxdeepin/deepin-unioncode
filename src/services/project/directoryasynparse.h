@@ -34,6 +34,7 @@ public:
 signals:
     void itemsModified(const QList<QStandardItem *> &info);
     void parsedError(const ParseInfo<QString> &info);
+    void parseDone();
 
 public slots:
     void parseProject(const dpfservice::ProjectInfo &info);

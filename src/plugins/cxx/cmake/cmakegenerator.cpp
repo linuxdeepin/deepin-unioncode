@@ -91,7 +91,14 @@ QMap<QString, QVariant> CMakeGenerator::getDebugArguments(const dpfservice::Proj
     QMap<QString, QVariant> param;
     param.insert("workspace", projectInfo.runWorkspaceDir());
     param.insert("targetPath", projectInfo.runProgram());
-    param.insert("arguments", projectInfo.runCustomArgs());
+    QStringList debugArgs;
+    if (!projectInfo.runCustomArgs().isEmpty()) {
+        debugArgs.append("--args");
+        debugArgs.append(projectInfo.runProgram()); // gdb -i --args program arg
+        debugArgs.append(projectInfo.runCustomArgs());
+    }
+
+    param.insert("arguments", debugArgs);
 
     return param;
 }
