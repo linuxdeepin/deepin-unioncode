@@ -204,6 +204,7 @@ QWidget *AdvancedSearchWidgetPrivate::createSearchParamWidget()
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(0, 1);
     gridLayout->setContentsMargins(0, 0, 0, 0);
+    gridLayout->setSpacing(10);
     gridLayout->addWidget(searchEdit, 0, 0);
     gridLayout->addWidget(caseBtn, 0, 1);
     gridLayout->addWidget(wholeWordBtn, 0, 2);
