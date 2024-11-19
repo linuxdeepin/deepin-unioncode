@@ -58,6 +58,7 @@ ProjectTree::ProjectTree(QWidget *parent)
 {
     setLineWidth(0);
     setContentsMargins(0, 0, 0, 0);
+    setFrameShape(QFrame::NoFrame);
     DStyle::setFrameRadius(this, 0);
     setIconSize(QSize(16, 16));
 

@@ -65,9 +65,9 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowIcon(QIcon::fromTheme("ide"));
     setAttribute(Qt::WA_DeleteOnClose);
 
+    setStyle(new CustomStyle());
     addTopToolBar();
     setContextMenuPolicy(Qt::NoContextMenu);   //donot show left toolbar`s contextmenu
-    //setStyleSheet("QMainWindow::separator { width: 2px; margin: 0px; padding: 0px; }");
 
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     setCorner(Qt::Corner::TopLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);

@@ -945,7 +945,7 @@ void Controller::initNavigationBar()
     d->navigationToolBar->hide();
 
     vLayout->addWidget(d->navigationBar);
-    vLayout->setContentsMargins(0, 0, 2, 0);
+    vLayout->setContentsMargins(0, 0, 1, 0);
 }
 
 void Controller::initContextWidget()
