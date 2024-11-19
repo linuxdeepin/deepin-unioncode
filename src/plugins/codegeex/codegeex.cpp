@@ -71,7 +71,8 @@ bool CodeGeex::start()
     using namespace std::placeholders;
     auto aiService = dpfGetService(dpfservice::AiService);
     aiService->available = std::bind(&CodeGeeXManager::isLoggedIn, CodeGeeXManager::instance());
-    aiService->askQuestion = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, _2);
+    aiService->askQuestion = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, QMultiMap<QString, QString>(), _2);
+    aiService->askQuestionWithHistory = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, _2, _3);
 
     return true;
 }

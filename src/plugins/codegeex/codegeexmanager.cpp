@@ -163,7 +163,7 @@ void CodeGeeXManager::setReferenceFiles(const QStringList &files)
     askApi.setReferenceFiles(files);
 }
 
-void CodeGeeXManager::independentAsking(const QString &prompt, QIODevice *pipe)
+void CodeGeeXManager::independentAsking(const QString &prompt, const QMultiMap<QString, QString> &history, QIODevice *pipe)
 {
     if (!isLoggedIn()) {
         emit notify(1, tr("CodeGeeX is not avaliable, please logging in"));
@@ -171,7 +171,7 @@ void CodeGeeXManager::independentAsking(const QString &prompt, QIODevice *pipe)
         return;
     }
     AskApi *api = new AskApi;
-    api->postSSEChat(kUrlSSEChat, sessionId, prompt, QSysInfo::machineUniqueId(), {}, currentTalkID);
+    api->postSSEChat(kUrlSSEChat, sessionId, prompt, QSysInfo::machineUniqueId(), history, currentTalkID);
     QTimer::singleShot(10000, api, [=](){
         if (pipe && pipe->isOpen()) {
             qWarning() << "timed out, close pipe";

@@ -188,6 +188,9 @@ void InputEditWidgetPrivate::initButtonBox()
     codeBaseBtn->setIcon(QIcon::fromTheme("uc_codegeex_project_chat"));
     codeBaseBtn->setToolTip(InputEditWidget::tr("reference codebase"));
     codeBaseBtn->setCheckable(true);
+#ifndef SUPPORTMINIFORGE
+    codeBaseBtn->hide();
+#endif
 
     referenceBtn = new DToolButton(q);
     referenceBtn->setFixedSize(24, 24);
@@ -252,8 +255,13 @@ InputEdit::InputEdit(QWidget *parent)
         auto editorService = dpfGetService(EditorService);
         QString currentFile = editorService->currentFile();
         QString selectedCode = editorService->getSelectedText();
-        if (currentFile.isEmpty() || selectedCode.isEmpty())
+        if (currentFile.isEmpty() || selectedCode.isEmpty()) {
+            if (!selectedCodeTag.isEmpty())
+                removeTag(selectedCodeTag);
+            this->selectedCode.clear();
+            this->selectedCodeTag.clear();
             return;
+        }
 
         Edit::Range selectedRange = editorService->selectionRange(currentFile);
         QString tagText = QString("%1:L%2C%3-L%4C%5").arg(QFileInfo(currentFile).fileName(),
