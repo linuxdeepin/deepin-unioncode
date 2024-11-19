@@ -10,6 +10,7 @@
 #include <DMainWindow>
 #include <DMenu>
 #include <DDockWidget>
+#include <DStyle>
 
 #include <QObject>
 #include <QWidgetList>
@@ -17,6 +18,19 @@
 #include <QString>
 
 DWIDGET_USE_NAMESPACE
+
+class CustomStyle : public DStyle
+{
+public:
+    explicit CustomStyle() : DStyle() { }
+    int pixelMetric(QStyle::PixelMetric m, const QStyleOption *opt = nullptr, const QWidget *widget = nullptr) const override
+    {
+        if (m == PM_DockWidgetSeparatorExtent)
+            return 2;
+        return DStyle::pixelMetric(m, opt, widget);
+    }
+};
+
 using dpfservice::Position;
 class MainWindowPrivate;
 class MainWindow : public DMainWindow

@@ -33,6 +33,7 @@ SymbolTreeView::SymbolTreeView(DWidget *parent)
     : DTreeView(parent), d(new SymbolTreeViewPrivate(this))
 {
     setLineWidth(0);
+    setFrameShape(QFrame::NoFrame);
 
     d->model = new SymbolModel();
     DTreeView::setModel(d->model);
