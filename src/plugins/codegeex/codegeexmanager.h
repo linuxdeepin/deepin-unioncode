@@ -91,7 +91,7 @@ public:
     bool isReferenceCodebase() const;
     void setReferenceFiles(const QStringList &files);
 
-    void independentAsking(const QString &prompt, QIODevice *pipe);
+    void independentAsking(const QString &prompt, const QMultiMap<QString, QString> &history, QIODevice *pipe);
     // Rag
     QString condaRootPath() const;
     void showIndexingWidget();

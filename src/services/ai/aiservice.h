@@ -30,6 +30,7 @@ public:
 
     DPF_INTERFACE(bool, available);
     DPF_INTERFACE(void, askQuestion, const QString &prompt, QIODevice *pipe);  // pipe recevice data from ai
+    DPF_INTERFACE(void, askQuestionWithHistory, const QString &prompt, const QMultiMap<QString, QString> history,  QIODevice *pipe);
 };
 
 } // namespace dpfservice
