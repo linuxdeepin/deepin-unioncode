@@ -330,6 +330,8 @@ void ProjectCore::confirmProjectKit(const QString &path)
     // check defualt kit by supportNames
     bool hasDefault = false;
     for (auto kit : allKits) {
+        if (hasDefault)
+            break;
         auto generator = projectService->createGenerator<ProjectGenerator>(kit);
         QStringList fileNames = generator->supportFileNames();
         if (fileNames.isEmpty())
