@@ -67,7 +67,8 @@ void TaskManager::triggerDefaultHandler(const QModelIndex &index)
     if (!index.isValid())
         return;
 
-    Task task(model->task(index));
+    auto realIndex = filterModel->mapToSource(index);
+    Task task(model->task(realIndex));
     if (task.isNull())
         return;
 
