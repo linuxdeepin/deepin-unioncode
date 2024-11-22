@@ -363,6 +363,9 @@ QPair<QString, QString> CopilotApi::getCurrentFileInfo()
     auto fileType = support_file::Language::id(filePath);
     auto fileLang = support_file::Language::idAlias(fileType);
 
+    // The above LANGUAGE class supports fewer file languages, and unknown file languages are temporarily represented by suffix.
+    if (fileLang.isEmpty())
+        fileLang = QFileInfo(filePath).suffix();
     return qMakePair(fileName, fileLang);
 }
 
