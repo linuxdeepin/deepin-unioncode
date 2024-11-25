@@ -31,7 +31,7 @@ public:
     void expandedProjectAll(const QStandardItem *root);
     void selectProjectFile(const QString &file);
     void setAutoFocusState(bool state);
-	bool getAutoFocusState() const;
+    bool getAutoFocusState() const;
     void expandItemByFile(const QStringList &filePaths);
     void focusCurrentFile();
     QList<dpfservice::ProjectInfo> getAllProjectInfo();

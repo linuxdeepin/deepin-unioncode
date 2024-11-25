@@ -71,10 +71,9 @@ void DirectoryAsynParse::createRows(const QString &path)
         rootPath = rootPath.remove(rootPath.size() - separatorSize, separatorSize);
     }
 
-    // 缓存当前工程目录
     d->rootPath = rootPath;
-    QFileSystemWatcher::addPath(d->rootPath);
-
+    if (!directories().contains(d->rootPath))
+        addPath(d->rootPath);
     {   // 避免变量冲突 迭代文件夹
         QDir dir;
         dir.setPath(rootPath);
@@ -83,7 +82,8 @@ void DirectoryAsynParse::createRows(const QString &path)
         QDirIterator dirItera(dir, QDirIterator::Subdirectories);
         while (dirItera.hasNext()) {
             QString childPath = dirItera.next().remove(0, rootPath.size());
-            QFileSystemWatcher::addPath(dirItera.filePath());
+            if (!directories().contains(dirItera.filePath()))
+                addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
             auto newItem = new QStandardItem(dirItera.fileName());
             newItem->setData(dirItera.filePath(), ProjectItemRole::FileIconRole);
@@ -115,6 +115,9 @@ void DirectoryAsynParse::createRows(const QString &path)
             d->fileList.insert(fileItera.filePath());
         }
     }
+
+    // sort all files
+    sortAllRows();
 }
 
 QList<QStandardItem *> DirectoryAsynParse::rows(const QStandardItem *item) const
@@ -123,6 +126,7 @@ QList<QStandardItem *> DirectoryAsynParse::rows(const QStandardItem *item) const
     for (int i = 0; i < item->rowCount(); i++) {
         result << item->child(i);
     }
+
     return result;
 }
 
@@ -164,6 +168,34 @@ QStandardItem *DirectoryAsynParse::findItem(const QString &path,
         }
     }
     return parent;
+}
+
+void DirectoryAsynParse::sortAllRows()
+{
+    auto sortRows = [=](QList<QStandardItem*> &rows) {
+        std::sort(rows.begin(),rows.end(), [](const QStandardItem* a, const QStandardItem* b) {
+            if (QFileInfo(a->toolTip()).isDir() && !QFileInfo(b->toolTip()).isDir()) return true;
+            if (!QFileInfo(a->toolTip()).isDir() && QFileInfo(b->toolTip()).isDir()) return false;
+            return a->text().compare(b->text(), Qt::CaseInsensitive) < 0;
+        });
+    };
+
+    std::function<void(QStandardItem*)> sortItems = [&](QStandardItem* parent) {
+        if (!parent) return;
+        QList<QStandardItem*> children;
+        while (parent->hasChildren())
+            children.append(parent->takeRow(0));
+        sortRows(children);
+        for (auto child : children) {
+            parent->appendRow(child);
+            sortItems(child);
+        }
+    };
+
+    sortRows(d->rows);
+    for (auto row : d->rows) {
+        sortItems(row);
+    }
 }
 
 int DirectoryAsynParse::separatorSize() const
