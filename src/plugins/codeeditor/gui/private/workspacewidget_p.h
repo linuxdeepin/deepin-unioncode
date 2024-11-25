@@ -11,6 +11,7 @@
 #include "base/abstracteditwidget.h"
 #include "common/util/eventdefinitions.h"
 #include "services/window/windowservice.h"
+#include "services/session/sessionservice.h"
 #include "Qsci/qscicommand.h"
 
 #include <QStackedWidget>
@@ -64,6 +65,8 @@ public slots:
     void handleSetModifiedAutoReload(const QString &fileName, bool flag);
     void handleSetComment();
     void handleShowOpenedFiles();
+    void handleSaveSession();
+    void handleSessionLoaded();
 
 public:
     WorkspaceWidget *q;
@@ -78,6 +81,8 @@ public:
     QStringList modifiedFileList;
     QStringList removedFileList;
     QTimer fileCheckTimer;
+
+    dpfservice::SessionService *sessionSrv { nullptr };
 };
 
 #endif   // WORKSPACEWIDGET_P_H

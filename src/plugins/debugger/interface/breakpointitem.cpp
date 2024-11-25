@@ -15,7 +15,6 @@ const QString empty(QLatin1Char('-'));
 BreakpointItem::BreakpointItem(const Internal::Breakpoint &_bp)
     : bp(_bp)
 {
-
 }
 
 BreakpointItem::BreakpointItem(const BreakpointItem &item)
@@ -29,25 +28,24 @@ BreakpointItem::BreakpointItem()
 
 BreakpointItem::~BreakpointItem()
 {
-
 }
 
 QVariant BreakpointItem::data(int row, int column, int role) const
 {
     if (role == Qt::DisplayRole) {
         switch (column) {
-            case kIndexColumn:
-                return QString::number(row + 1);
-            case kFunctionNameColumn:
-                return empty;
-            case kFileNameColumn:
-                return bp.fileName.isEmpty() ? empty : QDir::toNativeSeparators(bp.fileName);
-            case kLineNumberColumn:
-                return bp.lineNumber > 0 ? QString::number(bp.lineNumber) : empty;
-            case kCondition:
-                return bp.condition;
-            case kAddressColumn:
-                return bp.address;
+        case kIndexColumn:
+            return QString::number(row + 1);
+        case kFunctionNameColumn:
+            return empty;
+        case kFileNameColumn:
+            return bp.fileName.isEmpty() ? empty : QDir::toNativeSeparators(bp.fileName);
+        case kLineNumberColumn:
+            return bp.lineNumber > 0 ? QString::number(bp.lineNumber) : empty;
+        case kCondition:
+            return bp.condition;
+        case kAddressColumn:
+            return bp.address;
         }
     }
 
@@ -84,23 +82,23 @@ static QString msgBreakpointAtSpecialFunc(const QString &func)
 static QString typeToString(BreakpointType type)
 {
     switch (type) {
-        case BreakpointByFileAndLine:
-            return BreakpointItem::tr("Breakpoint by File and Line");
-        case BreakpointByFunction:
-            return BreakpointItem::tr("Breakpoint by Function");
-        case BreakpointByAddress:
-            return BreakpointItem::tr("Breakpoint by Address");
-        case BreakpointAtThrow:
-            return msgBreakpointAtSpecialFunc("throw");
-        case BreakpointAtCatch:
-            return msgBreakpointAtSpecialFunc("catch");
-        case BreakpointAtExec:
-            return msgBreakpointAtSpecialFunc("exec");
-        //case BreakpointAtVFork:
-        //    return msgBreakpointAtSpecialFunc("vfork");
-        case UnknownBreakpointType:
-        case LastBreakpointType:
-            break;
+    case BreakpointByFileAndLine:
+        return BreakpointItem::tr("Breakpoint by File and Line");
+    case BreakpointByFunction:
+        return BreakpointItem::tr("Breakpoint by Function");
+    case BreakpointByAddress:
+        return BreakpointItem::tr("Breakpoint by Address");
+    case BreakpointAtThrow:
+        return msgBreakpointAtSpecialFunc("throw");
+    case BreakpointAtCatch:
+        return msgBreakpointAtSpecialFunc("catch");
+    case BreakpointAtExec:
+        return msgBreakpointAtSpecialFunc("exec");
+    //case BreakpointAtVFork:
+    //    return msgBreakpointAtSpecialFunc("vfork");
+    case UnknownBreakpointType:
+    case LastBreakpointType:
+        break;
     }
     return BreakpointItem::tr("Unknown Breakpoint Type");
 }
@@ -121,8 +119,8 @@ QString BreakpointItem::toolTip() const
 
     if (bp.type == BreakpointByFunction) {
         str << "<tr><td>" << BreakpointItem::tr("Function Name:")
-        << "</td><td>" << bp.functionName
-        << "</td></tr>";
+            << "</td><td>" << bp.functionName
+            << "</td></tr>";
     }
     if (bp.type == BreakpointByFileAndLine) {
         str << "<tr><td>" << BreakpointItem::tr("File Name:")
@@ -140,8 +138,13 @@ QString BreakpointItem::toolTip() const
     str << bp.address;
     str << "</td></tr>";
 
-    str  << "</table></body></html><hr>";
+    str << "</table></body></html><hr>";
     return rc;
+}
+
+QString BreakpointItem::filePath() const
+{
+    return bp.filePath;
 }
 
 int BreakpointItem::lineNumber() const
@@ -162,4 +165,9 @@ void BreakpointItem::setEnabled(bool on)
 void BreakpointItem::setCondition(const QString &expression)
 {
     bp.condition = expression;
+}
+
+QString BreakpointItem::condition() const
+{
+    return bp.condition;
 }

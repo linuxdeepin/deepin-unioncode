@@ -24,6 +24,9 @@ public slots:
     void addProject(const QString &kitName,
                     const QString &language,
                     const QString &workspace);
+    void addSession(const QString &session);
+    void removeSession(const QString &session);
+    void updateSessions();
 
 private slots:
     void doDoubleClickedProject(const QModelIndex &index);

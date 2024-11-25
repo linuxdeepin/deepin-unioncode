@@ -38,11 +38,13 @@ public:
     QString displayName() const;
     QString toolTip() const;
 
+    QString filePath() const;
     int lineNumber() const;
     bool isEnabled() const;
 
     void setEnabled(bool on);
     void setCondition(const QString &expression);
+    QString condition() const;
 
     const Internal::Breakpoint &breakpoint() const {return bp;}
 

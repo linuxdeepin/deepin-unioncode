@@ -42,6 +42,7 @@ public:
     void setFileModified(const QString &fileName, bool isModified);
     void closeFileEditor(const QString &fileName);
     void closeFileEditor();
+    void closeAllEditor();
     void switchHeaderSource();
     void followSymbolUnderCursor();
     void findUsage();

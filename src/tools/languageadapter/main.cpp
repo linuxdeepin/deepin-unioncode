@@ -49,7 +49,7 @@ static QString packageInstallPath(const QString &python)
 // setting from clangd trismit
 QProcess *createCxxServ(const newlsp::ProjectKey &key)
 {
-    lspServOut << __FUNCTION__ << qApp->thread() << QThread::currentThread();
+    lspServOut << __FUNCTION__ << QCoreApplication::instance()->thread() << QThread::currentThread();
     if (key.language != newlsp::Cxx)
         return nullptr;
 

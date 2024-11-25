@@ -105,6 +105,13 @@ ProjectTree::~ProjectTree()
     }
 }
 
+void ProjectTree::clear()
+{
+    while (auto item = d->itemModel->item(0)) {
+        removeRootItem(item);
+    }
+}
+
 void ProjectTree::activeProjectInfo(const ProjectInfo &info)
 {
     int rowCount = d->itemModel->rowCount();
@@ -121,18 +128,14 @@ void ProjectTree::activeProjectInfo(const ProjectInfo &info)
     }
 }
 
-void ProjectTree::activeProjectInfo(const QString &kitName,
-                                    const QString &language,
-                                    const QString &workspace)
+void ProjectTree::activeProjectInfo(const QString &workspace)
 {
     int rowCount = d->itemModel->rowCount();
     for (int currRow = 0; currRow < rowCount; currRow++) {
         auto currItem = d->itemModel->item(currRow, 0);
         if (currItem) {
             auto currInfo = ProjectInfo::get(ProjectGenerator::root(currItem));
-            if (currInfo.language() == language
-                && currInfo.workspaceFolder() == workspace
-                && currInfo.kitName() == kitName) {
+            if (currInfo.workspaceFolder() == workspace) {
                 doActiveProject(currItem);
             }
         }

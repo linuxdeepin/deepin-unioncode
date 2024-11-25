@@ -12,24 +12,38 @@ class ProjectCoreReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegis
 {
     Q_OBJECT
     friend class dpf::AutoEventHandlerRegister<ProjectCoreReceiver>;
+
 public:
-    explicit ProjectCoreReceiver(QObject * parent = nullptr);
+    explicit ProjectCoreReceiver(QObject *parent = nullptr);
 
     static Type type();
-
     static QStringList topics();
+    virtual void eventProcess(const dpf::Event &event) override;
 
-    virtual void eventProcess(const dpf::Event& event) override;
+private:
+    void processActiveProjectEvent(const dpf::Event &event);
+    void processOpenProjectEvent(const dpf::Event &event);
+    void processExpandAllEvent(const dpf::Event &event);
+    void processFoldAllEvent(const dpf::Event &event);
+    void processActivatedProjectEvent(const dpf::Event &event);
+    void processSwitchedFileEvent(const dpf::Event &event);
+    void processModeRaisedEvent(const dpf::Event &event);
+    void processOpenProjectByPathEvent(const dpf::Event &event);
+    void processSessionLoadedEvent(const dpf::Event &event);
+    void processReadyToSaveSessionEvent(const dpf::Event &event);
+
+private:
+    QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
 };
 
 class ProjectProxy : public QObject
 {
     Q_OBJECT
-    ProjectProxy(){}
-    ProjectProxy(const ProjectProxy&) = delete;
+    ProjectProxy() {}
+    ProjectProxy(const ProjectProxy &) = delete;
 
 public:
-    static ProjectProxy* instance()
+    static ProjectProxy *instance()
     {
         static ProjectProxy ins;
         return &ins;
@@ -41,4 +55,4 @@ signals:
     void switchedFile(const QString &file);
 };
 
-#endif // PROJECTCORERECEIVER_H
+#endif   // PROJECTCORERECEIVER_H

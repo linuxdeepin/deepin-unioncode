@@ -24,6 +24,7 @@ public:
 
     void switchTab(const QString &fileName);
     void removeTab(const QString &fileName, bool silent = false);
+    void closeAllTab(const QStringList &exceptList, bool silent = false);
 
     void setCloseButtonVisible(bool visible);
     void setSplitButtonVisible(bool visible);

@@ -84,9 +84,12 @@ void LanguageClientHandlerPrivate::initConnection()
 
 void LanguageClientHandlerPrivate::initLspConnection()
 {
+    isInited = true;
     auto client = getClient();
-    if (!editor || !client)
+    if (!editor || !client) {
+        isInited = false;
         return;
+    }
 
     auto referencesResult = qOverload<const lsp::References &>(&newlsp::Client::requestResult);
     connect(client, referencesResult, CodeLens::instance(), &CodeLens::displayReference, Qt::UniqueConnection);
@@ -168,6 +171,14 @@ bool LanguageClientHandlerPrivate::shouldStartCompletion(const QString &inserted
     return false;
 }
 
+bool LanguageClientHandlerPrivate::documentIsOpened()
+{
+    if (!isOpened)
+        q->updateTokens();
+
+    return isOpened;
+}
+
 int LanguageClientHandlerPrivate::wordPostion()
 {
     int pos = editor->cursorPosition();
@@ -184,6 +195,11 @@ newlsp::Client *LanguageClientHandlerPrivate::getClient()
 {
     if (projectKey.isValid())
         return LSPClientManager::instance()->get(projectKey);
+
+    if (!isInited) {
+        initLspConnection();
+        return nullptr;
+    }
 
     auto prjSrv = dpfGetService(dpfservice::ProjectService);
     const auto &filePath = editor->getFile();
@@ -384,7 +400,7 @@ void LanguageClientHandlerPrivate::setDefinitionSelectedStyle(int start, int end
 
 void LanguageClientHandlerPrivate::delayTextChanged()
 {
-    if (!editor)
+    if (!editor || !documentIsOpened())
         return;
 
     cleanDiagnostics();
@@ -398,7 +414,7 @@ void LanguageClientHandlerPrivate::delayTextChanged()
 
 void LanguageClientHandlerPrivate::delayPositionChanged()
 {
-    if (!editor || !getClient())
+    if (!editor || !documentIsOpened())
         return;
 
     lsp::Position pos;
@@ -408,7 +424,7 @@ void LanguageClientHandlerPrivate::delayPositionChanged()
 
 void LanguageClientHandlerPrivate::handleHoveredStart(int position)
 {
-    if (!editor || !getClient())
+    if (!editor || !documentIsOpened())
         return;
 
     hoverCache.setPosition(position);
@@ -453,7 +469,7 @@ void LanguageClientHandlerPrivate::handleHoverEnd(int position)
 
 void LanguageClientHandlerPrivate::handleFollowTypeStart(int position)
 {
-    if (!editor || editor->wordAtPosition(position).isEmpty()) {
+    if (!editor || !documentIsOpened() || editor->wordAtPosition(position).isEmpty()) {
         handleFollowTypeEnd();
         return;
     }
@@ -531,13 +547,13 @@ void LanguageClientHandlerPrivate::handleShowContextMenu(QMenu *menu)
 
 void LanguageClientHandlerPrivate::handleFileClosed(const QString &file)
 {
-    if (getClient())
+    if (documentIsOpened() && getClient())
         getClient()->closeRequest(file);
 }
 
 void LanguageClientHandlerPrivate::handleRename(const QString &text)
 {
-    if (!editor || !getClient() || !renameCache.isValid())
+    if (!editor || !documentIsOpened() || !renameCache.isValid())
         return;
 
     lsp::Position pos { renameCache.line, renameCache.column };
@@ -685,7 +701,7 @@ LanguageClientHandler::~LanguageClientHandler()
 
 void LanguageClientHandler::requestCompletion(int line, int column)
 {
-    if (!d->getClient())
+    if (!d->documentIsOpened())
         return;
 
     lsp::CompletionContext context;
@@ -711,18 +727,22 @@ void LanguageClientHandler::requestCompletion(int line, int column)
 
 void LanguageClientHandler::updateTokens()
 {
+    d->isOpened = true;
     if (auto client = d->getClient()) {
         client->openRequest(d->editor->getFile());
         client->docSemanticTokensFull(d->editor->getFile());
         client->symbolRequest(d->editor->getFile());
+    } else {
+        d->isOpened = false;
     }
 }
 
 lsp::SemanticTokenType::type_value LanguageClientHandler::tokenToDefine(int token)
 {
-    auto client = d->getClient();
-    if (!client)
+    if (!d->documentIsOpened())
         return {};
+
+    auto client = d->getClient();
     auto initSecTokensProvider = client->initSecTokensProvider();
     if (0 <= token && token < initSecTokensProvider.legend.tokenTypes.size())
         return initSecTokensProvider.legend.tokenTypes[token];
@@ -743,7 +763,7 @@ QColor LanguageClientHandler::symbolIndicColor(lsp::SemanticTokenType::type_valu
 
 void LanguageClientHandler::refreshTokens()
 {
-    if (!d->editor || !d->getClient())
+    if (!d->editor || !d->documentIsOpened())
         return;
 
     d->getClient()->docSemanticTokensFull(d->editor->getFile());
@@ -751,7 +771,7 @@ void LanguageClientHandler::refreshTokens()
 
 void LanguageClientHandler::switchHeaderSource(const QString &file)
 {
-    if (!d->getClient())
+    if (!d->documentIsOpened())
         return;
 
     d->getClient()->switchHeaderSource(file);
@@ -759,7 +779,7 @@ void LanguageClientHandler::switchHeaderSource(const QString &file)
 
 void LanguageClientHandler::followSymbolUnderCursor()
 {
-    if (!d->editor || !d->editor->hasFocus() || !d->getClient())
+    if (!d->editor || !d->editor->hasFocus() || !d->documentIsOpened())
         return;
 
     d->definitionCache.setSwitchMode(DefinitionCache::ActionMode);
@@ -771,7 +791,7 @@ void LanguageClientHandler::followSymbolUnderCursor()
 
 void LanguageClientHandler::findUsagesActionTriggered()
 {
-    if (!d->editor || !d->getClient())
+    if (!d->editor || !d->documentIsOpened())
         return;
 
     lsp::Position pos;
@@ -781,7 +801,7 @@ void LanguageClientHandler::findUsagesActionTriggered()
 
 void LanguageClientHandler::renameActionTriggered()
 {
-    if (!d->editor)
+    if (!d->editor || !d->documentIsOpened())
         return;
 
     int pos = d->editor->cursorPosition();
@@ -799,7 +819,7 @@ void LanguageClientHandler::renameActionTriggered()
 
 void LanguageClientHandler::formatSelections()
 {
-    if (!d->getClient() || !d->editor || !d->editor->hasSelectedText())
+    if (!d->documentIsOpened() || !d->editor || !d->editor->hasSelectedText())
         return;
 
     int lineFrom, indexFrom, lineTo, indexTo;

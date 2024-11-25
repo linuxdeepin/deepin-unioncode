@@ -4,12 +4,17 @@
 
 #include "recentreceiver.h"
 #include "common/common.h"
+#include "mainframe/recentdisplaywidget.h"
 
 RecentReceiver::RecentReceiver(QObject *parent)
-    : dpf::EventHandler (parent)
-    , dpf::AutoEventHandlerRegister<RecentReceiver> ()
+    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<RecentReceiver>()
 {
-
+    using namespace std::placeholders;
+    eventHandleMap.insert(recent.saveOpenedProject.name, std::bind(&RecentReceiver::processSaveOpenedProjectEvent, this, _1));
+    eventHandleMap.insert(recent.saveOpenedFile.name, std::bind(&RecentReceiver::processSaveOpenedFileEvent, this, _1));
+    eventHandleMap.insert(session.sessionCreated.name, std::bind(&RecentReceiver::processSessionCreatedEvent, this, _1));
+    eventHandleMap.insert(session.sessionRemoved.name, std::bind(&RecentReceiver::processSessionRemovedEvent, this, _1));
+    eventHandleMap.insert(session.sessionLoaded.name, std::bind(&RecentReceiver::processSessionLoadedEvent, this, _1));
 }
 
 dpf::EventHandler::Type RecentReceiver::type()
@@ -19,22 +24,49 @@ dpf::EventHandler::Type RecentReceiver::type()
 
 QStringList RecentReceiver::topics()
 {
-    return { recent.topic };
+    return { recent.topic, session.topic };
 }
 
 void RecentReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == recent.saveOpenedProject.name) {
-        QString kitName = event.property(recent.saveOpenedProject.pKeys[0]).toString();
-        QString language = event.property(recent.saveOpenedProject.pKeys[1]).toString();
-        QString workspace = event.property(recent.saveOpenedProject.pKeys[2]).toString();
-        if (QDir(workspace).exists())
-            RecentProxy::instance()->saveOpenedProject(kitName, language, workspace);
-    } else if (event.data() == recent.saveOpenedFile.name) {
-        QString filePath = event.property(recent.saveOpenedFile.pKeys[0]).toString();
-        if (QFileInfo(filePath).exists())
-            RecentProxy::instance()->saveOpenedFile(filePath);
-    }
+    const auto &eventName = event.data().toString();
+    if (!eventHandleMap.contains(eventName))
+        return;
+
+    eventHandleMap[eventName](event);
+}
+
+void RecentReceiver::processSaveOpenedProjectEvent(const dpf::Event &event)
+{
+    QString kitName = event.property("kitName").toString();
+    QString language = event.property("language").toString();
+    QString workspace = event.property("workspace").toString();
+    if (QDir(workspace).exists())
+        Q_EMIT RecentProxy::instance()->saveOpenedProject(kitName, language, workspace);
+}
+
+void RecentReceiver::processSaveOpenedFileEvent(const dpf::Event &event)
+{
+    QString filePath = event.property("filePath").toString();
+    if (QFileInfo(filePath).exists())
+        Q_EMIT RecentProxy::instance()->saveOpenedFile(filePath);
+}
+
+void RecentReceiver::processSessionCreatedEvent(const dpf::Event &event)
+{
+    const QString session = event.property("session").toString();
+    RecentDisplayWidget::instance()->addSession(session);
+}
+
+void RecentReceiver::processSessionRemovedEvent(const dpf::Event &event)
+{
+    const QString session = event.property("session").toString();
+    RecentDisplayWidget::instance()->removeSession(session);
+}
+
+void RecentReceiver::processSessionLoadedEvent(const dpf::Event &event)
+{
+    RecentDisplayWidget::instance()->updateSessions();
 }
 
 RecentProxy *RecentProxy::instance()

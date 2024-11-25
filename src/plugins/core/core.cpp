@@ -5,6 +5,7 @@
 #include "core.h"
 #include "uicontroller//controller.h"
 #include "services/window/windowservice.h"
+#include "services/session/sessionservice.h"
 #include "locator/locatormanager.h"
 #include "locator/actionlocator.h"
 
@@ -19,6 +20,10 @@ void Core::initialize()
 
     auto &ctx = dpfInstance.serviceContext();
     if (!ctx.load(WindowService::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
+    if (!ctx.load(SessionService::name(), &errStr)) {
         qCritical() << errStr;
         abort();
     }
