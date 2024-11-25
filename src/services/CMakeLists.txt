@@ -25,6 +25,7 @@ FILE(GLOB SERVICES_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/terminal/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/locator/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/ai/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/session/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
     )
 

@@ -697,6 +697,11 @@ void TabWidget::closeFileEditor()
         closeFileEditor(editor->getFile());
 }
 
+void TabWidget::closeAllEditor()
+{
+    d->tabBar->closeAllTab({}, true);
+}
+
 void TabWidget::switchHeaderSource()
 {
     auto editor = d->currentTextEditor();

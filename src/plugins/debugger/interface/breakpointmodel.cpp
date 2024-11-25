@@ -121,6 +121,11 @@ Internal::Breakpoint BreakpointModel::currentBreakpoint() const
     return bps.at(currentIndex).breakpoint();
 }
 
+const BreakpointItems &BreakpointModel::breakpointList() const
+{
+    return bps;
+}
+
 int BreakpointModel::rowCount(const QModelIndex &parent) const
 {
     // Since the stack is not a tree, row count is 0 for any valid parent

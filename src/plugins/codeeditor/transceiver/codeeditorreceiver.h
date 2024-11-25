@@ -35,6 +35,10 @@ private:
     void processSetDebugLineEvent(const dpf::Event &event);
     void processRemoveDebugLineEvent(const dpf::Event &event);
 
+    // session
+    void processSessionLoadedEvent(const dpf::Event &event);
+    void processReadyToSaveSessionEvent(const dpf::Event &event);
+
 private:
     QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
 };
@@ -71,6 +75,10 @@ signals:
     void reqClearAllBreakpoints();
     void reqSetDebugLine(const QString &fileName, int line);
     void reqRemoveDebugLine();
+
+    // session
+    void reqSaveSession();
+    void reqSessionLoaded();
 };
 
 #endif   // CODEEDITORRECEIVER_H

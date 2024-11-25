@@ -63,8 +63,6 @@ MainWindow::MainWindow(QWidget *parent)
     titlebar()->setFocusPolicy(Qt::NoFocus);
 
     setWindowIcon(QIcon::fromTheme("ide"));
-    setAttribute(Qt::WA_DeleteOnClose);
-
     setStyle(new CustomStyle());
     addTopToolBar();
     setContextMenuPolicy(Qt::NoContextMenu);   //donot show left toolbar`s contextmenu

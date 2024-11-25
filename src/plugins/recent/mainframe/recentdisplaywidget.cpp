@@ -4,9 +4,11 @@
 
 #include "recentdisplaywidget.h"
 #include "recentlistview.h"
+#include "sessionitemwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "services/project/projectgenerator.h"
+#include "services/session/sessionservice.h"
 #include "common/settings/settings.h"
 
 #include <DLabel>
@@ -36,13 +38,23 @@ static RecentDisplayWidget *ins { nullptr };
 
 class RecentDisplayWidgetPrivate
 {
-    friend class RecentDisplayWidget;
+public:
+    explicit RecentDisplayWidgetPrivate(RecentDisplayWidget *qq);
+
+    void createProjectWidget();
+    void createDocumentWidget();
+    void createSessionWidget();
+
+public:
+    RecentDisplayWidget *q;
+
     QHBoxLayout *hLayout { nullptr };
     QVBoxLayout *vLayoutDoc { nullptr };
     QVBoxLayout *vLayoutPro { nullptr };
     DWidget *recentOpen { nullptr };
     RecentProjectView *proView { nullptr };
     RecentDocemntView *docView { nullptr };
+    SessionItemListWidget *sessionListWidget { nullptr };
     QList<ItemListView *> viewList;
     DLabel *proLabel { nullptr };
     DToolButton *proClear { nullptr };
@@ -52,19 +64,129 @@ class RecentDisplayWidgetPrivate
     DToolButton *docClear { nullptr };
     DDialog *clearDocConfirm { nullptr };
 
+    DToolButton *sessionSetBtn { nullptr };
+
     DFrame *navFrame { nullptr };
     DFrame *docFrame { nullptr };
     DFrame *proFrame { nullptr };
+    DFrame *sessionFrame { nullptr };
     DPushButton *btnOpenFile { nullptr };
     DPushButton *btnOpenProject { nullptr };
     DPushButton *btnNewFileOrPro { nullptr };
     DLabel *nullRecentText { nullptr };
 
     Settings recentSettings;
+    SessionService *sessionSrv { nullptr };
 };
 
+RecentDisplayWidgetPrivate::RecentDisplayWidgetPrivate(RecentDisplayWidget *qq)
+    : q(qq)
+{
+    sessionSrv = dpfGetService(SessionService);
+}
+
+void RecentDisplayWidgetPrivate::createProjectWidget()
+{
+    proFrame = new DFrame(q);
+    proFrame->setLineWidth(0);
+    DStyle::setFrameRadius(proFrame, 0);
+    proView = new RecentProjectView(q);
+
+    proLabel = new DLabel(RecentDisplayWidget::tr("Projects"), q);
+    proLabel->setForegroundRole(QPalette::BrightText);
+    proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    proLabel->setContentsMargins(10, 5, 0, 10);
+
+    proClear = new DToolButton(q);
+    proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    proClear->setToolTip(RecentDisplayWidget::tr("clear all"));
+
+    clearProConfirm = new DDialog(q);
+    clearProConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
+    clearProConfirm->setMessage(RecentDisplayWidget::tr("Confirm to clear the record of the opened project?"));
+    clearProConfirm->insertButton(0, RecentDisplayWidget::tr("Cancel", "button"));
+    clearProConfirm->insertButton(1, RecentDisplayWidget::tr("Delete", "button"), true, DDialog::ButtonWarning);
+
+    QHBoxLayout *proHlayout = new QHBoxLayout;
+    proHlayout->addWidget(proLabel);
+    proHlayout->addWidget(proClear);
+
+    DFontSizeManager::instance()->bind(proLabel, DFontSizeManager::T4, QFont::Medium);
+    vLayoutPro = new QVBoxLayout();
+    vLayoutPro->setContentsMargins(10, 10, 10, 10);
+    vLayoutPro->addLayout(proHlayout);
+    vLayoutPro->setSpacing(0);
+    vLayoutPro->addWidget(proView);
+    proFrame->setLayout(vLayoutPro);
+}
+
+void RecentDisplayWidgetPrivate::createDocumentWidget()
+{
+    docFrame = new DFrame();
+    docFrame->setLineWidth(0);
+    DStyle::setFrameRadius(docFrame, 0);
+    docView = new RecentDocemntView(q);
+
+    docLabel = new DLabel(RecentDisplayWidget::tr("Documents"));
+    docLabel->setForegroundRole(QPalette::BrightText);
+    docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    docLabel->setContentsMargins(10, 5, 0, 10);
+
+    docClear = new DToolButton(q);
+    docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    docClear->setToolTip(RecentDisplayWidget::tr("clear all"));
+
+    clearDocConfirm = new DDialog(q);
+    clearDocConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
+    clearDocConfirm->setMessage(RecentDisplayWidget::tr("Confirm to clear the record of the opened file?"));
+    clearDocConfirm->insertButton(0, RecentDisplayWidget::tr("Cancel", "button"));
+    clearDocConfirm->insertButton(1, RecentDisplayWidget::tr("Delete", "button"), true, DDialog::ButtonWarning);
+
+    QHBoxLayout *docHlayout = new QHBoxLayout;
+    docHlayout->addWidget(docLabel);
+    docHlayout->addWidget(docClear);
+
+    DFontSizeManager::instance()->bind(docLabel, DFontSizeManager::T4, QFont::Medium);
+    vLayoutDoc = new QVBoxLayout();
+    vLayoutDoc->setContentsMargins(10, 10, 10, 10);
+    vLayoutDoc->addLayout(docHlayout);
+    vLayoutDoc->setSpacing(0);
+    vLayoutDoc->addWidget(docView);
+    docFrame->setLayout(vLayoutDoc);
+}
+
+void RecentDisplayWidgetPrivate::createSessionWidget()
+{
+    sessionFrame = new DFrame(q);
+    sessionFrame->setLineWidth(0);
+    sessionFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    DStyle::setFrameRadius(sessionFrame, 0);
+    sessionListWidget = new SessionItemListWidget(q);
+
+    DLabel *sessionLabel = new DLabel(RecentDisplayWidget::tr("Session"), q);
+    sessionLabel->setForegroundRole(QPalette::BrightText);
+    sessionLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    sessionLabel->setContentsMargins(10, 5, 0, 10);
+    DFontSizeManager::instance()->bind(sessionLabel, DFontSizeManager::T4, QFont::Medium);
+
+    sessionSetBtn = new DToolButton(q);
+    sessionSetBtn->setIcon(QIcon::fromTheme("uc_settings"));
+    sessionSetBtn->setToolTip(RecentDisplayWidget::tr("session manager"));
+
+    QHBoxLayout *headerLayout = new QHBoxLayout;
+    headerLayout->addWidget(sessionLabel);
+    headerLayout->addWidget(sessionSetBtn);
+
+    QVBoxLayout *vLayout = new QVBoxLayout(sessionFrame);
+    vLayout->setContentsMargins(10, 10, 10, 10);
+    vLayout->setSpacing(0);
+    vLayout->addLayout(headerLayout);
+    vLayout->addWidget(sessionListWidget);
+}
+
 RecentDisplayWidget::RecentDisplayWidget(DWidget *parent)
-    : DWidget(parent), d(new RecentDisplayWidgetPrivate())
+    : DWidget(parent),
+      d(new RecentDisplayWidgetPrivate(this))
 {
     initializeUi();
     initConnect();
@@ -113,6 +235,21 @@ void RecentDisplayWidget::addProject(const QString &kitName,
 
     d->proView->clear();
     d->proView->setItemList(itemList);
+}
+
+void RecentDisplayWidget::addSession(const QString &session)
+{
+    d->sessionListWidget->addSessionList({ session });
+}
+
+void RecentDisplayWidget::removeSession(const QString &session)
+{
+    d->sessionListWidget->removeSession(session);
+}
+
+void RecentDisplayWidget::updateSessions()
+{
+    d->sessionListWidget->updateSessions();
 }
 
 void RecentDisplayWidget::doDoubleClickedProject(const QModelIndex &index)
@@ -201,8 +338,6 @@ void RecentDisplayWidget::clearDocList()
 void RecentDisplayWidget::initializeUi()
 {
     d->navFrame = new DFrame();
-    d->docFrame = new DFrame();
-    d->proFrame = new DFrame();
 
     d->navFrame->setLineWidth(0);
     d->navFrame->setContentsMargins(0, 0, 0, 0);
@@ -233,74 +368,19 @@ void RecentDisplayWidget::initializeUi()
     recentTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     DFontSizeManager::instance()->bind(recentTitle, DFontSizeManager::T4, QFont::Medium);
 
-    //recent open document
-    d->docFrame->setLineWidth(0);
-    DStyle::setFrameRadius(d->docFrame, 0);
-    d->docView = new RecentDocemntView(this);
+    d->createDocumentWidget();
+    d->createProjectWidget();
+    d->createSessionWidget();
 
-    d->docLabel = new DLabel(tr("Documents"));
-    d->docLabel->setForegroundRole(QPalette::BrightText);
-    d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    d->docLabel->setContentsMargins(10, 5, 0, 10);
-
-    d->docClear = new DToolButton(this);
-    d->docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
-    d->docClear->setToolTip(tr("clear all"));
-
-    d->clearDocConfirm = new DDialog(this);
-    d->clearDocConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
-    d->clearDocConfirm->setMessage(tr("Confirm to clear the record of the opened file?"));
-    d->clearDocConfirm->insertButton(0, tr("Cancel", "button"));
-    d->clearDocConfirm->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);
-
-    QHBoxLayout *docHlayout = new QHBoxLayout;
-    docHlayout->addWidget(d->docLabel);
-    docHlayout->addWidget(d->docClear);
-
-    DFontSizeManager::instance()->bind(d->docLabel, DFontSizeManager::T4, QFont::Medium);
-    d->vLayoutDoc = new QVBoxLayout();
-    d->vLayoutDoc->setContentsMargins(10, 10, 10, 10);
-    d->vLayoutDoc->addLayout(docHlayout);
-    d->vLayoutDoc->setSpacing(0);
-    d->vLayoutDoc->addWidget(d->docView);
-    d->docFrame->setLayout(d->vLayoutDoc);
-
-    //recent open projects
-    d->proFrame->setLineWidth(0);
-    DStyle::setFrameRadius(d->proFrame, 0);
-    d->proView = new RecentProjectView(this);
-
-    d->proLabel = new DLabel(tr("Projects"), this);
-    d->proLabel->setForegroundRole(QPalette::BrightText);
-    d->proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    d->proLabel->setContentsMargins(10, 5, 0, 10);
-
-    d->proClear = new DToolButton(this);
-    d->proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
-    d->proClear->setToolTip(tr("clear all"));
-
-    d->clearProConfirm = new DDialog(this);
-    d->clearProConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
-    d->clearProConfirm->setMessage(tr("Confirm to clear the record of the opened project?"));
-    d->clearProConfirm->insertButton(0, tr("Cancel", "button"));
-    d->clearProConfirm->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);
-
-    QHBoxLayout *proHlayout = new QHBoxLayout;
-    proHlayout->addWidget(d->proLabel);
-    proHlayout->addWidget(d->proClear);
-
-    DFontSizeManager::instance()->bind(d->proLabel, DFontSizeManager::T4, QFont::Medium);
-    d->vLayoutPro = new QVBoxLayout();
-    d->vLayoutPro->setContentsMargins(10, 10, 10, 10);
-    d->vLayoutPro->addLayout(proHlayout);
-    d->vLayoutPro->setSpacing(0);
-    d->vLayoutPro->addWidget(d->proView);
-    d->proFrame->setLayout(d->vLayoutPro);
+    QVBoxLayout *sessionDocLayout = new QVBoxLayout;
+    sessionDocLayout->setSpacing(2);
+    sessionDocLayout->addWidget(d->docFrame);
+    sessionDocLayout->addWidget(d->sessionFrame);
 
     QHBoxLayout *proAndDocLayout = new QHBoxLayout();
     proAndDocLayout->addWidget(d->proFrame);
     proAndDocLayout->setSpacing(2);
-    proAndDocLayout->addWidget(d->docFrame);
+    proAndDocLayout->addLayout(sessionDocLayout);
 
     d->recentOpen = new DWidget(this);
     QVBoxLayout *recentNavLayout = new QVBoxLayout(d->recentOpen);
@@ -366,6 +446,9 @@ void RecentDisplayWidget::initConnect()
         else if (index == 1)
             clearProList();
     });
+    QObject::connect(d->sessionSetBtn, &DToolButton::clicked, this, [this] {
+        d->sessionSrv->showSessionManager();
+    });
 }
 
 [[deprecated("-------------存在兼容代码需要删除")]] void RecentDisplayWidget::initData()
@@ -402,6 +485,7 @@ void RecentDisplayWidget::initConnect()
 
     d->proView->setItemList(d->recentSettings.value(kRecentGroup, d->proView->configKey()).toList());
     d->docView->setItemList(d->recentSettings.value(kRecentGroup, d->docView->configKey()).toList());
+    d->sessionListWidget->addSessionList(d->sessionSrv->sessionList());
 }
 
 void RecentDisplayWidget::showEvent(QShowEvent *event)

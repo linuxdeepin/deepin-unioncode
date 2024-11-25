@@ -174,6 +174,7 @@ public:
     void initIndicStyle();
 
     bool shouldStartCompletion(const QString &insertedText);
+    bool documentIsOpened();
     int wordPostion();
     newlsp::Client *getClient();
 
@@ -225,6 +226,8 @@ public:
 
     QThread thread;
     LanguageWorker *languageWorker { nullptr };
+    bool isInited { false };
+    bool isOpened { false };
 };
 
 #endif   // LANGUAGECLIENTHANDLER_P_H

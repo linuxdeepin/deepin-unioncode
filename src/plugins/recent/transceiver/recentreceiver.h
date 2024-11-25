@@ -15,10 +15,18 @@ public:
     explicit RecentReceiver(QObject * parent = nullptr);
 
     static Type type();
-
     static QStringList topics();
-
     virtual void eventProcess(const dpf::Event& event) override;
+
+private:
+    void processSaveOpenedProjectEvent(const dpf::Event& event);
+    void processSaveOpenedFileEvent(const dpf::Event& event);
+    void processSessionCreatedEvent(const dpf::Event& event);
+    void processSessionRemovedEvent(const dpf::Event& event);
+    void processSessionLoadedEvent(const dpf::Event &event);
+
+private:
+    QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
 };
 
 class RecentProxy : public QObject

@@ -19,10 +19,31 @@ dpf::EventHandler::Type DebugEventReceiver::type()
 
 QStringList DebugEventReceiver::topics()
 {
-    return {T_BUILDER, project.topic, debugger.topic, editor.topic};
+    return { T_BUILDER, project.topic, debugger.topic, editor.topic };
 }
 
 void DebugEventReceiver::eventProcess(const dpf::Event &event)
+{
+    emit debuggerSignals->receivedEvent(event);
+}
+
+SyncDebugEventReceiver::SyncDebugEventReceiver(QObject *parent)
+    : dpf::EventHandler(parent),
+      dpf::AutoEventHandlerRegister<SyncDebugEventReceiver>()
+{
+}
+
+dpf::EventHandler::Type SyncDebugEventReceiver::type()
+{
+    return dpf::EventHandler::Type::Sync;
+}
+
+QStringList SyncDebugEventReceiver::topics()
+{
+    return { session.topic };
+}
+
+void SyncDebugEventReceiver::eventProcess(const dpf::Event &event)
 {
     emit debuggerSignals->receivedEvent(event);
 }

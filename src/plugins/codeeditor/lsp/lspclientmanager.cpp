@@ -33,7 +33,6 @@ newlsp::Client *LSPClientManager::get(const newlsp::ProjectKey &key)
     } else {
         auto client = new newlsp::Client();
         qApp->metaObject()->invokeMethod(client, "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
-        QString complieDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + ".unioncode";
         qApp->metaObject()->invokeMethod(client, "initRequest");
         clientHash.insert(key, client);
     }

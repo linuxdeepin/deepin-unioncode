@@ -18,7 +18,9 @@
 #include <QApplication>
 #include <QFileDialog>
 
-constexpr char TextEditorContext[] { "Text Editor" };
+constexpr char kTextEditorContext[] { "Text Editor" };
+constexpr char kOpenedFileList[] { "OpenFileList" };
+constexpr char kCurrentFile[] { "CurrentFile" };
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
@@ -27,6 +29,7 @@ WorkspaceWidgetPrivate::WorkspaceWidgetPrivate(WorkspaceWidget *qq)
     : QObject(qq),
       q(qq)
 {
+    sessionSrv = dpfGetService(SessionService);
     fileCheckTimer.setInterval(500);
     fileCheckTimer.setSingleShot(true);
 }
@@ -69,13 +72,13 @@ void WorkspaceWidgetPrivate::initActions()
 
     // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
-    auto cmd = ActionManager::instance()->registerAction(commentAction, "TextEditor.AddAndRemoveComment", { TextEditorContext });
+    auto cmd = ActionManager::instance()->registerAction(commentAction, "TextEditor.AddAndRemoveComment", { kTextEditorContext });
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Slash);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
 
     // show opened files
     QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
-    cmd = ActionManager::instance()->registerAction(showOpenedAction, "TextEditor.ShowOpenedFiles", { TextEditorContext });
+    cmd = ActionManager::instance()->registerAction(showOpenedAction, "TextEditor.ShowOpenedFiles", { kTextEditorContext });
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Tab);
     connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 
@@ -438,7 +441,7 @@ void WorkspaceWidgetPrivate::initActions()
         if (!actionText.isEmpty()) {
             auto id = QString("TextEditor.%1").arg(me.valueToKey(val));
             auto act = new QAction(actionText, q);
-            auto cmd = ActionManager::instance()->registerAction(act, id, { TextEditorContext });
+            auto cmd = ActionManager::instance()->registerAction(act, id, { kTextEditorContext });
             if (!ksList.isEmpty())
                 cmd->setDefaultKeySequences(ksList);
             connect(act, &QAction::triggered, this, [val, this] {
@@ -469,6 +472,32 @@ void WorkspaceWidgetPrivate::handleShowOpenedFiles()
     currentTabWidget()->handleShowOpenedFiles(q->pos().x() - q->mapFromGlobal(q->pos()).x(), q->pos().y() + q->mapToGlobal(q->pos()).y() - 100, q->size());
 }
 
+void WorkspaceWidgetPrivate::handleSaveSession()
+{
+    sessionSrv->setValue(kOpenedFileList, q->openedFiles());
+    sessionSrv->setValue(kCurrentFile, q->currentFile());
+}
+
+void WorkspaceWidgetPrivate::handleSessionLoaded()
+{
+    while (tabWidgetList.size() > 1) {
+        auto tabWidget = tabWidgetList.takeLast();
+        tabWidget->deleteLater();
+    }
+
+    tabWidgetList.first()->closeAllEditor();
+    focusTabWidget = tabWidgetList.first();
+    auto symbolWidget = SymbolWidgetGenerator::instance()->symbolWidget();
+    symbolWidget->setEditor(nullptr);
+
+    const auto &openedFiles = sessionSrv->value(kOpenedFileList).toStringList();
+    const auto &currentFile = sessionSrv->value(kCurrentFile).toString();
+    for (const auto &file : openedFiles)
+        handleOpenFile("", file);
+    if (!currentFile.isEmpty())
+        handleOpenFile("", currentFile);
+}
+
 void WorkspaceWidgetPrivate::initConnection()
 {
     connect(&fileCheckTimer, &QTimer::timeout, this, &WorkspaceWidgetPrivate::checkFileState);
@@ -495,6 +524,8 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol, this, &WorkspaceWidgetPrivate::handleRenameSymbol);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint, this, &WorkspaceWidgetPrivate::handleToggleBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetModifiedAutoReload, this, &WorkspaceWidgetPrivate::handleSetModifiedAutoReload);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSaveSession, this, &WorkspaceWidgetPrivate::handleSaveSession);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSessionLoaded, this, &WorkspaceWidgetPrivate::handleSessionLoaded);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -904,18 +935,18 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
     Q_UNUSED(old)
 
     if (!now) {
-        ActionManager::instance()->removeContext({ TextEditorContext });
+        ActionManager::instance()->removeContext({ kTextEditorContext });
         return;
     }
 
     // the `now` is TextEditor
     auto tabWidget = qobject_cast<TabWidget *>(now->parentWidget());
     if (!tabWidget) {
-        ActionManager::instance()->removeContext({ TextEditorContext });
+        ActionManager::instance()->removeContext({ kTextEditorContext });
         return;
     }
 
-    ActionManager::instance()->addContext({ TextEditorContext });
+    ActionManager::instance()->addContext({ kTextEditorContext });
     focusTabWidget = tabWidget;
     editor.switchedFile(focusTabWidget->currentFile());
     auto symbolWidget = SymbolWidgetGenerator::instance()->symbolWidget();

@@ -125,6 +125,13 @@ OPI_OBJECT(workspace,
            OPI_INTERFACE(expandAll)
            OPI_INTERFACE(foldAll)
            )
+OPI_OBJECT(session,
+           OPI_INTERFACE(readyToSaveSession)
+           OPI_INTERFACE(sessionLoaded, "session")
+           OPI_INTERFACE(sessionCreated, "session")
+           OPI_INTERFACE(sessionRenamed, "oldName", "newName")
+           OPI_INTERFACE(sessionRemoved, "session")
+           )
 
 struct AnalysedData
 {

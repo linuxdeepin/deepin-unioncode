@@ -30,5 +30,11 @@
         <file>builtin/dark/icons/notification_error_20px.svg</file>
         <file>builtin/dark/icons/notification_info_20px.svg</file>
         <file>builtin/dark/icons/notification_warning_20px.svg</file>
+        <file>builtin/texts/uc_open_16px.svg</file>
+        <file>builtin/texts/uc_edit_16px.svg</file>
+        <file>builtin/texts/uc_delete_16px.svg</file>
+        <file>builtin/texts/uc_clone_16px.svg</file>
+        <file>builtin/texts/uc_add_16px.svg</file>
+        <file>builtin/texts/uc_help_16px.svg</file>
     </qresource>
 </RCC>

@@ -17,6 +17,7 @@
 #include "modules/contextmodule.h"
 #include "modules/notificationmodule.h"
 #include "modules/dependencemodule.h"
+#include "modules/sessionmanagermodule.h"
 #include "locator/locatormanager.h"
 #include "find/placeholdermanager.h"
 
@@ -198,6 +199,7 @@ Controller::Controller(QObject *parent)
     registerModule("contextModule", new ContextModule());
     registerModule("notifyModule", new NotificationModule());
     registerModule("dependenceModule", new DependenceModule());
+    registerModule("sessionManagerModule", new SessionManagerModule());
     initModules();
 }
 

@@ -32,6 +32,7 @@ public:
     QAbstractItemModel *model() { return this; }
     bool isContentsValid() const { return contentsValid; }
     Internal::Breakpoint currentBreakpoint() const;
+    const BreakpointItems &breakpointList() const;
 signals:
     void breakpointChanged();
     void currentIndexChanged();

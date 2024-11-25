@@ -190,7 +190,7 @@ bool Settings::contains(const QString &group, const QString &key) const
     return d->defaultData.values.value(group).contains(key);
 }
 
-QVariant Settings::value(const QString &group, const QString &key, const QVariant &defaultValue)
+QVariant Settings::value(const QString &group, const QString &key, const QVariant &defaultValue) const
 {
     auto value = d->settingData.value(group, key, QVariant::Invalid);
     if (value.isValid())
@@ -199,7 +199,7 @@ QVariant Settings::value(const QString &group, const QString &key, const QVarian
     return d->defaultData.value(group, key, defaultValue);
 }
 
-QVariant Settings::defaultValue(const QString &group, const QString &key, const QVariant &defaultValue)
+QVariant Settings::defaultValue(const QString &group, const QString &key, const QVariant &defaultValue) const
 {
     return d->defaultData.value(group, key, defaultValue);
 }

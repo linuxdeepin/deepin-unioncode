@@ -21,9 +21,9 @@ class ProjectTree : public DTreeView
 public:
     explicit ProjectTree(QWidget *parent = nullptr);
     ~ProjectTree() override;
+    void clear();
     void activeProjectInfo(const dpfservice::ProjectInfo &info);
-    void activeProjectInfo(const QString &kitName, const QString &language,
-                           const QString &workspace);
+    void activeProjectInfo(const QString &workspace);
     void appendRootItem(QStandardItem *root);
     void removeRootItem(QStandardItem *root);
     void takeRootItem(QStandardItem *root);

@@ -20,8 +20,8 @@ public:
     QStringList groupList() const;
     QStringList keyList(const QString &group) const;
     bool contains(const QString &group, const QString &key) const;
-    QVariant value(const QString &group, const QString &key, const QVariant &defaultValue = QVariant());
-    QVariant defaultValue(const QString &group, const QString &key, const QVariant &defaultValue = QVariant());
+    QVariant value(const QString &group, const QString &key, const QVariant &defaultValue = QVariant()) const;
+    QVariant defaultValue(const QString &group, const QString &key, const QVariant &defaultValue = QVariant()) const;
     void setValue(const QString &group, const QString &key, const QVariant &value, bool notify = false);
     void removeGroup(const QString &group);
     void remove(const QString &group, const QString &key);

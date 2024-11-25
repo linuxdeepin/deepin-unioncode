@@ -17,9 +17,18 @@ public:
     static Type type();
     static QStringList topics();
 
-signals:
+private:
+    virtual void eventProcess(const dpf::Event &event) override;
+};
 
-public slots:
+class SyncDebugEventReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<SyncDebugEventReceiver>
+{
+    friend class dpf::AutoEventHandlerRegister<SyncDebugEventReceiver>;
+
+public:
+    explicit SyncDebugEventReceiver(QObject *parent = nullptr);
+    static Type type();
+    static QStringList topics();
 
 private:
     virtual void eventProcess(const dpf::Event &event) override;

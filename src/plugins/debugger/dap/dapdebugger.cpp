@@ -23,6 +23,7 @@
 #include "services/option/optionmanager.h"
 #include "services/language/languageservice.h"
 #include "services/window/windowservice.h"
+#include "services/session/sessionservice.h"
 #include "unistd.h"
 #include "base/baseitemdelegate.h"
 
@@ -49,6 +50,11 @@
 #define PER_WAIT_MSEC (1000)
 #define MAX_WAIT_TIMES (10)
 
+constexpr char kBreakpointList[] { "BreakpointList" };
+constexpr char kFileName[] { "FileName" };
+constexpr char kLineNumber[] { "LineNumber" };
+constexpr char kEnable[] { "Enabel" };
+constexpr char kBreakpointCondition[] { "Condition" };
 /**
  * @brief Debugger::Debugger
  * For serial debugging service
@@ -58,7 +64,7 @@ using namespace DEBUG_NAMESPACE;
 using namespace dpfservice;
 using DTK_WIDGET_NAMESPACE::DSpinner;
 
-void notify(uint type, const QString &message) // type 0-infomation, 1-warning, 2-error
+void notify(uint type, const QString &message)   // type 0-infomation, 1-warning, 2-error
 {
     auto wdService = dpfGetService(WindowService);
     wdService->notify(type, QObject::tr("Debug"), message, {});
@@ -121,11 +127,11 @@ class DebuggerPrivate
 
     QProcess backend;
 
-    QMultiMap<QString, int> bps;
     bool isRemote = false;
     RemoteInfo remoteInfo;
 
     DAPDebugger::debugState debugState = DAPDebugger::Normal;
+    SessionService *sessionSrv = nullptr;
 };
 
 DebuggerPrivate::~DebuggerPrivate()
@@ -135,8 +141,7 @@ DebuggerPrivate::~DebuggerPrivate()
 }
 
 DAPDebugger::DAPDebugger(QObject *parent)
-    : AbstractDebugger(parent)
-    , d(new DebuggerPrivate())
+    : AbstractDebugger(parent), d(new DebuggerPrivate())
 {
     qRegisterMetaType<OutputPane::OutputFormat>("OutputPane::OutputFormat");
     qRegisterMetaType<StackFrameData>("StackFrameData");
@@ -147,6 +152,7 @@ DAPDebugger::DAPDebugger(QObject *parent)
     qRegisterMetaType<dpf::Event>("dpf::Event");
     qRegisterMetaType<RunState>("RunState");
 
+    d->sessionSrv = dpfGetService(SessionService);
     d->localSession = new DebugSession(debugService->getModel(), this);
     d->currentSession = d->localSession;
     connect(d->currentSession, &DebugSession::sigRegisterHandlers, this, &DAPDebugger::registerDapHandlers);
@@ -165,7 +171,7 @@ DAPDebugger::DAPDebugger(QObject *parent)
                        "/path",
                        "com.deepin.unioncode.interface",
                        "output",
-                       this, SLOT(slotOutputMsg(const QString&, const QString&)));
+                       this, SLOT(slotOutputMsg(const QString &, const QString &)));
 
     initializeView();
 
@@ -231,7 +237,7 @@ void DAPDebugger::startRerverseDebug(const QString &target)
         d->currentSession = d->localSession;
 
     updateRunState(kPreparing);
-    
+
     QMap<QString, QVariant> param;
     param.insert("program", "rr");
 
@@ -241,9 +247,9 @@ void DAPDebugger::startRerverseDebug(const QString &target)
                                                   "getDebugPort");
 
     msg << d->requestDAPPortPpid
-        << "cmake" //rr only support c/c++
+        << "cmake"   //rr only support c/c++
         << ""
-        << QStringList{target};
+        << QStringList { target };
 
     bool ret = QDBusConnection::sessionBus().send(msg);
     if (!ret) {
@@ -256,18 +262,18 @@ void DAPDebugger::startDebugRemote(const RemoteInfo &info)
 {
     d->remoteInfo = info;
     d->isRemote = true;
-    
+
     if (d->remoteSession)
         delete d->remoteSession;
-    
+
     d->remoteSession = new DebugSession(debugService->getModel(), this);
     d->remoteSession->setRemote(true);
     d->remoteSession->setLocalProjectPath(getActiveProjectInfo().workspaceFolder());
     d->remoteSession->setRemoteProjectPath(info.projectPath);
-    
+
     d->currentSession = d->remoteSession;
     connect(d->currentSession, &DebugSession::sigRegisterHandlers, this, &DAPDebugger::registerDapHandlers, Qt::DirectConnection);
-    
+
     QMap<QString, QVariant> param;
     param.insert("ip", info.ip);
     param.insert("workspace", info.projectPath);
@@ -275,7 +281,7 @@ void DAPDebugger::startDebugRemote(const RemoteInfo &info)
     prepareDebug();
 
     launchSession(info.port, param, d->activeProjectKitName);
-    
+
     updateRunState(kPreparing);
 }
 
@@ -301,7 +307,7 @@ void DAPDebugger::attachDebug(const QString &processId)
     QString debuggerTool = prjInfo.debugProgram();
     if (!debuggerTool.contains("gdb")) {
         auto msg = tr("The gdb is required, please install it in console with \"sudo apt install gdb\", "
-                    "and then restart the tool, reselect the CMake Debugger in Options Dialog...");
+                      "and then restart the tool, reselect the CMake Debugger in Options Dialog...");
         printOutput(msg, OutputPane::OutputFormat::ErrorMessage);
         return;
     }
@@ -431,6 +437,14 @@ DAPDebugger::RunState DAPDebugger::getRunState() const
 
 void DAPDebugger::addBreakpoint(const QString &filePath, int lineNumber)
 {
+    const auto &bps = d->breakpointModel.breakpointList();
+    bool ret = std::any_of(bps.cbegin(), bps.cend(),
+                           [&](const BreakpointItem &bp) {
+                               return filePath == bp.filePath() && lineNumber == bp.lineNumber();
+                           });
+    if (ret)
+        return;
+
     // update model here.
     Internal::Breakpoint bp;
     bp.filePath = filePath;
@@ -470,6 +484,13 @@ void DAPDebugger::removeBreakpoint(const QString &filePath, int lineNumber)
     }
 }
 
+void DAPDebugger::removeAllBreakpoints()
+{
+    const auto &bps = d->breakpointModel.breakpointList();
+    for (const auto &bp : bps)
+        removeBreakpoint(bp.filePath(), bp.lineNumber());
+}
+
 void DAPDebugger::switchBreakpointsStatus(const QString &filePath, int lineNumber, bool enabled)
 {
     Internal::Breakpoint bp;
@@ -495,7 +516,7 @@ void DAPDebugger::setBreakpointCondition(const QString &filePath, int lineNumber
     bp.lineNumber = lineNumber;
     bp.condition = expression;
     d->breakpointModel.setBreakpointCondition(bp);
-    
+
     // send to backend.
     if (d->runState == kStopped || d->runState == kRunning) {
         debugService->setBreakpointCondition(filePath, lineNumber, expression, d->currentSession);
@@ -628,7 +649,7 @@ void DAPDebugger::registerDapHandlers()
         if (event.reason == "signal-received" && event.description.has_value()) {
             signalStopped = true;
             auto signalName = QString::fromStdString(event.description.value().c_str());
-            if (signalName == "SIGSEGV") { // Segmentation fault
+            if (signalName == "SIGSEGV") {   // Segmentation fault
                 auto signalMeaning = event.text.has_value() ? event.text.value().c_str() : "";
                 QMetaObject::invokeMethod(this, "showStoppedBySignalMessageBox",
                                           Q_ARG(QString, QString::fromStdString(signalMeaning)), Q_ARG(QString, signalName));
@@ -640,15 +661,15 @@ void DAPDebugger::registerDapHandlers()
         bool attaching = d->debugState == Attaching;
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
-                || event.reason == "breakpoint"
-                || event.reason == "step"
-                || event.reason == "breakpoint-hit"
-                || event.reason == "function-finished"
-                || event.reason == "end-stepping-range"
-                || event.reason == "goto"
-                || event.reason == "pause" // python send it when pauseing
-                || signalStopped
-                || (event.reason == "unknown" && attaching)) {
+            || event.reason == "breakpoint"
+            || event.reason == "step"
+            || event.reason == "breakpoint-hit"
+            || event.reason == "function-finished"
+            || event.reason == "end-stepping-range"
+            || event.reason == "goto"
+            || event.reason == "pause"   // python send it when pauseing
+            || signalStopped
+            || (event.reason == "unknown" && attaching)) {
             //when attaching to running program . it won`t receive initialized event and event`s reason is "unknwon"
             //so initial breakpoints in here
             if (attaching) {
@@ -756,7 +777,7 @@ void DAPDebugger::registerDapHandlers()
 
         QString output = event.output.c_str();
         if (output.contains("received signal")
-                || output.contains("Program")) {
+            || output.contains("Program")) {
             format = OutputPane::OutputFormat::StdErr;
         }
         printOutput(output, format);
@@ -891,14 +912,10 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
     } else if (event.data() == editor.breakpointAdded.name) {
         QString filePath = event.property(editor.breakpointAdded.pKeys[0]).toString();
         int line = event.property(editor.breakpointAdded.pKeys[1]).toInt() + 1;
-        if (d->bps.contains(filePath) && d->bps.values(filePath).contains(line))
-            return;
-        d->bps.insert(filePath, line);
         addBreakpoint(filePath, line);
     } else if (event.data() == editor.breakpointRemoved.name) {
         QString filePath = event.property(editor.breakpointRemoved.pKeys[0]).toString();
         int line = event.property(editor.breakpointRemoved.pKeys[1]).toInt() + 1;
-        d->bps.remove(filePath, line);
         removeBreakpoint(filePath, line);
     } else if (event.data() == editor.breakpointStatusChanged.name) {
         QString filePath = event.property("fileName").toString();
@@ -908,7 +925,7 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
     } else if (event.data() == editor.setBreakpointCondition.name) {
         QString filePath = event.property("fileName").toString();
         int line = event.property("line").toInt() + 1;
-        
+
         DDialog condition;
         DLineEdit *edit = new DLineEdit(d->breakpointView);
         edit->setPlaceholderText(tr("Input Condition Expression"));
@@ -932,6 +949,33 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         int line = event.property("line").toInt() + 1;
 
         runToLine(filePath, line);
+    } else if (event.data() == session.readyToSaveSession.name) {
+        QVariantList bpList;
+        const auto &bps = d->breakpointModel.breakpointList();
+        for (const auto &bp : bps) {
+            QVariantMap map;
+            map.insert(kFileName, bp.filePath());
+            map.insert(kLineNumber, bp.lineNumber());
+            map.insert(kEnable, bp.isEnabled());
+            map.insert(kBreakpointCondition, bp.condition());
+            bpList << map;
+        }
+        d->sessionSrv->setValue(kBreakpointList, bpList);
+    } else if (event.data() == session.sessionLoaded.name) {
+        removeAllBreakpoints();
+        const auto bps = d->sessionSrv->value(kBreakpointList).toList();
+        for (const auto &bp : bps) {
+            const auto &map = bp.toMap();
+            const auto fileName = map.value(kFileName).toString();
+            const int lineNumber = map.value(kLineNumber).toInt();
+            const bool enable = map.value(kEnable).toBool();
+            const auto condition = map.value(kBreakpointCondition).toString();
+            addBreakpoint(fileName, lineNumber);
+            if (!enable)
+                switchBreakpointsStatus(fileName, lineNumber, enable);
+            if (!condition.isEmpty())
+                setBreakpointCondition(fileName, lineNumber, condition);
+        }
     }
 }
 
@@ -974,13 +1018,13 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
         d->localsModel.clear();
     d->currentValidFrame = curFrame;
 
-    if(d->getLocalsFuture.isRunning())
+    if (d->getLocalsFuture.isRunning())
         d->getLocalsFuture.cancel();
 
     // update local variables.
-    d->processingVariablesTimer.start(50);     // if processing time < 50ms, do not show spinner
+    d->processingVariablesTimer.start(50);   // if processing time < 50ms, do not show spinner
     d->processingVariablesCount.ref();
-    d->getLocalsFuture = QtConcurrent::run([=](){
+    d->getLocalsFuture = QtConcurrent::run([=]() {
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
         d->localsModel.clearHighlightItems();
@@ -996,7 +1040,7 @@ void DAPDebugger::updateThreadList(int curr, const dap::array<dap::Thread> &thre
 {
     d->threadSelector->clear();
     int currIdx = -1;
-    for (const auto& e: threads) {
+    for (const auto &e : threads) {
         QString itemText = "#" + QString::number(e.id) + " " + e.name.c_str();
         d->threadSelector->addItem(itemText);
         if (curr == e.id)
@@ -1086,7 +1130,7 @@ bool DAPDebugger::showStoppedBySignalMessageBox(QString meaning, QString name)
                            "signal from the operating system.<p>"
                            "<table><tr><td>Signal name : </td><td>%1</td></tr>"
                            "<tr><td>Signal meaning : </td><td>%2</td></tr></table>")
-            .arg(name, meaning);
+                                .arg(name, meaning);
 
     d->alertBox = Internal::information(tr("Signal Received"), msg);
     return true;
@@ -1098,7 +1142,7 @@ void DAPDebugger::slotFrameSelected()
     d->processingVariablesTimer.start(50);
     d->processingVariablesCount.ref();
     auto curFrame = d->stackModel.currentFrame();
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
         d->localsModel.clearHighlightItems();
@@ -1117,20 +1161,20 @@ void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
 
 void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
 {
-    auto treeItem = static_cast<LocalTreeItem*>(index.internalPointer());
-    if(!treeItem->canFetchChildren() || (!d->localsView->isExpanded(index) && !d->watchsView->isExpanded(index)))
+    auto treeItem = static_cast<LocalTreeItem *>(index.internalPointer());
+    if (!treeItem->canFetchChildren() || (!d->localsView->isExpanded(index) && !d->watchsView->isExpanded(index)))
         return;
 
     treeItem->setChildrenFetched(true);
 
-    if (treeItem->childReference() == 0) { //clear child variables
+    if (treeItem->childReference() == 0) {   //clear child variables
         emit childVariablesUpdated(treeItem, {});
         return;
     }
 
     d->processingVariablesTimer.start(50);
     d->processingVariablesCount.ref();
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         IVariables variables;
         d->currentSession->getVariables(treeItem->childReference(), &variables, 0);
 
@@ -1202,12 +1246,12 @@ void DAPDebugger::initializeView()
 
     initializeVairablesPane();
 
-    connect(&d->processingVariablesTimer, &QTimer::timeout, this, [=](){
+    connect(&d->processingVariablesTimer, &QTimer::timeout, this, [=]() {
         d->variablesSpinner->show();
         d->variablesSpinner->raise();
         d->variablesSpinner->move(d->localsView->width() / 2 - d->variablesSpinner->width(), d->localsView->height() / 3);
     });
-    connect(this, &DAPDebugger::processingVariablesDone, this, [=](){
+    connect(this, &DAPDebugger::processingVariablesDone, this, [=]() {
         if (d->processingVariablesCount != 0)
             return;
         d->processingVariablesTimer.stop();
@@ -1229,15 +1273,15 @@ void DAPDebugger::initializeView()
 
     connect(&d->stackModel, &StackFrameModel::currentIndexChanged, this, &DAPDebugger::slotFrameSelected);
     connect(d->breakpointView, &QTreeView::doubleClicked, this, &DAPDebugger::slotBreakpointSelected);
-    
+
     connect(d->localsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
-    connect(this, &DAPDebugger::childVariablesUpdated, d->localsView, [=](LocalTreeItem *treeItem, IVariables vars){
+    connect(this, &DAPDebugger::childVariablesUpdated, d->localsView, [=](LocalTreeItem *treeItem, IVariables vars) {
         d->localsModel.appendItem(treeItem, vars);
     });
     connect(&d->localsModel, &LocalTreeModel::updateChildVariables, this, &DAPDebugger::slotGetChildVariable);
 
     connect(d->watchsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
-    connect(this, &DAPDebugger::childVariablesUpdated, d->watchsView, [=](LocalTreeItem *treeItem, IVariables vars){
+    connect(this, &DAPDebugger::childVariablesUpdated, d->watchsView, [=](LocalTreeItem *treeItem, IVariables vars) {
         d->watchsModel.appendItem(treeItem, vars);
     });
     connect(&d->watchsModel, &LocalTreeModel::updateChildVariables, this, &DAPDebugger::slotGetChildVariable);
@@ -1269,7 +1313,7 @@ void DAPDebugger::initializeVairablesPane()
 
     menu->addAction(evaluateWatchVariable);
     menu->addAction(remove);
-    connect(d->watchsView, &DTreeView::customContextMenuRequested, this, [=](const QPoint &pos){
+    connect(d->watchsView, &DTreeView::customContextMenuRequested, this, [=](const QPoint &pos) {
         auto index = d->watchsView->indexAt(pos);
         if (index.isValid() && d->watchsView->selectionModel()->selectedRows().size() == 1)
             remove->setEnabled(true);
@@ -1281,7 +1325,7 @@ void DAPDebugger::initializeVairablesPane()
     connect(evaluateWatchVariable, &QAction::triggered, this, &DAPDebugger::slotEvaluateWatchVariable);
     connect(remove, &QAction::triggered, this, &DAPDebugger::slotRemoveEvaluator);
 
-    QStringList headers { tr("Name"), tr("Value"), tr("Type")/*, "Reference" */};
+    QStringList headers { tr("Name"), tr("Value"), tr("Type") /*, "Reference" */ };
     d->localsModel.setHeaders(headers);
     d->watchsModel.setHeaders(headers);
 
@@ -1485,7 +1529,7 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
 
     printOutput(tr("Debugging starts"));
     QString launchTip = tr("Launch dap session with port %1 ...")
-            .arg(port);
+                                .arg(port);
     printOutput(launchTip);
 
     d->currentDebugKit = kitName;
@@ -1493,12 +1537,12 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     bool bSuccess = false;
     if (!d->isRemote)
         bSuccess = d->currentSession->initialize(d->rtCfgProvider->ip(),
-                                           port,
-                                           iniRequet);
+                                                 port,
+                                                 iniRequet);
     else
         bSuccess = d->currentSession->initialize(param.value("ip").toString().toLatin1(),
-                                           port,
-                                           iniRequet);
+                                                 port,
+                                                 iniRequet);
 
     if (!bSuccess) {
         updateRunState(DAPDebugger::RunState::kNoRun);
@@ -1509,53 +1553,53 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
 
     // Launch debuggee.
     switch (d->debugState) {
-        case Normal: {
-            auto &ctx = dpfInstance.serviceContext();
-            LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
-            if (service) {
-                auto generator = service->create<LanguageGenerator>(kitName);
-                if (generator) {
-                    if (generator->isLaunchNotAttach()) {
-                        dap::LaunchRequest request = generator->launchDAP(param);
-                        bSuccess &= d->currentSession->launch(request);
-                    } else {
-                        dap::AttachRequest request = generator->attachDAP(port, param);
-                        bSuccess &= d->currentSession->attach(request);
-                    }
+    case Normal: {
+        auto &ctx = dpfInstance.serviceContext();
+        LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
+        if (service) {
+            auto generator = service->create<LanguageGenerator>(kitName);
+            if (generator) {
+                if (generator->isLaunchNotAttach()) {
+                    dap::LaunchRequest request = generator->launchDAP(param);
+                    bSuccess &= d->currentSession->launch(request);
+                } else {
+                    dap::AttachRequest request = generator->attachDAP(port, param);
+                    bSuccess &= d->currentSession->attach(request);
                 }
-            } else {
-                bSuccess &= false;
             }
-            break;
+        } else {
+            bSuccess &= false;
         }
-        case Attaching: {
-            dap::object obj;
-            obj["processId"] = param.value("targetPath").toString().toStdString();
-            dap::AttachRequest request;
-            request.name = kitName.toStdString(); //kitName: gdb
-            request.connect = obj;
-            bSuccess &= d->currentSession->attach(request);
-            break;
+        break;
+    }
+    case Attaching: {
+        dap::object obj;
+        obj["processId"] = param.value("targetPath").toString().toStdString();
+        dap::AttachRequest request;
+        request.name = kitName.toStdString();   //kitName: gdb
+        request.connect = obj;
+        bSuccess &= d->currentSession->attach(request);
+        break;
+    }
+    case Reverse: {
+        dap::LaunchRequest request;
+        request.name = "rr";
+        request.type = "cppdbg";
+        request.request = "launch";
+        request.program = "";   // targetPath.toStdString();
+        request.stopAtEntry = false;
+        dap::array<dap::string> arrayArg;
+        foreach (QString arg, param["arguments"].toStringList()) {
+            arrayArg.push_back(arg.toStdString());
         }
-        case Reverse: {
-            dap::LaunchRequest request;
-            request.name = "rr";
-            request.type = "cppdbg";
-            request.request = "launch";
-            request.program = "";   // targetPath.toStdString();
-            request.stopAtEntry = false;
-            dap::array<dap::string> arrayArg;
-            foreach (QString arg, param["arguments"].toStringList()) {
-                arrayArg.push_back(arg.toStdString());
-            }
-            request.args = arrayArg;
-            request.externalConsole = false;
-            request.MIMode = "gdb";
-            request.__sessionId = QUuid::createUuid().toString().toStdString();
-            bSuccess &= d->currentSession->launch(request);
-        }
-        default:
-            break;
+        request.args = arrayArg;
+        request.externalConsole = false;
+        request.MIMode = "gdb";
+        request.__sessionId = QUuid::createUuid().toString().toStdString();
+        bSuccess &= d->currentSession->launch(request);
+    }
+    default:
+        break;
     }
 
     if (!bSuccess) {
@@ -1565,10 +1609,10 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     } else {
         debugService->getModel()->clear();
         debugService->getModel()->addSession(d->currentSession);
-        
+
         auto appOutPutPane = AppOutputPane::instance();
         appOutPutPane->createApplicationPane("debugPane", "debugTarget");
-        appOutPutPane->setStopHandler("debugPane", [=](){
+        appOutPutPane->setStopHandler("debugPane", [=]() {
             abortDebug();
             d->outputPane = appOutPutPane->defaultPane();
         });
@@ -1580,7 +1624,7 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
 
 void DAPDebugger::currentThreadChanged(const QString &text)
 {
-    QtConcurrent::run([&]() { // run in thread to avoid blocked when get variables.
+    QtConcurrent::run([&]() {   // run in thread to avoid blocked when get variables.
         QStringList l = text.split("#");
         QString threadNumber = l.last().split(" ").first();
         switchCurrentThread(threadNumber.toInt());
@@ -1609,7 +1653,7 @@ bool DAPDebugger::runCoredump(const QString &target, const QString &core, const 
 
     QMap<QString, QVariant> param;
     param.insert("targetPath", target);
-    param.insert("arguments", QStringList{core});
+    param.insert("arguments", QStringList { core });
     d->userKitName = kit;
 
     return requestDebugPort(param, d->userKitName, true);
@@ -1627,8 +1671,7 @@ void DAPDebugger::handleAssemble(const QString &content)
     if (content.isEmpty())
         return;
 
-    QString assemblerPath = CustomPaths::user(CustomPaths::Flags::Configures) +
-            QDir::separator() + QString("Disassembler");
+    QString assemblerPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("Disassembler");
 
     QFile file(assemblerPath);
     if (file.open(QIODevice::WriteOnly)) {
@@ -1655,7 +1698,7 @@ void DAPDebugger::handleUpdateDebugLine()
         localFile = d->isRemote ? transformRemotePath(curFrame.file) : curFrame.file;
 
         if (QFileInfo(localFile).exists()) {
-           editor.setDebugLine(localFile, curFrame.line - 1);
+            editor.setDebugLine(localFile, curFrame.line - 1);
         } else if (!curFrame.address.isEmpty()) {
             disassemble(curFrame.address);
         }
@@ -1666,14 +1709,14 @@ QString DAPDebugger::transformRemotePath(const QString &remotePath)
 {
     if (!d->isRemote || d->remoteInfo.projectPath.isEmpty())
         return remotePath;
-    
+
     auto prjInfo = getActiveProjectInfo();
     auto workSpace = prjInfo.workspaceFolder();
-    
+
     QString ret = remotePath;
     if (remotePath.startsWith(d->remoteInfo.projectPath)) {
         ret.replace(0, d->remoteInfo.projectPath.size(), workSpace);
-        
+
         QFileInfo info(ret);
         if (!info.exists())
             qWarning() << ret << " is not exists!";

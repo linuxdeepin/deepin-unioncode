@@ -113,6 +113,7 @@ private:
 
     void addBreakpoint(const QString &filepath, int lineNumber);
     void removeBreakpoint(const QString &filepath, int lineNumber);
+    void removeAllBreakpoints();
     void switchBreakpointsStatus(const QString &filePath, int lineNumber, bool enabled);
     void setBreakpointCondition(const QString &filePath, int lineNumber, const QString &expression);
     void jumpToLine(const QString &filePath, int lineNumber);
