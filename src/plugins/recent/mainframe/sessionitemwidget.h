@@ -12,6 +12,17 @@
 
 #include <QScrollArea>
 
+class ContentBox : public QWidget
+{
+    Q_OBJECT
+    Q_PROPERTY(int height READ height WRITE setFixedHeight)
+public:
+    explicit ContentBox(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
+    }
+};
+
 class ArrowHeaderLine : public QWidget
 {
     Q_OBJECT
@@ -37,7 +48,7 @@ private:
 };
 
 class SessionItemWidgetPrivate;
-class SessionItemWidget : public DTK_WIDGET_NAMESPACE::DDrawer
+class SessionItemWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
@@ -46,11 +57,13 @@ public:
 
     void setSessionName(const QString &session);
     QString sessionName() const;
-    void setExpand(bool value) override;
+    void setExpand(bool value);
+    bool expand() const;
     void updateSession();
 
 private:
     void resizeEvent(QResizeEvent *e) override;
+    bool eventFilter(QObject *obj, QEvent *e) override;
 
     SessionItemWidgetPrivate *const d;
 };

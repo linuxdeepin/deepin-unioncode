@@ -15,6 +15,7 @@ RecentReceiver::RecentReceiver(QObject *parent)
     eventHandleMap.insert(session.sessionCreated.name, std::bind(&RecentReceiver::processSessionCreatedEvent, this, _1));
     eventHandleMap.insert(session.sessionRemoved.name, std::bind(&RecentReceiver::processSessionRemovedEvent, this, _1));
     eventHandleMap.insert(session.sessionLoaded.name, std::bind(&RecentReceiver::processSessionLoadedEvent, this, _1));
+    eventHandleMap.insert(session.sessionStatusChanged.name, std::bind(&RecentReceiver::processSessionLoadedEvent, this, _1));
 }
 
 dpf::EventHandler::Type RecentReceiver::type()

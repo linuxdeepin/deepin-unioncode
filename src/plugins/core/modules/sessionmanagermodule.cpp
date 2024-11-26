@@ -48,6 +48,7 @@ void SessionManagerModule::initInterfaces()
     sessionSrv->isDefaultSession = std::bind(&SessionManager::isDefaultSession, ins, _1);
     sessionSrv->isSessionLoading = std::bind(&SessionManager::isSessionLoading, ins);
     sessionSrv->isDefaultVirgin = std::bind(&SessionManager::isDefaultVirgin, ins);
+    sessionSrv->markSessionFileDirty = std::bind(&SessionManager::markSessionFileDirty, ins);
     sessionSrv->sessionFile = std::bind(&SessionManager::sessionFile, ins, _1);
 }
 
@@ -73,5 +74,9 @@ void SessionManagerModule::initOutputEvents()
     connect(ins, &SessionManager::sessionRemoved, this,
             [](const QString &name) {
                 session.sessionRemoved(name);
+            });
+    connect(ins, &SessionManager::sessionStatusChanged, this,
+            [] {
+                session.sessionStatusChanged();
             });
 }

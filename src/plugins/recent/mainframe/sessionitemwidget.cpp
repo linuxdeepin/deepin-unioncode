@@ -11,6 +11,7 @@
 #include <DDialog>
 #include <DLineEdit>
 #include <DIconButton>
+#include <dboxwidget.h>
 
 #include <QMouseEvent>
 #include <QHBoxLayout>
@@ -136,6 +137,11 @@ public:
     DIconButton *renameBtn { nullptr };
     DIconButton *removeBtn { nullptr };
     DLabel *prjInfoLabel { nullptr };
+
+    QPropertyAnimation *animation { nullptr };
+    ContentBox *contentLoader { nullptr };
+    DVBoxWidget *boxWidget { nullptr };
+    bool expand { false };
 };
 
 SessionItemWidgetPrivate::SessionItemWidgetPrivate(SessionItemWidget *qq)
@@ -146,18 +152,51 @@ SessionItemWidgetPrivate::SessionItemWidgetPrivate(SessionItemWidget *qq)
 
 void SessionItemWidgetPrivate::initUI()
 {
+    q->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    QVBoxLayout *mainLayout = new QVBoxLayout(q);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+
     headerLine = new ArrowHeaderLine(q);
-    headerLine->setExpand(q->expand());
-    q->setHeader(headerLine);
-    q->setContent(createContent());
-    q->setSeparatorVisible(false);
-    q->setExpandedSeparatorVisible(false);
+    contentLoader = new ContentBox(q);
+    contentLoader->setFixedHeight(0);
+
+    boxWidget = new DVBoxWidget(q);
+    auto contentLayout = boxWidget->layout();
+    contentLayout->addWidget(createContent());
+
+    QVBoxLayout *loaderLayout = new QVBoxLayout(contentLoader);
+    loaderLayout->setMargin(0);
+    loaderLayout->setSpacing(0);
+    loaderLayout->addWidget(boxWidget);
+    loaderLayout->addStretch();
+
+    animation = new QPropertyAnimation(contentLoader, "height", q);
+    animation->setDuration(200);
+    animation->setEasingCurve(QEasingCurve::InSine);
+
+    mainLayout->addWidget(headerLine);
+    mainLayout->addWidget(contentLoader);
 }
 
 void SessionItemWidgetPrivate::initConnection()
 {
-    connect(headerLine, &ArrowHeaderLine::expandChanged, q, [=] {
+    connect(headerLine, &ArrowHeaderLine::expandChanged, this, [this] {
         q->setExpand(!q->expand());
+    });
+    connect(boxWidget, &DVBoxWidget::sizeChanged, this, [this] {
+        if (expand) {
+            int endHeight = 0;
+            endHeight = boxWidget->height();
+
+            animation->setStartValue(contentLoader->height());
+            animation->setEndValue(endHeight);
+            animation->stop();
+            animation->start();
+        }
+    });
+    connect(animation, &QPropertyAnimation::valueChanged, this, [this] {
+        q->setFixedHeight(q->sizeHint().height());
     });
     connect(headerLine, &ArrowHeaderLine::itemClicked, this, &SessionItemWidgetPrivate::openSession);
     connect(cloneBtn, &DIconButton::clicked, this, &SessionItemWidgetPrivate::cloneSession);
@@ -290,7 +329,7 @@ void SessionItemWidgetPrivate::runInputDialog(const QString &title, const QStrin
 }
 
 SessionItemWidget::SessionItemWidget(QWidget *parent)
-    : DDrawer(parent),
+    : DFrame(parent),
       d(new SessionItemWidgetPrivate(this))
 {
     d->initUI();
@@ -314,8 +353,26 @@ QString SessionItemWidget::sessionName() const
 
 void SessionItemWidget::setExpand(bool value)
 {
+    if (d->expand == value)
+        return;
+
     d->headerLine->setExpand(value);
-    DDrawer::setExpand(value);
+    d->expand = value;
+    if (value) {
+        d->animation->setStartValue(0);
+        d->animation->setEndValue(d->boxWidget->height());
+    } else {
+        d->animation->setStartValue(d->boxWidget->height());
+        d->animation->setEndValue(0);
+    }
+
+    d->animation->stop();
+    d->animation->start();
+}
+
+bool SessionItemWidget::expand() const
+{
+    return d->expand;
 }
 
 void SessionItemWidget::updateSession()
@@ -348,8 +405,17 @@ void SessionItemWidget::updateSession()
 
 void SessionItemWidget::resizeEvent(QResizeEvent *e)
 {
-    d->headerLine->setFixedWidth(e->size().width());
-    DDrawer::resizeEvent(e);
+    if (d->contentLoader)
+        d->contentLoader->setFixedWidth(e->size().width());
+
+    if (d->headerLine)
+        d->headerLine->setFixedWidth(e->size().width());
+    DFrame::resizeEvent(e);
+}
+
+bool SessionItemWidget::eventFilter(QObject *obj, QEvent *e)
+{
+    return DFrame::eventFilter(obj, e);
 }
 
 SessionItemListWidget::SessionItemListWidget(QWidget *parent)

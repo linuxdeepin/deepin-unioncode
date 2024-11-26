@@ -41,11 +41,12 @@ public:
     DPF_INTERFACE(QVariant, value, const QString &key);
 
     DPF_INTERFACE(bool, loadSession, const QString &session);
-    DPF_INTERFACE(bool, saveSession);
+    DPF_INTERFACE(void, saveSession);
     DPF_INTERFACE(bool, isDefaultSession, const QString &session);
     DPF_INTERFACE(bool, isSessionLoading);
     DPF_INTERFACE(bool, isDefaultVirgin);
 
+    DPF_INTERFACE(void, markSessionFileDirty);
     DPF_INTERFACE(QString, sessionFile, const QString &session);
 };
 }

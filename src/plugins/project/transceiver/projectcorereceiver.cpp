@@ -55,6 +55,8 @@ void ProjectCoreReceiver::processActiveProjectEvent(const dpf::Event &event)
 
 void ProjectCoreReceiver::processOpenProjectEvent(const dpf::Event &event)
 {
+    auto sessionSrv = dpfGetService(SessionService);
+    sessionSrv->markSessionFileDirty();
     uiController.doSwitch(dpfservice::MWNA_EDIT);
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());

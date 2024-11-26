@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "itemdelegate.h"
-#include "itemlistview.h"
 
 #include <DApplication>
 #include <DGuiApplicationHelper>

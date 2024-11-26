@@ -28,11 +28,14 @@
 #include <QHBoxLayout>
 #include <QJsonDocument>
 #include <QComboBox>
+#include <QApplication>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
 constexpr char kRecentGroup[] { "Recent" };
+constexpr char kProjects[] { "Projects" };
+constexpr char kDocuments[] { "Documents" };
 
 static RecentDisplayWidget *ins { nullptr };
 
@@ -41,34 +44,20 @@ class RecentDisplayWidgetPrivate
 public:
     explicit RecentDisplayWidgetPrivate(RecentDisplayWidget *qq);
 
-    void createProjectWidget();
-    void createDocumentWidget();
+    void createRecentWidget();
     void createSessionWidget();
 
 public:
     RecentDisplayWidget *q;
 
-    QHBoxLayout *hLayout { nullptr };
-    QVBoxLayout *vLayoutDoc { nullptr };
-    QVBoxLayout *vLayoutPro { nullptr };
     DWidget *recentOpen { nullptr };
-    RecentProjectView *proView { nullptr };
-    RecentDocemntView *docView { nullptr };
+    RecentListView *recentListView { nullptr };
     SessionItemListWidget *sessionListWidget { nullptr };
-    QList<ItemListView *> viewList;
-    DLabel *proLabel { nullptr };
-    DToolButton *proClear { nullptr };
-    DDialog *clearProConfirm { nullptr };
-
-    DLabel *docLabel { nullptr };
-    DToolButton *docClear { nullptr };
-    DDialog *clearDocConfirm { nullptr };
-
+    DToolButton *recentClearBtn { nullptr };
+    DDialog *clearRecentConfirm { nullptr };
     DToolButton *sessionSetBtn { nullptr };
-
     DFrame *navFrame { nullptr };
-    DFrame *docFrame { nullptr };
-    DFrame *proFrame { nullptr };
+    DFrame *recentFrame { nullptr };
     DFrame *sessionFrame { nullptr };
     DPushButton *btnOpenFile { nullptr };
     DPushButton *btnOpenProject { nullptr };
@@ -85,81 +74,44 @@ RecentDisplayWidgetPrivate::RecentDisplayWidgetPrivate(RecentDisplayWidget *qq)
     sessionSrv = dpfGetService(SessionService);
 }
 
-void RecentDisplayWidgetPrivate::createProjectWidget()
+void RecentDisplayWidgetPrivate::createRecentWidget()
 {
-    proFrame = new DFrame(q);
-    proFrame->setLineWidth(0);
-    DStyle::setFrameRadius(proFrame, 0);
-    proView = new RecentProjectView(q);
+    recentFrame = new DFrame(q);
+    recentFrame->setLineWidth(0);
+    DStyle::setFrameRadius(recentFrame, 0);
+    recentListView = new RecentListView(q);
 
-    proLabel = new DLabel(RecentDisplayWidget::tr("Projects"), q);
-    proLabel->setForegroundRole(QPalette::BrightText);
-    proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    proLabel->setContentsMargins(10, 5, 0, 10);
+    DLabel *titleLabel = new DLabel(RecentDisplayWidget::tr("Projects And Documents"), q);
+    titleLabel->setForegroundRole(QPalette::BrightText);
+    titleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    titleLabel->setContentsMargins(10, 5, 0, 10);
 
-    proClear = new DToolButton(q);
-    proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
-    proClear->setToolTip(RecentDisplayWidget::tr("clear all"));
+    recentClearBtn = new DToolButton(q);
+    recentClearBtn->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    recentClearBtn->setToolTip(RecentDisplayWidget::tr("Clear All"));
 
-    clearProConfirm = new DDialog(q);
-    clearProConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
-    clearProConfirm->setMessage(RecentDisplayWidget::tr("Confirm to clear the record of the opened project?"));
-    clearProConfirm->insertButton(0, RecentDisplayWidget::tr("Cancel", "button"));
-    clearProConfirm->insertButton(1, RecentDisplayWidget::tr("Delete", "button"), true, DDialog::ButtonWarning);
+    clearRecentConfirm = new DDialog(q);
+    clearRecentConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
+    clearRecentConfirm->setMessage(RecentDisplayWidget::tr("Confirm to clear the record of the opened projects and documents?"));
+    clearRecentConfirm->insertButton(0, RecentDisplayWidget::tr("Cancel", "button"));
+    clearRecentConfirm->insertButton(1, RecentDisplayWidget::tr("Delete", "button"), true, DDialog::ButtonWarning);
 
-    QHBoxLayout *proHlayout = new QHBoxLayout;
-    proHlayout->addWidget(proLabel);
-    proHlayout->addWidget(proClear);
+    QHBoxLayout *headerlayout = new QHBoxLayout;
+    headerlayout->addWidget(titleLabel);
+    headerlayout->addWidget(recentClearBtn);
 
-    DFontSizeManager::instance()->bind(proLabel, DFontSizeManager::T4, QFont::Medium);
-    vLayoutPro = new QVBoxLayout();
-    vLayoutPro->setContentsMargins(10, 10, 10, 10);
-    vLayoutPro->addLayout(proHlayout);
-    vLayoutPro->setSpacing(0);
-    vLayoutPro->addWidget(proView);
-    proFrame->setLayout(vLayoutPro);
-}
-
-void RecentDisplayWidgetPrivate::createDocumentWidget()
-{
-    docFrame = new DFrame();
-    docFrame->setLineWidth(0);
-    DStyle::setFrameRadius(docFrame, 0);
-    docView = new RecentDocemntView(q);
-
-    docLabel = new DLabel(RecentDisplayWidget::tr("Documents"));
-    docLabel->setForegroundRole(QPalette::BrightText);
-    docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    docLabel->setContentsMargins(10, 5, 0, 10);
-
-    docClear = new DToolButton(q);
-    docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
-    docClear->setToolTip(RecentDisplayWidget::tr("clear all"));
-
-    clearDocConfirm = new DDialog(q);
-    clearDocConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
-    clearDocConfirm->setMessage(RecentDisplayWidget::tr("Confirm to clear the record of the opened file?"));
-    clearDocConfirm->insertButton(0, RecentDisplayWidget::tr("Cancel", "button"));
-    clearDocConfirm->insertButton(1, RecentDisplayWidget::tr("Delete", "button"), true, DDialog::ButtonWarning);
-
-    QHBoxLayout *docHlayout = new QHBoxLayout;
-    docHlayout->addWidget(docLabel);
-    docHlayout->addWidget(docClear);
-
-    DFontSizeManager::instance()->bind(docLabel, DFontSizeManager::T4, QFont::Medium);
-    vLayoutDoc = new QVBoxLayout();
-    vLayoutDoc->setContentsMargins(10, 10, 10, 10);
-    vLayoutDoc->addLayout(docHlayout);
-    vLayoutDoc->setSpacing(0);
-    vLayoutDoc->addWidget(docView);
-    docFrame->setLayout(vLayoutDoc);
+    DFontSizeManager::instance()->bind(titleLabel, DFontSizeManager::T4, QFont::Medium);
+    QVBoxLayout *vLayout = new QVBoxLayout(recentFrame);
+    vLayout->setContentsMargins(10, 10, 10, 10);
+    vLayout->setSpacing(0);
+    vLayout->addLayout(headerlayout);
+    vLayout->addWidget(recentListView);
 }
 
 void RecentDisplayWidgetPrivate::createSessionWidget()
 {
     sessionFrame = new DFrame(q);
     sessionFrame->setLineWidth(0);
-    sessionFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     DStyle::setFrameRadius(sessionFrame, 0);
     sessionListWidget = new SessionItemListWidget(q);
 
@@ -195,9 +147,6 @@ RecentDisplayWidget::RecentDisplayWidget(DWidget *parent)
 
 RecentDisplayWidget::~RecentDisplayWidget()
 {
-    d->recentSettings.setValue(kRecentGroup, d->proView->configKey(), d->proView->itemList());
-    d->recentSettings.setValue(kRecentGroup, d->docView->configKey(), d->docView->itemList());
-
     delete d;
 }
 
@@ -210,13 +159,15 @@ RecentDisplayWidget *RecentDisplayWidget::instance()
 
 void RecentDisplayWidget::addDocument(const QString &filePath)
 {
-    auto itemList = d->docView->itemList();
-    if (itemList.contains(filePath))
+    if (d->recentListView->contains(filePath)) {
+        auto itemList = d->recentListView->documentList();
         itemList.removeOne(filePath);
-    itemList.prepend(filePath);
-
-    d->docView->clear();
-    d->docView->setItemList(itemList);
+        itemList.prepend(filePath);
+        d->recentListView->clearDocuments();
+        d->recentListView->setItemList(itemList);
+    } else {
+        d->recentListView->prependItem(filePath);
+    }
 }
 
 void RecentDisplayWidget::addProject(const QString &kitName,
@@ -228,13 +179,15 @@ void RecentDisplayWidget::addProject(const QString &kitName,
     item.insert(kLanguage, language);
     item.insert(kWorkspace, workspace);
 
-    auto itemList = d->proView->itemList();
-    if (itemList.contains(item))
+    if (d->recentListView->contains(workspace)) {
+        auto itemList = d->recentListView->projectList();
         itemList.removeOne(item);
-    itemList.prepend(item);
-
-    d->proView->clear();
-    d->proView->setItemList(itemList);
+        itemList.prepend(item);
+        d->recentListView->clearProjects();
+        d->recentListView->setItemList(itemList);
+    } else {
+        d->recentListView->prependItem(item);
+    }
 }
 
 void RecentDisplayWidget::addSession(const QString &session)
@@ -252,21 +205,20 @@ void RecentDisplayWidget::updateSessions()
     d->sessionListWidget->updateSessions();
 }
 
-void RecentDisplayWidget::doDoubleClickedProject(const QModelIndex &index)
+void RecentDisplayWidget::doDoubleClicked(const QModelIndex &index)
 {
-    QString kitName = index.data(RecentProjectView::KitNameRole).toString();
-    QString language = index.data(RecentProjectView::LanguageRole).toString();
-    QString workspace = index.data(RecentProjectView::WorkspaceRole).toString();
-    // "kitName", "language", "workspace"
-    project.openProject(kitName, language, workspace);
-    RecentDisplayWidget::addProject(kitName, language, workspace);
-}
-
-void RecentDisplayWidget::doDoubleCliekedDocument(const QModelIndex &index)
-{
-    QString filePath = index.data(Qt::DisplayRole).toString();
-    RecentDisplayWidget::addDocument(filePath);
-    editor.openFile(QString(), filePath);
+    if (index.data(RecentListView::IsProject).toBool()) {
+        QString kitName = index.data(RecentListView::KitNameRole).toString();
+        QString language = index.data(RecentListView::LanguageRole).toString();
+        QString workspace = index.data(RecentListView::WorkspaceRole).toString();
+        // "kitName", "language", "workspace"
+        project.openProject(kitName, language, workspace);
+        RecentDisplayWidget::addProject(kitName, language, workspace);
+    } else {
+        QString filePath = index.data(Qt::DisplayRole).toString();
+        RecentDisplayWidget::addDocument(filePath);
+        editor.openFile(QString(), filePath);
+    }
 }
 
 void RecentDisplayWidget::btnOpenFileClicked()
@@ -292,7 +244,7 @@ void RecentDisplayWidget::btnNewFileOrProClicked()
 
 bool RecentDisplayWidget::isProAndDocNull()
 {
-    return d->proView->itemList().isEmpty() && d->docView->itemList().isEmpty();
+    return d->recentListView->isEmpty();
 }
 
 QVariantMap RecentDisplayWidget::parseProjectInfo(const QJsonObject &obj)
@@ -313,21 +265,9 @@ QVariantMap RecentDisplayWidget::parseProjectInfo(const QJsonObject &obj)
     return map;
 }
 
-void RecentDisplayWidget::clearProList()
+void RecentDisplayWidget::clearRecent()
 {
-    d->proView->clear();
-    d->recentSettings.removeGroup(d->proView->configKey());
-
-    if (isProAndDocNull()) {
-        d->nullRecentText->setVisible(true);
-        d->recentOpen->setVisible(false);
-    }
-}
-
-void RecentDisplayWidget::clearDocList()
-{
-    d->docView->clear();
-    d->recentSettings.removeGroup(d->docView->configKey());
+    d->recentListView->clearAll();
 
     if (isProAndDocNull()) {
         d->nullRecentText->setVisible(true);
@@ -368,19 +308,13 @@ void RecentDisplayWidget::initializeUi()
     recentTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     DFontSizeManager::instance()->bind(recentTitle, DFontSizeManager::T4, QFont::Medium);
 
-    d->createDocumentWidget();
-    d->createProjectWidget();
+    d->createRecentWidget();
     d->createSessionWidget();
 
-    QVBoxLayout *sessionDocLayout = new QVBoxLayout;
-    sessionDocLayout->setSpacing(2);
-    sessionDocLayout->addWidget(d->docFrame);
-    sessionDocLayout->addWidget(d->sessionFrame);
-
     QHBoxLayout *proAndDocLayout = new QHBoxLayout();
-    proAndDocLayout->addWidget(d->proFrame);
+    proAndDocLayout->addWidget(d->recentFrame);
     proAndDocLayout->setSpacing(2);
-    proAndDocLayout->addLayout(sessionDocLayout);
+    proAndDocLayout->addWidget(d->sessionFrame);
 
     d->recentOpen = new DWidget(this);
     QVBoxLayout *recentNavLayout = new QVBoxLayout(d->recentOpen);
@@ -391,11 +325,10 @@ void RecentDisplayWidget::initializeUi()
     recentNavLayout->addSpacing(5);
     recentNavLayout->addLayout(proAndDocLayout);
 
-    d->hLayout = new QHBoxLayout(this);
-    d->hLayout->setContentsMargins(0, 0, 0, 0);
-
-    d->hLayout->addWidget(d->navFrame);
-    d->hLayout->addWidget(d->recentOpen);
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    hLayout->setContentsMargins(0, 0, 0, 0);
+    hLayout->addWidget(d->navFrame);
+    hLayout->addWidget(d->recentOpen);
 
     if (!isProAndDocNull()) {
         d->nullRecentText->setVisible(false);
@@ -405,12 +338,8 @@ void RecentDisplayWidget::initializeUi()
 
 void RecentDisplayWidget::initConnect()
 {
-    QObject::connect(d->proView, &QListView::doubleClicked,
-                     this, &RecentDisplayWidget::doDoubleClickedProject,
-                     Qt::UniqueConnection);
-
-    QObject::connect(d->docView, &QListView::doubleClicked,
-                     this, &RecentDisplayWidget::doDoubleCliekedDocument,
+    QObject::connect(d->recentListView, &QListView::doubleClicked,
+                     this, &RecentDisplayWidget::doDoubleClicked,
                      Qt::UniqueConnection);
 
     QObject::connect(d->btnOpenFile, &DPushButton::clicked,
@@ -425,33 +354,28 @@ void RecentDisplayWidget::initConnect()
                      this, &RecentDisplayWidget::btnNewFileOrProClicked,
                      Qt::UniqueConnection);
 
-    QObject::connect(d->docClear, &DPushButton::clicked,
-                     d->clearDocConfirm, &DDialog::exec,
+    QObject::connect(d->recentClearBtn, &DPushButton::clicked,
+                     d->clearRecentConfirm, &DDialog::exec,
                      Qt::UniqueConnection);
 
-    QObject::connect(d->proClear, &DPushButton::clicked,
-                     d->clearProConfirm, &DDialog::exec,
-                     Qt::UniqueConnection);
-
-    QObject::connect(d->clearDocConfirm, &DDialog::buttonClicked, this, [=](int index) {
+    QObject::connect(d->clearRecentConfirm, &DDialog::buttonClicked, this, [=](int index) {
         if (index == 0)
-            d->clearDocConfirm->reject();
+            d->clearRecentConfirm->reject();
         else if (index == 1)
-            clearDocList();
-    });
-
-    QObject::connect(d->clearProConfirm, &DDialog::buttonClicked, this, [=](int index) {
-        if (index == 0)
-            d->clearProConfirm->reject();
-        else if (index == 1)
-            clearProList();
+            clearRecent();
     });
     QObject::connect(d->sessionSetBtn, &DToolButton::clicked, this, [this] {
         d->sessionSrv->showSessionManager();
     });
+    QObject::connect(qApp, &QApplication::aboutToQuit, this, [this] {
+        d->recentSettings.setValue(kRecentGroup, kProjects, d->recentListView->projectList());
+        d->recentSettings.setValue(kRecentGroup, kDocuments, d->recentListView->documentList());
+        d->recentSettings.sync();
+    });
 }
 
-[[deprecated("-------------存在兼容代码需要删除")]] void RecentDisplayWidget::initData()
+Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除")
+void RecentDisplayWidget::initData()
 {
     const QString oldCfgFile = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + "recent.support";
     const QString newCfgFile = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + "recent.json";
@@ -464,27 +388,27 @@ void RecentDisplayWidget::initConnect()
         file.remove();
 
         QVariantList prjList;
-        QJsonArray prjArray = doc.object().value(d->proView->configKey()).toArray();
+        QJsonArray prjArray = doc.object().value(kProjects).toArray();
         for (const auto &prj : prjArray) {
             auto prjObj = prj.toObject();
             const auto &info = parseProjectInfo(prjObj);
             if (!info.isEmpty())
                 prjList << info;
         }
-        d->recentSettings.setValue(kRecentGroup, d->proView->configKey(), prjList);
+        d->recentSettings.setValue(kRecentGroup, kProjects, prjList);
 
         QVariantList docList;
-        QJsonArray docArray = doc.object().value(d->docView->configKey()).toArray();
+        QJsonArray docArray = doc.object().value(kDocuments).toArray();
         for (const auto &doc : docArray) {
             auto filePath = doc.toString();
             if (!filePath.isEmpty())
                 docList << filePath;
         }
-        d->recentSettings.setValue(kRecentGroup, d->docView->configKey(), docList);
+        d->recentSettings.setValue(kRecentGroup, kDocuments, docList);
     }
 
-    d->proView->setItemList(d->recentSettings.value(kRecentGroup, d->proView->configKey()).toList());
-    d->docView->setItemList(d->recentSettings.value(kRecentGroup, d->docView->configKey()).toList());
+    d->recentListView->setItemList(d->recentSettings.value(kRecentGroup, kProjects).toList());
+    d->recentListView->setItemList(d->recentSettings.value(kRecentGroup, kDocuments).toList());
     d->sessionListWidget->addSessionList(d->sessionSrv->sessionList());
 }
 

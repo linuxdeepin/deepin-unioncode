@@ -50,7 +50,8 @@ QString ProfileSettingWidget::translateFilePath()
             + QDir::separator() + QString("translate.support");
 }
 
-Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除") QString ProfileSettingWidget::languageFilePath()
+Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除")
+QString ProfileSettingWidget::languageFilePath()
 {
     return CustomPaths::user(CustomPaths::Flags::Configures)
             + QDir::separator() + QString("chooselanguage.support");
@@ -83,7 +84,7 @@ void ProfileSettingWidget::readConfig()
 {
     QString languageName;
     QFile file(languageFilePath());
-     if (file.exists()) {
+    if (file.exists()) {
         QTextStream txtInput(&file);
         if (file.open(QIODevice::ReadOnly)) {
             languageName = d->languagePaths.key(txtInput.readLine());
