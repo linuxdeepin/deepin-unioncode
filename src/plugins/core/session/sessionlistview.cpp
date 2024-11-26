@@ -6,19 +6,22 @@
 #include "sessiondialog.h"
 #include "sessionmanager.h"
 
+#include "base/baseitemdelegate.h"
+
 #include <QStyledItemDelegate>
 #include <QHeaderView>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
+#include <QKeyEvent>
 
 DWIDGET_USE_NAMESPACE
 
-class SessionItemDelegate : public QStyledItemDelegate
+class SessionItemDelegate : public BaseItemDelegate
 {
 public:
     SessionItemDelegate(QObject *parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+        : BaseItemDelegate(parent) {}
 
 protected:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
@@ -30,7 +33,7 @@ void SessionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     painter->setRenderHint(QPainter::Antialiasing);
     QStyleOptionViewItem opt = option;
     opt.state &= ~QStyle::State_HasFocus;
-    QStyledItemDelegate::paint(painter, opt, index);
+    BaseItemDelegate::paint(painter, opt, index);
 }
 
 QSize SessionItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -70,6 +73,7 @@ void SessionListView::initConnections()
     });
 
     connect(&model, &SessionModel::modelReset, this, &SessionListView::selectActiveSession);
+    connect(this, &SessionListView::sessionCreated, this, &SessionListView::selectSession);
 }
 
 QString SessionListView::currentSession() const
@@ -130,7 +134,7 @@ void SessionListView::cloneCurrentSession()
     dlg.setSessionName(session + " (2)");
 
     runInputDialog(&dlg, [session](const QString &newName) {
-        SessionManager::instance()->renameSession(session, newName);
+        SessionManager::instance()->cloneSession(session, newName);
     });
 }
 
@@ -163,6 +167,17 @@ void SessionListView::showEvent(QShowEvent *event)
 
 void SessionListView::keyPressEvent(QKeyEvent *event)
 {
+    if (event->key() != Qt::Key_Delete && event->key() != Qt::Key_Backspace) {
+        QTreeView::keyPressEvent(event);
+        return;
+    }
+    const QStringList sessions = selectedSessions();
+    bool ret = std::any_of(sessions.cbegin(), sessions.cend(),
+                           [](const QString &session) {
+                               return session == SessionManager::instance()->currentSession();
+                           });
+    if (!sessions.contains("default") && !ret)
+        removeSelectedSessions();
 }
 
 QStringList SessionListView::selectedSessions() const
@@ -191,4 +206,5 @@ void SessionListView::runInputDialog(SessionNameInputDialog *dialog,
     model.reset();
     if (ret == 2)
         SessionManager::instance()->loadSession(name);
+    Q_EMIT sessionCreated(name);
 }

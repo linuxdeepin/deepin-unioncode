@@ -227,7 +227,8 @@ bool SessionManager::cloneSession(const QString &select, const QString &clone)
 
 void SessionManager::showSessionManager()
 {
-    saveSession();
+    if (!isDefaultVirgin())
+        saveSession();
     SessionDialog dlg(Controller::instance()->mainWindow());
     dlg.setAutoLoadSession(d->isAutoLoad);
     dlg.exec();
