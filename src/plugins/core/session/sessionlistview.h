@@ -29,6 +29,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void sessionsSelected(const QStringList &sessions);
+    void sessionCreated(const QString &session);
 
 private:
     void initUI();

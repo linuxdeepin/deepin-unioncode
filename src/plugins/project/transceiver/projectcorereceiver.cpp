@@ -117,9 +117,10 @@ void ProjectCoreReceiver::processOpenProjectByPathEvent(const dpf::Event &event)
 
 void ProjectCoreReceiver::processSessionLoadedEvent(const dpf::Event &event)
 {
+    uiController.doSwitch(dpfservice::MWNA_EDIT);
     auto sessionSrv = dpfGetService(SessionService);
     auto view = ProjectKeeper::instance()->treeView();
-    view->clear();
+    view->closeAllProjects();
 
     auto prjList = sessionSrv->value("ProjectList").toList();
     for (const auto &info : prjList) {

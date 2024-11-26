@@ -447,17 +447,16 @@ void SessionItemListWidget::addSessionList(const QStringList &sessionList)
 
 void SessionItemListWidget::removeSession(const QString &session)
 {
-    auto iter = std::find_if(sessionList.begin(), sessionList.end(),
-                             [&session](SessionItemWidget *item) {
-                                 return item->sessionName() == session;
-                             });
-    if (iter == sessionList.end())
-        return;
-
-    sessionList.removeOne(*iter);
-    mainLayout->removeWidget(*iter);
-    (*iter)->deleteLater();
-    updateSessions();
+    for (auto *item : sessionList) {
+        if (item->sessionName() == session) {
+            sessionList.removeOne(item);
+            mainLayout->removeWidget(item);
+            item->deleteLater();
+            item = nullptr;
+            updateSessions();
+            break;
+        }
+    }
 }
 
 void SessionItemListWidget::updateSessions()

@@ -192,6 +192,7 @@ void SessionNameInputDialog::initUI()
     addButton("3", true, DDialog::ButtonRecommend);
     getButton(1)->setEnabled(false);
     getButton(2)->setEnabled(false);
+    setFocusProxy(lineEdit);
 }
 
 void SessionNameInputDialog::setSessionName(const QString &name)

@@ -105,7 +105,7 @@ ProjectTree::~ProjectTree()
     }
 }
 
-void ProjectTree::clear()
+void ProjectTree::closeAllProjects()
 {
     while (auto item = d->itemModel->item(0)) {
         removeRootItem(item);
