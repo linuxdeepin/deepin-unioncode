@@ -5,47 +5,47 @@
 #ifndef RECENTLISTVIEW_H
 #define RECENTLISTVIEW_H
 
-#include "itemlistview.h"
+#include <DListView>
+#include <DStandardItem>
+
+#include <QStandardItemModel>
 
 constexpr char kKitName[] { "KitName" };
 constexpr char kLanguage[] { "Language" };
 constexpr char kWorkspace[] { "Workspace" };
 
-class RecentProjectView : public ItemListView
+class RecentListView : public DTK_WIDGET_NAMESPACE::DListView
 {
     Q_OBJECT
 public:
     enum ItemRole {
         KitNameRole = Qt::ItemDataRole::UserRole,
         LanguageRole,
-        WorkspaceRole
+        WorkspaceRole,
+        IsProject
     };
 
-    RecentProjectView(QWidget *parent = nullptr);
+    RecentListView(QWidget *parent = nullptr);
 
-    QString title() override;
-    QString configKey() override;
-    void setItemList(const QVariantList &items) override;
-    QVariantList itemList() const override;
-    void appendItem(const QVariant &item) override;
-    void prependItem(const QVariant &item) override;
+    void setItemList(const QVariantList &items);
+    QVariantList projectList() const;
+    QVariantList documentList() const;
+    bool contains(const QString &name) const;
+    bool isEmpty() const;
+    void clearAll();
+    void clearProjects();
+    void clearDocuments();
+    void appendItem(const QVariant &item);
+    void prependItem(const QVariant &item);
 
 private:
-    DStandardItem *createItem(const QVariant &item);
-};
+    DTK_WIDGET_NAMESPACE::DStandardItem *createItem(const QVariant &item);
+    DTK_WIDGET_NAMESPACE::DStandardItem *createProjectItem(const QVariant &item);
+    DTK_WIDGET_NAMESPACE::DStandardItem *createDocumentItem(const QVariant &item);
+    void focusOutEvent(QFocusEvent *e) override;
+    void mousePressEvent(QMouseEvent *e) override;
 
-class RecentDocemntView : public ItemListView
-{
-    Q_OBJECT
-public:
-    RecentDocemntView(QWidget *parent = nullptr);
-
-    QString title() override;
-    QString configKey() override;
-    void setItemList(const QVariantList &items) override;
-    QVariantList itemList() const override;
-    void appendItem(const QVariant &item) override;
-    void prependItem(const QVariant &item) override;
+    QStandardItemModel model;
 };
 
 #endif   // RECENTLISTVIEW_H

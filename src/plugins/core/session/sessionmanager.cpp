@@ -11,6 +11,7 @@
 
 #include <QDir>
 #include <QDateTime>
+#include <QApplication>
 
 constexpr char kDefaultSession[] { "default" };
 constexpr char kSessionGroup[] { "Session" };
@@ -105,8 +106,9 @@ SessionManager::SessionManager(QObject *parent)
 {
     d->readSettings();
     connect(qApp, &QApplication::aboutToQuit, this, [this] {
+        if (!isSessionLoading() && !isDefaultVirgin())
+            saveSession();
         d->saveSettings();
-        saveSession();
     });
 }
 
@@ -279,7 +281,7 @@ bool SessionManager::loadSession(const QString &session)
     return true;
 }
 
-bool SessionManager::saveSession()
+void SessionManager::saveSession()
 {
     Q_EMIT readyToSaveSession();
 
@@ -290,7 +292,7 @@ bool SessionManager::saveSession()
         settings.setValue(kSessionGroup, iter.key(), iter.value());
     }
 
-    return true;
+    d->sessionDateTimes.insert(d->currentSession, QDateTime::currentDateTime());
 }
 
 bool SessionManager::isDefaultSession(const QString &session)
@@ -311,6 +313,15 @@ bool SessionManager::isDefaultVirgin()
 bool SessionManager::isAutoLoadLastSession()
 {
     return d->isAutoLoad;
+}
+
+void SessionManager::markSessionFileDirty()
+{
+    if (!d->virginSession)
+        return;
+
+    d->virginSession = false;
+    Q_EMIT sessionStatusChanged();
 }
 
 QString SessionManager::sessionFile(const QString &session)

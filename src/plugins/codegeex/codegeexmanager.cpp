@@ -90,7 +90,8 @@ void CodeGeeXManager::saveConfig(const QString &sessionId, const QString &userId
     OptionManager::getInstance()->setValue("CodeGeeX", "Id", map);
 }
 
-Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除") void CodeGeeXManager::loadConfig()
+Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除")
+void CodeGeeXManager::loadConfig()
 {
     QFile file(configFilePath());
     if (!file.exists()) {
@@ -177,7 +178,7 @@ void CodeGeeXManager::independentAsking(const QString &prompt, const QMultiMap<Q
     }
     AskApi *api = new AskApi;
     api->postSSEChat(kUrlSSEChat, sessionId, prompt, QSysInfo::machineUniqueId(), history, currentTalkID);
-    QTimer::singleShot(10000, api, [=](){
+    QTimer::singleShot(10000, api, [=]() {
         if (pipe && pipe->isOpen()) {
             qWarning() << "timed out, close pipe";
             pipe->close();

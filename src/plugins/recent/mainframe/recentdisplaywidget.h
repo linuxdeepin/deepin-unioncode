@@ -29,15 +29,11 @@ public slots:
     void updateSessions();
 
 private slots:
-    void doDoubleClickedProject(const QModelIndex &index);
-    void doDoubleCliekedDocument(const QModelIndex &index);
-
+    void doDoubleClicked(const QModelIndex &index);
     void btnOpenFileClicked();
     void btnOpenProjectClicked();
     void btnNewFileOrProClicked();
-
-    void clearDocList();
-    void clearProList();
+    void clearRecent();
 
 private:
     void initializeUi();

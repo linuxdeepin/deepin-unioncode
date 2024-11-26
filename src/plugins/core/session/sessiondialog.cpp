@@ -12,6 +12,8 @@
 
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QEvent>
+#include <QPainterPath>
 
 DWIDGET_USE_NAMESPACE
 

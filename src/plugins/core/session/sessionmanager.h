@@ -31,17 +31,19 @@ public:
     QVariant value(const QString &key);
 
     bool loadSession(const QString &session);
-    bool saveSession();
+    void saveSession();
     bool isDefaultSession(const QString &session);
     bool isSessionLoading();
     bool isDefaultVirgin();
     bool isAutoLoadLastSession();
 
+    void markSessionFileDirty();
     QString sessionFile(const QString &session);
 
 Q_SIGNALS:
     void readyToSaveSession();
     void sessionLoaded(const QString &session);
+    void sessionStatusChanged();
 
     void sessionCreated(const QString &session);
     void sessionRenamed(const QString &oldName, const QString &newName);
