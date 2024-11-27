@@ -1,0 +1,63 @@
+{
+    "toolchains": [
+        {
+            "type": "C compilers",
+            "parser": "GccToolchain",
+            "tools": {
+                "gcc": "*gcc*",
+                "clang": "*clang*"
+            }
+        },
+        {
+            "type": "C++ compilers",
+            "parser": "GccToolchain",
+            "tools": {
+                "g++": "*g++*",
+                "clang++": "*clang++*"
+            }
+        },
+        {
+            "type": "Python",
+            "parser": "PythonToolchain"
+        },
+        {
+            "type": "C/C++ build systems",
+            "parser": "SimpleToolchain",
+            "tools": {
+                "cmake": "cmake"
+            }
+        },
+        {
+            "type": "C/C++ debuggers",
+            "parser": "SimpleToolchain",
+            "tools": {
+                "gdb": "gdb"
+            }
+        },
+        {
+            "type": "JDK",
+            "parser": "JavaToolchain"
+        },
+        {
+            "type": "Maven",
+            "parser": "SimpleToolchain",
+            "tools": {
+                "mvn": "mvn"
+            }
+        },
+        {
+            "type": "Gradle",
+            "parser": "SimpleToolchain",
+            "tools": {
+                "gradle": "gradle"
+            }
+        },
+        {
+            "type": "Ninja",
+            "parser": "SimpleToolchain",
+            "tools": {
+                "ninja": "ninja"
+            }
+        }
+    ]
+} 

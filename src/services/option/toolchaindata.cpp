@@ -34,7 +34,7 @@ bool ToolChainData::readToolChain(QString &filePath)
         return false;
     }
 
-    auto parseSubObj = [this](QJsonObject &obj, const QString &subobjName) {
+    auto parseSubObj = [this](const QJsonObject &obj, const QString &subobjName) {
         if (obj.contains(subobjName)) {
             QJsonValue cCompilersArray = obj.value(subobjName);
             QJsonArray array = cCompilersArray.toArray();
@@ -61,12 +61,9 @@ bool ToolChainData::readToolChain(QString &filePath)
         }
     };
 
-    QJsonArray array = doc.array();
-    for (auto node : array) {
-        auto obj = node.toObject();
-        for (auto it = obj.begin(); it != obj.end(); it++) {
-            parseSubObj(obj, it.key());
-        }
+    const auto &tcObj = doc.object();
+    for (auto it = tcObj.begin(); it != tcObj.end(); it++) {
+        parseSubObj(tcObj, it.key());
     }
 
     return true;
