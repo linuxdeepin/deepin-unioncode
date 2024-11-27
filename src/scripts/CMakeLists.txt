@@ -24,3 +24,6 @@ install(DIRECTORY rag/
 
 install(DIRECTORY compiledb/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/compiledb")
+
+install(DIRECTORY compiledb/
+    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/toolchain")
