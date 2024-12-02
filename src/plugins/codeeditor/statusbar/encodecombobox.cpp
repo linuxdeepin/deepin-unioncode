@@ -5,8 +5,12 @@
 #include "encodecombobox.h"
 #include "utils/editorutils.h"
 
-#include <DPaletteHelper>
 #include <DStyle>
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#include <DPaletteHelper>
+#else
+#include <DApplicationHelper>
+#endif
 
 #include <QHBoxLayout>
 #include <QMouseEvent>
@@ -126,7 +130,11 @@ bool EncodeComboBox::eventFilter(QObject *obj, QEvent *e)
 
 QIcon EncodeComboBox::createIcon()
 {
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
     DPalette dpalette = DPaletteHelper::instance()->palette(toolBtn);
+#else
+    DPalette dpalette = DApplicationHelper::instance()->palette(toolBtn);
+#endif
     QColor textColor;
     QPixmap arrowPixmap = QCommonStyle().standardPixmap(QStyle::SP_ArrowDown);
     if (isPressed) {
