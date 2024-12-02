@@ -28,11 +28,13 @@ public:
     void openFile(const QString &fileName);
     void openFileWithDocument(const QString &fileName, const QsciDocument &doc);
     QString getFile() const;
+    QString documentEncode() const;
 
     void save();
     void saveAs();
     void saveAs(const QString &fileName);
     void reload();
+    bool reload(const QString &encode);
 
     // debug
     void addBreakpoint(int line, bool enabled = true);
@@ -138,6 +140,7 @@ signals:
     void cursorRecordChanged(int pos);
     void requestOpenFiles(const QList<QUrl> &fileList);
     void delayCursorPositionChanged(int line, int index);
+    void cursorModeChanged();
 
 private:
     void init();

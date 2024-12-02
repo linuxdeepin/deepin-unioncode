@@ -8,6 +8,7 @@
 #include "utils/resourcemanager.h"
 #include "lexer/lexermanager.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "encodes/detectcode.h"
 #include "common/common.h"
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
@@ -298,6 +299,30 @@ void TextEditorPrivate::initLanguageClient()
         languageClient = new LanguageClientHandler(q);
 
     languageClient->updateTokens();
+}
+
+bool TextEditorPrivate::readFile(const QString &encode)
+{
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray fileContent = file.readAll();
+        QString newEncode = encode;
+        if (newEncode.isEmpty())
+            newEncode = DetectCode::getFileEncodingFormat(fileName, fileContent.left(1024 * 1024));
+
+        QByteArray outData;
+        DetectCode::changeFileEncodingFormat(fileContent, outData, newEncode, QString("UTF-8"));
+        if (outData.isEmpty()) {
+            outData = fileContent;
+            newEncode = "UTF-8";
+        }
+        q->setText(outData);
+        file.close();
+        documentEncode = newEncode;
+        q->setModified(false);
+        return true;
+    }
+    return false;
 }
 
 int TextEditorPrivate::cursorPosition() const

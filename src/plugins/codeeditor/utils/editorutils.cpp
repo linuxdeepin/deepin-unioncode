@@ -6,6 +6,9 @@
 
 #include "common/actionmanager/actionmanager.h"
 
+#include <QFile>
+#include <QTextStream>
+
 int EditorUtils::nbDigitsFromNbLines(long nbLines)
 {
     int nbDigits = 0;   // minimum number of digit should be 4
@@ -39,4 +42,28 @@ Command *EditorUtils::registerShortcut(QAction *act, const QString &id, const QK
     auto cmd = ActionManager::instance()->registerAction(act, id);
     cmd->setDefaultKeySequence(shortCut);
     return cmd;
+}
+
+QVector<QPair<QString, QStringList>> EditorUtils::supportEncoding()
+{
+    static QVector<QPair<QString, QStringList>> groupEncodeVec;
+    if (groupEncodeVec.isEmpty()) {
+        QFile file(":/encodes/encodes.ini");
+        QString data;
+        if (file.open(QIODevice::ReadOnly)) {
+            data = QString::fromUtf8(file.readAll());
+            file.close();
+        }
+
+        QTextStream readStream(&data, QIODevice::ReadOnly);
+        while (!readStream.atEnd()) {
+            QString group = readStream.readLine();
+            QString key = group.mid(1, group.length() - 2);
+            QString encodes = readStream.readLine();
+            QString value = encodes.mid(8, encodes.length() - 2);
+            groupEncodeVec.append(QPair<QString, QStringList>(key, value.split(",")));
+        }
+    }
+
+    return groupEncodeVec;
 }

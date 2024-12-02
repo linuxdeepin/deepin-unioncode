@@ -449,8 +449,11 @@ void WorkspaceWidgetPrivate::initActions()
                 if (!tabWidget)
                     return;
 
-                if (auto editor = tabWidget->currentEditor())
+                if (auto editor = tabWidget->currentEditor()) {
                     editor->SendScintilla(val);
+                    if (val == QsciCommand::EditToggleOvertype)
+                        Q_EMIT editor->cursorModeChanged();
+                }
             });
         }
     }

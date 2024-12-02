@@ -14,6 +14,7 @@ class EditorUtils : public QObject
 public:
     static int nbDigitsFromNbLines(long nbLines);
     static Command *registerShortcut(QAction *act, const QString &id, const QKeySequence &shortCut);
+    static QVector<QPair<QString, QStringList>> supportEncoding();
 };
 
 #endif   // EDITORUTILS_H

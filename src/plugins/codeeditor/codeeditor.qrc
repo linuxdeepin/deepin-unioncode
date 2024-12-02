@@ -52,5 +52,6 @@
         <file>icons/deepin/builtin/light/icons/arrow_14px.svg</file>
         <file>icons/deepin/builtin/light/icons/breakpoint_14px.svg</file>
         <file>icons/deepin/builtin/light/icons/disabled_breakpoint_14px.svg</file>
+        <file>encodes/encodes.ini</file>
     </qresource>
 </RCC>
