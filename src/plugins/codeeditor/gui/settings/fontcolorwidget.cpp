@@ -50,6 +50,7 @@ void FontColorWidgetPrivate::initUI()
     QLabel *infoLabel = new QLabel(FontColorWidget::tr("Font"), q);
     fontComboBox = new DFontComboBox(q);
     fontComboBox->setFontFilters(QFontComboBox::MonospacedFonts);
+    fontComboBox->setEditable(false);
 
     fontSizeComboBox = new QComboBox(q);
     fontSizeComboBox->setMinimumWidth(100);
@@ -99,7 +100,7 @@ QWidget *FontColorWidgetPrivate::createItem(const QString &name, QWidget *widget
 QList<int> FontColorWidgetPrivate::pointSizesForSelectedFont() const
 {
     QFontDatabase db;
-    const QString familyName = fontComboBox->currentFont().family();
+    const QString familyName = fontComboBox->currentText();
     QList<int> sizeLst = db.pointSizes(familyName);
     if (!sizeLst.isEmpty())
         return sizeLst;
@@ -167,14 +168,14 @@ void FontColorWidget::setUserConfig(const QMap<QString, QVariant> &map)
 void FontColorWidget::getUserConfig(QMap<QString, QVariant> &map)
 {
     QVariantMap fontMap;
-    fontMap.insert(Key::FontFamily, d->fontComboBox->currentFont().family());
+    fontMap.insert(Key::FontFamily, d->fontComboBox->currentText());
     fontMap.insert(Key::FontSize, d->fontSizeComboBox->currentText().toInt());
     fontMap.insert(Key::FontZoom, d->zoomSpinBox->value());
 
     map.insert(Group::FontGroup, fontMap);
 
     EditorSettings::instance()->setValue(Node::FontColor, Group::FontGroup, Key::FontFamily,
-                                         d->fontComboBox->currentFont().family());
+                                         d->fontComboBox->currentText());
     EditorSettings::instance()->setValue(Node::FontColor, Group::FontGroup, Key::FontSize, d->fontSize);
     EditorSettings::instance()->setValue(Node::FontColor, Group::FontGroup, Key::FontZoom, d->zoomSpinBox->value());
 }
