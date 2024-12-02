@@ -50,6 +50,7 @@ public:
     void updateColorTheme();
     void loadLexer();
     void initLanguageClient();
+    bool readFile(const QString &encode);
 
     int cursorPosition() const;
     int marginsWidth();
@@ -104,6 +105,7 @@ public:
     bool postionChangedByGoto { false };
     QString fontName;
     int fontSize { 10 };
+    QString documentEncode { "UTF-8" };
 
     using CompletionCache = QPair<int, QString>;
     CompletionCache inlineCompletionCache { -1, "" };

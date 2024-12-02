@@ -11,7 +11,7 @@
 #include "lexer/lexermanager.h"
 #include "utils/editorutils.h"
 #include "utils/resourcemanager.h"
-#include "status/statusinfomanager.h"
+#include "statusbar/statusinfomanager.h"
 #include "symbol/symbollocator.h"
 #include "symbol/symbolwidget.h"
 

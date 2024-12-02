@@ -5,6 +5,7 @@
 #include "texteditor.h"
 #include "private/texteditor_p.h"
 #include "utils/editorutils.h"
+#include "encodes/detectcode.h"
 #include "common/common.h"
 #include "common/tooltip/tooltip.h"
 #include "settings/settingsdefine.h"
@@ -53,14 +54,8 @@ void TextEditor::openFile(const QString &fileName)
     beginUndoAction();
     d->isAutoCompletionEnabled = false;
     d->fileName = fileName;
-    QString text;
-    QFile file(d->fileName);
-    if (file.open(QFile::OpenModeFlag::ReadOnly)) {
-        text = file.readAll();
-        file.close();
-    }
-
-    setText(text.toUtf8());
+    setReadOnly(!QFileInfo(fileName).isWritable());
+    d->readFile("");
     setModified(false);
     editor.fileOpened(fileName);
     d->loadLexer();
@@ -89,6 +84,11 @@ QString TextEditor::getFile() const
     return d->fileName;
 }
 
+QString TextEditor::documentEncode() const
+{
+    return d->documentEncode;
+}
+
 void TextEditor::save()
 {
     if (!isModified())
@@ -109,7 +109,35 @@ void TextEditor::save()
         return;
     }
 
-    file.write(text().toUtf8());
+    QByteArray fileContent = text().toLocal8Bit();
+    if (!fileContent.isEmpty()) {
+        QByteArray Outdata;
+        DetectCode::changeFileEncodingFormat(fileContent, Outdata, QString("UTF-8"), d->documentEncode);
+        if (Outdata.isEmpty()) {
+            qWarning() << qPrintable(QString("iconv Encode Transformat from '%1' to '%2' Fail! start QTextCodec Encode Transformat.")
+                                             .arg(QString("UTF-8"), d->documentEncode));
+            // Using QTextCodec to convert
+            QTextCodec *codec = QTextCodec::codecForName(d->documentEncode.toUtf8());
+            if (codec) {
+                QByteArray encodedString = codec->fromUnicode(fileContent);
+                if (encodedString.isEmpty()) {
+                    qWarning() << qPrintable("Both iconv and QTextCodec Encode Transformat Fail!");
+                } else {
+                    qWarning() << qPrintable(QString("QTextCodec Encode Transformat from '%1' to '%2' Success!")
+                                                     .arg(QString("UTF-8"), d->documentEncode));
+                    Outdata = encodedString;
+                }
+            } else {
+                qWarning() << qPrintable("Unsupported QTextCodec format:") << d->documentEncode;
+            }
+        }
+
+        if (!Outdata.isEmpty())
+            file.write(Outdata);
+    } else {
+        file.write(fileContent);
+    }
+
     file.close();
     setModified(false);
     editor.fileSaved(d->fileName);
@@ -141,19 +169,35 @@ void TextEditor::reload()
     int line = 0, index = 0;
     getCursorPosition(&line, &index);
     const auto &markers = d->allMarkers();
-
-    QString text;
-    QFile file(d->fileName);
-    if (file.open(QFile::OpenModeFlag::ReadOnly)) {
-        text = file.readAll();
-        file.close();
-    }
-    setText(text.toUtf8());
-    setModified(false);
-
+    d->readFile("");
     d->setMarkers(markers);
     setCursorPosition(line, index);
     emit textChanged();
+}
+
+bool TextEditor::reload(const QString &encode)
+{
+    if (encode == d->documentEncode)
+        return false;
+
+    if (length() == 0) {
+        d->documentEncode = encode;
+        return true;
+    }
+
+    if (isModified()) {
+        DDialog dlg(tr("Encoding changed. Do you want to save the file now?"), "", this);
+        dlg.setIcon(QIcon::fromTheme("ide"));
+        dlg.addButton(QString(tr("Cancel", "button")));
+        dlg.addButton(QString(tr("Save", "button")), true, DDialog::ButtonRecommend);
+        int res = dlg.exec();
+        if (res == 0)
+            return false;
+
+        if (res == 1)
+            save();
+    }
+    return d->readFile(encode);
 }
 
 void TextEditor::addBreakpoint(int line, bool enabled)

@@ -39,7 +39,10 @@ Build-Depends:
  libdtkcore5-bin,
  libkf5syntaxhighlighting-dev,
  libyaml-cpp-dev,
- libcmark-dev
+ libcmark-dev,
+ libchardet-dev,
+ libuchardet-dev (>= 0.0.6),
+ libicu-dev
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
