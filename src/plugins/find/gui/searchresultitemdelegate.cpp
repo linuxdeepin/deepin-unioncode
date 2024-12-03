@@ -402,6 +402,7 @@ void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
         painter->setPen(option.palette.color(QPalette::Normal, QPalette::Text));
     }
 
+    // Remove leading spaces
     QString displayText = text.trimmed();
     if (displayText.isEmpty())
         return;
@@ -420,7 +421,16 @@ void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     textLayout.setTextOption(textOption);
     textLayout.setFont(option.font);
     textLayout.setText(displayText);
-    textLayout.setFormats(formatList.toVector());
+
+    // Adjust offsets in formatList
+    int offset = text.indexOf(displayText);
+    QList<QTextLayout::FormatRange> adjustedFormats = formatList;
+    if (offset != 0) {
+        for (auto &format : adjustedFormats) {
+            format.start -= offset;
+        }
+    }
+    textLayout.setFormats(adjustedFormats.toVector());
 
     QSizeF textLayoutSize = doTextLayout(&textLayout, textRect.width());
     if (textRect.width() < textLayoutSize.width()) {
