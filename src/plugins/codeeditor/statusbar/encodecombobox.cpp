@@ -14,6 +14,7 @@
 
 #include <QHBoxLayout>
 #include <QMouseEvent>
+#include <QApplication>
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
