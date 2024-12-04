@@ -11,6 +11,7 @@
 #include "common/common.h"
 #include "services/window/windowservice.h"
 #include "services/option/optionservice.h"
+#include "services/option/optiondatastruct.h"
 #include "services/ai/aiservice.h"
 #include "copilot.h"
 
@@ -44,7 +45,7 @@ bool CodeGeex::start()
 
     auto optionService = dpfGetService(dpfservice::OptionService);
     if (optionService) {
-        optionService->implGenerator<OptionCodeGeeXGenerator>(QObject::tr("AI"), OptionCodeGeeXGenerator::kitName());
+        optionService->implGenerator<OptionCodeGeeXGenerator>(option::GROUP_AI, OptionCodeGeeXGenerator::kitName());
     }
 
     Copilot::instance();

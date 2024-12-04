@@ -8,6 +8,7 @@
 #include "services/window/windowservice.h"
 #include "services/editor/editorservice.h"
 #include "common/type/constants.h"
+#include <services/ai/aiservice.h>
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -20,6 +21,7 @@
 #include <QFileInfo>
 
 namespace CodeGeeX {
+static const QString PrePrompt = "你是一个智能编程助手，可以回答用户任何的问题。问题中可能会带有相关的context，这些context来自工程相关的文件，你要结合这些上下文回答用户问题。 请注意：\n1.用户问题中以@符号开始的标记代表着context内容。/n2.按正确的语言回答，不要被上下文中的字符影响.";
 
 static int kCode_Success = 200;
 
@@ -63,7 +65,7 @@ AskApiPrivate::AskApiPrivate(AskApi *qq)
     : q(qq),
       manager(new QNetworkAccessManager(qq))
 {
-    connect(q, &AskApi::stopReceive, this, [=](){ terminated = true; });
+    connect(q, &AskApi::stopReceive, this, [=]() { terminated = true; });
 }
 
 QNetworkReply *AskApiPrivate::postMessage(const QString &url, const QString &token, const QByteArray &body)
@@ -73,6 +75,12 @@ QNetworkReply *AskApiPrivate::postMessage(const QString &url, const QString &tok
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("code-token", token.toUtf8());
+
+    if (QThread::currentThread() != qApp->thread()) {
+        QNetworkAccessManager* threadManager(new QNetworkAccessManager);
+        AskApi::connect(QThread::currentThread(), &QThread::finished, threadManager, &QNetworkAccessManager::deleteLater);
+        return threadManager->post(request, body);
+    }
     return manager->post(request, body);
 }
 
@@ -82,6 +90,11 @@ QNetworkReply *AskApiPrivate::getMessage(const QString &url, const QString &toke
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setRawHeader("code-token", token.toUtf8());
 
+    if (QThread::currentThread() != qApp->thread()) {
+        QNetworkAccessManager* threadManager(new QNetworkAccessManager);
+        AskApi::connect(QThread::currentThread(), &QThread::finished, threadManager, &QNetworkAccessManager::deleteLater);
+        return threadManager->get(request);
+    }
     return manager->get(request);
 }
 
@@ -188,34 +201,6 @@ QByteArray AskApiPrivate::assembleSSEChatBody(const QString &prompt, const QStri
     jsonObject.insert("history", history);
     jsonObject.insert("locale", locale);
     jsonObject.insert("model", model);
-
-    using dpfservice::ProjectService;
-    ProjectService *prjService = dpfGetService(ProjectService);
-    auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
-
-    if (codebaseEnabled && currentProjectPath != "") {
-        QString queryText = prompt;
-        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, queryText.remove("@CodeBase"), 50);
-        QJsonArray chunks = result["Chunks"].toArray();
-        if (!chunks.isEmpty()) {
-            if (result["Completed"].toBool() == false)
-                emit q->notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
-            jsonObject["history"] = QJsonArray();
-            QString context;
-            context += prompt;
-            context += "\n参考下面这些代码片段，回答上面的问题， @CodeBase表示针对这些代码所属的代码工程进行提问，其不属于真正的问题内容，回答时忽略@CodeBase。不要参考其他的代码和上下文，数据不够充分的情况下提示用户.\n";
-            for (auto chunk : chunks) {
-                context += chunk.toObject()["fileName"].toString();
-                context += '\n';
-                context += chunk.toObject()["content"].toString();
-                context += "\n\n";
-            }
-            jsonObject["prompt"] = context;
-        } else if (CodeGeeXManager::instance()->condaHasInstalled()) {
-            emit q->noChunksFounded();
-            return {};
-        }
-    }
 
     if (!referenceFiles.isEmpty()) {
         auto fileDatas = parseFile(referenceFiles);
@@ -344,7 +329,7 @@ void AskApi::sendQueryRequest(const QString &codeToken)
     QString url = "https://codegeex.cn/prod/code/oauth/getUserInfo";
 
     QNetworkReply *reply = d->getMessage(url, codeToken);
-    connect(reply, &QNetworkReply::finished, [=]() {
+    connect(reply, &QNetworkReply::finished, this, [=]() {
         if (reply->error()) {
             qCritical() << "Error:" << reply->errorString();
             return;
@@ -381,7 +366,7 @@ void AskApi::slotSendMessage(const QString url, const QString &token, const QByt
 {
     QNetworkReply *reply = d->postMessage(url, token, body);
     connect(this, &AskApi::stopReceive, reply, [reply]() {
-        reply->close();
+        reply->abort();
     });
     d->processResponse(reply);
 }
@@ -408,11 +393,49 @@ void AskApi::postSSEChat(const QString &url,
     }
 #endif
 
-    QtConcurrent::run([prompt, machineId, jsonArray, talkId, url, token, this]() {
-        QByteArray body = d->assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
-        if (!body.isEmpty())
-            emit syncSendMessage(url, token, body);
+    QByteArray body = d->assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
+    if (!body.isEmpty())
+        emit syncSendMessage(url, token, body);
+}
+
+QString AskApi::syncQuickAsk(const QString &url,
+                                  const QString &token,
+                                  const QString &prompt,
+                                  const QString &talkId)
+{
+    d->terminated = false;
+
+    QJsonObject jsonObject;
+    jsonObject.insert("ide", qApp->applicationName());
+    jsonObject.insert("ide_version", version());
+    jsonObject.insert("prompt", prompt);
+    jsonObject.insert("history", {});
+    jsonObject.insert("locale", d->locale);
+    jsonObject.insert("model", chatModelLite);
+    jsonObject.insert("talkId", talkId);
+    jsonObject.insert("stream", false);
+
+    QByteArray body = d->jsonToByteArray(jsonObject);
+    QNetworkReply *reply = d->postMessage(url, token, body);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, reply, [&]() {
+        loop.exit();
     });
+    connect(this, &AskApi::stopReceive, reply, [reply, &loop]() {
+        reply->abort();
+        loop.exit();
+    });
+    loop.exec();
+
+    QJsonParseError error;
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+    QJsonObject obj = jsonDocument.object();
+    if (error.error != QJsonParseError::NoError) {
+        qCritical() << "JSON parse error: " << error.errorString();
+        return "";
+    }
+
+    return obj["text"].toString();
 }
 
 void AskApi::postNewSession(const QString &url,
