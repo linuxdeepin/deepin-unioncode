@@ -106,6 +106,9 @@ public:
      */
     QJsonObject query(const QString &projectPath, const QString &query, int topItems);
 
+    QString promptPreProcessing(const QString &originText);
+    QString getChunks(const QString &queryText);
+
 Q_SIGNALS:
     void loginSuccessed();
     void logoutSuccessed();

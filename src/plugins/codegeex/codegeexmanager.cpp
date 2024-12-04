@@ -226,6 +226,54 @@ void CodeGeeXManager::setMessage(const QString &prompt)
     Q_EMIT setTextToSend(prompt);
 }
 
+QString CodeGeeXManager::getChunks(const QString &queryText)
+{
+    using dpfservice::ProjectService;
+    ProjectService *prjService = dpfGetService(ProjectService);
+    auto currentProjectPath = prjService->getActiveProjectInfo().workspaceFolder();
+
+    if (currentProjectPath != "") {
+        QJsonObject result = CodeGeeXManager::instance()->query(currentProjectPath, queryText, 20);
+        QJsonArray chunks = result["Chunks"].toArray();
+        if (!chunks.isEmpty()) {
+            if (result["Completed"].toBool() == false)
+                emit askApi.notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
+            QString context;
+            context += "\n<context>\n";
+            for (auto chunk : chunks) {
+                context += chunk.toObject()["fileName"].toString();
+                context += '\n';
+                context += chunk.toObject()["content"].toString();
+                context += "\n\n";
+            }
+            context += "\n</context>";
+            return context;
+        } else if (CodeGeeXManager::instance()->condaHasInstalled()) {
+            emit askApi.noChunksFounded();
+            return "";
+        }
+    }
+
+    return "";
+}
+
+QString CodeGeeXManager::promptPreProcessing(const QString &originText)
+{
+    QString processedText = originText;
+
+    QString message = originText;
+    if (askApi.codebaseEnabled()) {
+        QString prompt = QString("Translate this passage into English :\"%1\", with the requirements: Do not provide responses other than translation.").arg(message.remove("@CodeBase"));
+        auto englishPrompt = askApi.syncQuickAsk(kUrlSSEChat, sessionId, prompt, currentTalkID);
+        QString chunksContext = getChunks(englishPrompt);
+        if (!chunksContext.isEmpty())
+            message.append(chunksContext);
+        processedText = originText + chunksContext;
+    }
+
+    return processedText;
+}
+
 void CodeGeeXManager::sendMessage(const QString &prompt)
 {
     QString askId = "User" + QString::number(QDateTime::currentMSecsSinceEpoch());
@@ -241,7 +289,11 @@ void CodeGeeXManager::sendMessage(const QString &prompt)
     }
     QString machineId = QSysInfo::machineUniqueId();
     QString talkId = currentTalkID;
-    askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history, talkId);
+
+    QtConcurrent::run([=, this](){
+        auto processedText = promptPreProcessing(prompt);
+        askApi.postSSEChat(kUrlSSEChat, sessionId, processedText, machineId, history, talkId);
+    });
 
     startReceiving();
 }

@@ -68,6 +68,11 @@ public:
                      const QMultiMap<QString, QString> &history,
                      const QString &talkId);
 
+    QString syncQuickAsk(const QString &url,
+                        const QString &token,
+                        const QString &prompt,
+                        const QString &talkId);
+
     void postNewSession(const QString &url,
                         const QString &token,
                         const QString &prompt,
