@@ -148,6 +148,7 @@ void StackFrameModel::setFrames(const StackFrames &frames, bool canExpand)
     contentsValid = true;
     this->canExpand = canExpand;
     stackFrames = frames;
+    currentIndex = 1;
 
     if (stackFrames.size() > 0) {
         for (int i = 0; i < stackFrames.size(); i++) {
@@ -157,8 +158,6 @@ void StackFrameModel::setFrames(const StackFrames &frames, bool canExpand)
                 break;
             }
         }
-    } else {
-        currentIndex = -1;
     }
 
     endResetModel();

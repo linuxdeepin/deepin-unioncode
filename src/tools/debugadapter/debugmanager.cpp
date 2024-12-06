@@ -56,7 +56,7 @@ void DebugManager::initProcess()
 {
     d->process.reset(new QProcess());
 
-    connect(d->process.data(), &QProcess::readyReadStandardOutput, [this]() {
+    connect(d->process.data(), &QProcess::readyReadStandardOutput, d->process.data(), [this]() {
         QString output = d->process->readAllStandardOutput();
 
         for (const auto& c: output)
@@ -77,7 +77,7 @@ void DebugManager::initProcess()
             }
             }
     });
-    connect(d->process.data(), &QProcess::readyReadStandardError, [this]() {
+    connect(d->process.data(), &QProcess::readyReadStandardError, d->process.data(), [this]() {
         QString output = d->process->readAllStandardError();
         for (const auto& c: output)
             switch (c.toLatin1()) {
@@ -97,7 +97,7 @@ void DebugManager::initProcess()
             }
     });
 
-    connect(d->process.data(), &QProcess::started, [this]() {
+    connect(d->process.data(), &QProcess::started, d->process.data(), [this]() {
         d->tokenCounter = 0;
         d->tempBuffer.clear();
         d->resposeExpected.clear();
