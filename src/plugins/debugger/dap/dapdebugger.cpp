@@ -285,6 +285,34 @@ void DAPDebugger::startDebugRemote(const RemoteInfo &info)
     updateRunState(kPreparing);
 }
 
+void DAPDebugger::connectToGdbServer(const GdbserverInfo &info)
+{
+    d->isRemote = false; // local dapDebugger -> gdbserver
+    d->currentSession = d->localSession;
+
+    QMap<QString, QVariant> param;
+    param.insert("workspace", "");
+    param.insert("targetPath", info.executablePath);
+    QStringList commands;
+    if (!info.executablePath.isEmpty())
+        commands.append(QString("--se=%1").arg(info.executablePath));
+    commands.append(QString("--ex=target remote %1:%2").arg(info.ip, QString::number(info.port)));
+    for (auto command : info.initCommands) {
+        if (!command.isEmpty())
+            commands.append(QString("--iex=%1").arg(command));
+    }
+    if (!info.debugInfo.isEmpty())
+        commands.append(QString("--iex=set debug-file-directory %1").arg(info.debugInfo));
+    if (!info.arg.isEmpty()) {
+        commands.append("--args");
+        commands.append(info.arg);
+    }
+    param.insert("arguments", commands);
+
+    requestDebugPort(param, "cmake", false);
+    updateRunState(kPreparing);
+}
+
 void DAPDebugger::attachDebug(const QString &processId)
 {
     if (d->runState != kNoRun) {

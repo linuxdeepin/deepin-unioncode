@@ -49,7 +49,8 @@ public slots:
     /**
      * UI triggered.
      */
-    void remoteDebug(RemoteInfo info);
+    void remoteDebug(const RemoteInfo &info);
+    void connectToGdbServer(const GdbserverInfo &info);
     void run();
     void attachDebug();
     void detachDebug();

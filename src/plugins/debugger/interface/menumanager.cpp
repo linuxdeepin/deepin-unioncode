@@ -12,6 +12,7 @@
 #include "common/widget/appoutputpane.h"
 #include "services/window/windowservice.h"
 #include "remotedebug/remotedebugdlg.h"
+#include "remotedebug/connecttoserverdlg.h"
 
 #include <QMenu>
 
@@ -145,6 +146,17 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = initAction(remoteDebug.get(), "Debug.Remote.Debug",
                             MWMDA_REMOTE_DEBUG, QKeySequence(),
                             "debugger_remotedebug");
+    mDebug->addAction(actionImpl);
+
+    conenctToServerDebug.reset(new QAction(MWMDA_SERVER_DEBUG));
+    connect(conenctToServerDebug.get(), &QAction::triggered, debugManager, [=]() {
+        auto dialog = new ConnectToServerDlg();
+        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->exec();
+    });
+    actionImpl = initAction(conenctToServerDebug.get(), "Debug.Server.Debug",
+                            MWMDA_SERVER_DEBUG, QKeySequence(),
+                            "debugger_connecttoserver");
     mDebug->addAction(actionImpl);
 
     attachDebugging.reset(new QAction(MWMDA_ATTACH_DEBUG));

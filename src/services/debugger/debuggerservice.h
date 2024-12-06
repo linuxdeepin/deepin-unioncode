@@ -11,6 +11,18 @@
 
 namespace dpfservice {
 
+struct GDBServerPreParam
+{
+    QString ip = "";
+    int port = 0;
+
+    QString executablePath = "";
+    QString projectPath = "";
+    QString arg = "";
+    QStringList initCommands = {};
+    QString debugInfo = "";
+};
+
 class SERVICE_EXPORT DebuggerService final : public dpf::PluginService,
         dpf::AutoServiceRegister<DebuggerService>
 {
@@ -43,6 +55,12 @@ public:
      * @param debugger
      */
     DPF_INTERFACE(void, registerDebugger, const QString &kit, AbstractDebugger *debugger);
+
+    /**
+     * @brief requestConnectToGdbServer, open dialog and set preparam
+     * @param preParam
+     */
+    DPF_INTERFACE(void, requestConnectToGdbServer, const GDBServerPreParam &preParam);
 
     DPF_INTERFACE(AbstractDebugger::RunState, getDebugState);
 };

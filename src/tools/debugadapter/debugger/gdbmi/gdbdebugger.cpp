@@ -8,7 +8,6 @@
 #include "common/util/custompaths.h"
 
 #include <QTextStream>
-#include <QProcess>
 #include <QSet>
 
 class GDBDebuggerPrivate {
@@ -68,8 +67,8 @@ GDBDebugger::~GDBDebugger()
 void GDBDebugger::init()
 {
     //use to debugging adapter
-//    DebugManager::instance()->command("set logging file /tmp/log.txt");
-//    DebugManager::instance()->command("set logging on");
+   // DebugManager::instance()->command("set logging file /tmp/log.txt");
+   // DebugManager::instance()->command("set logging on");
 
     QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
     DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
@@ -651,7 +650,16 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
     } else if (record.message == "connected") {
         emit targetRemoteConnected();
     } else if (record.message == "error") {
-        emit gdbError(gdbmi::escapedText(record.payload.toMap().value("msg").toString()));
+        QString msg = gdbmi::escapedText(record.payload.toMap().value("msg").toString());
+        if (msg.contains("Try \"help target\" or \"continue\"")) {
+            dap::StoppedEvent stoppedEvent;
+            stoppedEvent.reason = "step";
+            stoppedEvent.threadId = 1;
+            stoppedEvent.allThreadsStopped = true;
+            stoppedEvent.description = record.payload.toMap().value("msg").toString().toStdString();
+            emit asyncStopped(stoppedEvent);
+        }
+        emit gdbError(msg);
         emit updateExceptResponse(record.token, record.payload);
     } else if (record.message == "exit") {
         d->firstPromt.store(false);

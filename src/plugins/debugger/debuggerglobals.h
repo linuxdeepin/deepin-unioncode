@@ -5,6 +5,8 @@
 #ifndef DEBUGGERGLOBALS_H
 #define DEBUGGERGLOBALS_H
 
+#include "services/debugger/debuggerservice.h"
+
 #include <common/util/singleton.h>
 #include <QColor>
 #include <QtConcurrent>
@@ -13,6 +15,7 @@
  * define AppOutPutPane`s toolbar name
  */
 const QString debugToolBarName = "debugTool";
+typedef dpfservice::GDBServerPreParam GdbserverInfo;
 
 /*
  * Redefine global instance

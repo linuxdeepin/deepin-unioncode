@@ -70,6 +70,7 @@ inline const QString MWMDA_STEP_IN { QAction::tr("Step In") };
 inline const QString MWMDA_STEP_OUT { QAction::tr("Step Out") };
 inline const QString MWMDA_STEP_BACK { QAction::tr("Step Back") };
 inline const QString MWMDA_REMOTE_DEBUG { QAction::tr("Remote Debug") };
+inline const QString MWMDA_SERVER_DEBUG { QAction::tr("Connect To GDB Server") };
 
 // MWMTA = MWM Tool Action
 inline const QString MWM_TOOLS { QMenu::tr("&Tools") };

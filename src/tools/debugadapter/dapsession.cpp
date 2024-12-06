@@ -347,10 +347,6 @@ void DapSession::registerHanlder()
                 foreach (auto arg, request.args.value()) {
                     arguments.push_back(arg.c_str());
                 }
-                // --args : add arguments for gdb.  except : rr, runcoredump
-                if (request.name.value() != "rr" && arguments.size() >= 2 && !(arguments.size() == 2 && arguments.last().endsWith(".core")))
-                    arguments.insert(0, "--args");
-                arguments.removeAll("");
             }
             d->debugger->initDebugger(request.name.value().c_str(), arguments);
             if (request.environment.has_value()) {
