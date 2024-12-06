@@ -17,7 +17,7 @@ class CMakeCbpParser;
 namespace {
 enum_def(CDT_PROJECT_KIT, QString)
 {
-    enum_exp CBP_GENERATOR = "CodeBlocks - Unix Makefiles";   
+    enum_exp CBP_GENERATOR = "CodeBlocks - Unix Makefiles";
     enum_exp CBP_FILE = ".cbp";
 };
 
@@ -53,25 +53,30 @@ public:
         QString stopOnError;
         QString useDefaultCommand;
     };
-
     typedef QList<TargetBuild> TargetBuilds;
 
     CmakeAsynParse();
     virtual ~CmakeAsynParse();
 
+    void stop();
+
 signals:
     void parseProjectEnd(const ParseInfo<QStandardItem *> &info);
     void parseActionsEnd(const ParseInfo<QList<TargetBuild>> &info);
-    void directoryCreated(const QString &path);
+    void directoryCreated(QStandardItem *rootItem, const QString &path);
 
 public slots:
-    QStandardItem *parseProject(QStandardItem *rootItem, const dpfservice::ProjectInfo &info);
+    void parseProject(QStandardItem *rootItem, const dpfservice::ProjectInfo &info);
     QList<TargetBuild> parseActions(const QStandardItem *item);
 
 private:
     QStandardItem *findParentItem(QStandardItem *rootItem, QString &name);
     QStandardItem *createParentItem(QStandardItem *rootItem, const QString &relativeName, const QString &absolutePath);
     QStandardItem *findItem(QStandardItem *rootItem, QString &name, QString &relativePath);
+
+    QAtomicInteger<bool> isStop { false };
 };
 
+Q_DECLARE_METATYPE(CmakeAsynParse::ParseInfo<QStandardItem *>)
+Q_DECLARE_METATYPE(CmakeAsynParse::ParseInfo<QList<CmakeAsynParse::TargetBuild>>)
 #endif   // CMAKEASYNPARSE_H

@@ -6,6 +6,7 @@
 #include "services/project/projectgenerator.h"
 
 #include "common/common.h"
+#include "services/project/projectservice.h"
 
 #include <QAction>
 #include <QDebug>
@@ -92,8 +93,8 @@ void GradleAsynParse::createRows(const QString &path)
             QString childPath = dirItera.next().remove(0, rootPath.size());
             QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
-            QIcon icon = CustomIcons::icon(dirItera.fileInfo());
-            auto newItem = new QStandardItem(icon, dirItera.fileName());
+            auto newItem = new QStandardItem(dirItera.fileName());
+            newItem->setData(dirItera.filePath(), ProjectItemRole::FileIconRole);
             newItem->setToolTip(dirItera.filePath());
             if (!item) {
                 d->rows.append(newItem);
@@ -111,8 +112,8 @@ void GradleAsynParse::createRows(const QString &path)
         while (fileItera.hasNext()) {
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(childPath);
-            QIcon icon = CustomIcons::icon(fileItera.fileInfo());
-            auto newItem = new QStandardItem(icon, fileItera.fileName());
+            auto newItem = new QStandardItem(fileItera.fileName());
+            newItem->setData(fileItera.filePath(), ProjectItemRole::FileIconRole);
             newItem->setToolTip(fileItera.filePath());
             if (!item) {
                 d->rows.append(newItem);

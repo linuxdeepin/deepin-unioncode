@@ -54,10 +54,10 @@ void ProjectDelegate::paint(QPainter *painter,
         iOption.font.setBold(true);
         d->spinner->move(option.rect.right() - 20, option.rect.top() + 4);
 
-        if (index.data(Parsing_State_Role).value<ParsingState>() == ParsingState::Wait && !d->spinner->isVisible()) {
+        if (index.data(ProjectItemRole::ParsingStateRole).value<ParsingState>() == ParsingState::Wait && !d->spinner->isVisible()) {
             d->spinner->show();
             d->spinner->start();
-        } else if (index.data(Parsing_State_Role).value<ParsingState>() == ParsingState::Done) {
+        } else if (index.data(ProjectItemRole::ParsingStateRole).value<ParsingState>() == ParsingState::Done) {
             d->spinner->hide();
             d->spinner->stop();
         }

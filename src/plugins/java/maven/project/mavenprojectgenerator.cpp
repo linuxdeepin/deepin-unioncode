@@ -177,7 +177,7 @@ void MavenProjectGenerator::itemModified(const QList<QStandardItem *> &items)
     if (parse) {
         auto root = d->projectParses.key(parse);
         emit itemChanged(root, items);
-        root->setData(ParsingState::Done, Parsing_State_Role);
+        root->setData(ParsingState::Done, ProjectItemRole::ParsingStateRole);
     }
 }
 

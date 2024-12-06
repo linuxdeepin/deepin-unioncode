@@ -10,12 +10,17 @@
 
 #include <QTabWidget>
 
-#define Parsing_State_Role Qt::UserRole + 100
 enum ParsingState {
     Wait,
     Done
 };
 Q_DECLARE_METATYPE(ParsingState);
+
+enum ProjectItemRole {
+    ParsingStateRole = Qt::UserRole + 100,
+    IconNameRole,
+    FileIconRole
+};
 
 namespace dpfservice {
 

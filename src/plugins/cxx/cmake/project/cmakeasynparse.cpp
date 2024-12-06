@@ -25,15 +25,6 @@ enum_def(CDT_TARGETS_TYPE, QString)
     enum_exp Exe = "[exe]";
 };
 
-QIcon cmakeFolderIcon()
-{
-    static QIcon cmakeFolderIcon;
-    if (cmakeFolderIcon.isNull()) {
-        cmakeFolderIcon = CustomIcons::icon(QFileIconProvider::Folder);
-    }
-    return cmakeFolderIcon;
-}
-
 }   // namespace
 
 const QString kProjectFile = "CMakeLists.txt";
@@ -70,15 +61,14 @@ void sortParentItem(QStandardItem *parentItem)
         return item1->text().toLower().localeAwareCompare(item2->text().toLower()) < 0;
     });
 
-    for ( auto item : cmakeFileList )
+    for (auto item : cmakeFileList)
         parentItem->appendRow(item);
-    for ( auto item : directoryList )
+    for (auto item : directoryList)
         parentItem->appendRow(item);
-    for ( auto item : fileList )
+    for (auto item : fileList)
         parentItem->appendRow(item);
-    for ( auto item : others )
+    for (auto item : others)
         parentItem->appendRow(item);
-
 }
 
 CmakeAsynParse::CmakeAsynParse()
@@ -87,6 +77,11 @@ CmakeAsynParse::CmakeAsynParse()
 
 CmakeAsynParse::~CmakeAsynParse()
 {
+}
+
+void CmakeAsynParse::stop()
+{
+    isStop = true;
 }
 
 QString getTargetRootPath(const CMakeBuildTarget &target, const dpfservice::ProjectInfo &prjInfo)
@@ -101,7 +96,7 @@ QString getTargetRootPath(const CMakeBuildTarget &target, const dpfservice::Proj
     //get target root path by build-directory
     auto workingDirectory = target.workingDirectory;
     auto buildDirectory = prjInfo.buildFolder();
-    if(workingDirectory.startsWith(buildDirectory)) {
+    if (workingDirectory.startsWith(buildDirectory)) {
         workingDirectory.remove(buildDirectory);
         return topPath + workingDirectory;
     }
@@ -111,7 +106,7 @@ QString getTargetRootPath(const CMakeBuildTarget &target, const dpfservice::Proj
     QList<QList<QString>> pathPartsList;
     for (const QString &filePath : srcFiles) {
         // remove outter file.
-        if ((!topPath.isEmpty() && !filePath.startsWith(topPath))/* || QFileInfo(filePath).suffix() == "h" || QFileInfo(filePath).suffix() == "hpp"*/) {
+        if ((!topPath.isEmpty() && !filePath.startsWith(topPath)) /* || QFileInfo(filePath).suffix() == "h" || QFileInfo(filePath).suffix() == "hpp"*/) {
             continue;
         }
 
@@ -160,10 +155,11 @@ QString getTargetRootPath(const CMakeBuildTarget &target, const dpfservice::Proj
     return rootPath;
 }
 
-QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::ProjectInfo &prjInfo)
+void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::ProjectInfo &prjInfo)
 {
+    isStop = false;
     if (!rootItem)
-        return nullptr;
+        return;
 
     TargetsManager::instance()->readTargets(prjInfo.buildFolder(), prjInfo.workspaceFolder());
     auto cbpParser = TargetsManager::instance()->cbpParser();
@@ -171,6 +167,9 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
     auto cmakeList = cbpParser->getCmakeFileList();
     QSet<QString> cmakeFiles {};
     for (auto &cmakeFile : cmakeList) {
+        if (isStop)
+            return;
+
         QString cmakeFilePath = cmakeFile.get()->getfilePath();
         if (cmakeFilePath.endsWith("CMakeLists.txt"))
             cmakeFiles.insert(cmakeFilePath);
@@ -187,15 +186,13 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             cmakeFileItem->setText(cmakeFileInfo.fileName());
             cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
             cmakeParentItem->appendRow(cmakeFileItem);
-            QMetaObject::invokeMethod(this, [=](){
-                cmakeFileItem->setIcon(CustomIcons::icon(cmakeFileInfo));
-            });
+            cmakeFileItem->setData(cmakeFileInfo.absoluteFilePath(), ProjectItemRole::FileIconRole);
 
             // monitor cmake file change to refresh project tree.
             if (cmakeParentItem == rootItem) {
                 CmakeItemKeeper::instance()->addCmakeRootFile(rootItem, cmakeFilePath);
             } else {
-                CmakeItemKeeper::instance()->addCmakeSubFiles(rootItem, {cmakeFilePath});
+                CmakeItemKeeper::instance()->addCmakeSubFiles(rootItem, { cmakeFilePath });
             }
         }
     }
@@ -203,6 +200,9 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
     QSet<QString> commonFiles {};
     const QList<CMakeBuildTarget> &targets = cbpParser->getBuildTargets();
     for (auto target : targets) {
+        if (isStop)
+            return;
+
         if (target.type == kUtility) {
             continue;
         }
@@ -222,12 +222,10 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         } else if (target.type == kStaticLibrary || target.type == kDynamicLibrary) {
             prefix = CDT_TARGETS_TYPE::get()->Lib;
         }
-        QMetaObject::invokeMethod(this, [=](){
-            if (target.type == kExecutable)
-                targetItem->setIcon(QIcon::fromTheme("project_executable"));
-            else if (target.type == kStaticLibrary || target.type == kDynamicLibrary)
-                targetItem->setIcon(QIcon::fromTheme("library"));
-        });
+        if (target.type == kExecutable)
+            targetItem->setData("project_executable", ProjectItemRole::IconNameRole);
+        else if (target.type == kStaticLibrary || target.type == kDynamicLibrary)
+            targetItem->setData("library", ProjectItemRole::IconNameRole);
         QString title = prefix + target.title;
         targetItem->setText(title);
         targetItem->setToolTip(absolutePath);
@@ -237,6 +235,9 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             targetRootItem->appendRow(targetItem);
 
         for (const auto &src : target.srcfiles) {
+            if (isStop)
+                return;
+
             QFileInfo srcFileInfo(src);
             relativePath = QDir(targetRootPath).relativeFilePath(srcFileInfo.dir().path());
             absolutePath = QDir(targetRootPath).absoluteFilePath(srcFileInfo.dir().path());
@@ -258,9 +259,9 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             QStandardItem *srcItem = new QStandardItem();
             srcItem->setText(srcFileInfo.fileName());
             srcItem->setToolTip(srcFileInfo.filePath());
-            srcItem->setIcon(CustomIcons::icon(srcFileInfo));
+            srcItem->setData(srcFileInfo.absoluteFilePath(), ProjectItemRole::FileIconRole);
             if (srcFileInfo.isDir())
-                emit directoryCreated(srcFileInfo.filePath());
+                emit directoryCreated(rootItem, srcFileInfo.filePath());
 
             if (parentItem)
                 parentItem->appendRow(srcItem);
@@ -271,24 +272,21 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
 
     ProjectInfo tempInfo = prjInfo;
     if (tempInfo.runProgram().isEmpty()) {
-        auto activeExecTarget = TargetsManager::instance()->
-                getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
+        auto activeExecTarget = TargetsManager::instance()->getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
         tempInfo.setRunProgram(activeExecTarget.output);
         tempInfo.setRunWorkspaceDir(activeExecTarget.workingDir);
     }
 
     tempInfo.setSourceFiles(commonFiles + cmakeFiles);
     auto exePrograms = TargetsManager::instance()->getExeTargetNamesList();
-    qSort(exePrograms.begin(), exePrograms.end(), [](const QString &s1, const QString &s2){
+    qSort(exePrograms.begin(), exePrograms.end(), [](const QString &s1, const QString &s2) {
         return s1.toLower() < s2.toLower();
     });
     tempInfo.setExePrograms(exePrograms);
     tempInfo.setCurrentProgram(TargetsManager::instance()->getActivedTargetByTargetType(TargetType::kActiveExecTarget).name);
     ProjectInfo::set(rootItem, tempInfo);
     emit parseProjectEnd({ rootItem, true });
-    rootItem->setData(ParsingState::Done, Parsing_State_Role);
-
-    return rootItem;
+    rootItem->setData(ParsingState::Done, ProjectItemRole::ParsingStateRole);
 }
 
 QList<CmakeAsynParse::TargetBuild> CmakeAsynParse::parseActions(const QStandardItem *item)
@@ -312,7 +310,7 @@ QList<CmakeAsynParse::TargetBuild> CmakeAsynParse::parseActions(const QStandardI
     build.buildTarget = QFileInfo(buildTarget.output).dir().path();
     buildMenuList.push_back(build);
 
-    parseActionsEnd({ buildMenuList, true });
+    emit parseActionsEnd({ buildMenuList, true });
     return buildMenuList;
 }
 
@@ -347,10 +345,10 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             item = new QStandardItem();
             item->setText(nameItem);
             item->setToolTip(basePath + relative);
-            item->setIcon(::cmakeFolderIcon());
+            item->setData(basePath + relative, ProjectItemRole::FileIconRole);
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
-            emit directoryCreated(basePath+relative);
+            emit directoryCreated(rootItem, basePath + relative);
             parentItem->appendRow(item);
             sortParentItem(parentItem);
         }

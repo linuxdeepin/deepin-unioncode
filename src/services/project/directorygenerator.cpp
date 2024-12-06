@@ -113,5 +113,5 @@ void DirectoryGenerator::doProjectChildsModified(const QList<QStandardItem *> &i
         rootItem->appendRows(info);
     }
 
-    rootItem->setData(ParsingState::Done, Parsing_State_Role);
+    rootItem->setData(ParsingState::Done, ProjectItemRole::ParsingStateRole);
 }

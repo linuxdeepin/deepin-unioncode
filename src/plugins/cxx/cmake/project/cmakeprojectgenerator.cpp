@@ -38,7 +38,6 @@ class CmakeProjectGeneratorPrivate
         RebuildProject,
     };
 
-    QHash<QStandardItem *, QThreadPool *> asynItemThreadPolls;
     QList<QStandardItem *> reloadCmakeFileItems;
     dpfservice::ProjectInfo configureProjectInfo;
     QHash<QStandardItem *, QFileSystemWatcher *> projectWatchers;
@@ -47,11 +46,15 @@ class CmakeProjectGeneratorPrivate
     QMap<QStandardItem *, ProjectInfo> cmakeItems;
     bool reConfigure = false;
     QSet<QString> toExpand;
+
+    CmakeAsynParse *cmakeParser = nullptr;
+    QSharedPointer<QThread> cmakeParserThread;
 };
 
 CmakeProjectGenerator::CmakeProjectGenerator()
     : d(new CmakeProjectGeneratorPrivate())
 {
+    initCMakeParser();
     // when execute command end can create root Item
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::buildExecuteEnd,
@@ -59,29 +62,29 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::fileDeleted,
-                     this, [this](){
-        runCMake(this->rootItem, {});
-    });
+                     this, [this]() {
+                         runCMake(this->rootItem, {});
+                     });
 
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::openProjectPropertys,
-                     this, [this](const ProjectInfo &prjInfo){
-        auto prjService = dpfGetService(ProjectService);
-        if (prjInfo.kitName() == toolKitName())
-            actionProperties(prjInfo, prjService->getActiveProjectItem());
-    });
+                     this, [this](const ProjectInfo &prjInfo) {
+                         auto prjService = dpfGetService(ProjectService);
+                         if (prjInfo.kitName() == toolKitName())
+                             actionProperties(prjInfo, prjService->getActiveProjectItem());
+                     });
 
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::nodeExpanded,
-                     this, [this](const QString &filePath){
-        d->toExpand.insert(filePath);
-    });
+                     this, [this](const QString &filePath) {
+                         d->toExpand.insert(filePath);
+                     });
 
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::nodeCollapsed,
-                     this, [this](const QString &filePath){
-        d->toExpand.remove(filePath);
-    });
+                     this, [this](const QString &filePath) {
+                         d->toExpand.remove(filePath);
+                     });
 
     connect(TargetsManager::instance(), &TargetsManager::initialized, this, &CmakeProjectGenerator::targetInitialized);
 
@@ -107,7 +110,7 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     auto cmd = ActionManager::instance()->registerAction(runCMake, "Build.RunCMake");
     mBuild->addAction(cmd);
 
-    QObject::connect(runCMake, &QAction::triggered, this, [this](){
+    QObject::connect(runCMake, &QAction::triggered, this, [this]() {
         auto prjService = dpfGetService(ProjectService);
         auto activePrjInfo = prjService->getActiveProjectInfo();
         for (auto item : d->cmakeItems.values()) {
@@ -120,15 +123,15 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
     QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
                      [this](const dpfservice::ProjectInfo &info) {
-        configure(info);
-    });
+                         configure(info);
+                     });
 
     // add clear cmake menu item
     QAction *clearCMake = new QAction(tr("Clear CMake"));
     cmd = ActionManager::instance()->registerAction(clearCMake, "Build.ClearCMake");
     mBuild->addAction(cmd);
 
-    QObject::connect(clearCMake, &QAction::triggered, this, [this](){
+    QObject::connect(clearCMake, &QAction::triggered, this, [this]() {
         auto prjService = dpfGetService(ProjectService);
         auto activePrjInfo = prjService->getActiveProjectInfo();
         for (auto item : d->cmakeItems.values()) {
@@ -158,16 +161,12 @@ void CmakeProjectGenerator::clearCMake(QStandardItem *root)
 CmakeProjectGenerator::~CmakeProjectGenerator()
 {
     qInfo() << __FUNCTION__;
-    for (auto val : d->asynItemThreadPolls.keys()) {
-        auto threadPoll = d->asynItemThreadPolls[val];
-        if (threadPoll) {
-            threadPoll->clear();
-            while (threadPoll->activeThreadCount() != 0) {}
-            delete threadPoll;
-        }
+    if (d->cmakeParser) {
+        d->cmakeParser->stop();
+        d->cmakeParserThread->quit();
+        d->cmakeParserThread->wait();
+        delete d->cmakeParser;
     }
-
-    d->asynItemThreadPolls.clear();
 
     if (d)
         delete d;
@@ -184,7 +183,7 @@ QStringList CmakeProjectGenerator::supportFileNames()
 }
 
 DWidget *CmakeProjectGenerator::configureWidget(const QString &language,
-                                         const QString &workspace)
+                                                const QString &workspace)
 {
     ProjectGenerator::configureWidget(language, workspace);
     disconnect(this);
@@ -225,7 +224,7 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
         commandInfo.arguments = projInfo.configCustomArgs();
         commandInfo.workingDir = projInfo.workspaceFolder();
 
-        bool isSuccess = builderService->runbuilderCommand({commandInfo}, false);
+        bool isSuccess = builderService->runbuilderCommand({ commandInfo }, false);
         if (isSuccess) {
             ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
             // display root item before everything is done.
@@ -236,7 +235,7 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
                 d->reConfigure = false;
             else {
                 d->reConfigure = true;
-                rootItem->setData(ParsingState::Wait, Parsing_State_Role);
+                rootItem->setData(ParsingState::Wait, ProjectItemRole::ParsingStateRole);
             }
 
             d->cmakeItems.insert(newRoot, projInfo);
@@ -258,51 +257,23 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
 {
     using namespace dpfservice;
 
-    d->asynItemThreadPolls[rootItem] = new QThreadPool;
-
-    auto parse = new CmakeAsynParse;
     auto fileWatcher = new QFileSystemWatcher(this);
     d->projectWatchers.insert(rootItem, fileWatcher);
     auto thisProject = rootItem;
     d->projectsWaitingUpdate.append(thisProject);
 
-    // asyn free parse, that .project file parse
-    QObject::connect(parse, &CmakeAsynParse::parseProjectEnd,
-                     [=](CmakeAsynParse::ParseInfo<QStandardItem *> parseInfo) {
-                         d->asynItemThreadPolls.remove(parseInfo.result);
-                         // active after everything done.
-                         project.activeProject(info.kitName(), info.language(), info.workspaceFolder());
-                         delete parse;
+    metaObject()->invokeMethod(d->cmakeParser,
+                               std::bind(&CmakeAsynParse::parseProject, d->cmakeParser, rootItem, info));
 
-                         d->projectsWaitingUpdate.removeOne(thisProject);
+    connect(fileWatcher, &QFileSystemWatcher::directoryChanged, this,
+            [=](const QString &path) {
+                if (d->projectsWaitingUpdate.contains(thisProject))
+                    return;
 
-                         if (!d->reConfigure)
-                             return;
-
-                         QMetaObject::invokeMethod(this, [this]() {
-                             auto prjService = dpfGetService(ProjectService);
-                             prjService->expandItemByFile(d->toExpand.toList());
-                         });
-                     });
-
-    // asyn execute logic,  that .project file parse
-    QtConcurrent::run(d->asynItemThreadPolls[rootItem],
-                      parse, &CmakeAsynParse::parseProject,
-                      rootItem, info);
-
-    connect(parse, &CmakeAsynParse::directoryCreated, this, [=](const QString &path){
-        if (!fileWatcher->directories().contains(path))
-            fileWatcher->addPath(path);
-    });
-
-    connect(fileWatcher, &QFileSystemWatcher::directoryChanged, this, [=](const QString &path){
-        if (d->projectsWaitingUpdate.contains(thisProject))
-            return;
-
-        auto windowService = dpfGetService(WindowService);
-        windowService->notify(0, "CMakeProject", tr("Files in project %1 have changed, needs to run cmake to update").arg(thisProject->text()), {});
-        d->projectsWaitingUpdate.append(thisProject);
-    });
+                auto windowService = dpfGetService(WindowService);
+                windowService->notify(0, "CMakeProject", tr("Files in project %1 have changed, needs to run cmake to update").arg(thisProject->text()), {});
+                d->projectsWaitingUpdate.append(thisProject);
+            });
 
     return rootItem;
 }
@@ -311,15 +282,6 @@ void CmakeProjectGenerator::removeRootItem(QStandardItem *root)
 {
     // remove watcher from current root item
     CmakeItemKeeper::instance()->delCmakeFileNode(root);
-
-    auto threadPoll = d->asynItemThreadPolls[root];
-    if (threadPoll) {
-        threadPoll->clear();
-        while(threadPoll->waitForDone());
-        delete threadPoll;
-        d->asynItemThreadPolls.remove(root);
-    }
-
     if (d->reloadCmakeFileItems.contains(root))
         d->reloadCmakeFileItems.removeOne(root);
 
@@ -337,23 +299,14 @@ QMenu *CmakeProjectGenerator::createItemMenu(const QStandardItem *item)
     if (item->parent())
         return nullptr;
 
-    QMenu *menu = nullptr;
-
-    // create parse
-    CmakeAsynParse *parse = new CmakeAsynParse();
-
-    // create item from syn
-    auto targetBuilds = parse->parseActions(item);
-
-    // free parse from syn
-    delete parse;
-
     auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
     if (!root)
-        return menu;
+        return nullptr;
 
+    QMenu *menu = new QMenu();
+    // create item from syn
+    auto targetBuilds = d->cmakeParser->parseActions(item);
     if (!targetBuilds.isEmpty()) {
-        menu = new QMenu();
         for (auto val : targetBuilds) {
             QAction *action = new QAction();
             action->setText(val.buildName);
@@ -368,12 +321,7 @@ QMenu *CmakeProjectGenerator::createItemMenu(const QStandardItem *item)
         }
     }
 
-    if (!menu) {
-        menu = new QMenu();
-    }
-
     createBuildMenu(menu);
-
     QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
@@ -410,7 +358,7 @@ void CmakeProjectGenerator::createDocument(const QStandardItem *item, const QStr
         file.close();
     }
 
-    QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=](){
+    QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=]() {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(fileName);
         dlg->close();
@@ -455,15 +403,13 @@ void CmakeProjectGenerator::actionTriggered()
             commandInfo.program = program;
             commandInfo.arguments = args;
             commandInfo.workingDir = workDir;
-            builderService->runbuilderCommand({commandInfo}, false);
+            builderService->runbuilderCommand({ commandInfo }, false);
         }
     }
 }
 
 void CmakeProjectGenerator::setRootItemToView(QStandardItem *root)
 {
-    d->asynItemThreadPolls.remove(root);
-
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -566,7 +512,7 @@ void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info
     dlg.insertPropertyPanel(tr("Run"), runWidget);
     dlg.insertPropertyPanel(tr("Kit"), kitPage);
 
-    connect(buildWidget, &BuildPropertyPage::cacheFileUpdated, this, [=](){
+    connect(buildWidget, &BuildPropertyPage::cacheFileUpdated, this, [=]() {
         runCMake(this->rootItem, {});
     });
 
@@ -591,7 +537,7 @@ void CmakeProjectGenerator::recursionRemoveItem(QStandardItem *item)
     item = nullptr;
 }
 
-void CmakeProjectGenerator::targetInitialized(const QString& workspace)
+void CmakeProjectGenerator::targetInitialized(const QString &workspace)
 {
     ProjectConfigure *projectConfigure = ConfigUtil::instance()->getConfigureParamPointer();
     auto tempType = projectConfigure->tempSelType;
@@ -606,8 +552,7 @@ void CmakeProjectGenerator::targetInitialized(const QString& workspace)
         // update environment.
         for (auto targetRunConfigure : buildTypeConfigure.runConfigure.targetsRunConfigure) {
             if (targetRunConfigure.targetName == activeExecTarget.name) {
-                auto projectInfo = dpfGetService(ProjectService)->
-                        getProjectInfo(d->configureProjectInfo.kitName(), d->configureProjectInfo.workspaceFolder());
+                auto projectInfo = dpfGetService(ProjectService)->getProjectInfo(d->configureProjectInfo.kitName(), d->configureProjectInfo.workspaceFolder());
                 projectInfo.setRunEnvironment(targetRunConfigure.env.toList());
                 dpfGetService(ProjectService)->updateProjectInfo(projectInfo);
             }
@@ -615,6 +560,40 @@ void CmakeProjectGenerator::targetInitialized(const QString& workspace)
     }
 
     ConfigUtil::instance()->saveConfig(ConfigUtil::instance()->getConfigPath(workspace), *projectConfigure);
+}
+
+void CmakeProjectGenerator::projectParseFinished(const CmakeAsynParse::ParseInfo<QStandardItem *> &info)
+{
+    const auto &projectInfo = ProjectInfo::get(info.result);
+    // active after everything done.
+    project.activeProject(projectInfo.kitName(), projectInfo.language(), projectInfo.workspaceFolder());
+    d->projectsWaitingUpdate.removeOne(info.result);
+    if (!d->reConfigure)
+        return;
+
+    auto prjService = dpfGetService(ProjectService);
+    prjService->expandItemByFile(d->toExpand.toList());
+}
+
+void CmakeProjectGenerator::initCMakeParser()
+{
+    qRegisterMetaType<QStandardItem *>("QStandardItemPointer");
+    qRegisterMetaType<CmakeAsynParse::ParseInfo<QStandardItem *>>("ParseInfo_QStandardItem");
+
+    d->cmakeParser = new CmakeAsynParse;
+    d->cmakeParserThread = QSharedPointer<QThread>(new QThread);
+    d->cmakeParser->moveToThread(d->cmakeParserThread.data());
+
+    connect(d->cmakeParser, &CmakeAsynParse::directoryCreated, this,
+            [=](QStandardItem *rootItem, const QString &path) {
+                auto fileWatcher = d->projectWatchers.value(rootItem);
+                if (fileWatcher && !fileWatcher->directories().contains(path))
+                    fileWatcher->addPath(path);
+            },
+            Qt::QueuedConnection);
+    connect(d->cmakeParser, &CmakeAsynParse::parseProjectEnd, this,
+            &CmakeProjectGenerator::projectParseFinished, Qt::QueuedConnection);
+    d->cmakeParserThread->start();
 }
 
 void CmakeProjectGenerator::createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure)
@@ -645,7 +624,7 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
         return;
 
     menu->addSeparator();
-    auto addBuildMenu = [&](const QString &actionID){
+    auto addBuildMenu = [&](const QString &actionID) {
         auto command = ActionManager::instance()->command(actionID);
         if (command && command->action()) {
             menu->addAction(command->action());

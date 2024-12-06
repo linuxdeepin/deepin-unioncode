@@ -8,6 +8,7 @@
 #include "services/project/projectservice.h"
 #include "services/builder/builderservice.h"
 #include "configutil.h"
+#include "cmakeasynparse.h"
 
 #include <QObject>
 #include <QDomDocument>
@@ -43,8 +44,10 @@ private slots:
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
     void recursionRemoveItem(QStandardItem *item);
     void targetInitialized(const QString& workspace);
+    void projectParseFinished(const CmakeAsynParse::ParseInfo<QStandardItem *> &info);
 
 private:
+    void initCMakeParser();
     void createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure);
     void createBuildMenu(QMenu *menu);
     void clearCMake(QStandardItem *root);
