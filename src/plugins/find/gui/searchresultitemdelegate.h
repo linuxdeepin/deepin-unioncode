@@ -45,6 +45,9 @@ private:
     QTextLayout::FormatRange createFormatRange(const QStyleOptionViewItem &option, int start, int length,
                                                const QColor &foreground, const QColor &background) const;
     void drawIcon(QPainter *painter, const QStyleOptionViewItem &option, const QIcon &icon, const QRect &rect) const;
+    QPair<QString, QList<QTextLayout::FormatRange>> adjustContent(const QModelIndex &index,
+                                                                  const QString &originalText,
+                                                                  const QList<QTextLayout::FormatRange> &formatList) const;
 };
 
 #endif   // SEARCHRESULTITEMDELEGATE_H
