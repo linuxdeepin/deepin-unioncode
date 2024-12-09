@@ -105,9 +105,11 @@ FindItem *SearchResultModel::findItem(const QModelIndex &index) const
 QString SearchResultModel::findGroup(const QModelIndex &index) const
 {
     if (index.isValid() && !index.parent().isValid() && index.column() == 0 && index.row() >= 0) {
-        const QList<QString> &keys = resultData.keys();
-        if (index.row() < keys.count())
-            return keys.at(index.row());
+        if (index.row() < resultData.count()) {
+            auto it = resultData.begin();
+            std::advance(it, index.row());
+            return it.key();
+        }
     }
 
     return QString();
@@ -117,16 +119,9 @@ void SearchResultModel::appendResult(const FindItemList &list)
 {
     QMap<QString, FindItemList> result;
     for (const auto &item : list) {
-        if (!resultData.contains(item.filePathName)) {
-            if (result.contains(item.filePathName)) {
-                addItem(item.filePathName, result[item.filePathName]);
-                result.clear();
-            }
+        if (!resultData.contains(item.filePathName))
             addGroup(item.filePathName);
-            result[item.filePathName].append(item);
-        } else {
-            result[item.filePathName].append(item);
-        }
+        result[item.filePathName].append(item);
     }
 
     for (auto iter = result.begin(); iter != result.end(); ++iter)
@@ -224,6 +219,7 @@ QVariant SearchResultModel::data(const FindItem &item, int role) const
 {
     switch (role) {
     case Qt::ToolTipRole:
+        return item.context.trimmed();
     case Qt::DisplayRole:
         return item.context;
     case LineRole:

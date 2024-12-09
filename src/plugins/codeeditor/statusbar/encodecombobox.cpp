@@ -6,6 +6,7 @@
 #include "utils/editorutils.h"
 
 #include <DStyle>
+#include <DGuiApplicationHelper>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
 #include <DPaletteHelper>
 #else
@@ -49,6 +50,8 @@ void EncodeComboBox::initConnection()
         if (curEncodeName != action->text())
             Q_EMIT encodeChanged(action->text());
     });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+            this, [this] { toolBtn->setIcon(createIcon()); });
 }
 
 void EncodeComboBox::initMenuData()
