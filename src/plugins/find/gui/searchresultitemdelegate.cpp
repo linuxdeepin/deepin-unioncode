@@ -29,6 +29,9 @@ inline constexpr int SpacePadding { 8 };
 inline constexpr int LineNumberWidth { 40 };
 inline constexpr int OptionButtonSize { 20 };
 inline constexpr int CountNumberSize { 20 };
+inline constexpr int ContentLeftSideMaxLength { 20 };
+inline constexpr int ContentRightSideMaxLength { 100 };
+inline constexpr char leftPadding[] { "…" };
 
 SearchResultItemDelegate::SearchResultItemDelegate(QAbstractItemView *parent)
     : DStyledItemDelegate(parent)
@@ -56,9 +59,7 @@ void SearchResultItemDelegate::paint(QPainter *painter, const QStyleOptionViewIt
 
 QSize SearchResultItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    auto size = DStyledItemDelegate::sizeHint(option, index);
-    size.setHeight(24);
-    return size;
+    return { view()->width(), 24 };
 }
 
 bool SearchResultItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)
@@ -390,7 +391,9 @@ void SearchResultItemDelegate::drawContextItem(QPainter *painter, const QStyleOp
         }
         formats << createFormatRange(opt, column, matchedLength, {}, background);
     }
-    drawDisplay(painter, option, textRect, context, formats);
+
+    auto [adjustedText, adjustedFormats] = adjustContent(index, context, formats);
+    drawDisplay(painter, option, textRect, adjustedText, adjustedFormats);
 }
 
 void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect,
@@ -401,11 +404,6 @@ void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     } else {
         painter->setPen(option.palette.color(QPalette::Normal, QPalette::Text));
     }
-
-    // Remove leading spaces
-    QString displayText = text.trimmed();
-    if (displayText.isEmpty())
-        return;
 
     const QStyleOptionViewItem opt = option;
 
@@ -420,21 +418,12 @@ void SearchResultItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     QTextLayout textLayout;
     textLayout.setTextOption(textOption);
     textLayout.setFont(option.font);
-    textLayout.setText(displayText);
-
-    // Adjust offsets in formatList
-    int offset = text.indexOf(displayText);
-    QList<QTextLayout::FormatRange> adjustedFormats = formatList;
-    if (offset != 0) {
-        for (auto &format : adjustedFormats) {
-            format.start -= offset;
-        }
-    }
-    textLayout.setFormats(adjustedFormats.toVector());
+    textLayout.setText(text);
+    textLayout.setFormats(formatList.toVector());
 
     QSizeF textLayoutSize = doTextLayout(&textLayout, textRect.width());
     if (textRect.width() < textLayoutSize.width()) {
-        displayText = option.fontMetrics.elidedText(displayText, Qt::ElideRight, textRect.width());
+        QString displayText = option.fontMetrics.elidedText(text, Qt::ElideRight, textRect.width());
         textLayout.setText(displayText);
         doTextLayout(&textLayout, textRect.width());
     }
@@ -537,4 +526,40 @@ void SearchResultItemDelegate::drawIcon(QPainter *painter, const QStyleOptionVie
     x += (rect.size().width() - w) / 2.0;
 
     painter->drawPixmap(qRound(x), qRound(y), px);
+}
+
+QPair<QString, QList<QTextLayout::FormatRange>> SearchResultItemDelegate::adjustContent(const QModelIndex &index,
+                                                                                        const QString &originalText,
+                                                                                        const QList<QTextLayout::FormatRange> &formatList) const
+{
+    auto adjustFormatRange = [&](int offset) {
+        if (offset == 0)
+            return formatList;
+
+        QList<QTextLayout::FormatRange> adjustedFormats;
+        std::transform(formatList.cbegin(), formatList.cend(), std::back_inserter(adjustedFormats),
+                       [&](const QTextLayout::FormatRange &format) {
+                           return QTextLayout::FormatRange { format.start - offset, format.length, format.format };
+                       });
+        return adjustedFormats;
+    };
+
+    const auto &matchedLength = index.data(MatchedLengthRole).toInt();
+    int keywordOffset = index.data(ColumnRole).toInt();
+    const auto &replaceText = index.data(ReplaceTextRole).toString();
+
+    auto displayText = originalText.trimmed();
+    int offset = originalText.indexOf(displayText);
+    keywordOffset -= offset;
+    int replaceOffset = keywordOffset + matchedLength;
+
+    int leftStart = std::max(0, keywordOffset - ContentLeftSideMaxLength);
+    int rightEnd = std::min(displayText.length(), replaceOffset + replaceText.length() + ContentRightSideMaxLength);
+    displayText = displayText.mid(leftStart, rightEnd - leftStart);
+    if (leftStart != 0) {
+        displayText.insert(0, leftPadding);
+        leftStart -= 1;
+    }
+
+    return { displayText, adjustFormatRange(leftStart + offset) };
 }

@@ -386,17 +386,22 @@ void SearchReplaceWorker::replace(const ReplaceParams &params)
 
 void SearchReplaceWorker::handleReadSearchResult(const QString &keyword, SearchFlags flags)
 {
-    const auto resultLineRegex = QRegularExpression(R"((.+):([0-9]+):(.+))", QRegularExpression::NoPatternOption);
+    static auto resultLineRegex = QRegularExpression(R"((.+?):([0-9]+?):(.+))", QRegularExpression::NoPatternOption);
     while (d->resultCount < MaxResultCount && d->process->canReadLine()) {
-        const auto &line = d->process->readLine();
+        const auto &lineText = d->process->readLine();
         QRegularExpressionMatch regMatch;
-        if ((regMatch = resultLineRegex.match(line)).hasMatch()) {
+        // When the content of `lineText` is too large, parsing issues may occur,
+        // so we truncate it to 1000 characters for parsing.
+        if ((regMatch = resultLineRegex.match(lineText.mid(0, 1000))).hasMatch()) {
             auto name = regMatch.captured(1);
-            auto line = regMatch.captured(2).toInt();
-            auto context = regMatch.captured(3);
+            auto lineNumb = regMatch.captured(2).toInt();
+            auto index = regMatch.capturedStart(3);
+            auto context = lineText.mid(index);
+            if (context.endsWith('\n'))
+                context.chop(1);
 
-            flags.testFlag(SearchRegularExpression) ? d->parseResultWithRegExp(name, keyword, context, line, flags)
-                                                    : d->parseResultWithoutRegExp(name, keyword, context, line, flags);
+            flags.testFlag(SearchRegularExpression) ? d->parseResultWithRegExp(name, keyword, context, lineNumb, flags)
+                                                    : d->parseResultWithoutRegExp(name, keyword, context, lineNumb, flags);
         }
     }
 
