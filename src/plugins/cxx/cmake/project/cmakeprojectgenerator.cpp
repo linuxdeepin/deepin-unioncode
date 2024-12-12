@@ -112,6 +112,7 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
     QObject::connect(runCMake, &QAction::triggered, this, [this]() {
         auto prjService = dpfGetService(ProjectService);
+
         auto activePrjInfo = prjService->getActiveProjectInfo();
         for (auto item : d->cmakeItems.values()) {
             if (item.isSame(activePrjInfo)) {
@@ -235,7 +236,7 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
                 d->reConfigure = false;
             else {
                 d->reConfigure = true;
-                rootItem->setData(ParsingState::Wait, ProjectItemRole::ParsingStateRole);
+                rootItem->setData(Project::Wait, Project::ParsingStateRole);
             }
 
             d->cmakeItems.insert(newRoot, projInfo);

@@ -25,10 +25,12 @@ public:
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem *root) override;
+
 protected:
     dpfservice::ProjectInfo prjInfo;
 public slots:
-    void doProjectChildsModified(const QList<QStandardItem *> &info);
+    void doProjectChildsModified();
+    void handleItemUpdated(QStandardItem *item);
 };
 
 }

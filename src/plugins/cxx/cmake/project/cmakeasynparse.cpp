@@ -186,7 +186,7 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
             cmakeFileItem->setText(cmakeFileInfo.fileName());
             cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
             cmakeParentItem->appendRow(cmakeFileItem);
-            cmakeFileItem->setData(cmakeFileInfo.absoluteFilePath(), ProjectItemRole::FileIconRole);
+            cmakeFileItem->setData(cmakeFileInfo.absoluteFilePath(), Project::FileIconRole);
 
             // monitor cmake file change to refresh project tree.
             if (cmakeParentItem == rootItem) {
@@ -223,9 +223,9 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
             prefix = CDT_TARGETS_TYPE::get()->Lib;
         }
         if (target.type == kExecutable)
-            targetItem->setData("project_executable", ProjectItemRole::IconNameRole);
+            targetItem->setData("project_executable", Project::IconNameRole);
         else if (target.type == kStaticLibrary || target.type == kDynamicLibrary)
-            targetItem->setData("library", ProjectItemRole::IconNameRole);
+            targetItem->setData("library", Project::IconNameRole);
         QString title = prefix + target.title;
         targetItem->setText(title);
         targetItem->setToolTip(absolutePath);
@@ -259,7 +259,7 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
             QStandardItem *srcItem = new QStandardItem();
             srcItem->setText(srcFileInfo.fileName());
             srcItem->setToolTip(srcFileInfo.filePath());
-            srcItem->setData(srcFileInfo.absoluteFilePath(), ProjectItemRole::FileIconRole);
+            srcItem->setData(srcFileInfo.absoluteFilePath(), Project::FileIconRole);
             if (srcFileInfo.isDir())
                 emit directoryCreated(rootItem, srcFileInfo.filePath());
 
@@ -286,7 +286,7 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
     tempInfo.setCurrentProgram(TargetsManager::instance()->getActivedTargetByTargetType(TargetType::kActiveExecTarget).name);
     ProjectInfo::set(rootItem, tempInfo);
     emit parseProjectEnd({ rootItem, true });
-    rootItem->setData(ParsingState::Done, ProjectItemRole::ParsingStateRole);
+    rootItem->setData(Project::Done, Project::ParsingStateRole);
 }
 
 QList<CmakeAsynParse::TargetBuild> CmakeAsynParse::parseActions(const QStandardItem *item)
@@ -345,7 +345,7 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             item = new QStandardItem();
             item->setText(nameItem);
             item->setToolTip(basePath + relative);
-            item->setData(basePath + relative, ProjectItemRole::FileIconRole);
+            item->setData(basePath + relative, Project::FileIconRole);
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
             emit directoryCreated(rootItem, basePath + relative);

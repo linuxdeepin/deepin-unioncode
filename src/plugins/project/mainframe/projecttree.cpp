@@ -27,6 +27,7 @@
 #include <QUrl>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QScrollBar>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -83,10 +84,20 @@ ProjectTree::ProjectTree(QWidget *parent)
                      this, &ProjectTree::doDoubleClicked);
 
     QObject::connect(this, &ProjectTree::expanded,
-                     this, [=](const QModelIndex &index) { SendEvents::projectNodeExpanded(index); });
+                     this, [=](const QModelIndex &index) {
+                         auto item = d->itemModel->itemFromIndex(index);
+                         if (item)
+                             item->setData(true, Project::ItemExpandedRole);
+                         SendEvents::projectNodeExpanded(index);
+                     });
 
     QObject::connect(this, &ProjectTree::collapsed,
-                     this, [=](const QModelIndex &index) { SendEvents::projectNodeCollapsed(index); });
+                     this, [=](const QModelIndex &index) {
+                         auto item = d->itemModel->itemFromIndex(index);
+                         if (item)
+                             item->setData(false, Project::ItemExpandedRole);
+                         SendEvents::projectNodeCollapsed(index);
+                     });
 
     d->sectionModel = new ProjectSelectionModel(d->itemModel);
     setSelectionModel(d->sectionModel);
@@ -156,8 +167,8 @@ void ProjectTree::appendRootItem(QStandardItem *root)
     if (model)
         model->appendRow(root);
 
-    if (root->data(ProjectItemRole::ParsingStateRole).value<ParsingState>() != ParsingState::Done)   //avoid appent root item after complete parse
-        root->setData(ParsingState::Wait, ProjectItemRole::ParsingStateRole);
+    if (root->data(Project::ParsingStateRole).value<Project::ParsingState>() != Project::Done)   //avoid appent root item after complete parse
+        root->setData(Project::Wait, Project::ParsingStateRole);
 
     // 发送工程节点已创建信号
     SendEvents::projectCreated(info);
@@ -293,6 +304,24 @@ void ProjectTree::expandedProjectAll(const QStandardItem *root)
             QStandardItem *childitem = root->child(i);
             expandedProjectAll(childitem);
         }
+    }
+}
+
+void ProjectTree::restoreExpandState(QStandardItem *item)
+{
+    QModelIndex index = d->itemModel->indexFromItem(item);
+    if (!index.isValid())
+        return;
+
+    bool expanded = item->data(Project::ItemExpandedRole).toBool();
+    if (!expanded) {
+        collapse(index);
+        return;
+    }
+
+    expand(index);
+    for (int i = 0; i < item->rowCount(); ++i) {
+        restoreExpandState(item->child(i));
     }
 }
 
@@ -669,6 +698,7 @@ void ProjectTree::actionNewDirectory(const QStandardItem *item)
 
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setWindowTitle(tr("New Dirctory"));
+    dialog->setFocusProxy(inputEdit);
 
     dialog->addContent(inputEdit);
     dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
@@ -697,6 +727,7 @@ void ProjectTree::actionNewDocument(const QStandardItem *item)
 
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setWindowTitle(tr("New Document"));
+    dialog->setFocusProxy(inputEdit);
 
     dialog->addContent(inputEdit);
     dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);

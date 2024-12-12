@@ -378,6 +378,8 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
     editorMng.remove(fileName);
     recentOpenedFiles.removeOne(fileName);
     editorLayout->removeWidget(editor);
+    if (!recentOpenedFiles.isEmpty())
+        q->openFile(recentOpenedFiles.first());
     changeFocusProxy();
 
     emit editor->fileClosed(fileName);

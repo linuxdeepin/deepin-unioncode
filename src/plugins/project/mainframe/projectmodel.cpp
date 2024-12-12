@@ -17,11 +17,11 @@ ProjectModel::ProjectModel(QObject *parent)
 QVariant ProjectModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DecorationRole) {
-        auto name = index.data(ProjectItemRole::IconNameRole).toString();
+        auto name = index.data(Project::IconNameRole).toString();
         if (!name.isEmpty())
             return QIcon::fromTheme(name);
 
-        name = index.data(ProjectItemRole::FileIconRole).toString();
+        name = index.data(Project::FileIconRole).toString();
         if (!name.isEmpty())
             return CustomIcons::icon(QFileInfo(name));
     }

@@ -10,21 +10,28 @@
 
 #include <QTabWidget>
 
+namespace Project {
+
 enum ParsingState {
     Wait,
     Done
 };
-Q_DECLARE_METATYPE(ParsingState);
 
 enum ProjectItemRole {
     ParsingStateRole = Qt::UserRole + 100,
     IconNameRole,
-    FileIconRole
+    FileIconRole,
+    FilePathRole,
+    ItemExpandedRole
 };
+}   // namespace project
+
+Q_DECLARE_METATYPE(Project::ParsingState);
 
 namespace dpfservice {
 
-struct Target {
+struct Target
+{
     QString name;
     QString srcPath;
     QString targetID;
@@ -42,7 +49,7 @@ struct Target {
     bool operator==(const Target &other) const
     {
         if (name == other.name
-                && srcPath == other.srcPath)
+            && srcPath == other.srcPath)
             return true;
 
         return false;
@@ -59,14 +66,15 @@ enum TargetType {
 };
 
 class SERVICE_EXPORT ProjectService final : public dpf::PluginService,
-        dpf::AutoServiceRegister<ProjectService>,
-        dpf::QtClassFactory<ProjectGenerator>,
-        dpf::QtClassManager<ProjectGenerator>
+                                            dpf::AutoServiceRegister<ProjectService>,
+                                            dpf::QtClassFactory<ProjectGenerator>,
+                                            dpf::QtClassManager<ProjectGenerator>
 {
     Q_OBJECT
     Q_DISABLE_COPY(ProjectService)
     typedef dpf::QtClassManager<ProjectGenerator> GeneratorProManager;
     typedef dpf::QtClassFactory<ProjectGenerator> GeneratorProFactory;
+
 public:
     static QString name()
     {
@@ -74,9 +82,8 @@ public:
     }
 
     explicit ProjectService(QObject *parent = nullptr)
-        : dpf::PluginService (parent)
+        : dpf::PluginService(parent)
     {
-
     }
 
     /*!
@@ -90,7 +97,7 @@ public:
             return GeneratorProFactory::createKeys();
         else {
             qCritical() << "must ProjectGenerator, "
-                        << "not support " << typeid (T).name();
+                        << "not support " << typeid(T).name();
             abort();
         }
     }
@@ -107,7 +114,7 @@ public:
             return GeneratorProFactory::regClass<T>(name, errorString);
         else {
             qCritical() << "must base class ProjectGenerator, "
-                        << "not support " << typeid (T).name();
+                        << "not support " << typeid(T).name();
             abort();
         }
     }
@@ -126,12 +133,12 @@ public:
             if (!generator) {
                 generator = GeneratorProFactory::create(name, errorString);
                 if (generator)
-                    GeneratorProManager::append(name, dynamic_cast<ProjectGenerator*>(generator));
+                    GeneratorProManager::append(name, dynamic_cast<ProjectGenerator *>(generator));
             }
-            return dynamic_cast<T*>(generator);
+            return dynamic_cast<T *>(generator);
         } else {
             qCritical() << "must base class or ProjectGenerator, "
-                        << "not support "<< typeid (T).name();
+                        << "not support " << typeid(T).name();
             abort();
         }
     }
@@ -140,12 +147,14 @@ public:
      * \brief name
      */
     template<class T>
-    QString name(T* value) const{
+    QString name(T *value) const
+    {
         return QtClassManager<T>::key(value);
     }
 
     template<class T>
-    QList<T*> values() const {
+    QList<T *> values() const
+    {
         return QtClassManager<T>::values();
     }
 
@@ -227,15 +236,16 @@ public:
      * \param aitem
      */
     DPF_INTERFACE(void, expandedAll, QStandardItem *aitem);
-    
+
     DPF_INTERFACE(void, openProject);
+    DPF_INTERFACE(void, restoreExpandState, QStandardItem *item);
 };
 
 /* MainWindow codeediter workspace title,
  * use in window service swtich workspace
  */
-inline const QString MWCWT_PROJECTS {QTabWidget::tr("Projects")};
+inline const QString MWCWT_PROJECTS { QTabWidget::tr("Projects") };
 
-} //namespace dpfservice
+}   //namespace dpfservice
 
-#endif // PROJECTSERVICE_H
+#endif   // PROJECTSERVICE_H

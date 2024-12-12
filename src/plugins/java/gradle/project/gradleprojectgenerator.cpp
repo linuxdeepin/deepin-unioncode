@@ -235,7 +235,7 @@ void GradleProjectGenerator::doProjectChildsModified(const QList<QStandardItem *
         }
         rootItem->appendRows(items);
     }
-    rootItem->setData(ParsingState::Done, ProjectItemRole::ParsingStateRole);
+    rootItem->setData(Project::Done, Project::ParsingStateRole);
 }
 
 void GradleProjectGenerator::doGradleGeneratMenu(const QString &program,
