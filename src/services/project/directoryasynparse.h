@@ -27,12 +27,14 @@ public:
         bool isNormal = true;
     };
 
-    DirectoryAsynParse();
-    QSet<QString> getFilelist();
+    explicit DirectoryAsynParse(QStandardItem *root);
     virtual ~DirectoryAsynParse();
 
+    QSet<QString> getFilelist();
+
 signals:
-    void itemsModified(const QList<QStandardItem *> &info);
+    void itemsModified();
+    void itemUpdated(QStandardItem *item);
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
@@ -43,10 +45,15 @@ private slots:
 
 private:
     void createRows(const QString &path);
-    QString itemDisplayName(const QStandardItem *item) const;
     QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
+    QStandardItem *findParentItem(const QString &path, QStandardItem *parent = nullptr) const;
     QList<QStandardItem *> rows(const QStandardItem *item) const;
-    int separatorSize() const;
+    QList<QStandardItem *> takeAll(QStandardItem *item);
+    void updateItem(QStandardItem *item);
+
+    void sortItems();
+    void sortChildren(QStandardItem *parentItem);
+    bool compareItems(QStandardItem *item1, QStandardItem *item2);
 };
 
 #endif   // DIRECTORYASYNPARSE_H

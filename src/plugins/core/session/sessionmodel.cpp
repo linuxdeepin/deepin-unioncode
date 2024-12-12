@@ -83,7 +83,7 @@ void SessionModel::sort(int column, Qt::SortOrder order)
           [column, order](const QString &s1, const QString &s2) {
               bool ret = false;
               if (column == 0) {
-                  ret = s1 < s2;
+                  ret = s1.toLower() < s2.toLower();
               } else {
                   const auto &time1 = SessionManager::instance()->sessionDateTime(s1);
                   const auto &time2 = SessionManager::instance()->sessionDateTime(s2);

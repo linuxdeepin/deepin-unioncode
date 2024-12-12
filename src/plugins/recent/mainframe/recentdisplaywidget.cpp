@@ -50,7 +50,6 @@ public:
 public:
     RecentDisplayWidget *q;
 
-    DWidget *recentOpen { nullptr };
     RecentListView *recentListView { nullptr };
     SessionItemListWidget *sessionListWidget { nullptr };
     DToolButton *recentClearBtn { nullptr };
@@ -271,7 +270,6 @@ void RecentDisplayWidget::clearRecent()
 
     if (isProAndDocNull()) {
         d->nullRecentText->setVisible(true);
-        d->recentOpen->setVisible(false);
     }
 }
 
@@ -316,8 +314,8 @@ void RecentDisplayWidget::initializeUi()
     proAndDocLayout->setSpacing(2);
     proAndDocLayout->addWidget(d->sessionFrame);
 
-    d->recentOpen = new DWidget(this);
-    QVBoxLayout *recentNavLayout = new QVBoxLayout(d->recentOpen);
+    QWidget *recentOpen = new QWidget(this);
+    QVBoxLayout *recentNavLayout = new QVBoxLayout(recentOpen);
     recentNavLayout->setContentsMargins(15, 0, 25, 20);
     recentNavLayout->addSpacing(25);
     recentNavLayout->setAlignment(Qt::AlignTop);
@@ -328,11 +326,10 @@ void RecentDisplayWidget::initializeUi()
     QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->setContentsMargins(0, 0, 0, 0);
     hLayout->addWidget(d->navFrame);
-    hLayout->addWidget(d->recentOpen);
+    hLayout->addWidget(recentOpen);
 
     if (!isProAndDocNull()) {
         d->nullRecentText->setVisible(false);
-        d->recentOpen->setVisible(true);
     }
 }
 
@@ -416,9 +413,7 @@ void RecentDisplayWidget::showEvent(QShowEvent *event)
 {
     if (!isProAndDocNull()) {
         d->nullRecentText->setVisible(false);
-        d->recentOpen->setVisible(true);
     } else {
         d->nullRecentText->setVisible(true);
-        d->recentOpen->setVisible(false);
     }
 }

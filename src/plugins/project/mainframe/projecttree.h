@@ -29,6 +29,7 @@ public:
     void takeRootItem(QStandardItem *root);
     void expandedProjectDepth(const QStandardItem *root, int depth);
     void expandedProjectAll(const QStandardItem *root);
+    void restoreExpandState(QStandardItem *item);
     void selectProjectFile(const QString &file);
     void setAutoFocusState(bool state);
 	bool getAutoFocusState() const;

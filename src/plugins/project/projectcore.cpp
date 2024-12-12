@@ -218,6 +218,9 @@ void ProjectCore::initProject(dpf::PluginServiceContext &ctx)
         if (!projectService->getActiveProjectItem) {
             projectService->getActiveProjectItem = std::bind(&ProjectTree::getActiveProjectItem, treeView);
         }
+        if (!projectService->restoreExpandState) {
+            projectService->restoreExpandState = std::bind(&ProjectTree::restoreExpandState, treeView, _1);
+        }
     }
 }
 

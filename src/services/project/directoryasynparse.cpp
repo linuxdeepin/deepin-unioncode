@@ -10,17 +10,20 @@
 
 #include <QAction>
 
+using namespace std::placeholders;
+
 class DirectoryAsynParsePrivate
 {
     friend class DirectoryAsynParse;
     QString rootPath;
+    QStandardItem *rootItem { nullptr };
     QSet<QString> fileList {};
-    QList<QStandardItem *> rows {};
 };
 
-DirectoryAsynParse::DirectoryAsynParse()
+DirectoryAsynParse::DirectoryAsynParse(QStandardItem *root)
     : d(new DirectoryAsynParsePrivate)
 {
+    d->rootItem = root;
     QObject::connect(this, &QFileSystemWatcher::directoryChanged,
                      this, &DirectoryAsynParse::doDirectoryChanged);
 }
@@ -35,7 +38,7 @@ DirectoryAsynParse::~DirectoryAsynParse()
 void DirectoryAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
-    emit itemsModified(d->rows);
+    emit itemsModified();
 }
 
 QSet<QString> DirectoryAsynParse::getFilelist()
@@ -48,18 +51,11 @@ void DirectoryAsynParse::doDirectoryChanged(const QString &path)
     if (!path.startsWith(d->rootPath))
         return;
 
-    d->rows.clear();
-
-    createRows(d->rootPath);
-
-    emit itemsModified(d->rows);
-}
-
-QString DirectoryAsynParse::itemDisplayName(const QStandardItem *item) const
-{
+    auto item = findItem(path);
     if (!item)
-        return "";
-    return item->data(Qt::DisplayRole).toString();
+        item = d->rootItem;
+    updateItem(item);
+    Q_EMIT itemUpdated(item);
 }
 
 void DirectoryAsynParse::createRows(const QString &path)
@@ -73,48 +69,28 @@ void DirectoryAsynParse::createRows(const QString &path)
 
     // 缓存当前工程目录
     d->rootPath = rootPath;
+    d->rootItem->setData(rootPath, Project::FilePathRole);
     QFileSystemWatcher::addPath(d->rootPath);
 
-    {   // 避免变量冲突 迭代文件夹
-        QDir dir;
-        dir.setPath(rootPath);
-        dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
-        dir.setSorting(QDir::Name);
-        QDirIterator dirItera(dir, QDirIterator::Subdirectories);
-        while (dirItera.hasNext()) {
-            QString childPath = dirItera.next().remove(0, rootPath.size());
-            QFileSystemWatcher::addPath(dirItera.filePath());
-            QStandardItem *item = findItem(childPath);
-            auto newItem = new QStandardItem(dirItera.fileName());
-            newItem->setData(dirItera.filePath(), ProjectItemRole::FileIconRole);
-            newItem->setToolTip(dirItera.filePath());
-            if (!item) {
-                d->rows.append(newItem);
-            } else {
-                item->appendRow(newItem);
-            }
-        }
+    QDir dir;
+    dir.setPath(rootPath);
+    dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+    QDirIterator iter(dir, QDirIterator::Subdirectories);
+    while (iter.hasNext()) {
+        iter.next();
+        QStandardItem *parent = findParentItem(iter.filePath());
+        auto item = new QStandardItem(iter.fileName());
+        item->setData(iter.filePath(), Project::FileIconRole);
+        item->setData(iter.filePath(), Project::FilePathRole);
+        item->setToolTip(iter.filePath());
+        parent ? parent->appendRow(item) : d->rootItem->appendRow(item);
+        if (iter.fileInfo().isFile())
+            d->fileList.insert(iter.filePath());
+        else
+            QFileSystemWatcher::addPath(iter.filePath());
     }
-    {   // 避免变量冲突 迭代文件
-        QDir dir;
-        dir.setPath(rootPath);
-        dir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-        dir.setSorting(QDir::Name);
-        QDirIterator fileItera(dir, QDirIterator::Subdirectories);
-        while (fileItera.hasNext()) {
-            QString childPath = fileItera.next().remove(0, rootPath.size());
-            QStandardItem *item = findItem(childPath);
-            auto newItem = new QStandardItem(fileItera.fileName());
-            newItem->setData(fileItera.filePath(), ProjectItemRole::FileIconRole);
-            newItem->setToolTip(fileItera.filePath());
-            if (!item) {
-                d->rows.append(newItem);
-            } else {
-                item->appendRow(newItem);
-            }
-            d->fileList.insert(fileItera.filePath());
-        }
-    }
+
+    sortItems();
 }
 
 QList<QStandardItem *> DirectoryAsynParse::rows(const QStandardItem *item) const
@@ -126,47 +102,162 @@ QList<QStandardItem *> DirectoryAsynParse::rows(const QStandardItem *item) const
     return result;
 }
 
-QStandardItem *DirectoryAsynParse::findItem(const QString &path,
-                                            QStandardItem *parent) const
+QList<QStandardItem *> DirectoryAsynParse::takeAll(QStandardItem *item)
 {
-    QString pathTemp = path;
-    if (pathTemp.endsWith(QDir::separator())) {
-        pathTemp = pathTemp.remove(pathTemp.size() - separatorSize(), separatorSize());
+    QList<QStandardItem *> itemList;
+    for (int i = 0; i < item->rowCount(); ++i) {
+        itemList.append(item->takeChild(i));
     }
 
-    if (pathTemp.startsWith(QDir::separator()))
-        pathTemp.remove(0, separatorSize());
+    item->removeRows(0, item->rowCount());
+    return itemList;
+}
 
-    if (pathTemp.endsWith(QDir::separator()))
-        pathTemp.remove(pathTemp.size() - separatorSize(), separatorSize());
+QStandardItem *DirectoryAsynParse::findItem(const QString &path, QStandardItem *parent) const
+{
+    if (path.isEmpty())
+        return nullptr;
 
-    if (pathTemp.isEmpty())
-        return parent;
+    const auto &itemRows = parent ? rows(parent) : rows(d->rootItem);
+    for (const auto item : itemRows) {
+        const auto &itemPath = item->data(Project::FilePathRole).toString();
+        if (path == itemPath) {
+            return item;
+        }
 
-    QStringList splitPaths = pathTemp.split(QDir::separator());
-    QString name = splitPaths.takeFirst();
-
-    QList<QStandardItem *> currRows {};
-    if (parent) {
-        currRows = rows(parent);
-    } else {
-        currRows = d->rows;
+        if (path.startsWith(itemPath) && item->hasChildren()) {
+            if (auto *found = findItem(path, item))
+                return found;
+        }
     }
 
-    for (int i = 0; i < currRows.size(); i++) {
-        QStandardItem *child = currRows[i];
-        if (name == itemDisplayName(child)) {
-            if (splitPaths.isEmpty()) {
-                return child;
+    return nullptr;
+}
+
+QStandardItem *DirectoryAsynParse::findParentItem(const QString &path, QStandardItem *parent) const
+{
+    if (path.isEmpty())
+        return nullptr;
+
+    QFileInfo fileInfo(path);
+    const auto &itemRows = parent ? rows(parent) : rows(d->rootItem);
+    for (const auto item : itemRows) {
+        const auto &itemPath = item->data(Project::FilePathRole).toString();
+        if (!path.startsWith(itemPath))
+            continue;
+
+        if (fileInfo.absolutePath() == itemPath)
+            return item;
+
+        if (item->hasChildren()) {
+            if (auto *found = findParentItem(path, item))
+                return found;
+        }
+    }
+    return nullptr;
+}
+
+void DirectoryAsynParse::updateItem(QStandardItem *item)
+{
+    if (!item)
+        return;
+
+    const QString path = item->data(Project::FilePathRole).toString();
+    const QDir dir(path);
+    if (!dir.exists())
+        return;
+
+    QStringList tempFileList = d->fileList.toList();
+    QStringList existingPaths;
+    // Remove non-existent items
+    for (int i = item->rowCount() - 1; i >= 0; --i) {
+        if (QStandardItem *child = item->child(i)) {
+            const auto filePath = child->data(Project::FilePathRole).toString();
+            if (!QFile::exists(filePath)) {
+                item->removeRow(i);
+                bool isDir = QFileInfo(filePath).isDir();
+                auto iter = std::remove_if(tempFileList.begin(), tempFileList.end(),
+                                           [&isDir, &filePath](const QString &file) {
+                                               if (isDir)
+                                                   return file.startsWith(filePath);
+                                               else
+                                                   return file == filePath;
+                                           });
+                tempFileList.erase(iter, tempFileList.end());
             } else {
-                return findItem(splitPaths.join(QDir::separator()), child);
+                existingPaths << filePath;
             }
         }
     }
-    return parent;
+
+    d->fileList = tempFileList.toSet();
+    bool hasAdded = false;
+    // Process directory entries
+    const QFileInfoList entries = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    for (const QFileInfo &info : entries) {
+        const QString filePath = info.filePath();
+        // Add new items if they don't exist
+        if (!existingPaths.contains(filePath)) {
+            hasAdded = true;
+            QStandardItem *newItem = new QStandardItem(info.fileName());
+            newItem->setData(filePath, Project::FileIconRole);
+            newItem->setData(filePath, Project::FilePathRole);
+            newItem->setToolTip(filePath);
+            item->appendRow(newItem);
+            if (info.isFile())
+                d->fileList.insert(filePath);
+            else
+                QFileSystemWatcher::addPath(filePath);
+        }
+    }
+
+    if (hasAdded)
+        sortChildren(item);
 }
 
-int DirectoryAsynParse::separatorSize() const
+void DirectoryAsynParse::sortItems()
 {
-    return QString(QDir::separator()).size();
+    // Sort root level items
+    auto itemList = takeAll(d->rootItem);
+    std::sort(itemList.begin(), itemList.end(), std::bind(&DirectoryAsynParse::compareItems, this, _1, _2));
+
+    // Sort children of each root item
+    for (auto *item : itemList) {
+        d->rootItem->appendRow(item);
+        sortChildren(item);
+    }
+}
+
+void DirectoryAsynParse::sortChildren(QStandardItem *parentItem)
+{
+    if (!parentItem)
+        return;
+
+    auto children = takeAll(parentItem);
+    if (children.isEmpty())
+        return;
+
+    // Sort current level
+    std::sort(children.begin(), children.end(), std::bind(&DirectoryAsynParse::compareItems, this, _1, _2));
+    for (auto *child : children) {
+        parentItem->appendRow(child);
+        // Recursively sort children
+        sortChildren(child);
+    }
+}
+
+bool DirectoryAsynParse::compareItems(QStandardItem *item1, QStandardItem *item2)
+{
+    QString path1 = item1->data(Project::FilePathRole).toString();
+    QString path2 = item2->data(Project::FilePathRole).toString();
+
+    QFileInfo info1(path1);
+    QFileInfo info2(path2);
+
+    // If one is directory and other is file, directory comes first
+    if (info1.isDir() != info2.isDir())
+        return info1.isDir();
+
+    // If both are same type (files or directories), sort by name
+    return path1.toLower() < path2.toLower();
 }

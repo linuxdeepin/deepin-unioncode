@@ -94,7 +94,7 @@ void GradleAsynParse::createRows(const QString &path)
             QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
             auto newItem = new QStandardItem(dirItera.fileName());
-            newItem->setData(dirItera.filePath(), ProjectItemRole::FileIconRole);
+            newItem->setData(dirItera.filePath(), Project::FileIconRole);
             newItem->setToolTip(dirItera.filePath());
             if (!item) {
                 d->rows.append(newItem);
@@ -113,7 +113,7 @@ void GradleAsynParse::createRows(const QString &path)
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(childPath);
             auto newItem = new QStandardItem(fileItera.fileName());
-            newItem->setData(fileItera.filePath(), ProjectItemRole::FileIconRole);
+            newItem->setData(fileItera.filePath(), Project::FileIconRole);
             newItem->setToolTip(fileItera.filePath());
             if (!item) {
                 d->rows.append(newItem);
