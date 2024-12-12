@@ -43,6 +43,7 @@ private slots:
 
 private:
     void createRows(const QString &path);
+    void sortAllRows();
     QString itemDisplayName(const QStandardItem *item) const;
     QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
     QList<QStandardItem *> rows(const QStandardItem *item) const;
