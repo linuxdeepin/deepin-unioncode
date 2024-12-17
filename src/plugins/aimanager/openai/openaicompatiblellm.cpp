@@ -54,7 +54,7 @@ public:
     QString modelPath { "" };
     QString apiKey { "" };
     double temprature { 1.0 };
-    int maxTokens = 0; // default not set
+    int maxTokens = 0;   // default not set
     bool stream { true };
 
     QByteArray httpResult {};
@@ -66,7 +66,7 @@ public:
 };
 
 OpenAiCompatibleLLMPrivate::OpenAiCompatibleLLMPrivate(OpenAiCompatibleLLM *qq)
- : q(qq)
+    : q(qq)
 {
     manager = new QNetworkAccessManager(qq);
     currentConversation = new OpenAiCompatibleConversation();
@@ -86,7 +86,7 @@ QNetworkReply *OpenAiCompatibleLLMPrivate::postMessage(const QString &url, const
     request.setRawHeader("Authorization", "Bearer " + apiKey.toUtf8());
 
     if (QThread::currentThread() != qApp->thread()) {
-        QNetworkAccessManager* threadManager(new QNetworkAccessManager);
+        QNetworkAccessManager *threadManager(new QNetworkAccessManager);
         OpenAiCompatibleLLM::connect(QThread::currentThread(), &QThread::finished, threadManager, &QNetworkAccessManager::deleteLater);
         return threadManager->post(request, body);
     }
@@ -101,7 +101,7 @@ QNetworkReply *OpenAiCompatibleLLMPrivate::getMessage(const QString &url, const 
     request.setRawHeader("Authorization", "Bearer " + apiKey.toUtf8());
 
     if (QThread::currentThread() != qApp->thread()) {
-        QNetworkAccessManager* threadManager(new QNetworkAccessManager);
+        QNetworkAccessManager *threadManager(new QNetworkAccessManager);
         OpenAiCompatibleLLM::connect(QThread::currentThread(), &QThread::finished, threadManager, &QNetworkAccessManager::deleteLater);
         return threadManager->get(request);
     }
@@ -165,13 +165,13 @@ bool OpenAiCompatibleLLM::checkValid(QString *errStr)
     bool valid = false;
     QString errstr;
 
-    connect(this, &AbstractLLM::dataReceived, &loop, [&, this](const QString & data, ResponseState state){
+    connect(this, &AbstractLLM::dataReceived, &loop, [&, this](const QString &data, ResponseState state) {
         if (state == ResponseState::Receiving)
             return;
 
         if (state == ResponseState::Success) {
             valid = true;
-        } else if (errStr != nullptr){
+        } else if (errStr != nullptr) {
             *errStr = data;
         }
         loop.quit();
@@ -203,7 +203,7 @@ void OpenAiCompatibleLLM::request(const QJsonObject &data)
 
     QNetworkReply *reply = d->postMessage(modelPath() + "/v1/chat/completions", d->apiKey, body);
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
-    connect(reply, &QNetworkReply::finished, this, [=](){
+    connect(reply, &QNetworkReply::finished, this, [=]() {
         d->waitingResponse = false;
         if (!d->httpResult.isEmpty())
             d->currentConversation->update(d->httpResult);
@@ -235,7 +235,7 @@ void OpenAiCompatibleLLM::request(const QString &prompt)
 
     QNetworkReply *reply = d->postMessage(modelPath() + "/v1/completions", d->apiKey, QJsonDocument(dataObject).toJson());
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
-    connect(reply, &QNetworkReply::finished, this, [=](){
+    connect(reply, &QNetworkReply::finished, this, [=]() {
         d->waitingResponse = false;
         if (reply->error()) {
             qWarning() << "NetWork Error: " << reply->errorString();
@@ -266,14 +266,15 @@ void OpenAiCompatibleLLM::generate(const QString &prompt, const QString &suffix)
 
     QNetworkReply *reply = d->postMessage(modelPath() + "/api/generate", d->apiKey, QJsonDocument(dataObject).toJson());
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
-    connect(reply, &QNetworkReply::finished, this, [=](){
+    connect(reply, &QNetworkReply::finished, this, [=]() {
         d->waitingResponse = false;
         if (reply->error()) {
             qWarning() << "NetWork Error: " << reply->errorString();
             emit dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
-            return;
+        } else {
+            emit dataReceived("", AbstractLLM::ResponseState::Success);
         }
-        emit dataReceived("", AbstractLLM::ResponseState::Success);
+        reply->deleteLater();
     });
 
     processResponse(reply);

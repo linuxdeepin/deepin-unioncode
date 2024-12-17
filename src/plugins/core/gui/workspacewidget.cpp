@@ -47,6 +47,14 @@ void WorkspaceWidget::registerToolBtnToWidget(DToolButton *btn, const QString &t
     if (!btn)
         return;
 
+    if (!btn->parent())
+        btn->setParent(this);
+
+    if (btn->isHidden())
+        toolBtnState[btn] = false;
+    else
+        toolBtnState[btn] = true;
+
     toolBtnOfWidget.insert(title, btn);
 }
 
@@ -68,18 +76,14 @@ void WorkspaceWidget::switchWidgetWorkspace(const QString &title)
 
     emit expandStateChange(widget->property("canExpand").toBool());
 
-    if (!addedToController || (lastTitle == title))
-        return;
-
     //update toolbtn`s state at header
     for (auto btn : getToolBtnByTitle(lastTitle)) {
-        toolBtnState[btn] = btn->isVisible();
+        toolBtnState[btn] = !btn->isHidden();
         btn->setVisible(false);
     }
 
     for (auto btn : getToolBtnByTitle(title)) {
-        if (toolBtnState.contains(btn))
-            btn->setVisible(toolBtnState[btn]);
+        btn->setVisible(toolBtnState[btn]);
     }
 
     emit workSpaceWidgeSwitched(title);
