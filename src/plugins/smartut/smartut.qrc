@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/icons/deepin/builtin"/>
+    <qresource prefix="/">
+        <file>configure/smartut.json</file>
+        <file>icons/deepin/builtin/texts/uc_settings_16px.svg</file>
+        <file>icons/deepin/builtin/texts/uc_run_16px.svg</file>
+        <file>icons/deepin/builtin/texts/uc_report_16px.svg</file>
+        <file>icons/deepin/builtin/texts/uc_generate_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_configure_248px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_failure_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_ignore_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_settings-dark.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_success_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/uc_configure_248px.svg</file>
+        <file>icons/deepin/builtin/light/icons/uc_failure_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/uc_ignore_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/uc_success_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/uc_wait_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_wait_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/uc_stop_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/uc_stop_16px.svg</file>
+    </qresource>
+</RCC>

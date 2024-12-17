@@ -1,0 +1,18 @@
+{
+    "General": {
+	"Prompts": {
+	    "Qt/C++": "根据函数签名和文档字符串为函数编写独特、多样化和直观的单元测试。\n\n关键原则：\n- 单元测试应该专注于测试一个特定的组件或功能模块\n- 单元测试代码生成到一个文件当中\n- 只需要生成相关的单元测试代码\n\n测试用例要求:\n- 包含基本功能测试\n- 包含边界条件测试\n- 包含错误处理测试\n- 包含内存管理测试\n\n额外条件：\n- 对于Qt特有的功能(如信号和槽),使用 QSignalSpy 进行测试\n- 使用 mock 对象来模拟用户交互和本地环境，比如模拟文件操作,避免依赖实际的文件系统。"
+	},
+	"NameFormat": "ut_${filename}.cpp",
+	"TestFrameworks": [
+	    "Google Test",
+	    "Qt Test",
+	    "Boost Test"
+	]
+    },
+    "ActiveSettings": {
+	"ActivePrompt": "Qt/C++",
+	"ActiveTemplate": "",
+	"ActiveTestFramework": "Google Test"
+    }
+}

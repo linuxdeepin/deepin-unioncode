@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / status /ignore-light</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#B6B6B6" offset="0%"></stop>
+            <stop stop-color="#7B7B7B" offset="100%"></stop>
+        </linearGradient>
+        <path d="M8,2 C4.7,2 2,4.7 2,8 C2,11.3 4.7,14 8,14 C11.3,14 14,11.3 14,8 C14,4.7 11.3,2 8,2 L8,2 Z" id="path-2"></path>
+        <filter x="-4.2%" y="-4.2%" width="108.3%" height="108.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="-1" in="SourceAlpha" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="ICON-/-status-/ignore-light" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="select_active-copy-24">
+            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+            <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+        </g>
+        <rect id="Rectangle-788" fill="#FFFFFF" transform="translate(8, 7.75) rotate(-30) translate(-8, -7.75)" x="4" y="7" width="8" height="1.5" rx="0.75"></rect>
+    </g>
+</svg>

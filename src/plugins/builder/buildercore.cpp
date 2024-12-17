@@ -45,4 +45,3 @@ dpf::Plugin::ShutdownFlag BuilderCore::stop()
 {
     return Sync;
 }
-

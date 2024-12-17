@@ -9,7 +9,6 @@
 #include "tasks/taskmodel.h"
 
 #include <DWidget>
-#include <DMenu>
 
 DWIDGET_USE_NAMESPACE
 
@@ -23,13 +22,6 @@ public:
     void clearContents();
     void addTask(const Task &task, int linkedOutputLines, int skipLines);
     void showSpecificTasks(ShowType type);
-
-protected:
-    void contextMenuEvent(QContextMenuEvent * event) override;
-
-private:
-    QList<QAction*> actionFactory();
-    DMenu *menu = nullptr;
 };
 
-#endif // PROBLEMOUTPUTPANE_H
+#endif   // PROBLEMOUTPUTPANE_H

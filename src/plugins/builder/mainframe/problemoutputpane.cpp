@@ -11,7 +11,7 @@
 #include <QVBoxLayout>
 
 ProblemOutputPane::ProblemOutputPane(QWidget *parent)
-    : DWidget (parent)
+    : DWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -20,7 +20,6 @@ ProblemOutputPane::ProblemOutputPane(QWidget *parent)
 
 ProblemOutputPane::~ProblemOutputPane()
 {
-
 }
 
 void ProblemOutputPane::clearContents()
@@ -36,28 +35,4 @@ void ProblemOutputPane::addTask(const Task &task, int linkedOutputLines, int ski
 void ProblemOutputPane::showSpecificTasks(ShowType type)
 {
     TaskManager::instance()->showSpecificTasks(type);
-}
-
-void ProblemOutputPane::contextMenuEvent(QContextMenuEvent * event)
-{
-    if (nullptr == menu) {
-        menu = new DMenu(this);
-        menu->setParent(this);
-        menu->addActions(actionFactory());
-    }
-
-    menu->move(event->globalX(), event->globalY());
-    menu->exec();
-}
-
-QList<QAction*> ProblemOutputPane::actionFactory()
-{
-    QList<QAction*> list;
-    auto action = new QAction(this);
-    action->setText(tr("Clear"));
-    connect(action, &QAction::triggered, [this](){
-        clearContents();
-    });
-    list.append(action);
-    return list;
 }

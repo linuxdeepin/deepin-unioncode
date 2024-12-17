@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(buildercore)
+project(smartut)
 
-FILE(GLOB SRC_FILES
+FILE(GLOB_RECURSE PROJECT_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
@@ -12,8 +12,8 @@ FILE(GLOB SRC_FILES
 
 add_library(${PROJECT_NAME}
     SHARED
-    ${SRC_FILES}
-    builder.qrc
+    ${PROJECT_SOURCES}
+    smartut.qrc
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -23,7 +23,8 @@ target_link_libraries(${PROJECT_NAME}
     duc-common
     ${QtUseModules}
     ${PkgUserModules}
-)
+    ${DtkWidget_LIBRARIES}
+    )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
 
