@@ -6076,12 +6076,12 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="390"/>
         <source>%1 (last session)</source>
-        <translation>%（最后的会话）</translation>
+        <translation>%1（最后的会话）</translation>
     </message>
     <message>
         <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="392"/>
         <source>%1 (current session)</source>
-        <translation>%（当前的会话）</translation>
+        <translation>%1（当前的会话）</translation>
     </message>
 </context>
 <context>
