@@ -17,6 +17,7 @@
 #include <DPushButton>
 #include <DLineEdit>
 #include <DDialog>
+#include <DDesktopServices>
 
 #include <QDebug>
 #include <QHeaderView>
@@ -26,7 +27,6 @@
 #include <QApplication>
 #include <QUrl>
 #include <QClipboard>
-#include <QDesktopServices>
 #include <QScrollBar>
 
 DWIDGET_USE_NAMESPACE
@@ -259,9 +259,12 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
     menu->addSeparator();
     QAction *showContainFolder = new QAction(tr("Show Containing Folder"), this);
     connect(showContainFolder, &QAction::triggered, [=]() {
-        QString filePath = item->toolTip();
+        QString filePath = item->data(Project::ProjectItemRole::FilePathRole).toString();
         QFileInfo info(filePath);
-        QDesktopServices::openUrl(QUrl::fromLocalFile(info.absolutePath()));
+        if (info.isFile())
+            DDesktopServices::showFileItem(filePath);
+        else
+            DDesktopServices::showFolder(filePath);
     });
     menu->addAction(showContainFolder);
 

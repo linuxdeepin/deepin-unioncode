@@ -187,6 +187,7 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
             cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
             cmakeParentItem->appendRow(cmakeFileItem);
             cmakeFileItem->setData(cmakeFileInfo.absoluteFilePath(), Project::FileIconRole);
+            cmakeFileItem->setData(cmakeFileInfo.absoluteFilePath(), Project::FilePathRole);
 
             // monitor cmake file change to refresh project tree.
             if (cmakeParentItem == rootItem) {
@@ -260,6 +261,7 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
             srcItem->setText(srcFileInfo.fileName());
             srcItem->setToolTip(srcFileInfo.filePath());
             srcItem->setData(srcFileInfo.absoluteFilePath(), Project::FileIconRole);
+            srcItem->setData(srcFileInfo.absoluteFilePath(), Project::FilePathRole);
             if (srcFileInfo.isDir())
                 emit directoryCreated(rootItem, srcFileInfo.filePath());
 
@@ -346,6 +348,7 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             item->setText(nameItem);
             item->setToolTip(basePath + relative);
             item->setData(basePath + relative, Project::FileIconRole);
+            item->setData(basePath + relative, Project::FilePathRole);
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
             emit directoryCreated(rootItem, basePath + relative);
