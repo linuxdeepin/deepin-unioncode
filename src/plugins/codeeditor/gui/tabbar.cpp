@@ -10,13 +10,13 @@
 #include <DMenu>
 #include <DDialog>
 #include <DGuiApplicationHelper>
+#include <DDesktopServices>
 
 #include <QSignalBlocker>
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QClipboard>
 #include <QGuiApplication>
-#include <QDesktopServices>
 
 DWIDGET_USE_NAMESPACE
 
@@ -137,8 +137,7 @@ void TabBarPrivate::showMenu(QPoint pos)
     menu.addSeparator();
     menu.addAction(tr("Show Containing Folder"), [=]() {
         auto file = tabBar->tabToolTip(curIndex);
-        QFileInfo info(file);
-        QDesktopServices::openUrl(QUrl::fromLocalFile(info.absolutePath()));
+        DDesktopServices::showFileItem(file);
     });
 
     menu.exec(QCursor::pos());

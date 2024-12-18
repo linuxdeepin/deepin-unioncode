@@ -31,7 +31,7 @@ CustomModelsOptionWidget::CustomModelsOptionWidget(QWidget *parent)
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new DetailWidget(d->tabWidget), kCATEGORY_OPTIONKEY);
-    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, this, [this]() {
         readConfig();
     });
 }

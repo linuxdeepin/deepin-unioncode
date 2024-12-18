@@ -89,6 +89,24 @@ public:
     // custom model
     DPF_INTERFACE(AbstractLLM *, getLLM, const LLMInfo &info);
     DPF_INTERFACE(QList<LLMInfo>, getAllModel);
+
+    // rag
+    DPF_INTERFACE(void, generateRag, const QString &projectPath);
+
+     /*!
+     * \brief
+        Could be empty or not completed.  see obj.isEmpty or obj["Completed"].toBool
+        May block, recommended to run in a separate thread
+     * \param query . Find similar chunks based on this text as accurately as possible
+     * \param topItems .  count of chunks
+     * \return    
+        JsonObject:
+            Query: str
+            Chunks: Arr[fileName:str, content:str, similarity:float]
+            Completed: Bool
+            Instructions: obj{name:str, description:str, content:str}
+     */
+    DPF_INTERFACE(QJsonObject, query, const QString &projectPath, const QString &query, int topItems);
 };
 
 }   // namespace dpfservice
