@@ -6,6 +6,7 @@
 #include "services/ai/aiservice.h"
 #include "aimanager.h"
 
+#include <DPasswordEdit>
 #include <DStackedWidget>
 #include <DSuggestButton>
 #include <DLineEdit>
@@ -36,8 +37,7 @@ private:
     DLineEdit *leLLMName { nullptr };
     DComboBox *cbLLMType { nullptr };
     DLineEdit *leApiUrl { nullptr };
-    DLineEdit *leApiKey { nullptr };
-    DPushButton *passwordBtn { nullptr };
+    DPasswordEdit *leApiKey { nullptr };
     
     DSuggestButton *okButton { nullptr };
     DPushButton *cancelButton { nullptr };
@@ -69,13 +69,8 @@ void AddModelDialogPrivate::initUi()
 
     QLabel *lbApiKey = new QLabel(AddModelDialog::tr("Api Key"));
     lbApiKey->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    leApiKey = new DLineEdit(q);
-    leApiKey->setEchoMode(QLineEdit::Password);
+    leApiKey = new DPasswordEdit(q);
     leApiKey->setPlaceholderText(AddModelDialog::tr("Optional, please enter."));
-    passwordBtn = new DPushButton(q);
-    passwordBtn->setIcon(DStyle::standardIcon(q->style(), DStyle::SP_HidePassword));
-    passwordBtn->setCheckable(true);
-    passwordBtn->setChecked(true);
 
     q->setWindowTitle(AddModelDialog::tr("Add Model"));
 
@@ -87,17 +82,16 @@ void AddModelDialogPrivate::initUi()
     gridLayout->setSpacing(10);
 
     gridLayout->addWidget(lbModelName, 0, 0);
-    gridLayout->addWidget(leLLMName, 0, 1, 1, 2);
+    gridLayout->addWidget(leLLMName, 0, 1);
 
     gridLayout->addWidget(lbLLMType, 1, 0);
-    gridLayout->addWidget(cbLLMType, 1, 1, 1, 2);
+    gridLayout->addWidget(cbLLMType, 1, 1);
 
     gridLayout->addWidget(lbApiUrl, 2, 0);
-    gridLayout->addWidget(leApiUrl, 2, 1, 1, 2);
+    gridLayout->addWidget(leApiUrl, 2, 1);
 
     gridLayout->addWidget(lbApiKey, 3, 0);
     gridLayout->addWidget(leApiKey, 3, 1);
-    gridLayout->addWidget(passwordBtn, 3, 2);
 
     okButton = new DSuggestButton(q);
     okButton->setText(AddModelDialog::tr("Confirm"));
@@ -142,15 +136,6 @@ void AddModelDialogPrivate::initConnection()
         slotAddModel();
     });
     AddModelDialog::connect(cancelButton, &DSuggestButton::clicked, q, &AddModelDialog::reject);
-    AddModelDialog::connect(passwordBtn, &DPushButton::clicked, q, [=](){
-        if (passwordBtn->isChecked()) {
-            passwordBtn->setIcon(DStyle::standardIcon(q->style(), DStyle::SP_ShowPassword));
-            leApiKey->setEchoMode(QLineEdit::Password);
-        } else {
-            passwordBtn->setIcon(DStyle::standardIcon(q->style(), DStyle::SP_HidePassword));
-            leApiKey->setEchoMode(QLineEdit::Normal);
-        }
-    });
 }
 
 void AddModelDialogPrivate::slotAddModel()

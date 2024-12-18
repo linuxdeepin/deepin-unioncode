@@ -28,7 +28,7 @@
 #include <QUrl>
 #include <QClipboard>
 #include <QScrollBar>
-
+DCORE_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 

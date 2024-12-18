@@ -148,6 +148,8 @@ bool OpenAiCompatibleLLM::checkValid(QString *errStr)
 {
     // Check if the model is valid
     if (d->modelPath.isEmpty()) {
+        if (errStr == nullptr)
+            return false;
         *errStr = "Model path is empty";
         qWarning() << *errStr;
         return false;
@@ -169,7 +171,7 @@ bool OpenAiCompatibleLLM::checkValid(QString *errStr)
 
         if (state == ResponseState::Success) {
             valid = true;
-        } else {
+        } else if (errStr != nullptr){
             *errStr = data;
         }
         loop.quit();
@@ -289,7 +291,7 @@ void OpenAiCompatibleLLM::setStream(bool isStream)
 
 void OpenAiCompatibleLLM::processResponse(QNetworkReply *reply)
 {
-    connect(reply, &QNetworkReply::readyRead, [=]() {
+    connect(reply, &QNetworkReply::readyRead, this, [=]() {
         if (reply->error()) {
             qCritical() << "Error:" << reply->errorString();
             emit dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
