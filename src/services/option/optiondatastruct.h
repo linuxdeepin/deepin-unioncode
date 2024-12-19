@@ -20,5 +20,6 @@ static const QString CATEGORY_NINJA{"Ninja"};
 
 static const QString GROUP_GENERAL{QObject::tr("General")};
 static const QString GROUP_LANGUAGE{QObject::tr("Language")};
+static const QString GROUP_AI{QObject::tr("AI")};
 }
 #endif // OPTIONDATASTRUCT_H

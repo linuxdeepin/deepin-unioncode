@@ -11,6 +11,7 @@
 #include "common/common.h"
 #include "services/window/windowservice.h"
 #include "services/option/optionservice.h"
+#include "services/option/optiondatastruct.h"
 #include "services/ai/aiservice.h"
 #include "copilot.h"
 
@@ -44,7 +45,7 @@ bool CodeGeex::start()
 
     auto optionService = dpfGetService(dpfservice::OptionService);
     if (optionService) {
-        optionService->implGenerator<OptionCodeGeeXGenerator>(QObject::tr("AI"), OptionCodeGeeXGenerator::kitName());
+        optionService->implGenerator<OptionCodeGeeXGenerator>(option::GROUP_AI, OptionCodeGeeXGenerator::kitName());
     }
 
     Copilot::instance();
@@ -73,6 +74,8 @@ bool CodeGeex::start()
     aiService->available = std::bind(&CodeGeeXManager::isLoggedIn, CodeGeeXManager::instance());
     aiService->askQuestion = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, QMultiMap<QString, QString>(), _2);
     aiService->askQuestionWithHistory = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, _2, _3);
+    aiService->generateRag = std::bind(&CodeGeeXManager::generateRag, CodeGeeXManager::instance(), _1);
+    aiService->query = std::bind(&CodeGeeXManager::query, CodeGeeXManager::instance(), _1, _2, _3);
 
     return true;
 }
