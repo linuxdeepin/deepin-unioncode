@@ -4,10 +4,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(aimanager)
 
-find_package(duc-base REQUIRED)
-find_package(duc-common REQUIRED)
-find_package(duc-framework REQUIRED)
-find_package(duc-services REQUIRED)
 find_package(Dtk COMPONENTS Widget REQUIRED)
 
 set(QtFindModules Core Gui Widgets Concurrent)
