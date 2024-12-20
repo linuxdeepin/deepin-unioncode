@@ -10,6 +10,7 @@
 #include <DFrame>
 #include <DListView>
 #include <DToolButton>
+#include <DGuiApplicationHelper>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
 #include <DPaletteHelper>
 #endif
