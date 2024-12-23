@@ -29,7 +29,8 @@ bool AiPlugin::start()
 
     auto optionService = dpfGetService(dpfservice::OptionService);
     if (optionService) {
-        optionService->implGenerator<OptionCustomModelsGenerator>(option::GROUP_AI, OptionCustomModelsGenerator::kitName());
+// TODO:uncomment the code when everything is ok 
+//        optionService->implGenerator<OptionCustomModelsGenerator>(option::GROUP_AI, OptionCustomModelsGenerator::kitName());
     }
 
     return true;
