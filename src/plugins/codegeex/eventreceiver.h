@@ -31,6 +31,7 @@ private:
     void processActionInvokedEvent(const dpf::Event &event);
     void processOpenProjectEvent(const dpf::Event &event);
     void processSwitchToWidget(const dpf::Event &event);
+    void processLLMChanged();
 
 private:
     QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
@@ -45,6 +46,7 @@ public:
     static CodeGeeXCallProxy *instance();
 
 signals:
+    void LLMsChanged();
     void selectionChanged();
     void switchToWidget(const QString &name);
 };

@@ -39,8 +39,7 @@ void SessionRecordItem::onDeleteButtonClicked()
 
 void SessionRecordItem::onRecordClicked()
 {
-    CodeGeeXManager::instance()->fetchMessageList(talkId);
-
+    // todo show chat details
     Q_EMIT closeHistoryWidget();
 }
 

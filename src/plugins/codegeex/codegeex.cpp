@@ -53,11 +53,6 @@ bool CodeGeex::start()
 
     connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
         QTimer::singleShot(5000, windowService, [=] {
-            bool ret = CodeGeeXManager::instance()->isLoggedIn();
-            if (!ret) {
-                QStringList actions { "codegeex_login_default", CodeGeex::tr("Login") };
-                windowService->notify(0, "CodeGeex", CodeGeex::tr("Please login to use CodeGeeX."), actions);
-            }
 #ifdef SUPPORTMINIFORGE
             if (!CodeGeeXManager::instance()->condaHasInstalled()) {
                 QStringList actions { "ai_rag_install", CodeGeex::tr("Install") };
@@ -71,11 +66,9 @@ bool CodeGeex::start()
 
     using namespace std::placeholders;
     auto aiService = dpfGetService(dpfservice::AiService);
-    aiService->available = std::bind(&CodeGeeXManager::isLoggedIn, CodeGeeXManager::instance());
-    aiService->askQuestion = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, QMultiMap<QString, QString>(), _2);
-    aiService->askQuestionWithHistory = std::bind(&CodeGeeXManager::independentAsking, CodeGeeXManager::instance(), _1, _2, _3);
     aiService->generateRag = std::bind(&CodeGeeXManager::generateRag, CodeGeeXManager::instance(), _1);
     aiService->query = std::bind(&CodeGeeXManager::query, CodeGeeXManager::instance(), _1, _2, _3);
+    aiService->chatWithAi = std::bind(&CodeGeeXManager::requestAsync, CodeGeeXManager::instance(), _1);
 
     return true;
 }

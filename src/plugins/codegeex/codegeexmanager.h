@@ -5,8 +5,9 @@
 #ifndef CODEGEEXMANAGER_H
 #define CODEGEEXMANAGER_H
 
-#include "codegeex/askapi.h"
 #include "data/messagedata.h"
+#include "base/ai/abstractllm.h"
+#include "services/ai/aiservice.h"
 
 #include <QObject>
 #include <QMap>
@@ -14,6 +15,14 @@
 #include <QMutex>
 #include <QIODevice>
 #include <QJsonObject>
+
+struct websiteReference
+{
+    QString citation;
+    QString url;
+    QString title;
+    QString status;
+};
 
 struct RecordData
 {
@@ -23,56 +32,37 @@ struct RecordData
 };
 
 namespace CodeGeeX {
-static const char *chatModelLite = "codegeex-4";
-static const char *chatModelPro = "codegeex-chat-pro";
-
-static const char *completionModelLite = "codegeex-lite";
-static const char *completionModelPro = "codegeex-pro";
-
 #if defined(__x86_64__)// || defined(__aarch64__)
 #define SUPPORTMINIFORGE
 #endif
 
-enum languageModel {
-    Lite,
-    Pro
-};
-
-enum locale {
+enum Locale {
     Zh,
     En
 };
 }
-Q_DECLARE_METATYPE(CodeGeeX::languageModel)
-Q_DECLARE_METATYPE(CodeGeeX::locale)
+Q_DECLARE_METATYPE(CodeGeeX::Locale)
 
-typedef QPair<QString, QString> chatRecord;
 class CodeGeeXManager : public QObject
 {
     Q_OBJECT
 public:
     static CodeGeeXManager *instance();
 
-    Q_INVOKABLE void login();
-    bool isLoggedIn() const;
     void checkCondaInstalled();
     bool condaHasInstalled();
 
-    void saveConfig(const QString &sessionId, const QString &userId);
-    void loadConfig();
+    AbstractLLM *getCurrentLLM() const;
 
-    void setLocale(CodeGeeX::locale locale);
-    void setCurrentModel(CodeGeeX::languageModel model);
+    void setLocale(CodeGeeX::Locale locale);
 
-    void createNewSession();
     void deleteCurrentSession();
     void deleteSession(const QString &talkId);
 
     void setMessage(const QString &prompt);
     void sendMessage(const QString &prompt);
-    void queryLoginState();
-
-    void cleanHistoryMessage();
+    void requestAsync(const QString &prompt);
+    QString requestSync(const QString &prompt); // Sync use another llm to get response. not chat
 
     void fetchSessionRecords();
     void fetchMessageList(const QString &talkId);
@@ -80,8 +70,6 @@ public:
     void stopReceiving();
     bool checkRunningState(bool state);
 
-    QString getSessionId() const;
-    QString getTalkId() const;
     QList<RecordData> sessionRecords() const;
 
     void connectToNetWork(bool connecting);
@@ -90,8 +78,8 @@ public:
     void setReferenceCodebase(bool on);
     bool isReferenceCodebase() const;
     void setReferenceFiles(const QStringList &files);
+    QStringList getReferenceFiles();
 
-    void independentAsking(const QString &prompt, const QMultiMap<QString, QString> &history, QIODevice *pipe);
     // Rag
     QString condaRootPath() const;
     void showIndexingWidget();
@@ -110,60 +98,58 @@ public:
     QString getChunks(const QString &queryText);
 
 Q_SIGNALS:
-    void loginSuccessed();
-    void logoutSuccessed();
-    void createdNewSession();
+    void sendSyncRequest(const QJsonObject &obj);
     void requestMessageUpdate(const MessageData &msg);
     void chatStarted();
-    void crawledWebsite(const QString &msgID, const QList<CodeGeeX::websiteReference> &websites);
-    void searching(const QString &searchText);
+    void crawledWebsite(const QString &msgID, const QList<websiteReference> &websites);
     void terminated();
     void chatFinished();
     void sessionRecordsUpdated();
     void setTextToSend(const QString &prompt);
     void requestStop();
-    void notify(int type, const QString &message);
+    void notify(int type, const QString &message, QStringList actions = {});
     void showCustomWidget(QWidget *widget);
     void generateDone(const QString &path, bool failed);
+    void noChunksFounded();
     void quit();
+    void llmChanged(const LLMInfo &info);
 
 public Q_SLOTS:
-    void onSessionCreated(const QString &talkId, bool isSuccessful);
-    void onResponse(const QString &msgID, const QString &data, const QString &event);
-    void recevieLoginState(CodeGeeX::AskApi::LoginState loginState);
-    void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
+    void slotSendSyncRequest(const QJsonObject &obj);
+    void onResponse(const QString &msgID, const QString &data, AbstractLLM::ResponseState state);
     void recevieDeleteResult(const QStringList &talkIds, bool success);
-    void showHistoryMessage(const QVector<CodeGeeX::AskApi::MessageRecord> &records);
-    void logout();
+    void onLLMChanged(const LLMInfo &llmInfo);
 
 private:
     explicit CodeGeeXManager(QObject *parent = nullptr);
 
     void initConnections();
+    void initLLM(AbstractLLM *llm);
     QString modifiedData(const QString &data);
 
-    QString configFilePath() const;
-    QString uuid();
-
-    CodeGeeX::AskApi askApi;
     QString sessionId;
     QString userId;
     QString currentTalkID;
     QString responseData;
 
+    bool codebaseEnabled = false;
+    bool networkEnabled = false;
+    QStringList referenceFiles;
+
     QMap<QString, MessageData> curSessionMsg;
-    QList<chatRecord> chatHistory {};
-    chatRecord currentChat {};
     QList<RecordData> sessionRecordList {};
 
-    QTimer *queryTimer { nullptr };
-    bool isLogin { false };
     bool isRunning { false };
     bool condaInstalled { false };
     QTimer installCondaTimer;
     QMutex mutex;
     QStringList indexingProject {};
     QJsonObject currentChunks;
+
+    int answerFlag = 0; // use to identify every single answer
+    AbstractLLM *chatLLM { nullptr };
+    AbstractLLM *liteLLM { nullptr }; //codegeex Lite.
+    CodeGeeX::Locale locale { CodeGeeX::Zh };
 };
 
 #endif   // CODEGEEXMANAGER_H

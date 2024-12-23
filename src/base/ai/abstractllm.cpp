@@ -9,3 +9,17 @@ AbstractLLM::AbstractLLM(QObject *parent)
 {
     qRegisterMetaType<ResponseState>("ResponseState");
 }
+
+void AbstractLLM::setModelState(LLMState st)
+{
+    if (state.loadAcquire() == st)
+        return;
+
+    state.storeRelease(st);
+    Q_EMIT modelStateChanged();
+}
+
+AbstractLLM::LLMState AbstractLLM::modelState() const
+{
+    return static_cast<LLMState>(state.loadAcquire());
+}

@@ -624,6 +624,15 @@ void InputEditWidget::accept(const QModelIndex &index)
     CodeGeeXManager::instance()->setReferenceFiles(d->selectedFiles);
 }
 
+void InputEditWidget::switchNetworkBtnVisible(bool visible)
+{
+    d->netWorkBtn->setVisible(visible);
+    if (!visible) {
+        d->netWorkBtn->setChecked(false);
+        CodeGeeXManager::instance()->connectToNetWork(false);
+    }
+}
+
 // use to restore tag, : remove tag then Ctrl+z
 void InputEditWidget::onTagAdded(const QString &text)
 {

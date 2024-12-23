@@ -10,6 +10,7 @@
 #include <framework/framework.h>
 
 #include <QIODevice>
+#include <QIcon>
 
 enum LLMType {
     OPENAI,
@@ -33,6 +34,7 @@ struct LLMInfo
     QString modelName = "";
     QString modelPath = "";
     QString apikey = "";
+    QIcon icon;
     LLMType type;
     bool operator==(const LLMInfo &info) const
     {
@@ -48,6 +50,7 @@ struct LLMInfo
         map["modelPath"] = modelPath;
         map["apikey"] = apikey;
         map["type"] = static_cast<int>(type);
+        map["icon"] = icon.name();
         return QVariant(map);
     }
     static LLMInfo fromVariantMap(const QVariantMap &map)
@@ -57,6 +60,7 @@ struct LLMInfo
         info.modelPath = map["modelPath"].toString();
         info.apikey = map["apikey"].toString();
         info.type = static_cast<LLMType>(map["type"].toInt());
+        info.icon = QIcon::fromTheme(map["icon"].toString());
         return info;
     }
 };
@@ -81,15 +85,17 @@ public:
 
     }
 
-    // codegeex
-    DPF_INTERFACE(bool, available);
-    DPF_INTERFACE(void, askQuestion, const QString &prompt, QIODevice *pipe);  // pipe recevice data from ai
-    DPF_INTERFACE(void, askQuestionWithHistory, const QString &prompt, const QMultiMap<QString, QString> history,  QIODevice *pipe);
-
     // custom model
     DPF_INTERFACE(AbstractLLM *, getLLM, const LLMInfo &info);
     DPF_INTERFACE(QList<LLMInfo>, getAllModel);
+    DPF_INTERFACE(bool, registerLLM, const QString &name, const LLMInfo &info);
 
+    // Ai chat
+    DPF_INTERFACE(void, chatWithAi, const QString &message);
+
+    // default Model
+    DPF_INTERFACE(LLMInfo, getCodeGeeXLLMLite);
+    DPF_INTERFACE(LLMInfo, getCodeGeeXLLMPro);
     // rag
     DPF_INTERFACE(void, generateRag, const QString &projectPath);
 

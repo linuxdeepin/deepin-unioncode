@@ -122,10 +122,6 @@ void IntroPage::initLogoutButton()
     QHBoxLayout *hlayout = new QHBoxLayout;
     auto logoutButton = new DCommandLinkButton(tr("logout"));
 
-    connect(logoutButton, &DCommandLinkButton::clicked, this, []() {
-        CodeGeeXManager::instance()->logout();
-    });
-
     hlayout->addWidget(logoutButton);
     hlayout->setAlignment(Qt::AlignHCenter);
 

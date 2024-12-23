@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="/aimanager">
+    <qresource prefix="/icons/deepin">
+        <file>builtin/icons/codegeex_model_lite_16px.svg</file>
+        <file>builtin/icons/codegeex_model_pro_16px.svg</file>
     </qresource>
 </RCC>

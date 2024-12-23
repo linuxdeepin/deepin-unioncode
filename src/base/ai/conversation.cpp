@@ -70,6 +70,20 @@ bool Conversation::popUserData()
     return false;
 }
 
+bool Conversation::addResponse(const QString &data)
+{
+    if (!data.isEmpty()) {
+        const QJsonDocument &document = QJsonDocument::fromJson(data.toUtf8());
+        if (document.isArray()) {
+            conversation = document.array();
+        } else {
+            conversation.push_back(QJsonObject({ { "role", "assistant" }, {"content", data} }));
+        }
+        return true;
+    }
+    return false;
+}
+
 QString Conversation::getLastResponse() const
 {
     if (!conversation.isEmpty() && conversation.last()["role"].toString() == "assistant") {

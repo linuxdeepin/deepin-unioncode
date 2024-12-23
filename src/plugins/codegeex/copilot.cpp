@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "copilot.h"
+#include "base/ai/abstractllm.h"
 #include "widgets/inlinechatwidget.h"
-#include "codegeex/codegeexcompletionprovider.h"
 #include "services/editor/editorservice.h"
 #include "services/option/optionmanager.h"
 #include "services/window/windowservice.h"
@@ -13,14 +13,9 @@
 #include <QMenu>
 #include <QDebug>
 #include <QTimer>
-
-static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
-static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/v3/completions/inline?stream=false";
+#include <QAction>
 
 static const char *lineChatTip = "LineChatTip";
-static const char *commandFixBug = "fixbug";
-static const char *commandExplain = "explain";
-static const char *commandTests = "tests";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
@@ -32,52 +27,11 @@ Copilot::Copilot(QObject *parent)
     if (!editorService) {
         qFatal("Editor service is null!");
     }
-    generateTimer = new QTimer(this);
-    generateTimer->setSingleShot(true);
-    completionProvider = new CodeGeeXCompletionProvider(this);
-    editorService->registerInlineCompletionProvider(completionProvider);
 
     QAction *lineChatAct = new QAction(tr("Inline Chat"), this);
     lineChatCmd = ActionManager::instance()->registerAction(lineChatAct, "CodeGeeX.InlineChat");
     lineChatCmd->setDefaultKeySequence(Qt::CTRL + Qt::Key_T);
     connect(lineChatAct, &QAction::triggered, this, &Copilot::startInlineChat);
-
-    connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
-        switch (responseType) {
-        case CopilotApi::multilingual_code_comment:
-            if (!response.isEmpty())
-                replaceSelectedText(response);
-            break;
-        case CopilotApi::inline_completions:
-            if (!responseValid(response))
-                return;
-            {
-                QString completion = "";
-
-                if (generateType == CopilotApi::Line) {
-                    generateCache = response.split('\n');
-                    completion = extractSingleLine();
-                } else if (generateType == CopilotApi::Block) {
-                    generateCache.clear();
-                    completion = response;
-                }
-
-                if (completion.endsWith('\n'))
-                    completion.chop(1);
-
-                generatedCode = completion;
-                completionProvider->setInlineCompletions({ completion });
-                emit completionProvider->finished();
-            }
-            break;
-        default:;
-        }
-    });
-
-    connect(&copilotApi, &CopilotApi::responseByStream, this, &Copilot::response);
-    connect(&copilotApi, &CopilotApi::messageSended, this, &Copilot::messageSended);
-    connect(generateTimer, &QTimer::timeout, this, &Copilot::generateCode);
-    connect(this, &Copilot::requestStop, &copilotApi, &CopilotApi::requestStop);
 }
 
 QString Copilot::selectedText() const
@@ -86,17 +40,6 @@ QString Copilot::selectedText() const
         return "";
 
     return editorService->getSelectedText();
-}
-
-bool Copilot::responseValid(const QString &response)
-{
-    bool valid = !(response.isEmpty()
-                   || response.startsWith("\n\n\n")
-                   || response.startsWith("\n    \n    "));
-    if (!valid) {
-        qWarning() << "Reponse not valid: " << response;
-    }
-    return valid;
 }
 
 Copilot *Copilot::instance()
@@ -146,48 +89,18 @@ void Copilot::insterText(const QString &text)
         editorService->insertText(text);
 }
 
-void Copilot::setGenerateCodeEnabled(bool enabled)
-{
-    if (!enabled && generateTimer->isActive())
-        generateTimer->stop();
-    completionProvider->setInlineCompletionEnabled(enabled);
-}
-
-bool Copilot::getGenerateCodeEnabled() const
-{
-    return completionProvider->inlineCompletionEnabled();
-}
-
-void Copilot::setLocale(const QString &locale)
+void Copilot::setLocale(CodeGeeX::Locale locale)
 {
     this->locale = locale;
 }
 
-QString Copilot::getLocale() const
-{
-    return locale;
-}
-
-void Copilot::setCommitsLocale(const QString &locale)
+void Copilot::setCommitsLocale(CodeGeeX::Locale locale)
 {
     this->commitsLocale = locale;
 }
 
-void Copilot::setCurrentModel(CodeGeeX::languageModel model)
-{
-    copilotApi.setModel(model);
-}
-
-languageModel Copilot::getCurrentModel() const
-{
-    return copilotApi.model();
-}
-
 void Copilot::handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom, int lineTo, int indexTo)
 {
-    if (!CodeGeeXManager::instance()->isLoggedIn())
-        return;
-
     editorService->clearAllEOLAnnotation(lineChatTip);
     if (lineFrom == -1)
         return;
@@ -205,74 +118,64 @@ void Copilot::handleInlineWidgetClosed()
         inlineChatWidget->reset();
 }
 
+void Copilot::setCopilotLLM(AbstractLLM *llm)
+{
+    copilotLLM = llm;
+}
+
 void Copilot::addComment()
 {
-    QString url = QString(kUrlSSEChat) + "?stream=false";   //receive all msg at once
-    copilotApi.postComment(url,
-                           selectedText(),
-                           locale);
-}
-
-void Copilot::generateCode()
-{
-    if (!completionProvider->inlineCompletionEnabled())
-        return;
-
-    const auto &context = completionProvider->inlineCompletionContext();
-    if (!context.prefix.endsWith(generatedCode) || generateCache.isEmpty()) {
-        generateType = checkPrefixType(context.prefix);
-        copilotApi.postGenerate(kUrlGenerateMultiLine,
-                                context.prefix,
-                                context.suffix,
-                                generateType);
-    } else {
-        generatedCode = extractSingleLine();
-        completionProvider->setInlineCompletions({ generatedCode });
-        emit completionProvider->finished();
-    }
-}
-
-void Copilot::login()
-{
+    QString prompt = "You're an intelligent programming assistant."
+                     " You'll answer any questions you may have about programming, code, or computers, and provide formatted, executable, accurate, and secure code."
+                     " Task: Please provide a comment for the input code, including multi-line comments and single-line comments, please be careful not to change the original code, only add comments."
+                     " Directly return the code without any Markdown formatting, such as ```, ```cpp, etc. "
+                     "\n\ncode: ```%1```";
+    copilotLLM->setStream(false);
+    copilotLLM->request(prompt.arg(selectedText()), [=](const QString &data, AbstractLLM::ResponseState state){
+        if (state == AbstractLLM::ResponseState::Success) {
+            if (!data.isEmpty())
+                replaceSelectedText(data);
+        }
+    });
 }
 
 void Copilot::fixBug()
 {
-    QString url = QString(kUrlSSEChat) + "?stream=true";
-    if (CodeGeeXManager::instance()->checkRunningState(false)) {
-        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandFixBug);
-        emit messageSended();
-    }
+    auto currentFileText = editorService->fileText(editorService->currentFile());
+    currentFileText.replace(selectedText(), "<START EDITING HERE>" + selectedText() + "<STOP EDITING HERE>");
+    QString prompt = "code: ```%1```\n\n"
+                     "Rewrite the code between <START EDITING HERE> and <STOP EDITING HERE> in this entire code block. The rewrite requirements are: fix any bugs in this code, or do a simple rewrite if there are no errors, without leaving placeholders. Answer only the code between these markers.";
+    CodeGeeXManager::instance()->requestAsync(prompt.arg(currentFileText));
     switchToCodegeexPage();
 }
 
 void Copilot::explain()
 {
-    QString url = QString(kUrlSSEChat) + "?stream=true";
-    if (CodeGeeXManager::instance()->checkRunningState(false)) {
-        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandExplain);
-        emit messageSended();
-    }
+    QString prompt = "code: ```%1```\n\n"
+                     "You are an intelligent programming assistant. You will answer any questions users have about programming, code, and computers, providing well-formatted, executable, accurate, and secure code, and providing detailed explanations when necessary. Task: Please explain the meaning of the input code, including the implementation principle, purpose, and precautions, etc. ";
+    if (locale == Zh)
+        prompt.append("\nPlease answer by Chineses");
+    CodeGeeXManager::instance()->requestAsync(prompt.arg(selectedText()));
     switchToCodegeexPage();
 }
 
 void Copilot::review()
 {
-    QString url = QString(kUrlSSEChat) + "?stream=true";
-    if (CodeGeeXManager::instance()->checkRunningState(false)) {
-        copilotApi.postReview(url, selectedText(), locale);
-        emit messageSended();
-    }
+    QString prompt = "code: ```%1```\n\n"
+                     "You are an intelligent programming assistant. You will answer any questions users have about programming, code, and computers, providing well-formatted, executable, accurate, and secure code, and providing detailed explanations when necessary. Now, you will start to act as an advanced expert engineer focusing on code review and software security. Please provide at least three global suggestions based on the user’s code";
+    if (locale == Zh)
+        prompt.append("\nPlease answer by Chineses");
+    CodeGeeXManager::instance()->requestAsync(prompt.arg(selectedText()));
     switchToCodegeexPage();
 }
 
 void Copilot::tests()
 {
-    QString url = QString(kUrlSSEChat) + "?stream=true";
-    if (CodeGeeXManager::instance()->checkRunningState(false)) {
-        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandTests);
-        emit messageSended();
-    }
+    QString prompt = "code: ```%1```\n\n"
+                     "You need to automatically determine the programming language of the provided code, and write a set of unit test code for it using a popular current unit testing framework. Please ensure that the tests cover the main functionalities and edge cases, and include necessary comments.";
+    if (locale == Zh)
+        prompt.append("\nPlease answer by Chineses");
+    CodeGeeXManager::instance()->requestAsync(prompt.arg(selectedText()));
     switchToCodegeexPage();
 }
 
@@ -289,19 +192,15 @@ void Copilot::commits()
 
     connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this, &process](int exitCode, QProcess::ExitStatus exitStatus) {
         Q_UNUSED(exitStatus)
-
         if (exitCode != 0)
             return;
 
-        auto diff = QString::fromUtf8(process.readAll());
-        QString url = QString(kUrlSSEChat) + "?stream=true";
-
-        if (CodeGeeXManager::instance()->checkRunningState(false)) {
-            CommitMessage message;
-            message.git_diff = diff;
-            copilotApi.postCommit(url, message, commitsLocale);
-            emit messageSended();
-        }
+        auto diff = QString::fromUtf8(process.read(20000));
+        QString prompt = "diff: ```%1```\n\n"
+                         "You always analyze the git diff provided, detect changes, and generate succinct yet comprehensive commit messages. for the user step-by-step:\n1. You first parse the git diff to understand the changes made: additions, deletions, modifications, or renaming.\n2. Identify the components or modules that the changes are relating to.\n3. Understand the nature of changes: bug fixes, functionality enhancements, code optimization, documentation, etc.\n4. You highlight the primary updates without neglecting any minor alterations.\n5. Choose a commit type according to the primary updates.\n6. Organize these changes into an accurate, concise and informative commit message less than 20 words.\nYou should only reply a one-line commit message less than 20 words!!!";
+        if (commitsLocale == Zh)
+            prompt.append("\nPlease answer by Chineses");
+        CodeGeeXManager::instance()->requestAsync(prompt.arg(diff));
         switchToCodegeexPage();
     });
 
@@ -344,9 +243,6 @@ void Copilot::showLineChatTip(const QString &fileName, int line)
 
 void Copilot::startInlineChat()
 {
-    if (!CodeGeeXManager::instance()->isLoggedIn())
-        return;
-
     editorService->closeLineWidget();
     editorService->clearAllEOLAnnotation(lineChatTip);
     if (!inlineChatWidget) {
@@ -354,51 +250,6 @@ void Copilot::startInlineChat()
         connect(inlineChatWidget, &InlineChatWidget::destroyed, this, [this] { inlineChatWidget = nullptr; });
     }
 
+    inlineChatWidget->setLLM(copilotLLM);
     inlineChatWidget->start();
-}
-
-CodeGeeX::CopilotApi::GenerateType Copilot::checkPrefixType(const QString &prefixCode)
-{
-    //todo
-    Q_UNUSED(prefixCode)
-    if (0)
-        return CopilotApi::Line;
-    else
-        return CopilotApi::Block;
-}
-
-QString Copilot::extractSingleLine()
-{
-    if (generateCache.isEmpty())
-        return "";
-
-    bool extractedCode = false;
-    QString completion = "";
-    for (auto line : generateCache) {
-        if (extractedCode)
-            break;
-        if (line != "")
-            extractedCode = true;
-
-        completion += line == "" ? "\n" : line;
-        generateCache.removeFirst();
-    }
-    completion += "\n";
-
-    //check if left cache all '\n'
-    bool leftAllEmpty = true;
-    for (auto line : generateCache) {
-        if (line == "")
-            continue;
-        leftAllEmpty = false;
-        break;
-    }
-    if (leftAllEmpty) {
-        generateCache.clear();
-        completion += "\n";
-    }
-
-    if (!extractedCode)
-        completion = "";
-    return completion;
 }

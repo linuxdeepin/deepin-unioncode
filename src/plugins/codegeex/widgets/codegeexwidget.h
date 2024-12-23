@@ -20,7 +20,6 @@ public:
     explicit CodeGeeXWidget(QWidget *parent = nullptr);
 
 public Q_SLOTS:
-    void onLoginSuccessed();
     void onLogOut();
     void onNewSessionCreated();
     void onCloseHistoryWidget();

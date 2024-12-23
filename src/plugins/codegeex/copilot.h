@@ -4,7 +4,8 @@
 #ifndef COPILOT_H
 #define COPILOT_H
 
-#include "codegeex/copilotapi.h"
+#include "services/ai/aiservice.h"
+#include "codegeexmanager.h"
 
 #include <QObject>
 #include <QTimer>
@@ -29,26 +30,20 @@ public:
 
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
-    void setGenerateCodeEnabled(bool enabled);
-    bool getGenerateCodeEnabled() const;
-    void setLocale(const QString &locale);
-    QString getLocale() const;
-    void setCommitsLocale(const QString &locale);
-    void setCurrentModel(CodeGeeX::languageModel model);
-    CodeGeeX::languageModel getCurrentModel() const;
+
+    void setLocale(CodeGeeX::Locale locale);
+    void setCommitsLocale(CodeGeeX::Locale locale);
     void handleSelectionChanged(const QString &fileName, int lineFrom, int indexFrom,
                                 int lineTo, int indexTo);
     void handleInlineWidgetClosed();
+    void setCopilotLLM(AbstractLLM *llm);
 
 signals:
-    void response(const QString &msgID, const QString &response, const QString &event);
     void messageSended();
     void requestStop();
 
 public slots:
     void addComment();
-    void generateCode();
-    void login();
     void fixBug();
     void explain();
     void review();
@@ -58,26 +53,18 @@ public slots:
 private:
     explicit Copilot(QObject *parent = nullptr);
     QString selectedText() const;
-    QString locale { "zh" };
-    QString commitsLocale { "zh" };
+    CodeGeeX::Locale locale { CodeGeeX::Zh };
+    CodeGeeX::Locale commitsLocale { CodeGeeX::En };
     void switchToCodegeexPage();
-    bool responseValid(const QString &response);
     QString assembleCodeByCurrentFile(const QString &code);
     void showLineChatTip(const QString &fileName, int line);
     void startInlineChat();
 
     InlineChatWidget *inlineChatWidget = nullptr;
     Command *lineChatCmd = nullptr;
-    CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
-    QTimer *generateTimer = nullptr;
-    QStringList generateCache {};
-    QString generatedCode {};
-    QString extractSingleLine();
 
-    CodeGeeX::CodeGeeXCompletionProvider *completionProvider = nullptr;
-    CodeGeeX::CopilotApi::GenerateType generateType;
-    CodeGeeX::CopilotApi::GenerateType checkPrefixType(const QString &prefixCode);
+    AbstractLLM *copilotLLM = nullptr;
 };
 
 #endif   // COPILOT_H

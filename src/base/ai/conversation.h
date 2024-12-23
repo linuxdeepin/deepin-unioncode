@@ -28,6 +28,7 @@ public:
     bool addUserData(const QString &data);
     bool popUserData();
 
+    bool addResponse(const QString &data);
     QString getLastResponse() const;
     QByteArray getLastByteResponse() const;
     bool popLastResponse();

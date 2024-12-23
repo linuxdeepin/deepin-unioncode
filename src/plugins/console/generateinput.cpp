@@ -17,18 +17,18 @@ DWIDGET_USE_NAMESPACE
 class GenerateInputPrivate
 {
 public:
-    QBuffer *pipe { nullptr };
     DLineEdit *edit { nullptr };
     DSuggestButton *confirmBtn { nullptr };
     DIconButton *closeBtn { nullptr };
     DSpinner *spinner { nullptr };
+    AbstractLLM *llm { nullptr };
 };
 
 GenerateInput::GenerateInput(QWidget *parent)
     : QWidget(parent), d(new GenerateInputPrivate)
 {
     initUi();
-    initPipe();
+    initLLM();
     initConnect();
 }
 
@@ -60,12 +60,26 @@ void GenerateInput::initUi()
     layout->addWidget(d->closeBtn);
 }
 
-void GenerateInput::initPipe()
+void GenerateInput::initLLM()
 {
-    d->pipe = new QBuffer(this);
-    connect(d->pipe, &QBuffer::aboutToClose, this , [=](){
-        d->pipe->seek(0);
-        auto response = QString(d->pipe->readAll());
+    using namespace dpfservice;
+    auto aiSrv = dpfGetService(AiService);
+    LLMInfo liteModel;
+    auto liteLLMInfo = aiSrv->getCodeGeeXLLMPro();
+    d->llm = aiSrv->getLLM(liteLLMInfo);
+    d->llm->setStream(false);
+    connect(d->llm, &AbstractLLM::dataReceived, this, [=](const QString &data, AbstractLLM::ResponseState state){
+        if (state == AbstractLLM::Failed) {
+            QString err = "";
+            auto valid = d->llm->checkValid(&err);
+            if (!valid){
+                switchState(false);
+                emit commandGenerated(err);
+            } else {
+                emit commandGenerated(tr("Please try again later"));
+            }
+        }
+        auto response = data;
         QString results;
         QRegularExpression regex(R"(```.*\n((.*\n)*?.*)\n\s*```)");
 
@@ -106,11 +120,8 @@ void GenerateInput::onGenerate()
     }
 
     switchState(true);
-    d->pipe->open(QIODevice::ReadWrite);
     QString prompt = "你是一个智能终端机器人，你的工作环境是deepin-os/UOS/Linux，你的任务是根据描述生成可以直接使用的终端命令，不要进行额外的回答。描述是：" + text;
-    using namespace dpfservice;
-    auto aiSrv = dpfGetService(AiService);
-    aiSrv->askQuestion(prompt, d->pipe);
+    d->llm->request(prompt);
 }
 
 void GenerateInput::switchState(bool generating)
@@ -118,7 +129,6 @@ void GenerateInput::switchState(bool generating)
     if (generating) {
         d->spinner->start();
         d->spinner->show();
-        d->pipe->setData("");  // reset pipe
         d->spinner->move(d->edit->rect().bottomRight() - QPoint(38, 16));
         d->edit->setEnabled(false);
         d->confirmBtn->setEnabled(false);

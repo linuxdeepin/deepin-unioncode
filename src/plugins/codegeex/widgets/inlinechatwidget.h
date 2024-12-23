@@ -6,6 +6,7 @@
 #define INLINECHATWIDGET_H
 
 #include <QWidget>
+#include "base/ai/abstractllm.h"
 
 class InlineChatWidgetPrivate;
 class InlineChatWidget : public QWidget
@@ -14,6 +15,7 @@ class InlineChatWidget : public QWidget
 public:
     explicit InlineChatWidget(QWidget *parent = nullptr);
     ~InlineChatWidget();
+    void setLLM(AbstractLLM *llm);
 
 public Q_SLOTS:
     void start();
