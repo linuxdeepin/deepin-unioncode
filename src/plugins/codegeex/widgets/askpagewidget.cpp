@@ -6,6 +6,9 @@
 #include "intropage.h"
 #include "messagecomponent.h"
 #include "codegeexmanager.h"
+#include "services/ai/aiservice.h"
+#include "services/option/optionmanager.h"
+#include "eventreceiver.h"
 
 #include <DLabel>
 #include <DLineEdit>
@@ -24,6 +27,9 @@
 
 // button height + margin
 static const int inputExtraHeight = 56;
+static constexpr char* selectedLLM = "Selected_LLM";
+// todo: provide a unified category after modifying the plugin name.
+static constexpr char* optionCategory = "AskPageEdit";
 
 AskPageWidget::AskPageWidget(QWidget *parent)
     : DWidget(parent)
@@ -97,10 +103,10 @@ void AskPageWidget::onDeleteBtnClicked()
     confirmDialog->insertButton(0, tr("Cancel", "button"));
     confirmDialog->insertButton(1, tr("Delete", "button"), false, DDialog::ButtonWarning);
 
-    connect(confirmDialog, &DDialog::buttonClicked, this, [](int index) {
+    connect(confirmDialog, &DDialog::buttonClicked, this, [=](int index) {
         if (index == 1) {
             CodeGeeXManager::instance()->deleteCurrentSession();
-            CodeGeeXManager::instance()->cleanHistoryMessage();
+            setIntroPage();
         }
     });
 
@@ -114,14 +120,19 @@ void AskPageWidget::onHistoryBtnClicked()
 
 void AskPageWidget::onCreateNewBtnClicked()
 {
-    CodeGeeXManager::instance()->cleanHistoryMessage();
-    CodeGeeXManager::instance()->createNewSession();
+    //todo
 }
 
-void AskPageWidget::onModelchanged(int index)
+void AskPageWidget::onLLMChanged(int index)
 {
-    auto model = modelCb->itemData(index).value<CodeGeeX::languageModel>();
-    CodeGeeXManager::instance()->setCurrentModel(model);
+    auto llmInfo = LLMInfo::fromVariantMap(modelCb->itemData(index).toMap());
+    if (!llmInfo.modelName.isEmpty())
+        CodeGeeXManager::instance()->onLLMChanged(llmInfo);
+    if (llmInfo.type != LLMType::ZHIPU_CODEGEEX) // <connect to network> function only codegeex can use
+        inputEdit->switchNetworkBtnVisible(false);
+    else
+        inputEdit->switchNetworkBtnVisible(true);
+    OptionManager::getInstance()->setValue(optionCategory, selectedLLM, llmInfo.toVariant());
 }
 
 void AskPageWidget::initUI()
@@ -182,6 +193,7 @@ void AskPageWidget::initInputWidget()
     historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
     historyBtn->setFixedSize(26, 26);
     historyBtn->setToolTip(tr("history sessions"));
+    historyBtn->hide(); // todo: Display after completion of functionality
     btnLayout->addWidget(historyBtn);
 
     createNewBtn = new DToolButton(this);
@@ -193,9 +205,8 @@ void AskPageWidget::initInputWidget()
 
     modelCb = new QComboBox(this);
     modelCb->setFixedHeight(26);
-    modelCb->addItem(QIcon::fromTheme("codegeex_model_pro"), "Pro", CodeGeeX::languageModel::Pro);
-    modelCb->addItem(QIcon::fromTheme("codegeex_model_lite"), "Lite", CodeGeeX::languageModel::Lite);
-    modelCb->setFixedWidth(100);
+    modelCb->setMaximumWidth(200);
+    updateModelCb();
     btnLayout->addWidget(modelCb);
 
     inputEdit = new InputEditWidget(inputWidget);
@@ -222,7 +233,8 @@ void AskPageWidget::initConnection()
     connect(deleteBtn, &DToolButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
     connect(historyBtn, &DToolButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DToolButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
-    connect(modelCb, qOverload<int>(&QComboBox::currentIndexChanged), this, &AskPageWidget::onModelchanged);
+    connect(modelCb, qOverload<int>(&QComboBox::currentIndexChanged), this, &AskPageWidget::onLLMChanged);
+    connect(CodeGeeXCallProxy::instance(), &CodeGeeXCallProxy::LLMsChanged, this, &AskPageWidget::updateModelCb);
     connect(inputEdit->edit(), &DTextEdit::textChanged, this, [this]() {
         inputWidget->setFixedHeight(inputEdit->height() + inputExtraHeight);
     });
@@ -325,6 +337,27 @@ void AskPageWidget::showCustomWidget(QWidget *widget)
         waitComponets->stopWaiting();
     }
     waitComponets->setCustomWidget(widget);
+}
+
+void AskPageWidget::updateModelCb()
+{
+    using namespace dpfservice;
+    auto aiSrv = dpfGetService(AiService);
+    auto allLLMs = aiSrv->getAllModel();
+
+    auto selectedLLMVariant = OptionManager::getInstance()->getValue(optionCategory, selectedLLM);
+    auto userSelectedLLMInfo = LLMInfo::fromVariantMap(selectedLLMVariant.toMap());
+    auto currentSelectedName = modelCb->currentText();
+
+    modelCb->clear();
+    for (auto llm : allLLMs)
+        modelCb->addItem(llm.icon, llm.modelName, llm.toVariant());
+
+    if (!userSelectedLLMInfo.modelName.isEmpty())
+        modelCb->setCurrentText(userSelectedLLMInfo.modelName);
+
+    if (!modelCb->currentText().isEmpty())
+        CodeGeeXManager::instance()->onLLMChanged(LLMInfo::fromVariantMap(modelCb->currentData().toMap()));
 }
 
 void AskPageWidget::askQuestion(const QString &question)

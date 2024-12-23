@@ -4,16 +4,23 @@
 
 #include <base/ai/abstractllm.h>
 
-#ifndef OPENAICOMPATIBLELLM_H
-#define OPENAICOMPATIBLELLM_H
+#ifndef CodeGeeXLLM_H
+#define CodeGeeXLLM_H
 
-class OpenAiCompatibleLLMPrivate;
-class OpenAiCompatibleLLM : public AbstractLLM
+struct Entry
+{
+    QString type;
+    QString text;
+    QJsonObject websites;
+};
+
+class CodeGeeXLLMPrivate;
+class CodeGeeXLLM : public AbstractLLM
 {
     Q_OBJECT
 public:
-    explicit OpenAiCompatibleLLM(QObject *parent = nullptr);
-    ~OpenAiCompatibleLLM() override;
+    explicit CodeGeeXLLM(QObject *parent = nullptr);
+    ~CodeGeeXLLM() override;
 
     Conversation* getCurrentConversation() override;
     void setModelName(const QString &modelName);
@@ -24,9 +31,9 @@ public:
     QString modelPath() const override;
     bool checkValid(QString *errStr) override;
     QJsonObject create(const Conversation &conversation) override;
-    void request(const QJsonObject &data) override; // chat/compltions
+    void request(const QJsonObject &data) override;
     void request(const QString &prompt, ResponseHandler handler = nullptr) override;
-    void generate(const QString &prefix, const QString &suffix) override; // api/generate
+    void generate(const QString &prefix, const QString &suffix) override;
     void setTemperature(double temperature) override;
     void setStream(bool isStream) override;
     void setLocale(Locale lc) override;
@@ -37,7 +44,7 @@ signals:
     void requstCancel();
 
 private:
-    OpenAiCompatibleLLMPrivate *d;
+    CodeGeeXLLMPrivate *d;
 };
 
-#endif // OPENAICOMPATIBLELLM_H
+#endif // CodeGeeXLLM_H

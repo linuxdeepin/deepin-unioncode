@@ -78,6 +78,8 @@ public:
 private:
     void setupUi();
 
+    void addDefaultLLM(); // codegeex-chat-pro / codegeex-4
+
     bool getControlValue(QMap<QString, QVariant> &map);
     void setControlValue(const QMap<QString, QVariant> &map);
 

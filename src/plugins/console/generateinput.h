@@ -24,7 +24,7 @@ public slots:
 
 private:
     void initUi();
-    void initPipe();
+    void initLLM();
     void initConnect();
     GenerateInputPrivate *d;
 };

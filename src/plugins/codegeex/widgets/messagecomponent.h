@@ -68,7 +68,7 @@ private:
     MessageData messageData;
     UpdateState currentUpdateState = Label;
 
-    QList<CodeGeeX::websiteReference> websites;
+    QList<websiteReference> websites;
 };
 
 #endif   // MESSAGECOMPONENT_H

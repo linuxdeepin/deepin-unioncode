@@ -10,6 +10,7 @@
 #include "services/terminal/terminalservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionmanager.h"
+#include "services/editor/editorservice.h"
 
 #include <DSpinner>
 
@@ -26,39 +27,44 @@
 #include <QLabel>
 #include <QApplication>
 
-static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
-//static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
-static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
-static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
-static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGlmTalk/selectList";
-static const char *kUrlQueryMessage = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
+// might useful later.
+//static const char *kUrlQueryMessage = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
+
+static const QString PrePrompt = "Use the above <context></context> code to answer the following question. You should not reference any files outside of what is shown, unless they are commonly known files, like a .gitignore or package.json. Reference the filenames whenever possible. If there isn't enough information to answer the question, suggest where the user might look to learn more";
 
 using namespace CodeGeeX;
-using dpfservice::WindowService;
+using namespace dpfservice;
+
+QJsonArray parseFile(QStringList files)
+{
+    QJsonArray result;
+    auto editorSrv = dpfGetService(EditorService);
+
+    for (auto file : files) {
+        QJsonObject obj;
+        obj["name"] = QFileInfo(file).fileName();
+        obj["language"] = support_file::Language::id(file);
+
+        QString fileContent = editorSrv->fileText(file);
+
+        if (fileContent.isEmpty()) {
+            QFile content(file);
+            if (content.open(QIODevice::ReadOnly)) {
+                obj["content"] = QString(content.read(20000));
+            }
+        } else {
+            obj["content"] = QString(fileContent.mid(0, 20000));
+        }
+        result.append(obj);
+    }
+
+    return result;
+}
 
 CodeGeeXManager *CodeGeeXManager::instance()
 {
     static CodeGeeXManager ins;
     return &ins;
-}
-
-void CodeGeeXManager::login()
-{
-    if (sessionId.isEmpty() || userId.isEmpty()) {
-        sessionId = uuid();
-        userId = uuid();
-        saveConfig(sessionId, userId);
-    }
-
-    QString machineId = QSysInfo::machineUniqueId();
-    askApi.sendLoginRequest(sessionId, machineId, userId);
-
-    queryLoginState();
-}
-
-bool CodeGeeXManager::isLoggedIn() const
-{
-    return isLogin;
 }
 
 void CodeGeeXManager::checkCondaInstalled()
@@ -82,143 +88,56 @@ bool CodeGeeXManager::condaHasInstalled()
     return condaInstalled;
 }
 
-void CodeGeeXManager::saveConfig(const QString &sessionId, const QString &userId)
+AbstractLLM *CodeGeeXManager::getCurrentLLM() const
 {
-    QVariantMap map { { "sessionId", sessionId },
-                      { "userId", userId } };
-
-    OptionManager::getInstance()->setValue("CodeGeeX", "Id", map);
+    return chatLLM;
 }
 
-Q_DECL_DEPRECATED_X("-------------存在兼容代码需要删除")
-void CodeGeeXManager::loadConfig()
+void CodeGeeXManager::setLocale(CodeGeeX::Locale locale)
 {
-    QFile file(configFilePath());
-    if (!file.exists()) {
-        const auto map = OptionManager::getInstance()->getValue("CodeGeeX", "Id").toMap();
-        if (map.isEmpty())
-            return;
-
-        sessionId = map.value("sessionId").toString();
-        userId = map.value("userId").toString();
-    } else {
-        // ------------------Deprecated start--------------------
-        file.open(QIODevice::ReadOnly);
-        QString data = QString::fromUtf8(file.readAll());
-        file.close();
-        file.remove();
-
-        QJsonDocument document = QJsonDocument::fromJson(data.toUtf8());
-        QJsonObject config = document.object();
-        if (!config.empty()) {
-            sessionId = config["sessionId"].toString();
-            userId = config["userId"].toString();
-            saveConfig(sessionId, userId);
-        }
-        // ------------------Deprecated end--------------------
-    }
-}
-
-void CodeGeeXManager::setLocale(CodeGeeX::locale locale)
-{
-    if (locale == CodeGeeX::Zh) {
-        askApi.setLocale("zh");
-        Copilot::instance()->setLocale("zh");
-    } else if (locale == CodeGeeX::En) {
-        askApi.setLocale("en");
-        Copilot::instance()->setLocale("en");
-    }
-}
-
-void CodeGeeXManager::setCurrentModel(languageModel model)
-{
-    Copilot::instance()->setCurrentModel(model);
-    if (model == Lite)
-        askApi.setModel(chatModelLite);
-    else if (model == Pro)
-        askApi.setModel(chatModelPro);
+    this->locale = locale;
+    chatLLM->setLocale(locale == CodeGeeX::Zh ? AbstractLLM::Zh : AbstractLLM::En);
+    Copilot::instance()->setLocale(locale);
 }
 
 void CodeGeeXManager::connectToNetWork(bool connecting)
 {
-    askApi.setNetworkEnabled(connecting);
+    networkEnabled = connecting;
 }
 
 bool CodeGeeXManager::isConnectToNetWork() const
 {
-    return askApi.networkEnabled();
-}
-
-QStringList CodeGeeXManager::getReferenceFiles() const
-{
-    return askApi.referenceFiles();
+    return networkEnabled;
 }
 
 void CodeGeeXManager::setReferenceCodebase(bool on)
 {
-    askApi.setCodebaseEnabled(on);
+    codebaseEnabled = on;
 }
 
 bool CodeGeeXManager::isReferenceCodebase() const
 {
-    return askApi.codebaseEnabled();
+    return codebaseEnabled;
 }
 
 void CodeGeeXManager::setReferenceFiles(const QStringList &files)
 {
-    askApi.setReferenceFiles(files);
+    referenceFiles = files;
 }
 
-void CodeGeeXManager::independentAsking(const QString &prompt, const QMultiMap<QString, QString> &history, QIODevice *pipe)
+QStringList CodeGeeXManager::getReferenceFiles()
 {
-    if (!isLoggedIn()) {
-        emit notify(1, tr("CodeGeeX is not avaliable, please logging in"));
-        pipe->close();
-        return;
-    }
-    AskApi *api = new AskApi;
-    api->postSSEChat(kUrlSSEChat, sessionId, prompt, QSysInfo::machineUniqueId(), history, currentTalkID);
-    QTimer::singleShot(10000, api, [=]() {
-        if (pipe && pipe->isOpen()) {
-            qWarning() << "timed out, close pipe";
-            pipe->close();
-            api->deleteLater();
-            emit notify(1, tr("Request timed out, please check the network or if the model is available."));
-        }
-    });
-
-    connect(api, &AskApi::response, api, [=](const QString &msgID, const QString &data, const QString &event) {
-        QString msgData = modifiedData(data);
-        if (event == "finish") {
-            api->deleteLater();
-            pipe->close();
-            return;
-        } else if (event == "add") {
-            pipe->write(msgData.toUtf8());
-        }
-    });
-}
-
-void CodeGeeXManager::createNewSession()
-{
-    QString currentMSecsStr = QString::number(QDateTime::currentMSecsSinceEpoch());
-    QString sessionTitle("Session_" + currentMSecsStr);
-    QString taskId(uuid());
-    askApi.postNewSession(kUrlNewSession, sessionId, sessionTitle, taskId);
+    return referenceFiles;
 }
 
 void CodeGeeXManager::deleteCurrentSession()
 {
-    if (currentTalkID.isEmpty())
-        return;
-
-    askApi.deleteSessions(kUrlDeleteSession, sessionId, { currentTalkID });
-    createNewSession();
+    auto c = chatLLM->getCurrentConversation();
+    c->clear();
 }
 
 void CodeGeeXManager::deleteSession(const QString &talkId)
 {
-    askApi.deleteSessions(kUrlDeleteSession, sessionId, { talkId });
 }
 
 void CodeGeeXManager::setMessage(const QString &prompt)
@@ -237,19 +156,19 @@ QString CodeGeeXManager::getChunks(const QString &queryText)
         QJsonArray chunks = result["Chunks"].toArray();
         if (!chunks.isEmpty()) {
             if (result["Completed"].toBool() == false)
-                emit askApi.notify(0, CodeGeeXManager::tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
+                emit notify(0, tr("The indexing of project %1 has not been completed, which may cause the results to be inaccurate.").arg(currentProjectPath));
             QString context;
             context += "\n<context>\n";
             for (auto chunk : chunks) {
                 context += chunk.toObject()["fileName"].toString();
-                context += '\n';
+                context += '\n```';
                 context += chunk.toObject()["content"].toString();
-                context += "\n\n";
+                context += "```\n\n";
             }
             context += "\n</context>";
             return context;
         } else if (CodeGeeXManager::instance()->condaHasInstalled()) {
-            emit askApi.noChunksFounded();
+            emit noChunksFounded();
             return "";
         }
     }
@@ -259,62 +178,128 @@ QString CodeGeeXManager::getChunks(const QString &queryText)
 
 QString CodeGeeXManager::promptPreProcessing(const QString &originText)
 {
-    QString processedText = originText;
+    QString processedText = PrePrompt;
 
     QString message = originText;
-    if (askApi.codebaseEnabled()) {
-        QString prompt = QString("Translate this passage into English :\"%1\", with the requirements: Do not provide responses other than translation.").arg(message.remove("@CodeBase"));
-        auto englishPrompt = askApi.syncQuickAsk(kUrlSSEChat, sessionId, prompt, currentTalkID);
-        QString chunksContext = getChunks(englishPrompt);
-        if (!chunksContext.isEmpty())
-            message.append(chunksContext);
-        processedText = originText + chunksContext;
+#ifdef SUPPORTMINIFORGE
+    if (isReferenceCodebase()) {
+        if (!condaHasInstalled()) {   // if not x86 or arm. @codebase can not be use
+            QStringList actions { "ai_rag_install", tr("Install") };
+            emit notify(0, CodeGeeXManager::tr("The file indexing feature is not available, which may cause functions such as @codebase to not work properly."
+                                                                       "Please install the required environment.\n the installation process may take several minutes."),
+                                          actions);
+        } else {
+            QString prompt = QString("Translate this passage into English :\"%1\", with the requirements: Do not provide responses other than translation.").arg(message.remove("@CodeBase"));
+            auto englishPrompt = requestSync(prompt);
+            QString chunksContext = getChunks(englishPrompt);
+            if (chunksContext.isEmpty())
+                return "";
+            if (message.contains("@CodeBase"))
+                message.remove("@CodeBase");
+            processedText.append("\n<context>\n" + chunksContext + "\n</context>");
+        }
+    }
+#endif
+    if (!getReferenceFiles().isEmpty()) {
+        QJsonArray files = parseFile(getReferenceFiles());
+        for (auto file : files) {
+            auto fileName = file.toObject()["name"].toString();
+            auto language = file.toObject()["language"].toString();
+            auto content = file.toObject()["content"].toString();
+
+            processedText.append("\n" + fileName + "\n```" + language + "\n" + content + "```\n");
+        }
     }
 
-    return processedText;
+    if (processedText != PrePrompt) {
+        processedText.append("\n\n" + message);
+        if (locale == CodeGeeX::Zh)
+            processedText.append("\nPlease answer me by Chinese");
+        return processedText;
+    } else {
+        return originText;
+    }
 }
 
 void CodeGeeXManager::sendMessage(const QString &prompt)
 {
+    if (!chatLLM) {
+        emit notify(2, tr("No selected LLM or current LLM is not avaliable"));
+        return;
+    }
+
     QString askId = "User" + QString::number(QDateTime::currentMSecsSinceEpoch());
     MessageData msgData(askId, MessageData::Ask);
     msgData.updateData(prompt);
     Q_EMIT requestMessageUpdate(msgData);
 
-    if (currentChat.first.isEmpty())
-        currentChat.first = prompt;
-    QMultiMap<QString, QString> history {};
-    for (auto chat : chatHistory) {
-        history.insert(chat.first, chat.second);
-    }
-    QString machineId = QSysInfo::machineUniqueId();
-    QString talkId = currentTalkID;
-
-    QtConcurrent::run([=, this](){
-        auto processedText = promptPreProcessing(prompt);
-        askApi.postSSEChat(kUrlSSEChat, sessionId, processedText, machineId, history, talkId);
-    });
-
-    startReceiving();
+    requestAsync(prompt);
 }
 
-void CodeGeeXManager::onSessionCreated(const QString &talkId, bool isSuccessful)
+//For chatting: Using user-defined models
+void CodeGeeXManager::requestAsync(const QString &prompt)
 {
-    if (isSuccessful) {
-        currentTalkID = talkId;
-        Q_EMIT createdNewSession();
-    } else {
-        qWarning() << "Create session failed!";
-    }
+    if (!chatLLM || chatLLM->modelState() == AbstractLLM::Busy)
+        return;
+
+    answerFlag++;
+    startReceiving();
+    QtConcurrent::run([=](){
+        auto processedText = promptPreProcessing(prompt);
+        if (processedText.isEmpty())
+            return;
+        auto c = chatLLM->getCurrentConversation();
+        c->addUserData(processedText);
+        QJsonObject obj = chatLLM->create(*c);
+        if (isConnectToNetWork())
+            obj.insert("command", "online_search_v1"); // only worked on CodeGeeX llm
+        emit sendSyncRequest(obj);
+    });
 }
 
-void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, const QString &event)
+//For quick processing of special requests
+QString CodeGeeXManager::requestSync(const QString &prompt)
+{
+    QEventLoop loop;
+    QString response;
+    connect(liteLLM, &AbstractLLM::dataReceived, &loop, [=, &loop, &response](const QString &data, AbstractLLM::ResponseState state) {
+        response = data;
+        loop.exit();
+    });
+    // use liteLLM to handle request. quickly get the response
+    liteLLM->request(prompt);
+    loop.exec();
+    return response;
+}
+
+void CodeGeeXManager::slotSendSyncRequest(const QJsonObject &obj)
+{
+    if (chatLLM)
+        chatLLM->request(obj);
+    else
+        emit notify(2, tr("No selected LLM or current LLM is not avaliable"));
+}
+
+void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, AbstractLLM::ResponseState state)
 {
     if (msgID.isEmpty())
         return;
 
+    if (state == AbstractLLM::ResponseState::Canceled || state == AbstractLLM::Failed) {
+        return;
+    }
+
     auto msgData = modifiedData(data);
-    if (event == "finish") {
+    if (state == AbstractLLM::ResponseState::Receiving) {
+        responseData += msgData;
+        if (!curSessionMsg.contains(msgID))
+            curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
+
+        if (!data.isEmpty()) {
+            curSessionMsg[msgID].updateData(responseData);
+            Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
+        }
+    } else {
         if (responseData.isEmpty() && !data.isEmpty()) {
             responseData = msgData;
             if (!curSessionMsg.contains(msgID))
@@ -324,76 +309,36 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
         }
 
         responseData.clear();
-        if (!currentChat.first.isEmpty() && currentChat.second.isEmpty()) {
-            currentChat.second = msgData;
-            chatHistory.append(currentChat);
-            chatRecord empty {};
-            currentChat.swap(empty);
-        }
         isRunning = false;
         emit chatFinished();
         return;
-    } else if (event == "add") {
-        responseData += msgData;
-        if (!curSessionMsg.contains(msgID))
-            curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
+    }
+}
 
-        if (!data.isEmpty()) {
-            curSessionMsg[msgID].updateData(responseData);
-            Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
+void CodeGeeXManager::onLLMChanged(const LLMInfo &llmInfo)
+{
+    if (chatLLM) {
+        if (chatLLM->modelState() == AbstractLLM::Busy) {
+            emit terminated();
+            stopReceiving();
+            chatLLM->cancel();
         }
-    }
-}
+        disconnect(chatLLM, &AbstractLLM::dataReceived, this, nullptr);
+        disconnect(chatLLM, &AbstractLLM::customDataReceived, this, nullptr);
+        disconnect(this, &CodeGeeXManager::requestStop, chatLLM, &AbstractLLM::cancel);
+    };
 
-void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
-{
-    if (loginState == AskApi::LoginState::kLoginFailed) {
-        //qWarning() << "CodeGeeX login failed!";
-        // switch to login ui.
-    } else if (loginState == AskApi::LoginState::kLoginSuccess) {
-        isLogin = true;
-        Q_EMIT loginSuccessed();
-        // switch to ask page.
-        if (queryTimer) {
-            queryTimer->stop();
-            queryTimer->deleteLater();
-            queryTimer = nullptr;
-        }
-    } else if (loginState == AskApi::LoginState::kLoginOut) {
-        isLogin = false;
-        Q_EMIT logoutSuccessed();
-    }
-}
-
-void CodeGeeXManager::recevieSessionRecords(const QVector<AskApi::SessionRecord> &records)
-{
-    sessionRecordList.clear();
-
-    for (auto record : records) {
-        RecordData data;
-        data.talkId = record.talkId;
-        data.promot = record.prompt;
-        data.date = record.createdTime;
-        sessionRecordList.append(data);
+    auto aiSrv = dpfGetService(AiService);
+    auto selectedLLM = aiSrv->getLLM(llmInfo);
+    if (!selectedLLM) {
+        QString error = tr("llm named: %1 is not avaliable.").arg(llmInfo.modelName);
+        emit notify(1, error);
+        return;
     }
 
-    Q_EMIT sessionRecordsUpdated();
-}
-
-void CodeGeeXManager::showHistoryMessage(const QVector<AskApi::MessageRecord> &records)
-{
-    for (auto index = records.size() - 1; index >= 0; index--) {
-        auto messageId = QString::number(QDateTime::currentMSecsSinceEpoch());
-        auto record = records[index];
-
-        MessageData askData(messageId + "Ask", MessageData::Ask);
-        askData.updateData(record.input);
-        Q_EMIT requestMessageUpdate(askData);
-
-        MessageData ansData(messageId + "Anwser", MessageData::Anwser);
-        ansData.updateData(record.output);
-        Q_EMIT requestMessageUpdate(ansData);
-    }
+    chatLLM = selectedLLM;
+    initLLM(chatLLM);
+    emit llmChanged(llmInfo);
 }
 
 void CodeGeeXManager::recevieDeleteResult(const QStringList &talkIds, bool success)
@@ -417,69 +362,81 @@ void CodeGeeXManager::recevieDeleteResult(const QStringList &talkIds, bool succe
 CodeGeeXManager::CodeGeeXManager(QObject *parent)
     : QObject(parent)
 {
+    auto aiSrv = dpfGetService(AiService);
+    auto liteLLMInfo = aiSrv->getCodeGeeXLLMLite();
+    liteLLM = aiSrv->getLLM(liteLLMInfo);
+    liteLLM->setStream(false);
+
     initConnections();
-    loadConfig();
-    queryLoginState();
 }
 
 void CodeGeeXManager::initConnections()
 {
-    connect(&askApi, &AskApi::response, this, &CodeGeeXManager::onResponse);
-    connect(&askApi, &AskApi::crawledWebsite, this, &CodeGeeXManager::crawledWebsite);
-    connect(&askApi, &AskApi::loginState, this, &CodeGeeXManager::recevieLoginState);
-    connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
-    connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
-    connect(&askApi, &AskApi::sessionDeleted, this, &CodeGeeXManager::recevieDeleteResult);
-    connect(&askApi, &AskApi::getMessageListResult, this, &CodeGeeXManager::showHistoryMessage);
-    connect(&askApi, &AskApi::noChunksFounded, this, &CodeGeeXManager::showIndexingWidget);
+    connect(this, &CodeGeeXManager::noChunksFounded, this, &CodeGeeXManager::showIndexingWidget);
 
-    connect(Copilot::instance(), &Copilot::response, this, &CodeGeeXManager::onResponse);
     connect(Copilot::instance(), &Copilot::messageSended, this, &CodeGeeXManager::startReceiving);
 
-    connect(this, &CodeGeeXManager::requestStop, &askApi, &AskApi::stopReceive);
     connect(this, &CodeGeeXManager::requestStop, Copilot::instance(), &Copilot::requestStop);
-    connect(this, &CodeGeeXManager::notify, this, [](int type, const QString &message) {
+    connect(this, &CodeGeeXManager::notify, this, [](int type, const QString &message, QStringList actions) {
         WindowService *windowService = dpfGetService(WindowService);
-        windowService->notify(type, "Ai", message, QStringList {});
+        windowService->notify(type, "Ai", message, actions);
+    });
+    connect(this, &CodeGeeXManager::sendSyncRequest, this, &CodeGeeXManager::slotSendSyncRequest);
+    connect(this, &CodeGeeXManager::llmChanged, Copilot::instance(), [=](const LLMInfo &info){
+        auto aiSrv = dpfGetService(AiService);
+        auto copilotLLM = aiSrv->getLLM(info); // Use a new LLM to avoid affecting chatLLM
+        if (copilotLLM)
+            Copilot::instance()->setCopilotLLM(copilotLLM);
     });
 }
 
-void CodeGeeXManager::queryLoginState()
+void CodeGeeXManager::initLLM(AbstractLLM *llm)
 {
-    if (!queryTimer) {
-        queryTimer = new QTimer(this);
-        connect(queryTimer, &QTimer::timeout, this, [=] {
-            if (!sessionId.isEmpty())
-                askApi.sendQueryRequest(sessionId);
-        });
-    }
-
-    queryTimer->start(1000);
-}
-
-void CodeGeeXManager::logout()
-{
-    if (!isLogin) {
-        qWarning() << "cant`t logout without login";
+    if (!llm)
         return;
-    }
-    askApi.logout(sessionId);
+    chatLLM->setLocale(locale == CodeGeeX::Zh ? AbstractLLM::Zh : AbstractLLM::En);
+    connect(chatLLM, &AbstractLLM::dataReceived, this, [=](const QString &data, AbstractLLM::ResponseState state) {
+        if (state == AbstractLLM::Canceled)
+            return;
+        if (state == AbstractLLM::Failed) {
+            QString errStr;
+            bool valid = chatLLM->checkValid(&errStr);
+            if (!valid)
+                emit notify(2, tr("LLM is not valid. %1").arg(errStr));
+            else
+                emit notify(2, tr("Error: %1, try again later").arg(data));
+            return;
+        }
+        onResponse(QString::number(answerFlag), data, state);
+    });
+    connect(chatLLM, &AbstractLLM::customDataReceived, this, [=](const QString &key, const QJsonObject &obj) {
+        QList<websiteReference> websites;
+        if (key == "crawl") {
+            for (auto it = obj.begin(); it != obj.end(); ++it) {
+                websiteReference website;
+                QString citationKey = it.key();
+                QJsonObject citationObj = it.value().toObject();
+
+                website.citation = citationKey;
+                website.status = citationObj["status"].toString();
+                website.url = citationObj["url"].toString();
+                website.title = citationObj["title"].toString();
+
+                websites.append(website);
+            }
+            emit crawledWebsite(QString::number(answerFlag), websites);
+        }
+    });
+    connect(this, &CodeGeeXManager::requestStop, chatLLM, &AbstractLLM::cancel);
 }
 
-void CodeGeeXManager::cleanHistoryMessage()
-{
-    chatHistory.clear();
-    curSessionMsg.clear();
-}
-
+// todo: storage of session records
 void CodeGeeXManager::fetchSessionRecords()
 {
-    askApi.getSessionList(kUrlQuerySession, sessionId, 1, 50);
 }
 
 void CodeGeeXManager::fetchMessageList(const QString &talkId)
 {
-    askApi.getMessageList(kUrlQueryMessage, sessionId, 1, 50, talkId);
 }
 
 void CodeGeeXManager::startReceiving()
@@ -492,8 +449,6 @@ void CodeGeeXManager::stopReceiving()
 {
     isRunning = false;
     responseData.clear();
-    chatRecord empty {};
-    currentChat.swap(empty);
     emit requestStop();
 }
 
@@ -505,27 +460,6 @@ bool CodeGeeXManager::checkRunningState(bool state)
 QList<RecordData> CodeGeeXManager::sessionRecords() const
 {
     return sessionRecordList;
-}
-
-QString CodeGeeXManager::configFilePath() const
-{
-    return CustomPaths::user(CustomPaths::Configures) + "/codegeexcfg.json";
-}
-
-QString CodeGeeXManager::uuid()
-{
-    QUuid uuid = QUuid::createUuid();
-    return uuid.toString().replace("{", "").replace("}", "").replace("-", "");
-}
-
-QString CodeGeeXManager::getSessionId() const
-{
-    return sessionId;
-}
-
-QString CodeGeeXManager::getTalkId() const
-{
-    return currentTalkID;
 }
 
 QString CodeGeeXManager::modifiedData(const QString &data)

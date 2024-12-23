@@ -4,9 +4,7 @@
 
 #include "inlinechatwidget.h"
 #include "inputeditwidget.h"
-#include "copilot.h"
 #include "diff_match_patch.h"
-#include "codegeex/copilotapi.h"
 #include "codegeexmanager.h"
 
 #include "services/editor/editorservice.h"
@@ -29,6 +27,16 @@
 
 constexpr char kVisibleProperty[] { "VisibleProperty" };
 constexpr char kInlineChatUrl[] = "https://codegeex.cn/prod/code/chatCodeSseV3/chat?stream=false";
+
+static QString systemenPrompt = "你会为用户回答关于编程、代码、计算机方面的任何问题，并提供格式规范、可以执行、准确安全的代码，并在必要时提供详细的解释。任务：根据用户的Command作答。\n"
+"\nYou are working on a task with User in a file and User send a message to you. `【cursor】` indicate the current position of your cursor, delete it after modification.\n\nYour Workflow:\n"
+"Step 1: You should working on the command step-by-step:\n1. Does the command is about to write program or comments in programming task? Write out the type of the command: (Choose: Chat / Programming).\n- **Chat command**: When your aim to reply through explanations, reminders, or requests for additional information. \n- **Programming command**: The user command is clear and requires you to write program or comments. \n"
+"Step 2: If it's a chat command, provide a thoughtful and clear response {language} directly.\n"
+"Step 3: If it requires programming, you should complete the Task according to the given file. \na. Understand the message in order to tackle it correctly: is the task about coding or debugging?\n- For coding, add new code within the task to execute the user's instructions correctly. \n- For debugging, improve the code to fix the bug, write the reasons for the changes within your code as comments.\nb. You should complete the task according to user request and comment in Chinese within your code to indicate changes. \nc. You should place only the finished task in a single block as output without explain!!!\n\nReply in the template below:\nCommand Type: (Chat / Programming)\nResponse: (Your response / Finished code in one block)\n"
+"User`s question: %1\n"
+"Selected code: %2\n"
+"Related context about this question(Do not directly quote when answering):<context>%3</context>\n"
+"Command:%4";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
@@ -99,7 +107,7 @@ public:
     void handleTextChanged();
     void handleSubmitEdit();
     void handleQuickQuestion();
-    void handleAskFinished(CopilotApi::ResponseType type, const QString &response, const QString &dstLang);
+    void handleAskFinished(const QString &response);
 
     void handleAccept();
     void handleReject();
@@ -140,7 +148,7 @@ public:
     CodeInfo codeInfo;
     State state { None };
     State prevState { None };
-    CopilotApi copilotApi;
+    AbstractLLM *inlineChatLLM { nullptr };
     int deleteMarker { -1 };
     int insertMarker { -1 };
     int selectionMarker { -1 };
@@ -244,8 +252,6 @@ void InlineChatWidgetPrivate::initConnection()
     connect(acceptBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleAccept);
     connect(rejectBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleReject);
     connect(stopBtn, &QAbstractButton::clicked, this, &InlineChatWidgetPrivate::handleStop);
-
-    connect(&copilotApi, &CopilotApi::response, this, &InlineChatWidgetPrivate::handleAskFinished);
 }
 
 QAbstractButton *InlineChatWidgetPrivate::createButton(const QString &name, ButtonType type, int flags)
@@ -346,6 +352,7 @@ void InlineChatWidgetPrivate::handleSubmitEdit()
     }
 
     setState(SubmitStart);
+
     if (!askForCodeGeeX()) {
         qWarning() << "Failed to ask CodeGeeX";
         setState(Original);
@@ -366,15 +373,8 @@ void InlineChatWidgetPrivate::handleQuickQuestion()
     }
 }
 
-void InlineChatWidgetPrivate::handleAskFinished(CopilotApi::ResponseType type, const QString &response, const QString &dstLang)
+void InlineChatWidgetPrivate::handleAskFinished(const QString &response)
 {
-    Q_UNUSED(dstLang)
-
-    if (type != CopilotApi::inline_chat) {
-        setState(Original);
-        return;
-    }
-
     if (state == QuestionStart) {
         auto answer = answerLabel->text();
         answerLabel->setText(answer.append(response));
@@ -444,15 +444,12 @@ void InlineChatWidgetPrivate::handleAccept()
     if (!replaceText.endsWith('\n'))
         replaceText.append('\n');
 
-    bool enabled = Copilot::instance()->getGenerateCodeEnabled();
-    Copilot::instance()->setGenerateCodeEnabled(false);
     int endLineOffset = chatInfo.tempText.count('\n') - chatInfo.originalText.count('\n') - 1;
     Edit::Range replaceRange = chatInfo.originalRange;
     replaceRange.end.line += endLineOffset;
     editSrv->replaceRange(chatInfo.fileName, replaceRange, replaceText);
     chatInfo.tempText.clear();
     handleClose();
-    Copilot::instance()->setGenerateCodeEnabled(enabled);
 }
 
 void InlineChatWidgetPrivate::handleReject()
@@ -462,8 +459,6 @@ void InlineChatWidgetPrivate::handleReject()
         if (!replaceText.endsWith('\n'))
             replaceText.append('\n');
 
-        bool enabled = Copilot::instance()->getGenerateCodeEnabled();
-        Copilot::instance()->setGenerateCodeEnabled(false);
         int endLineOffset = chatInfo.tempText.count('\n') - chatInfo.originalText.count('\n') - 1;
         chatInfo.tempText.clear();
         Edit::Range replaceRange = chatInfo.originalRange;
@@ -471,7 +466,6 @@ void InlineChatWidgetPrivate::handleReject()
         editSrv->replaceRange(chatInfo.fileName, replaceRange, replaceText);
         editSrv->setRangeBackgroundColor(chatInfo.fileName, chatInfo.originalRange.start.line,
                                          chatInfo.originalRange.end.line, selectionMarker);
-        Copilot::instance()->setGenerateCodeEnabled(enabled);
     }
 
     if (insertMarker != -1)
@@ -497,7 +491,7 @@ void InlineChatWidgetPrivate::handleStop()
         if (!watcher->isFinished())
             watcher->cancel();
     }
-    Q_EMIT copilotApi.requestStop();
+    inlineChatLLM->cancel();
 }
 
 void InlineChatWidgetPrivate::handleCreatePromptFinished()
@@ -505,16 +499,13 @@ void InlineChatWidgetPrivate::handleCreatePromptFinished()
     auto watcher = static_cast<QFutureWatcher<QString> *>(sender());
     if (!watcher->isCanceled()) {
         const auto &prompt = watcher->result();
-        InlineChatInfo info;
-        info.fileName = chatInfo.fileName;
-        info.is_ast = true;
-        info.commandType = state == QuestionStart ? InlineChatInfo::Chat : InlineChatInfo::Programing;
-        info.contextCode = addLineNumber(editSrv->fileText(info.fileName), 1);
-        const auto &code = createFormatCode(info.fileName, chatInfo.originalText, chatInfo.originalRange);
-        info.selectedCode = code;
-
-        copilotApi.setModel(Copilot::instance()->getCurrentModel());
-        copilotApi.postInlineChat(kInlineChatUrl, prompt, info, Copilot::instance()->getLocale());
+        inlineChatLLM->setStream(false);
+        inlineChatLLM->request(prompt, [=](const QString &data, AbstractLLM::ResponseState state){
+            if (state == AbstractLLM::Receiving || (state == AbstractLLM::Success && !data.isEmpty()))
+                handleAskFinished(data);
+            else if (state == AbstractLLM::Failed)
+                setState(Original);
+        });
     }
 
     futureWatcherList.removeAll(watcher);
@@ -617,8 +608,6 @@ void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
         tempText.append(diff.text);
     }
 
-    bool enabled = Copilot::instance()->getGenerateCodeEnabled();
-    Copilot::instance()->setGenerateCodeEnabled(false);
     chatInfo.tempText = tempText;
     editSrv->replaceRange(chatInfo.fileName, chatInfo.originalRange, tempText);
     auto iter = chatInfo.operationRange.cbegin();
@@ -627,7 +616,6 @@ void InlineChatWidgetPrivate::processGeneratedData(const QString &data)
         iter.key() == DELETE ? editSrv->setRangeBackgroundColor(chatInfo.fileName, range.start.line, range.end.line, deleteMarker)
                              : editSrv->setRangeBackgroundColor(chatInfo.fileName, range.start.line, range.end.line, insertMarker);
     }
-    Copilot::instance()->setGenerateCodeEnabled(enabled);
 }
 
 void InlineChatWidgetPrivate::updateButtonIcon()
@@ -641,9 +629,11 @@ void InlineChatWidgetPrivate::updateButtonIcon()
 
 QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useChunk)
 {
-    QStringList prompt;
-    prompt << question;
+    QString prompt = systemenPrompt;
 
+    QStringList context = {""};
+    auto code = createFormatCode(chatInfo.fileName, chatInfo.originalText, chatInfo.originalRange);
+    auto fileText = editSrv->fileText(chatInfo.fileName);
     if (useChunk) {
         QString workspace = chatInfo.fileName;
         ProjectService *prjSrv = dpfGetService(ProjectService);
@@ -655,20 +645,18 @@ QString InlineChatWidgetPrivate::createPrompt(const QString &question, bool useC
             }
         }
 
-        prompt << "回答内容不要使用下面的参考内容";
-        prompt << "\n你可以使用下面这些文件和代码内容进行参考，但只针对上面这段代码进行回答";
-        QString query = "问题：%1\n内容：```%2```";
-        auto result = CodeGeeXManager::instance()->query(workspace, query.arg(question, chatInfo.originalText), 5);
+        auto result = CodeGeeXManager::instance()->query(workspace, code, 5);
         QJsonArray chunks = result["Chunks"].toArray();
-        prompt << "代码：\n```";
+        context << "<context>";
         for (auto chunk : chunks) {
-            prompt << chunk.toObject()["fileName"].toString();
-            prompt << chunk.toObject()["content"].toString();
+            context << chunk.toObject()["fileName"].toString();
+            context << chunk.toObject()["content"].toString();
         }
-        prompt << "```";
+        context << "</context>";
     }
+    QString command = state == QuestionStart ? "Chat" : "Programing";
 
-    return prompt.join('\n');
+    return prompt.arg(question, code, context.join('\n'), command);
 }
 
 Edit::Range InlineChatWidgetPrivate::calculateTextRange(const QString &fileName, const Edit::Position &pos)
@@ -752,6 +740,13 @@ InlineChatWidget::InlineChatWidget(QWidget *parent)
 InlineChatWidget::~InlineChatWidget()
 {
     delete d;
+}
+
+void InlineChatWidget::setLLM(AbstractLLM *llm)
+{
+    if (!llm)
+        return;
+    d->inlineChatLLM = llm;
 }
 
 void InlineChatWidget::start()

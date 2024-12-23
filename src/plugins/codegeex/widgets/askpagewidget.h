@@ -47,9 +47,10 @@ public Q_SLOTS:
     void onDeleteBtnClicked();
     void onHistoryBtnClicked();
     void onCreateNewBtnClicked();
-    void onModelchanged(int index);
+    void onLLMChanged(int index);
     void setInputText(const QString &prompt);
     void showCustomWidget(QWidget *widget);
+    void updateModelCb();
 
 private:
     void initUI();

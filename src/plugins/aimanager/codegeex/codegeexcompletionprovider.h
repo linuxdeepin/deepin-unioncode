@@ -6,14 +6,19 @@
 #define CODEGEEXCOMPLETIONPROVIDER_H
 
 #include "base/abstractinlinecompletionprovider.h"
+#include "base/ai/abstractllm.h"
 
 #include <QTimer>
 
-namespace CodeGeeX {
 class CodeGeeXCompletionProvider : public AbstractInlineCompletionProvider
 {
     Q_OBJECT
 public:
+    enum GenerateType {
+        Line,
+        Block
+    };
+
     explicit CodeGeeXCompletionProvider(QObject *parent = nullptr);
 
     QString providerName() const override;
@@ -28,12 +33,21 @@ public:
     void setInlineCompletions(const QStringList &completions);
 
 private:
+    void postGenerate();
     Position positon;
     InlineCompletionContext context;
     QList<InlineCompletionItem> completionItems;
     QAtomicInteger<bool> completionEnabled { false };
+    void handleDataReceived(const QString &data, AbstractLLM::ResponseState state);
     QTimer timer;
+
+    QStringList generateCache {};
+    QString generatedCode {};
+    QString extractSingleLine();
+
+    AbstractLLM *completeLLM { nullptr };
+    GenerateType generateType;
+    GenerateType checkPrefixType(const QString &prefixCode);
 };
-}   // namespace CodeGeeX
 
 #endif   // CODEGEEXCOMPLETIONPROVIDER_H

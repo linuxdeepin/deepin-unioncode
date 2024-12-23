@@ -24,37 +24,6 @@ CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
     initConnection();
 }
 
-void CodeGeeXWidget::onLoginSuccessed()
-{
-    auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
-    if (mainLayout) {
-        QLayoutItem *item = nullptr;
-        while ((item = mainLayout->takeAt(0)) != nullptr) {
-            delete item->widget();
-            delete item;
-        }
-    }
-
-    initAskWidget();
-    initHistoryWidget();
-    CodeGeeXManager::instance()->createNewSession();
-}
-
-void CodeGeeXWidget::onLogOut()
-{
-    auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
-    if (mainLayout) {
-        QLayoutItem *item = nullptr;
-        while ((item = mainLayout->takeAt(0)) != nullptr) {
-            delete item->widget();
-            delete item;
-        }
-    }
-
-    delete mainLayout;
-    initUI();
-}
-
 void CodeGeeXWidget::onNewSessionCreated()
 {
     stackWidget->setCurrentIndex(1);
@@ -74,8 +43,6 @@ void CodeGeeXWidget::onCloseHistoryWidget()
 
 void CodeGeeXWidget::onShowHistoryWidget()
 {
-    CodeGeeXManager::instance()->fetchSessionRecords();
-
     if (!historyWidget || !historyWidgetAnimation)
         return;
 
@@ -103,68 +70,67 @@ void CodeGeeXWidget::initUI()
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setContentsMargins(0, 0, 0, 0);
+    auto mainLayout = new QVBoxLayout(this);
 
-    auto initLoginUI = [this]() {
-        auto mainLayout = new QVBoxLayout(this);
-        auto loginWidget = new DWidget(this);
-        loginWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        auto verticalLayout = new QVBoxLayout(loginWidget);
-        verticalLayout->setAlignment(Qt::AlignCenter);
-        verticalLayout->setContentsMargins(50, 0, 50, 50);
+    initAskWidget();
+    initHistoryWidget();
+    onNewSessionCreated(); // todo: modifed
 
-        auto label_icon = new DLabel(this);
-        label_icon->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(QSize(40, 26)));
-        label_icon->setAlignment(Qt::AlignCenter);
+//    auto initLoginUI = [this]() {
+//        auto mainLayout = new QVBoxLayout(this);
+//        auto loginWidget = new DWidget(this);
+//        loginWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+//        auto verticalLayout = new QVBoxLayout(loginWidget);
+//        verticalLayout->setAlignment(Qt::AlignCenter);
+//        verticalLayout->setContentsMargins(50, 0, 50, 50);
 
-        verticalLayout->addWidget(label_icon);
+//        auto label_icon = new DLabel(this);
+//        label_icon->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(QSize(40, 26)));
+//        label_icon->setAlignment(Qt::AlignCenter);
 
-        auto welcome_label = new DLabel(loginWidget);
-        welcome_label->setText(tr("Welcome to CodeGeeX"));//\nA must-have all-round AI tool for developers
-        welcome_label->setWordWrap(true);
-        welcome_label->setAlignment(Qt::AlignCenter);
+//        verticalLayout->addWidget(label_icon);
 
-        auto font = welcome_label->font();
-        font.setPixelSize(14);
-        font.setWeight(500);
-        welcome_label->setFont(font);
+//        auto welcome_label = new DLabel(loginWidget);
+//        welcome_label->setText(tr("Welcome to CodeGeeX"));//\nA must-have all-round AI tool for developers
+//        welcome_label->setWordWrap(true);
+//        welcome_label->setAlignment(Qt::AlignCenter);
 
-        auto descrption_label = new DLabel(loginWidget);
-        descrption_label->setText(tr("A must-have all-round AI tool for developers"));
-        descrption_label->setWordWrap(true);
-        descrption_label->setAlignment(Qt::AlignCenter);
+//        auto font = welcome_label->font();
+//        font.setPixelSize(14);
+//        font.setWeight(500);
+//        welcome_label->setFont(font);
 
-        font = descrption_label->font();
-        font.setPixelSize(12);
-        font.setWeight(400);
-        descrption_label->setFont(font);
+//        auto descrption_label = new DLabel(loginWidget);
+//        descrption_label->setText(tr("A must-have all-round AI tool for developers"));
+//        descrption_label->setWordWrap(true);
+//        descrption_label->setAlignment(Qt::AlignCenter);
 
-        verticalLayout->addSpacing(30);
-        verticalLayout->addWidget(welcome_label);
-        verticalLayout->addSpacing(5);
-        verticalLayout->addWidget(descrption_label);
+//        font = descrption_label->font();
+//        font.setPixelSize(12);
+//        font.setWeight(400);
+//        descrption_label->setFont(font);
 
-        auto btnLayout = new QHBoxLayout;     //make DSuggestBtn alignCenter
-        auto loginBtn = new DSuggestButton(loginWidget);
-        loginBtn->setText(tr("Go to login"));
-        connect(loginBtn, &DSuggestButton::clicked, this, [=] {
-            CodeGeeXManager::instance()->login();
-        });
+//        verticalLayout->addSpacing(30);
+//        verticalLayout->addWidget(welcome_label);
+//        verticalLayout->addSpacing(5);
+//        verticalLayout->addWidget(descrption_label);
 
-        btnLayout->addWidget(loginBtn, Qt::AlignHCenter);
+//        auto btnLayout = new QHBoxLayout;     //make DSuggestBtn alignCenter
+//        auto loginBtn = new DSuggestButton(loginWidget);
+//        loginBtn->setText(tr("Go to login"));
 
-        verticalLayout->addSpacing(30);
-        verticalLayout->addLayout(btnLayout, Qt::AlignCenter);
+//        btnLayout->addWidget(loginBtn, Qt::AlignHCenter);
 
-        mainLayout->addWidget(loginWidget, 1, Qt::AlignVCenter);
-    };
-    initLoginUI();
+//        verticalLayout->addSpacing(30);
+//        verticalLayout->addLayout(btnLayout, Qt::AlignCenter);
+
+//        mainLayout->addWidget(loginWidget, 1, Qt::AlignVCenter);
+//    };
+//    initLoginUI();
 }
 
 void CodeGeeXWidget::initConnection()
 {
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::logoutSuccessed, this, &CodeGeeXWidget::onLogOut);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
 }
 
 void CodeGeeXWidget::initAskWidget()

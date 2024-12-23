@@ -9,7 +9,10 @@
 
 // option manager -> custom models
 static const char *kCATEGORY_CUSTOMMODELS = "CustomModels";
+static const char *kCATEGORY_AUTO_COMPLETE = "AutoComplete";
 static const char *kCATEGORY_OPTIONKEY = "OptionKey";
+static const char *CodeGeeXChatModelLite = "codegeex-4";
+static const char *CodeGeeXChatModelPro = "codegeex-chat-pro";
 
 class AiManagerPrivate;
 class AiManager : public QObject
@@ -25,8 +28,10 @@ public:
     void appendModel(const LLMInfo &LLMInfo);
     void removeModel(const LLMInfo &LLMInfo);
     bool checkModelValid(const LLMInfo &info, QString *errStr);
+    QList<LLMInfo> getDefaultLLM();
 
     void readLLMFromOption();
+    void initCompleteProvider();
 
 private:
     AiManager(QObject *parent = nullptr);

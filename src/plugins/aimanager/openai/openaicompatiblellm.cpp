@@ -31,8 +31,10 @@ QJsonObject parseNonStreamContent(const QByteArray &data)
                 QString text = choice.toObject()["text"].toString();
                 parseResult["content"] = text;
             }
-            if (choice.toObject().contains("finish_reason"))
-                parseResult["finish_reason"] = root["finish_reason"].toString();
+            if (choice.toObject().contains("finish_reason")) {
+                 QString reason = choice.toObject()["finish_reason"].toString();
+                parseResult["finish_reason"] = reason;
+            }
         }
     } else if (root.contains("response")) {
         QString response = root["response"].toString();
@@ -49,6 +51,9 @@ public:
 
     QNetworkReply *postMessage(const QString &url, const QString &apiKey, const QByteArray &body);
     QNetworkReply *getMessage(const QString &url, const QString &apiKey);
+    void replyMessage(const QString &data, AbstractLLM::ResponseState state, AbstractLLM::ResponseHandler handler);
+    void processResponse(QNetworkReply *reply, AbstractLLM::ResponseHandler handler = nullptr);
+    void handleReplyFinished(QNetworkReply *reply);
 
     QString modelName { "" };
     QString modelPath { "" };
@@ -58,7 +63,6 @@ public:
     bool stream { true };
 
     QByteArray httpResult {};
-    bool waitingResponse { false };
 
     OpenAiCompatibleConversation *currentConversation = nullptr;
     QNetworkAccessManager *manager = nullptr;
@@ -106,6 +110,66 @@ QNetworkReply *OpenAiCompatibleLLMPrivate::getMessage(const QString &url, const 
         return threadManager->get(request);
     }
     return manager->get(request);
+}
+
+void OpenAiCompatibleLLMPrivate::replyMessage(const QString &data, AbstractLLM::ResponseState state, AbstractLLM::ResponseHandler handler)
+{
+    if (handler)
+        handler(data, state);
+    else
+        emit q->dataReceived(data, state);
+}
+
+void OpenAiCompatibleLLMPrivate::processResponse(QNetworkReply *reply, AbstractLLM::ResponseHandler handler)
+{
+    OpenAiCompatibleLLM::connect(reply, &QNetworkReply::readyRead, q, [=]() {
+        if (reply->error()) {
+            qCritical() << "Error:" << reply->errorString();
+            replyMessage(reply->errorString(), AbstractLLM::ResponseState::Failed, handler);
+        } else {
+            auto data = reply->readAll();
+
+            // process {"code":,"msg":,"success":false}
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+            if (!jsonDoc.isNull()) {
+                QJsonObject jsonObj = jsonDoc.object();
+                if (jsonObj.contains("success") && !jsonObj.value("success").toBool()) {
+                    replyMessage(jsonObj.value("msg").toString(), AbstractLLM::Failed, handler);
+                    return;
+                }
+            }
+
+            httpResult.append(data);
+            QString content;
+            QJsonObject retJson;
+            if (stream) {
+                retJson = OpenAiCompatibleConversation::parseContentString(QString(data));
+                if (retJson.contains("content"))
+                    content = retJson.value("content").toString();
+            } else {
+                retJson = parseNonStreamContent(data);
+                content = retJson["content"].toString();
+            }
+
+            if (retJson["finish_reason"].toString() == "length")
+                replyMessage(content, AbstractLLM::ResponseState::CutByLength, handler);
+            else if (retJson["finish_reason"].toString() == "stop")
+                replyMessage(content, AbstractLLM::Success, handler);
+            else
+                replyMessage(content, AbstractLLM::Receiving, handler);
+        }
+    });
+}
+
+void OpenAiCompatibleLLMPrivate::handleReplyFinished(QNetworkReply *reply)
+{
+    if (q->modelState() == AbstractLLM::Idle)   // llm is alread stopped
+        return;
+    if (reply->error()) {
+        qWarning() << "NetWork Error: " << reply->errorString();
+        emit q->dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
+    }
+    q->setModelState(AbstractLLM::Idle);
 }
 
 OpenAiCompatibleLLM::OpenAiCompatibleLLM(QObject *parent)
@@ -165,19 +229,18 @@ bool OpenAiCompatibleLLM::checkValid(QString *errStr)
     c.addUserData("Testing. Just say hi and nothing else");
 
     auto obj = create(c);
-    request(obj);
     QEventLoop loop;
     bool valid = false;
     QString errstr;
 
-    connect(this, &AbstractLLM::dataReceived, &loop, [&, this](const QString & data, ResponseState state){
-        if (state == ResponseState::Receiving)
-            return;
-
-        if (state == ResponseState::Success) {
+    QByteArray body = QJsonDocument(obj).toJson();
+    QNetworkReply *reply = d->postMessage(modelPath() + "/chat/completions", d->apiKey, body);
+    connect(reply, &QNetworkReply::finished, &loop, [&, this](){
+        if (reply->error()) {
+            *errStr = reply->errorString();
+            valid = false;
+        } else {
             valid = true;
-        } else if (errStr != nullptr){
-            *errStr = data;
         }
         loop.quit();
     });
@@ -201,38 +264,25 @@ QJsonObject OpenAiCompatibleLLM::create(const Conversation &conversation)
 
 void OpenAiCompatibleLLM::request(const QJsonObject &data)
 {
-    if (d->waitingResponse)
-        return;
-
+    setModelState(Busy);
     QByteArray body = QJsonDocument(data).toJson();
     d->httpResult.clear();
-    d->waitingResponse = true;
     d->currentConversation->update(body);
 
-    QNetworkReply *reply = d->postMessage(modelPath() + "/v1/chat/completions", d->apiKey, body);
+    QNetworkReply *reply = d->postMessage(modelPath() + "/chat/completions", d->apiKey, body);
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::finished, this, [=](){
-        d->waitingResponse = false;
         if (!d->httpResult.isEmpty())
             d->currentConversation->update(d->httpResult);
-        if (reply->error()) {
-            qWarning() << "NetWork Error: " << reply->errorString();
-            emit dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
-            return;
-        }
-        emit dataReceived("", AbstractLLM::ResponseState::Success);
+        d->handleReplyFinished(reply);
     });
 
-    processResponse(reply);
+    d->processResponse(reply);
 }
 
-void OpenAiCompatibleLLM::request(const QString &prompt)
+void OpenAiCompatibleLLM::request(const QString &prompt, ResponseHandler handler)
 {
-    if (d->waitingResponse)
-        return;
-
-    d->waitingResponse = true;
-
+    setModelState(Busy);
     QJsonObject dataObject;
     dataObject.insert("model", d->modelName);
     dataObject.insert("prompt", prompt);
@@ -241,50 +291,36 @@ void OpenAiCompatibleLLM::request(const QString &prompt)
     if (d->maxTokens != 0)
         dataObject.insert("max_tokens", d->maxTokens);
 
-    QNetworkReply *reply = d->postMessage(modelPath() + "/v1/completions", d->apiKey, QJsonDocument(dataObject).toJson());
+    QNetworkReply *reply = d->postMessage(modelPath() + "/completions", d->apiKey, QJsonDocument(dataObject).toJson());
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::finished, this, [=](){
-        d->waitingResponse = false;
-        if (reply->error()) {
-            qWarning() << "NetWork Error: " << reply->errorString();
-            emit dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
-            return;
-        }
-        emit dataReceived("", AbstractLLM::ResponseState::Success);
+        d->handleReplyFinished(reply);
     });
 
-    processResponse(reply);
+    d->processResponse(reply, handler);
 }
 
-void OpenAiCompatibleLLM::generate(const QString &prompt, const QString &suffix)
+void OpenAiCompatibleLLM::generate(const QString &prefix, const QString &suffix)
 {
-    if (d->waitingResponse)
-        return;
-
-    d->waitingResponse = true;
-
+    setModelState(Busy);
     QJsonObject dataObject;
     dataObject.insert("model", d->modelName);
     dataObject.insert("suffix", suffix);
-    dataObject.insert("prompt", prompt);
+    dataObject.insert("prompt", prefix);
     dataObject.insert("temperature", 0.01);
     dataObject.insert("stream", d->stream);
     if (d->maxTokens != 0)
         dataObject.insert("max_tokens", d->maxTokens);
+    else
+        dataObject.insert("max_tokens", 128); // quickly response
 
-    QNetworkReply *reply = d->postMessage(modelPath() + "/api/generate", d->apiKey, QJsonDocument(dataObject).toJson());
+    QNetworkReply *reply = d->postMessage(modelPath() + "/completions", d->apiKey, QJsonDocument(dataObject).toJson());
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::finished, this, [=](){
-        d->waitingResponse = false;
-        if (reply->error()) {
-            qWarning() << "NetWork Error: " << reply->errorString();
-            emit dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
-            return;
-        }
-        emit dataReceived("", AbstractLLM::ResponseState::Success);
+        d->handleReplyFinished(reply);
     });
 
-    processResponse(reply);
+    d->processResponse(reply);
 }
 
 void OpenAiCompatibleLLM::setTemperature(double temperature)
@@ -297,47 +333,15 @@ void OpenAiCompatibleLLM::setStream(bool isStream)
     d->stream = isStream;
 }
 
-void OpenAiCompatibleLLM::processResponse(QNetworkReply *reply)
+void OpenAiCompatibleLLM::setLocale(Locale lc)
 {
-    connect(reply, &QNetworkReply::readyRead, this, [=]() {
-        if (reply->error()) {
-            qCritical() << "Error:" << reply->errorString();
-            emit dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
-        } else {
-            auto data = reply->readAll();
-
-            // process {"code":,"msg":,"success":false}
-            QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-            if (!jsonDoc.isNull()) {
-                QJsonObject jsonObj = jsonDoc.object();
-                if (jsonObj.contains("success") && !jsonObj.value("success").toBool()) {
-                    emit dataReceived(jsonObj.value("msg").toString(), AbstractLLM::ResponseState::Failed);
-                    return;
-                }
-            }
-
-            d->httpResult.append(data);
-            QString content;
-            QJsonObject retJson;
-            if (d->stream) {
-                retJson = OpenAiCompatibleConversation::parseContentString(QString(data));
-                if (retJson.contains("content"))
-                    content = retJson.value("content").toString();
-            } else {
-                retJson = parseNonStreamContent(data);
-            }
-
-            if (retJson["finish_reason"].toString() == "length")
-                emit dataReceived(content, AbstractLLM::ResponseState::CutByLength);
-            else
-                emit dataReceived(retJson["content"].toString(), AbstractLLM::ResponseState::Receiving);
-        }
-    });
+    //todo
+    Q_UNUSED(lc);
 }
 
 void OpenAiCompatibleLLM::cancel()
 {
-    d->waitingResponse = false;
+    setModelState(AbstractLLM::Idle);
     d->httpResult.clear();
     emit requstCancel();
     emit dataReceived("", AbstractLLM::ResponseState::Canceled);
@@ -346,9 +350,4 @@ void OpenAiCompatibleLLM::cancel()
 void OpenAiCompatibleLLM::setMaxTokens(int maxTokens)
 {
     d->maxTokens = maxTokens;
-}
-
-bool OpenAiCompatibleLLM::isIdle()
-{
-    return !d->waitingResponse;
 }

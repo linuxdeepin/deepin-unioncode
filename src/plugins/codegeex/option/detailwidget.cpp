@@ -25,7 +25,6 @@
 
 DWIDGET_USE_NAMESPACE
 
-static const char *kCodeCompletion = "codeCompletion";
 static const char *kGlobalLanguage = "globalLanguage";
 static const char *kCommitsLanguage = "commitsLanguage";
 
@@ -33,7 +32,6 @@ class DetailWidgetPrivate
 {
     friend class DetailWidget;
 
-    DCheckBox *cbCodeCompletion = nullptr;
     DComboBox *globalLanguageBox = nullptr;
     DComboBox *commitsLanguageBox = nullptr;
 };
@@ -56,12 +54,6 @@ void DetailWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     setLayout(vLayout);
 
-    QHBoxLayout *completionLayout = new QHBoxLayout;
-    DLabel *completionLabel = new DLabel(QLabel::tr("Code Completion:"), this);
-    d->cbCodeCompletion = new DCheckBox(this);
-    completionLayout->addWidget(completionLabel);
-    completionLayout->addWidget(d->cbCodeCompletion);
-
     QHBoxLayout *languageLayout = new QHBoxLayout;
     DLabel *languageLabel = new DLabel(QLabel::tr("Global Language Preference:"), this);
     d->globalLanguageBox = new DComboBox(this);
@@ -78,7 +70,6 @@ void DetailWidget::setupUi()
     commitsLanguageLayout->addWidget(commitsLabel);
     commitsLanguageLayout->addWidget(d->commitsLanguageBox);
 
-    vLayout->addLayout(completionLayout);
     vLayout->addLayout(languageLayout);
     vLayout->addLayout(commitsLanguageLayout);
     vLayout->addStretch();
@@ -87,13 +78,11 @@ void DetailWidget::setupUi()
 bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
 {
     CodeGeeXConfig config;
-    config.codeCompletionEnabled = d->cbCodeCompletion->isChecked();
-    config.globalLanguage = d->globalLanguageBox->currentData().value<CodeGeeX::locale>();
-    config.commitsLanguage = d->commitsLanguageBox->currentData().value<CodeGeeX::locale>();
+    config.globalLanguage = d->globalLanguageBox->currentData().value<CodeGeeX::Locale>();
+    config.commitsLanguage = d->commitsLanguageBox->currentData().value<CodeGeeX::Locale>();
     dataToMap(config, map);
 
-    Copilot::instance()->setGenerateCodeEnabled(config.codeCompletionEnabled);
-    Copilot::instance()->setCommitsLocale(config.commitsLanguage == CodeGeeX::Zh ? "zh" : "en");
+    Copilot::instance()->setCommitsLocale(config.commitsLanguage);
     CodeGeeXManager::instance()->setLocale(config.globalLanguage);
     return true;
 }
@@ -104,14 +93,12 @@ void DetailWidget::setControlValue(const QMap<QString, QVariant> &map)
     CodeGeeXConfig config;
     mapToData(map, config);
 
-    d->cbCodeCompletion->setChecked(config.codeCompletionEnabled);
     d->globalLanguageBox->setCurrentText(config.globalLanguage == CodeGeeX::Zh ? "简体中文" : "English");
     d->commitsLanguageBox->setCurrentText(config.commitsLanguage == CodeGeeX::Zh ? "简体中文" : "English");
 }
 
 bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map)
 {
-    map.insert(kCodeCompletion, config.codeCompletionEnabled);
     map.insert(kGlobalLanguage, config.globalLanguage);
     map.insert(kCommitsLanguage, config.commitsLanguage);
 
@@ -120,15 +107,12 @@ bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVarian
 
 bool DetailWidget::mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig &config)
 {
-    auto var = map.value(kCodeCompletion);
+    auto var = map.value(kGlobalLanguage);
     if (var.isValid())
-        config.codeCompletionEnabled = var.toBool();
-    var = map.value(kGlobalLanguage);
-    if (var.isValid())
-        config.globalLanguage = var.value<CodeGeeX::locale>();
+        config.globalLanguage = var.value<CodeGeeX::Locale>();
     var = map.value(kCommitsLanguage);
     if (var.isValid())
-        config.commitsLanguage = var.value<CodeGeeX::locale>();
+        config.commitsLanguage = var.value<CodeGeeX::Locale>();
 
     return true;
 }

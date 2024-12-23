@@ -68,6 +68,8 @@ public:
 
     void popupReference();
     void accept(const QModelIndex &index);
+    void switchNetworkBtnVisible(bool visible);
+
 signals:
     void pressedEnter();
     void messageSended();

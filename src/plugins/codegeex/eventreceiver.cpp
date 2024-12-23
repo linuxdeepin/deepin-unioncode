@@ -21,6 +21,7 @@ CodeGeeXReceiver::CodeGeeXReceiver(QObject *parent)
     eventHandleMap.insert(notifyManager.actionInvoked.name, std::bind(&CodeGeeXReceiver::processActionInvokedEvent, this, _1));
     eventHandleMap.insert(project.openProject.name, std::bind(&CodeGeeXReceiver::processOpenProjectEvent, this, _1));
     eventHandleMap.insert(uiController.switchToWidget.name, std::bind(&CodeGeeXReceiver::processSwitchToWidget, this, _1));
+    eventHandleMap.insert(ai.LLMChanged.name, std::bind(&CodeGeeXReceiver::processLLMChanged, this));
 }
 
 dpf::EventHandler::Type CodeGeeXReceiver::type()
@@ -30,7 +31,7 @@ dpf::EventHandler::Type CodeGeeXReceiver::type()
 
 QStringList CodeGeeXReceiver::topics()
 {
-    return { T_MENU, editor.topic, notifyManager.topic, project.topic, uiController.topic };
+    return { T_MENU, editor.topic, notifyManager.topic, project.topic, uiController.topic, ai.topic };
 }
 
 void CodeGeeXReceiver::eventProcess(const dpf::Event &event)
@@ -59,7 +60,7 @@ void CodeGeeXReceiver::processSelectionChangedEvent(const dpf::Event &event)
     int lineTo = event.property("lineTo").toInt();
     int indexTo = event.property("indexTo").toInt();
     Copilot::instance()->handleSelectionChanged(fileName, lineFrom, indexFrom, lineTo, indexTo);
-    emit CodeGeeXCallProxy::instance()->selectionChanged();;
+    emit CodeGeeXCallProxy::instance()->selectionChanged();
 }
 
 void CodeGeeXReceiver::processInlineWidgetClosedEvent(const dpf::Event &event)
@@ -70,9 +71,7 @@ void CodeGeeXReceiver::processInlineWidgetClosedEvent(const dpf::Event &event)
 void CodeGeeXReceiver::processActionInvokedEvent(const dpf::Event &event)
 {
     auto actId = event.property("actionId").toString();
-    if (actId == "codegeex_login_default")
-        CodeGeeXManager::instance()->login();
-    else if (actId == "ai_rag_install")
+    if (actId == "ai_rag_install")
         CodeGeeXManager::instance()->installConda();
 }
 
@@ -94,6 +93,11 @@ void CodeGeeXReceiver::processSwitchToWidget(const dpf::Event &event)
         return;
     auto windowService = dpfGetService(WindowService);
     windowService->showWidgetAtRightspace(MWNA_CODEGEEX);
+}
+
+void CodeGeeXReceiver::processLLMChanged()
+{
+    emit CodeGeeXCallProxy::instance()->LLMsChanged();
 }
 
 CodeGeeXCallProxy::CodeGeeXCallProxy()

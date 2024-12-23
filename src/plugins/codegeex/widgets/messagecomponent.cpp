@@ -207,7 +207,7 @@ void MessageComponent::initConnect()
         CodeGeeXManager::instance()->setMessage(messageData.messageData());
     });
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::crawledWebsite, this,
-            [=](const QString &msgID, const QList<CodeGeeX::websiteReference> &websites) {
+            [=](const QString &msgID, const QList<websiteReference> &websites) {
                 Q_UNUSED(msgID);
                 if (!finished)
                     this->websites = websites;
