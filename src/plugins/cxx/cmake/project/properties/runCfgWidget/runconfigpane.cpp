@@ -60,7 +60,7 @@ void RunConfigPane::setupUi()
     // excutable label ui.
     d->executableEdit = new DLineEdit(mainFrame);
     d->executableEdit->setPlaceholderText(tr("Here is the executable path"));
-    connect(d->executableEdit, &DLineEdit::editingFinished, this, [this](){
+    connect(d->executableEdit, &DLineEdit::textChanged, this, [this](){
         if (d->targetRunParam)
             d->targetRunParam->targetPath = d->executableEdit->text();
     });
