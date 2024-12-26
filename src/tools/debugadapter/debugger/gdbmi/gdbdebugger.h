@@ -122,7 +122,7 @@ private:
     void sendLibraryUnloadedNotify(const gdbmi::Library &library, bool print);
     void parseDisassembleData(const gdbmi::Record &record);
     void addVariablesWatched(const QList<gdbmi::Variable *> &variableList, int reference);
-    void parseChildVariable(const QString &evaluateName , const gdbmi::Variable *parentVariable);
+    void parseChildVariable(const QString &evaluateName , gdbmi::Variable *parentVariable);
     void evaluateValue(gdbmi::Variable *variable);
     void resetVariables();
     void checkVariablesLocker();

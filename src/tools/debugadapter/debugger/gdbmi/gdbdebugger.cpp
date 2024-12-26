@@ -765,7 +765,7 @@ void GDBDebugger::addVariablesWatched(const QList<gdbmi::Variable *> &variableLi
     }
 }
 
-void GDBDebugger::parseChildVariable(const QString &evaluateName, const gdbmi::Variable *parentVariable)
+void GDBDebugger::parseChildVariable(const QString &evaluateName, gdbmi::Variable *parentVariable)
 {
     d->runningCommand++;
     DebugManager::instance()->commandAndResponse(QString { "-var-list-children --all-values %1" }.arg(evaluateName), [=](const QVariant &r) {
@@ -781,10 +781,22 @@ void GDBDebugger::parseChildVariable(const QString &evaluateName, const gdbmi::V
                     parseChildVariable(childMap.value("name").toString(), parentVariable);
                 } else {
                     auto var = gdbmi::Variable::parseMap(childMap);
+                    if (var->dynamic)
+                        parseChildVariable(var->name, var);
+
                     var->name = childMap.value("exp").toString();
                     var->hasMore = (var->dynamic && var->hasMore) || var->numChild;
-                    if(var->hasMore)
+                    if (var->hasMore)
                         var->childRefrence = ++d->reference;
+                    else if (var->value == "{...}") // var has no children and it`s value is {...}. ignore it
+                        var->value = "";
+
+                    if (!parentVariable->hasMore) {
+                        parentVariable->childRefrence = ++d->reference;
+                        parentVariable->hasMore = true;
+                        if (parentVariable->value.isEmpty())
+                            parentVariable->value = "{...}";
+                    }
                     d->variableListByReference.insert(parentVariable->childRefrence, var);
                 }
             }
