@@ -19,6 +19,9 @@ QJsonObject OpenAiCompatibleConversation::parseContentString(const QString &cont
     QRegularExpressionMatchIterator iter = regex.globalMatch(content);
 
     QString finishReason = "";
+    QJsonObject functionCall;
+    QMap<int, QJsonObject> toolCallMaps;
+
     while (iter.hasNext()) {
         QRegularExpressionMatch match = iter.next();
         QString matchString = match.captured(0);
@@ -42,6 +45,52 @@ QJsonObject OpenAiCompatibleConversation::parseContentString(const QString &cont
                             const QString &deltaData = delta["content"].toString();
                             deltacontent += deltaData;
                         }
+                        if (delta.contains("function_call")) {
+                            const QJsonObject &function_call =  delta.value("function_call").toObject();
+                            if (function_call.contains("name")) {
+                                functionCall["name"] = functionCall["name"].toString() + function_call.value("name").toString();
+                            }
+
+                            if (function_call.contains("arguments")) {
+                                functionCall["arguments"] = functionCall["arguments"].toString() + function_call.value("arguments").toString();
+                            }
+                        }
+
+                        if (delta.contains("tool_calls")) {
+                            const QJsonArray &tool_calls =  delta.value("tool_calls").toArray();
+                            for (const QJsonValue &tool_call : tool_calls) {
+                                const QJsonObject &toolCallObj = tool_call.toObject();
+
+                                int index = toolCallObj["index"].toInt();
+                                if (!toolCallMaps[index].contains("function")) {
+                                    toolCallMaps[index]["function"] = QJsonObject();
+                                }
+
+                                toolCallMaps[index]["index"] = index;
+
+                                if (toolCallObj.contains("id")) {
+                                    toolCallMaps[index]["id"] = toolCallObj.value("id");
+                                }
+
+                                if (toolCallObj.contains("type")) {
+                                    toolCallMaps[index]["type"] = toolCallObj.value("type");
+                                }
+
+                                if (toolCallObj.contains("function")) {
+                                    QJsonObject toolFun = toolCallMaps[index]["function"].toObject();
+                                    const QJsonObject &tmpToolFun =  toolCallObj.value("function").toObject();
+                                    if (tmpToolFun.contains("name")) {
+                                        toolFun["name"] = toolFun["name"].toString() + tmpToolFun.value("name").toString();
+                                    }
+
+                                    if (tmpToolFun.contains("arguments")) {
+                                        toolFun["arguments"] = toolFun["arguments"].toString() + tmpToolFun.value("arguments").toString();
+                                    }
+
+                                    toolCallMaps[index]["function"] = toolFun;
+                                }
+                            }
+                        }
                     } else if (cj.contains("text")) {
                         deltacontent += cj["text"].toString();
                     }
@@ -53,6 +102,22 @@ QJsonObject OpenAiCompatibleConversation::parseContentString(const QString &cont
     QJsonObject response;
     if (!deltacontent.isEmpty()) {
         response["content"] = deltacontent;
+    }
+
+    QJsonObject tools;
+    if (!functionCall.isEmpty()) {
+        tools["function_call"] = functionCall;
+        response["tools"] = tools;
+    }
+
+    QJsonArray toolCalls;
+    for (auto iter = toolCallMaps.begin(); iter != toolCallMaps.end(); iter++) {
+        toolCalls << iter.value();
+    }
+
+    if (!toolCalls.isEmpty()) {
+        tools["tool_calls"] = toolCalls;
+        response["tools"] = tools;
     }
 
     if (!finishReason.isEmpty())

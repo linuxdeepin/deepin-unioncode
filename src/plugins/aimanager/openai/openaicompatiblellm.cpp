@@ -119,6 +119,11 @@ OpenAiCompatibleLLM::~OpenAiCompatibleLLM()
         delete d;
 }
 
+QString OpenAiCompatibleLLM::modelName() const
+{
+    return d->modelName;
+}
+
 QString OpenAiCompatibleLLM::modelPath() const
 {
     return d->modelPath;
@@ -196,6 +201,9 @@ QJsonObject OpenAiCompatibleLLM::create(const Conversation &conversation)
 
 void OpenAiCompatibleLLM::request(const QJsonObject &data)
 {
+    if (d->waitingResponse)
+        return;
+
     QByteArray body = QJsonDocument(data).toJson();
     d->httpResult.clear();
     d->waitingResponse = true;
@@ -338,4 +346,9 @@ void OpenAiCompatibleLLM::cancel()
 void OpenAiCompatibleLLM::setMaxTokens(int maxTokens)
 {
     d->maxTokens = maxTokens;
+}
+
+bool OpenAiCompatibleLLM::isIdle()
+{
+    return !d->waitingResponse;
 }

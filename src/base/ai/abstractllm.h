@@ -25,6 +25,7 @@ public:
     explicit AbstractLLM(QObject *parent = nullptr);
     virtual ~AbstractLLM() {}
 
+    virtual QString modelName() const = 0;
     virtual QString modelPath() const = 0;
     virtual bool checkValid(QString *errStr) = 0;
     virtual QJsonObject create(const Conversation &conversation) = 0;
@@ -37,6 +38,7 @@ public:
     virtual void cancel() = 0;
     virtual void setMaxTokens(int maxToken) = 0;
     virtual Conversation *getCurrentConversation() = 0;
+    virtual bool isIdle() = 0;
 
 signals:
     void dataReceived(const QString &data, ResponseState statu);
