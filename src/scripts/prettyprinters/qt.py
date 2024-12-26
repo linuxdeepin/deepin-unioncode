@@ -118,7 +118,6 @@ class QListPrinter:
 
             self.externalStorage = isLarge or isStatic #see QList::Node::t()
 
-
         def __iter__(self):
             return self
 

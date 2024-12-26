@@ -191,7 +191,7 @@ gdbmi::Variable *gdbmi::Variable::parseMap(const QVariantMap &data)
     v->value = data.value("value").toString();
     v->type = data.value("type").toString();
     v->threadId = data.value("thread-id").toString();
-    v->hasMore = data.value("has_more", true).toBool();
+    v->hasMore = data.value("has_more", false).toBool();
     v->dynamic = data.value("dynamic", false).toBool();
     v->displayhint = data.value("displayhint").toString();
     return v;
