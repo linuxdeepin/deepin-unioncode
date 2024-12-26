@@ -7,6 +7,7 @@
 #include "openai/openaicompatiblellm.h"
 #include "services/option/optionmanager.h"
 #include "option/detailwidget.h"
+#include "common/util/eventdefinitions.h"
 
 #include <QMap>
 
@@ -83,10 +84,22 @@ void AiManager::removeModel(const LLMInfo &info)
 
 void AiManager::readLLMFromOption()
 {
+    auto currentModels = d->models;
+    bool changed = false;
     d->models.clear();
+
     QMap<QString, QVariant> map = OptionManager::getInstance()->getValue(kCATEGORY_CUSTOMMODELS, kCATEGORY_OPTIONKEY).toMap();
     auto LLMs = map.value(kCATEGORY_CUSTOMMODELS);
+    if (LLMs.toList().size() != currentModels.size())
+        changed = true;
+
     for (auto llmInfo : LLMs.toList()) {
-        appendModel(LLMInfo::fromVariantMap(llmInfo.toMap()));
+        LLMInfo info = LLMInfo::fromVariantMap(llmInfo.toMap());
+        if (!currentModels.contains(info))
+            changed = true;
+        appendModel(info);
     }
+
+    if (changed)
+        ai.LLMChanged();
 }
