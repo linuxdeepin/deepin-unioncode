@@ -14,6 +14,7 @@ public:
     static bool createVenv(const QString &python, const QString &venvPath);
     static QString pythonVersion(const QString &python);
     static QString packageInstallPath(const QString &python);
+    static QString defaultPIPSource();
 };
 
 #endif   // UTILS_H

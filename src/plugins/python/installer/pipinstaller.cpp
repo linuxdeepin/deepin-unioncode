@@ -6,6 +6,7 @@
 #include "utils/utils.h"
 
 #include "common/util/eventdefinitions.h"
+#include "services/option/optionmanager.h"
 #include "services/terminal/terminalservice.h"
 #include "services/window/windowelement.h"
 
@@ -64,6 +65,11 @@ void PIPInstaller::install(const QString &python, const InstallInfo &info)
     args << info.packageList
          << "--target"
          << Utils::packageInstallPath(python);
+
+    const auto &map = OptionManager::getInstance()->getValue(option::CATEGORY_PYTHON, "Interpreter").toMap();
+    const auto &pipSrc = map.value("pipSource").toString();
+    if (!pipSrc.isEmpty())
+        args << "-i" << pipSrc;
 
     uiController.switchContext(TERMINAL_TAB_TEXT);
     termSrv->executeCommand(info.plugin.isEmpty() ? "PIPInstaller" : info.plugin, python, args, "", QStringList());

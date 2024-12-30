@@ -82,3 +82,8 @@ QString Utils::packageInstallPath(const QString &python)
     return QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
             + "/.unioncode/packages/Python" + version;
 }
+
+QString Utils::defaultPIPSource()
+{
+    return "https://pypi.tuna.tsinghua.edu.cn/simple";
+}
