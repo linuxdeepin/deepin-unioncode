@@ -18,8 +18,8 @@
 #include <QGridLayout>
 #include <QDesktopServices>
 #ifndef NOT_USE_WEBENGINE
-#include <QWebEngineView>
-#include <QWebEngineSettings>
+#    include <QWebEngineView>
+#    include <QWebEngineSettings>
 #endif
 #include <QDir>
 #include <QScreen>
@@ -29,7 +29,8 @@ DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
 #ifndef NOT_USE_WEBENGINE
-class AutoZoomWebEngineView : public QWebEngineView {
+class AutoZoomWebEngineView : public QWebEngineView
+{
 public:
     explicit AutoZoomWebEngineView(QWidget *parent = nullptr)
         : QWebEngineView(parent)
@@ -38,7 +39,8 @@ public:
     }
 
 protected:
-    void resizeEvent(QResizeEvent *event) override {
+    void resizeEvent(QResizeEvent *event) override
+    {
         QWebEngineView::resizeEvent(event);
 
         int pageWidth = static_cast<int>(QGuiApplication::primaryScreen()->size().width() * webPageWidthScale);
@@ -129,6 +131,23 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
 #endif
 }
 
+bool DetailsView::eventFilter(QObject *obj, QEvent *e)
+{
+    if (obj == category && e->type() == QEvent::Paint) {
+        QPainter painter(category);
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        auto pa = category->palette();
+        auto bkgColor = pa.color(QPalette::Highlight);
+        bkgColor.setAlpha(20);
+        painter.setBrush(bkgColor);
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundedRect(category->rect(), 4, 4);
+    }
+
+    return DWidget::eventFilter(obj, e);
+}
+
 void DetailsView::changeLoadBtnState()
 {
     if (pluginMetaInfo.isNull())
@@ -186,11 +205,11 @@ void DetailsView::setupUi()
     operationLayout->setAlignment(Qt::AlignLeft);
     tipLabel->hide();
 
-    connect(loadBtn, &DSuggestButton::clicked, this, [=](){
+    connect(loadBtn, &DSuggestButton::clicked, this, [=]() {
         changeLoadBtnState();
         tipLabel->show();
     });
-    
+
     logoLabel = new QLabel(this);
     auto logo = QIcon::fromTheme("default_plugin");
     logoLabel->setPixmap(logo.pixmap(QSize(96, 96)));
@@ -251,24 +270,11 @@ void DetailsView::initMetaInfoLayout()
     versionLayout->setSpacing(0);
     versionLayout->setContentsMargins(0, 0, 0, 0);
 
-    categoryFrame = new DFrame(this);
-    categoryFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    DPalette palette = categoryFrame->palette();
-    QColor color = palette.color(QPalette::Highlight);
-    color.setAlpha(20);
-    palette.setColor(QPalette::Base, color);
-    categoryFrame->setPalette(palette);
-    categoryFrame->setLineWidth(0);
-    DStyle::setFrameRadius(categoryFrame, 4);
-    QVBoxLayout *categoryLayout = new QVBoxLayout(categoryFrame);
-    category = new DLabel(categoryFrame);
-    category->setForegroundRole(DPalette::LightLively);
-    category->setContentsMargins(7, 0, 7, 0);
-    categoryLayout->addWidget(category);
-    categoryLayout->setAlignment(Qt::AlignCenter);
-    categoryLayout->setSpacing(0);
-    categoryLayout->setContentsMargins(0, 0, 0, 0);
-
+    category = new DLabel(this);
+    category->setForegroundRole(DPalette::Highlight);
+    category->setContentsMargins(7, 1, 7, 1);
+    category->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    category->installEventFilter(this);
     description = new DLabel(this);
     vendor = new DLabel(this);
     dependency = new DLabel(this);
@@ -278,7 +284,7 @@ void DetailsView::initMetaInfoLayout()
     hbox->setSpacing(10);
     hbox->addWidget(name);
     hbox->addWidget(versionFrame);
-    hbox->addWidget(categoryFrame);
+    hbox->addWidget(category);
 
     metaInfoLayout->addLayout(hbox);
     metaInfoLayout->addWidget(vendor);

@@ -41,6 +41,9 @@ public:
 
     void update(const dpf::PluginMetaObjectPointer &metaInfo);
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *e) override;
+
 private slots:
     void changeLoadBtnState();
     void showCfgWidget();
@@ -58,7 +61,6 @@ private:
     DTK_WIDGET_NAMESPACE::DLabel *vendor {nullptr};
     DTK_WIDGET_NAMESPACE::DLabel *dependency {nullptr};
     DTK_WIDGET_NAMESPACE::DFrame *versionFrame {nullptr};
-    DTK_WIDGET_NAMESPACE::DFrame *categoryFrame {nullptr};
 
     DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
     dpf::PluginMetaObjectPointer pluginMetaInfo;
