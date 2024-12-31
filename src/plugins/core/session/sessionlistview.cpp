@@ -156,6 +156,7 @@ void SessionListView::switchToCurrentSession()
 {
     const auto session = currentSession();
     SessionManager::instance()->loadSession(session);
+    Q_EMIT sessionSwitched();
 }
 
 void SessionListView::showEvent(QShowEvent *event)
