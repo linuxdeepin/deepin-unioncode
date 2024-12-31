@@ -79,6 +79,7 @@ void SessionDialog::initUI()
 void SessionDialog::initConnect()
 {
     connect(view, &SessionListView::sessionsSelected, this, &SessionDialog::updateOptions);
+    connect(view, &SessionListView::sessionSwitched, this, &SessionDialog::close);
     connect(addBtn, &DIconButton::clicked, view, &SessionListView::createSession);
     connect(renameBtn, &DIconButton::clicked, view, &SessionListView::renameCurrentSession);
     connect(cloneBtn, &DIconButton::clicked, view, &SessionListView::cloneCurrentSession);
