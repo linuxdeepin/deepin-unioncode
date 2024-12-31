@@ -133,6 +133,9 @@ OPI_OBJECT(session,
            OPI_INTERFACE(sessionRenamed, "oldName", "newName")
            OPI_INTERFACE(sessionRemoved, "session")
            )
+OPI_OBJECT(ai,
+           OPI_INTERFACE(LLMChanged)
+           )
 
 struct AnalysedData
 {

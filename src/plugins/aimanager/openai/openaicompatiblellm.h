@@ -20,6 +20,7 @@ public:
     void setModelPath(const QString &path);
     void setApiKey(const QString &apiKey);
 
+    QString modelName() const override;
     QString modelPath() const override;
     bool checkValid(QString *errStr) override;
     QJsonObject create(const Conversation &conversation) override;
@@ -31,6 +32,7 @@ public:
     void processResponse(QNetworkReply *reply) override;
     void cancel() override;
     void setMaxTokens(int maxTokens) override;
+    bool isIdle() override;
 
 signals:
     void requstCancel();
