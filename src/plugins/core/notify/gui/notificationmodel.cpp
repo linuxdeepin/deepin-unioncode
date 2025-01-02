@@ -53,20 +53,36 @@ QVariant NotificationModel::data(const QModelIndex &index, int role) const
     }
 
     EntityPtr entity = d->getEntityByRow(index.row());
-    if (entity)
-        return QVariant::fromValue(entity);
+    if (entity) {
+        switch (role) {
+        case Qt::DecorationRole: {
+            auto type = entity->type();
+            switch (type) {
+            case NotificationEntity::Information:
+                return QIcon::fromTheme("notification_info");
+            case NotificationEntity::Warning:
+                return QIcon::fromTheme("notification_warning");
+            case NotificationEntity::Error:
+                return QIcon::fromTheme("notification_error");
+            }
+        }
+        case Qt::DisplayRole:
+            return entity->message();
+        case kActionsRole:
+            return entity->actions();
+        case kSourceRole: {
+            QString source = entity->name();
+            if (!source.isEmpty())
+                return tr("Source: %1").arg(source);
+        }
+        case kEntityRole:
+            return qVariantFromValue(entity);
+        default:
+            break;
+        }
+    }
 
     return QVariant();
-}
-
-Qt::ItemFlags NotificationModel::flags(const QModelIndex &index) const
-{
-    if (index.isValid()) {
-        if (d->view)
-            d->view->openPersistentEditor(index);
-        return QAbstractListModel::flags(index) | Qt::ItemIsEditable;
-    }
-    return QAbstractListModel::flags(index);
 }
 
 void NotificationModel::setNotifications(const QList<EntityPtr> &datas)
