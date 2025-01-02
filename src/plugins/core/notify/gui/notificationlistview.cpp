@@ -11,15 +11,10 @@ DWIDGET_USE_NAMESPACE
 NotificationListView::NotificationListView(QWidget *parent)
     : DListView(parent)
 {
-    setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
-    QScroller *scroller = QScroller::scroller(this);
-    QScrollerProperties sp;
-    sp.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
-    scroller->setScrollerProperties(sp);
+    setIconSize({ 16, 16 });
+    setSpacing(5);
 }
 
 NotificationListView::~NotificationListView()
 {
-
 }

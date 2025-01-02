@@ -48,9 +48,11 @@ void NotificationCenterWidgetPrivate::initUI()
     q->setBackgroundRole(QPalette::Base);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    mainLayout->setContentsMargins(5, 10, 5, 10);
+    mainLayout->setSpacing(5);
 
     QLabel *titleLabel = new QLabel(NotificationCenterWidget::tr("Notification"), q);
+    DFontSizeManager::instance()->bind(titleLabel, DFontSizeManager::T5);
     hideBtn = new DToolButton(q);
     hideBtn->setIconSize({ 16, 16 });
     hideBtn->setIcon(QIcon::fromTheme("hide"));
@@ -60,7 +62,7 @@ void NotificationCenterWidgetPrivate::initUI()
     clearBtn->setIcon(QIcon::fromTheme("clear_history"));
 
     QHBoxLayout *titleLayout = new QHBoxLayout;
-    titleLayout->setContentsMargins(10, 0, 10, 0);
+    titleLayout->setContentsMargins(15, 0, 15, 0);
     titleLayout->addWidget(titleLabel);
     titleLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding));
     titleLayout->addWidget(hideBtn);
