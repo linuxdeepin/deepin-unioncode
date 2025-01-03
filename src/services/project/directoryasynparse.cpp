@@ -16,14 +16,13 @@ class DirectoryAsynParsePrivate
 {
     friend class DirectoryAsynParse;
     QString rootPath;
-    QStandardItem *rootItem { nullptr };
+    QList<QStandardItem *> itemList;
     QSet<QString> fileList {};
 };
 
-DirectoryAsynParse::DirectoryAsynParse(QStandardItem *root)
+DirectoryAsynParse::DirectoryAsynParse()
     : d(new DirectoryAsynParsePrivate)
 {
-    d->rootItem = root;
     QObject::connect(this, &QFileSystemWatcher::directoryChanged,
                      this, &DirectoryAsynParse::doDirectoryChanged);
 }
@@ -38,7 +37,7 @@ DirectoryAsynParse::~DirectoryAsynParse()
 void DirectoryAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
-    emit itemsModified();
+    emit itemsCreated(d->itemList);
 }
 
 QSet<QString> DirectoryAsynParse::getFilelist()
@@ -51,11 +50,11 @@ void DirectoryAsynParse::doDirectoryChanged(const QString &path)
     if (!path.startsWith(d->rootPath))
         return;
 
-    auto item = findItem(path);
-    if (!item)
-        item = d->rootItem;
-    updateItem(item);
-    Q_EMIT itemUpdated(item);
+    // auto item = findItem(path);
+    // if (!item)
+    //     item = d->rootItem;
+    // updateItem(item);
+    Q_EMIT reqUpdateItem(path);
 }
 
 void DirectoryAsynParse::createRows(const QString &path)
@@ -69,7 +68,6 @@ void DirectoryAsynParse::createRows(const QString &path)
 
     // 缓存当前工程目录
     d->rootPath = rootPath;
-    d->rootItem->setData(rootPath, Project::FilePathRole);
     QFileSystemWatcher::addPath(d->rootPath);
 
     QDir dir;
@@ -83,7 +81,7 @@ void DirectoryAsynParse::createRows(const QString &path)
         item->setData(iter.filePath(), Project::FileIconRole);
         item->setData(iter.filePath(), Project::FilePathRole);
         item->setToolTip(iter.filePath());
-        parent ? parent->appendRow(item) : d->rootItem->appendRow(item);
+        parent ? parent->appendRow(item) : d->itemList.append(item);
         if (iter.fileInfo().isFile())
             d->fileList.insert(iter.filePath());
         else
@@ -118,7 +116,7 @@ QStandardItem *DirectoryAsynParse::findItem(const QString &path, QStandardItem *
     if (path.isEmpty())
         return nullptr;
 
-    const auto &itemRows = parent ? rows(parent) : rows(d->rootItem);
+    const auto &itemRows = parent ? rows(parent) : d->itemList;
     for (const auto item : itemRows) {
         const auto &itemPath = item->data(Project::FilePathRole).toString();
         if (path == itemPath) {
@@ -140,7 +138,7 @@ QStandardItem *DirectoryAsynParse::findParentItem(const QString &path, QStandard
         return nullptr;
 
     QFileInfo fileInfo(path);
-    const auto &itemRows = parent ? rows(parent) : rows(d->rootItem);
+    const auto &itemRows = parent ? rows(parent) : d->itemList;
     for (const auto item : itemRows) {
         const auto &itemPath = item->data(Project::FilePathRole).toString();
         if (!path.startsWith(itemPath))
@@ -218,12 +216,10 @@ void DirectoryAsynParse::updateItem(QStandardItem *item)
 void DirectoryAsynParse::sortItems()
 {
     // Sort root level items
-    auto itemList = takeAll(d->rootItem);
-    std::sort(itemList.begin(), itemList.end(), std::bind(&DirectoryAsynParse::compareItems, this, _1, _2));
+    std::sort(d->itemList.begin(), d->itemList.end(), std::bind(&DirectoryAsynParse::compareItems, this, _1, _2));
 
     // Sort children of each root item
-    for (auto *item : itemList) {
-        d->rootItem->appendRow(item);
+    for (auto *item : d->itemList) {
         sortChildren(item);
     }
 }

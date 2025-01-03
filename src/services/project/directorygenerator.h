@@ -29,8 +29,8 @@ public:
 protected:
     dpfservice::ProjectInfo prjInfo;
 public slots:
-    void doProjectChildsModified();
-    void handleItemUpdated(QStandardItem *item);
+    void projectItemsCreated(QList<QStandardItem *> itemList);
+    void handleItemUpdated(const QString &path);
 };
 
 }
