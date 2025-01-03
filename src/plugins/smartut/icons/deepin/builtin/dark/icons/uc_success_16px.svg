@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / status /success-dark</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#4DB301" offset="0%"></stop>
+            <stop stop-color="#027255" offset="100%"></stop>
+        </linearGradient>
+        <path d="M6,0 C2.7,0 0,2.7 0,6 C0,9.3 2.7,12 6,12 C9.3,12 12,9.3 12,6 C12,2.7 9.3,0 6,0 L6,0 Z" id="path-2"></path>
+        <filter x="-4.2%" y="-4.2%" width="108.3%" height="108.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="-1" in="SourceAlpha" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="ICON-/-status-/success-dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="图标/状态图标/Selected-Light" transform="translate(2, 2)">
+            <g id="select_active-copy-24">
+                <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+            </g>
+            <path d="M3.78018819,2.97449507 C4.19282555,3.01059616 4.4980685,3.37437055 4.46196741,3.7870079 L4.31588685,5.45759592 L8.50634395,5.45775584 C8.92055751,5.45775584 9.25634395,5.79354227 9.25634395,6.20775584 C9.25634395,6.6219694 8.92055751,6.95775584 8.50634395,6.95775584 L3.56087733,6.95952051 C3.51854471,6.96309194 3.47532979,6.96310277 3.43156522,6.95927387 C3.01892787,6.92317278 2.71368491,6.55939839 2.74978601,6.14676104 L2.96767536,3.65627429 C3.00377645,3.24363694 3.36755084,2.93839398 3.78018819,2.97449507 Z" id="形状结合" fill="#FFFFFF" transform="translate(6.0016, 4.9669) rotate(-45) translate(-6.0016, -4.9669)"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / status /success-light</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#57C703" offset="0%"></stop>
+            <stop stop-color="#0E8D6D" offset="100%"></stop>
+        </linearGradient>
+        <path d="M6,0 C2.7,0 0,2.7 0,6 C0,9.3 2.7,12 6,12 C9.3,12 12,9.3 12,6 C12,2.7 9.3,0 6,0 L6,0 Z" id="path-2"></path>
+        <filter x="-4.2%" y="-4.2%" width="108.3%" height="108.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="-1" in="SourceAlpha" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="ICON-/-status-/success-light" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="select_active-copy-24" transform="translate(2, 2)">
+            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+            <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+        </g>
+        <path d="M5.78018819,4.97449507 C6.19282555,5.01059616 6.4980685,5.37437055 6.46196741,5.7870079 L6.31588685,7.45759592 L10.5063439,7.45775584 C10.9205575,7.45775584 11.2563439,7.79354227 11.2563439,8.20775584 C11.2563439,8.6219694 10.9205575,8.95775584 10.5063439,8.95775584 L5.56087733,8.95952051 C5.51854471,8.96309194 5.47532979,8.96310277 5.43156522,8.95927387 C5.01892787,8.92317278 4.71368491,8.55939839 4.74978601,8.14676104 L4.96767536,5.65627429 C5.00377645,5.24363694 5.36755084,4.93839398 5.78018819,4.97449507 Z" id="形状结合" fill="#FFFFFF" transform="translate(8.0016, 6.9669) rotate(-45) translate(-8.0016, -6.9669)"></path>
+    </g>
+</svg>
