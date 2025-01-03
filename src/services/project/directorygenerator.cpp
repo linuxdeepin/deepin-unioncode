@@ -69,14 +69,14 @@ QStandardItem *DirectoryGenerator::createRootItem(const dpfservice::ProjectInfo 
 
     QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
     d->configureRootItem = rootItem;
-    auto parser = new DirectoryAsynParse(rootItem);
+    auto parser = new DirectoryAsynParse();
     d->projectParses[rootItem] = parser;
     QObject::connect(d->projectParses[rootItem],
-                     &DirectoryAsynParse::itemsModified,
-                     this, &DirectoryGenerator::doProjectChildsModified,
+                     &DirectoryAsynParse::itemsCreated,
+                     this, &DirectoryGenerator::projectItemsCreated,
                      Qt::UniqueConnection);
     QObject::connect(d->projectParses[rootItem],
-                     &DirectoryAsynParse::itemUpdated,
+                     &DirectoryAsynParse::reqUpdateItem,
                      this, &DirectoryGenerator::handleItemUpdated,
                      Qt::UniqueConnection);
     QtConcurrent::run(parser, &DirectoryAsynParse::parseProject, info);
@@ -101,7 +101,7 @@ void DirectoryGenerator::removeRootItem(QStandardItem *root)
         delete parser;
 }
 
-void DirectoryGenerator::doProjectChildsModified()
+void DirectoryGenerator::projectItemsCreated(QList<QStandardItem *> itemList)
 {
     auto sourceFiles = d->projectParses[d->configureRootItem]->getFilelist();
     ProjectInfo tempInfo = prjInfo;
@@ -110,13 +110,28 @@ void DirectoryGenerator::doProjectChildsModified()
     project.activeProject(tempInfo.kitName(), tempInfo.language(), tempInfo.workspaceFolder());
 
     auto rootItem = d->projectParses.key(qobject_cast<DirectoryAsynParse *>(sender()));
+    if (rootItem) {
+        while (rootItem->hasChildren()) {
+            rootItem->removeRow(0);
+        }
+        rootItem->appendRows(itemList);
+    }
+
     rootItem->setData(Project::Done, Project::ParsingStateRole);
 }
 
-void DirectoryGenerator::handleItemUpdated(QStandardItem *item)
+void DirectoryGenerator::handleItemUpdated(const QString &path)
 {
     ProjectService *prjSrv = dpfGetService(ProjectService);
     Q_ASSERT(prjSrv);
 
+    auto parser = qobject_cast<DirectoryAsynParse *>(sender());
+    auto rootItem = d->projectParses.key(parser);
+    auto item = parser->findItem(path, rootItem);
+    if (!item)
+        item = rootItem;
+    parser->updateItem(item);
+    if (auto model = rootItem->model())
+        Q_EMIT model->layoutChanged();
     prjSrv->restoreExpandState(item);
 }

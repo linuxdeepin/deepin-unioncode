@@ -27,14 +27,16 @@ public:
         bool isNormal = true;
     };
 
-    explicit DirectoryAsynParse(QStandardItem *root);
+    explicit DirectoryAsynParse();
     virtual ~DirectoryAsynParse();
 
     QSet<QString> getFilelist();
+    QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
+    void updateItem(QStandardItem *item);
 
 signals:
-    void itemsModified();
-    void itemUpdated(QStandardItem *item);
+    void itemsCreated(QList<QStandardItem *> itemList);
+    void reqUpdateItem(const QString &path);
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
@@ -45,11 +47,9 @@ private slots:
 
 private:
     void createRows(const QString &path);
-    QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
     QStandardItem *findParentItem(const QString &path, QStandardItem *parent = nullptr) const;
     QList<QStandardItem *> rows(const QStandardItem *item) const;
     QList<QStandardItem *> takeAll(QStandardItem *item);
-    void updateItem(QStandardItem *item);
 
     void sortItems();
     void sortChildren(QStandardItem *parentItem);

@@ -161,6 +161,7 @@ QStandardItem *dpfservice::ProjectGenerator::createRootItem(const dpfservice::Pr
     QString displyName = QFileInfo(info.workspaceFolder()).fileName();
     QString tooltip = info.workspaceFolder();
     auto rootItem = new QStandardItem(icon, displyName);
+    rootItem->setData(info.workspaceFolder(), Project::FilePathRole);
     rootItem->setToolTip(tooltip);
     return rootItem;
 }
