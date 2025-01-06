@@ -260,9 +260,9 @@ void SessionItemWidgetPrivate::removeSession()
 {
     DDialog dlg(q);
     dlg.setIcon(QIcon::fromTheme("dialog-warning"));
-    dlg.setTitle(tr("Are you sure to remove this session?"));
-    dlg.addButton(tr("Cancel", "button"));
-    dlg.addButton(tr("Remove", "button"), true, DDialog::ButtonWarning);
+    dlg.setTitle(SessionItemWidget::tr("Are you sure to remove this session?"));
+    dlg.addButton(SessionItemWidget::tr("Cancel", "button"));
+    dlg.addButton(SessionItemWidget::tr("Remove", "button"), true, DDialog::ButtonWarning);
 
     if (dlg.exec() == 1)
         sessionSrv->removeSession(sessionName);
@@ -270,8 +270,8 @@ void SessionItemWidgetPrivate::removeSession()
 
 void SessionItemWidgetPrivate::renameSession()
 {
-    QStringList actList { tr("Rename", "button"), tr("Rename and Open", "button") };
-    runInputDialog(tr("Rename Session"), actList, sessionName,
+    QStringList actList { SessionItemWidget::tr("Rename", "button"), SessionItemWidget::tr("Rename and Open", "button") };
+    runInputDialog(SessionItemWidget::tr("Rename Session"), actList, sessionName,
                    [this](const QString &newName) {
                        sessionSrv->renameSession(sessionName, newName);
                    });
@@ -279,8 +279,8 @@ void SessionItemWidgetPrivate::renameSession()
 
 void SessionItemWidgetPrivate::cloneSession()
 {
-    QStringList actList { tr("Clone", "button"), tr("Clone and Open", "button") };
-    runInputDialog(tr("New Session Name"), actList, sessionName + " (2)",
+    QStringList actList { SessionItemWidget::tr("Clone", "button"), SessionItemWidget::tr("Clone and Open", "button") };
+    runInputDialog(SessionItemWidget::tr("New Session Name"), actList, sessionName + " (2)",
                    [this](const QString &newName) {
                        sessionSrv->cloneSession(sessionName, newName);
                    });
@@ -301,14 +301,14 @@ void SessionItemWidgetPrivate::runInputDialog(const QString &title, const QStrin
     dlg.setTitle(title);
     dlg.setIcon(QIcon::fromTheme("ide"));
     DLineEdit *lineEdit = new DLineEdit(&dlg);
-    lineEdit->setPlaceholderText(tr("Please input session name"));
+    lineEdit->setPlaceholderText(SessionItemWidget::tr("Please input session name"));
     connect(lineEdit, &DLineEdit::textChanged, &dlg, [&dlg](const QString &text) {
         dlg.getButton(1)->setEnabled(!text.isEmpty());
         dlg.getButton(2)->setEnabled(!text.isEmpty());
     });
     dlg.addContent(lineEdit);
 
-    dlg.addButton(tr("Cancel", "button"));
+    dlg.addButton(SessionItemWidget::tr("Cancel", "button"));
     dlg.addButton(actList[0]);
     dlg.addButton(actList[1], true, DDialog::ButtonRecommend);
     dlg.getButton(1)->setEnabled(false);
