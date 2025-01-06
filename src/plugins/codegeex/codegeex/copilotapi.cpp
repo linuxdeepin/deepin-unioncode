@@ -5,6 +5,7 @@
 #include "src/common/supportfile/language.h"
 #include "src/services/editor/editorservice.h"
 #include "src/services/project/projectservice.h"
+#include "services/window/windowservice.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -19,6 +20,12 @@
 #include <QHash>
 
 using namespace dpfservice;
+
+void sendNotify(uint type, const QString &name, const QString &msg)
+{
+    auto windowSrv = dpfGetService(WindowService);
+    windowSrv->notify(type, name, msg, {});
+}
 
 namespace CodeGeeX {
 CopilotApi::CopilotApi(QObject *parent)
@@ -252,6 +259,7 @@ void CopilotApi::slotReadReply(QNetworkReply *reply)
         qCritical() << "Error:" << reply->errorString() << reply->error();
         if (reply->error() != QNetworkReply::OperationCanceledError) {
             auto type = reply->property("responseType").value<CopilotApi::ResponseType>();
+            sendNotify(2, "AI" ,reply->errorString());
             emit response(type, "", "");
         }
     } else {
