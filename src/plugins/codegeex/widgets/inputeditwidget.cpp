@@ -143,29 +143,34 @@ void InputEditWidgetPrivate::initEdit()
             sendButton->setEnabled(true);
 
         q->setFixedHeight(edit->height() + buttonBox->height());
-        auto cursorPos = edit->textCursor().position();
-        if (cursorPos > 0 && edit->document()->characterAt(cursorPos - 1) == "@")
-            q->popupReference();
-
-        if (!currentText.contains('@')) {
-            referencePopup->hide();
-        } else if (!currentText.endsWith('@')) {
-            auto start = currentText.indexOf('@');
-            auto firstSpace = currentText.indexOf(' ', start); // first space after `@`
-            if (start == -1 || (firstSpace != -1 && cursorPos > firstSpace)) {
+        auto cursor = edit->textCursor();
+        QString filterText = "";
+        QString strBeforeCursor = "";
+        while (cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
+            strBeforeCursor = cursor.selectedText();
+            if (strBeforeCursor.endsWith('@')) {
+                q->popupReference();
+            } else if (strBeforeCursor.contains(" ")) {
                 referencePopup->hide();
+                model.setFilterText("");
                 return;
+            } else if (strBeforeCursor.startsWith('@')) {
+                filterText = strBeforeCursor;
+                filterText.remove('@');
+                break;
             }
-
-            auto filterText = currentText.mid(start + 1, cursorPos - start - 1);
-            model.setFilterText(filterText);
-            if (model.getItems().isEmpty())
-                referencePopup->hide();
-            else
-                referencePopup->show();
-        } else {
-            model.setFilterText("");
         }
+
+        if (!strBeforeCursor.contains('@')) {
+            referencePopup->hide();
+            return;
+        }
+
+        model.setFilterText(filterText);
+        if (model.getItems().isEmpty())
+            referencePopup->hide();
+        else
+            referencePopup->show();
     });
 }
 
@@ -442,7 +447,14 @@ bool InputEdit::hasTag(const QString &text)
 
 void InputEditWidget::onReferenceBtnClicked()
 {
-    d->edit->append("@");
+    auto cursor = d->edit->textCursor();
+    cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+    auto charBeforeCursor = cursor.selectedText();
+    if (charBeforeCursor != "@")
+        cursor.insertText("@");
+    else if (!d->referencePopup->isVisible())
+        d->referencePopup->show();
+    d->edit->setFocus();
 }
 
 void InputEditWidget::onCodeBaseBtnClicked()
@@ -522,6 +534,13 @@ bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
             case Qt::Key_Escape:
                 d->referencePopup->hide();
                 break;
+            case Qt::Key_Left: {
+                auto cursor = d->edit->textCursor();
+                cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+                auto charSelected = cursor.selectedText();
+                if (charSelected == '@')
+                    d->referencePopup->hide();
+            } break;
             default:
                 break;
             }
