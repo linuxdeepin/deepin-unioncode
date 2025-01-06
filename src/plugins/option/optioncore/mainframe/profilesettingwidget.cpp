@@ -66,11 +66,17 @@ void ProfileSettingWidget::saveConfig()
 {
     QVariantMap map = OptionManager::getInstance()->getValue(kGeneralGroup, kLanguageKey).toMap();
     auto languageName = d->cbChooseLanguage->currentText();
-    if (map.value(kName) == languageName)
+    auto path = d->cbChooseLanguage->currentData().toString();
+    if (map.value(kName) == languageName) {
         return;
+    } else if (map.value(kPath) == path) {
+        map.insert(kName, languageName);
+        OptionManager::getInstance()->setValue(kGeneralGroup, kLanguageKey, map);
+        return;
+    }
 
     map.insert(kName, languageName);
-    map.insert(kPath, d->languagePaths.value(languageName));
+    map.insert(kPath, path);
     OptionManager::getInstance()->setValue(kGeneralGroup, kLanguageKey, map);
 
     DDialog msgBox;
@@ -99,6 +105,10 @@ void ProfileSettingWidget::readConfig()
     } else {
         const auto &map = OptionManager::getInstance()->getValue(kGeneralGroup, kLanguageKey).toMap();
         languageName = map.value(kName).toString();
+        if (languageName.isEmpty()) {
+            auto path = map.value(kPath).toString();
+            languageName = d->languagePaths.key(path);
+        }
     }
 
     d->cbChooseLanguage->setCurrentText(languageName);
@@ -121,11 +131,9 @@ void ProfileSettingWidget::setupUi()
         d->cbChooseLanguage = new DComboBox();
     d->cbChooseLanguage->setFixedWidth(200);
 
-    QStringList nameList = d->languagePaths.keys();
-    int i = 0;
-    for (auto name : nameList) {
-        d->cbChooseLanguage->insertItem(i, name);
-        i++;
+    auto iter = d->languagePaths.cbegin();
+    for (; iter != d->languagePaths.cend(); ++iter) {
+        d->cbChooseLanguage->addItem(iter.key(), iter.value());
     }
 
     d->hlayout->setMargin(10);

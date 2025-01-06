@@ -74,8 +74,12 @@ void installTranslator(DApplication &a)
     Settings settings("", configFile);
     auto map = settings.value("General", "Language").toMap();
     QString language = map.value("path").toString();
-    if (language.isEmpty())
+    if (language.isEmpty()) {
         language = QLocale().name() + ".qm";
+        QVariantMap map;
+        map.insert("path", language);
+        settings.setValue("General", "Language", map);
+    }
 
     QString name = language.left(language.indexOf("."));
     a.loadTranslator(QList<QLocale>() << QLocale(name));
