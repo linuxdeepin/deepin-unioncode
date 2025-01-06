@@ -31,18 +31,23 @@ public:
     void setExpand(bool value);
     void setTitle(const QString &title);
     QString title() const;
+    void setTitleTip(const QString &tooltip);
 
 Q_SIGNALS:
     void expandChanged();
     void itemClicked();
 
 protected:
+    void resizeEvent(QResizeEvent *e) override;
     void changeEvent(QEvent *e) override;
     bool eventFilter(QObject *obj, QEvent *e) override;
 
 private:
     void reverseArrowDirection();
+    void updateTitle();
+    
     bool isExpanded { false };
+    QString titleText;
     DTK_WIDGET_NAMESPACE::DToolButton *arrowButton { nullptr };
     DTK_WIDGET_NAMESPACE::DLabel *titleLabel { nullptr };
 };

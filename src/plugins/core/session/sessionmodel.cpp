@@ -42,6 +42,7 @@ QVariant SessionModel::data(const QModelIndex &index, int role) const
 
     const auto &sessionName = sessionList.at(index.row());
     switch (role) {
+    case Qt::ToolTipRole:
     case Qt::DisplayRole:
         switch (index.column()) {
         case 0:

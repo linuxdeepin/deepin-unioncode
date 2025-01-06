@@ -58,12 +58,25 @@ void ArrowHeaderLine::setExpand(bool value)
 
 void ArrowHeaderLine::setTitle(const QString &title)
 {
-    titleLabel->setText(title);
+    titleText = title;
+    updateTitle();
 }
 
 QString ArrowHeaderLine::title() const
 {
-    return titleLabel->text();
+    return titleText;
+}
+
+void ArrowHeaderLine::setTitleTip(const QString &tooltip)
+{
+    titleLabel->setToolTip(tooltip);
+}
+
+void ArrowHeaderLine::resizeEvent(QResizeEvent *e)
+{
+    updateTitle();
+    
+    return QWidget::resizeEvent(e);
 }
 
 void ArrowHeaderLine::changeEvent(QEvent *e)
@@ -108,6 +121,13 @@ bool ArrowHeaderLine::eventFilter(QObject *obj, QEvent *e)
 void ArrowHeaderLine::reverseArrowDirection()
 {
     setExpand(!isExpanded);
+}
+
+void ArrowHeaderLine::updateTitle()
+{
+    QFontMetrics fm = titleLabel->fontMetrics();
+    auto displayText = fm.elidedText(titleText, Qt::ElideRight, titleLabel->width());
+    titleLabel->setText(displayText);
 }
 
 class SessionItemWidgetPrivate : public QObject
@@ -307,6 +327,7 @@ void SessionItemWidgetPrivate::runInputDialog(const QString &title, const QStrin
         dlg.getButton(2)->setEnabled(!text.isEmpty());
     });
     dlg.addContent(lineEdit);
+    dlg.setFocusProxy(lineEdit);
 
     dlg.addButton(SessionItemWidget::tr("Cancel", "button"));
     dlg.addButton(actList[0]);
@@ -391,6 +412,7 @@ void SessionItemWidget::updateSession()
     if (isCurrentSession && !isDefaultVirgin)
         title = tr("%1 (current session)").arg(title);
     d->headerLine->setTitle(title);
+    d->headerLine->setTitleTip(d->sessionName);
 
     const auto &sessionCfg = d->sessionSrv->sessionFile(d->sessionName);
     if (!QFile::exists(sessionCfg))
