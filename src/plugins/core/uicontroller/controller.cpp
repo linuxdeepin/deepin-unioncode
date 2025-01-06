@@ -68,14 +68,14 @@ struct WidgetInfo
     bool defaultVisible { true };
     bool created { false };   // has already create dock
     bool hiddenByManual { false };
-    
-    std::function<AbstractWidget*()> createDWidgetFunc;
 
-    DWidget* getDWidget()
+    std::function<AbstractWidget *()> createDWidgetFunc;
+
+    DWidget *getDWidget()
     {
         if (!widget) {
             if (createDWidgetFunc) {
-                auto abstractWidget = createDWidgetFunc(); 
+                auto abstractWidget = createDWidgetFunc();
                 icon = abstractWidget->getDisplayIcon();
                 widget = static_cast<DWidget *>(abstractWidget->qWidget());
                 Q_ASSERT(widget);
@@ -85,7 +85,7 @@ struct WidgetInfo
         }
         return widget;
     }
-    
+
     void setWidget(DWidget *widget)
     {
         this->widget = widget;
@@ -98,7 +98,7 @@ struct WidgetInfo
         return false;
     };
 
-private:    
+private:
     DWidget *widget { nullptr };
 };
 
@@ -123,8 +123,8 @@ class ControllerPrivate
 {
     MainWindow *mainWindow { nullptr };
     loadingWidget *loadingwidget { nullptr };
-    WorkspaceWidget *workspace { nullptr }; // left default dock widget
-    WorkspaceWidget *rightspace { nullptr }; // right default dock widget
+    WorkspaceWidget *workspace { nullptr };   // left default dock widget
+    WorkspaceWidget *rightspace { nullptr };   // right default dock widget
 
     DWidget *navigationToolBar { nullptr };
     NavigationBar *navigationBar { nullptr };
@@ -504,9 +504,9 @@ void Controller::registerWidget(const QString &name, AbstractWidget *abstractWid
     d->allWidgets.insert(name, widgetInfo);
 }
 
-void Controller::registerWidgetCreator(const QString &name, std::function<AbstractWidget*()> &widgetCreateFunc)
+void Controller::registerWidgetCreator(const QString &name, std::function<AbstractWidget *()> &widgetCreateFunc)
 {
-     if (d->allWidgets.contains(name))
+    if (d->allWidgets.contains(name))
         return;
 
     WidgetInfo widgetInfo;
@@ -752,7 +752,7 @@ void Controller::showRightspace()
         connect(d->rightspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title) {
             d->mainWindow->setDockHeaderName(WN_RIGHTSPACE, title);
         });
-        connect(rightSpaceInfo.dockWidget, &QDockWidget::visibilityChanged, d->showRightspaceBtn, [=](bool visible){ d->showRightspaceBtn->setChecked(visible); });
+        connect(rightSpaceInfo.dockWidget, &QDockWidget::visibilityChanged, d->showRightspaceBtn, [=](bool visible) { d->showRightspaceBtn->setChecked(visible); });
     } else if (!rightSpaceInfo.hiddenByManual) {
         d->mainWindow->showWidget(WN_RIGHTSPACE);
     }
@@ -914,15 +914,17 @@ void Controller::initMainWindow()
 
         loading();
 
-        auto desktop = QApplication::desktop();
-        int currentScreenIndex = desktop->screenNumber(d->mainWindow);
-        QList<QScreen *> screenList = QGuiApplication::screens();
+        if (!d->mainWindow->isMaximized()) {
+            auto desktop = QApplication::desktop();
+            int currentScreenIndex = desktop->screenNumber(d->mainWindow);
+            QList<QScreen *> screenList = QGuiApplication::screens();
 
-        if (currentScreenIndex < screenList.count()) {
-            QRect screenRect = screenList[currentScreenIndex]->geometry();
-            int screenWidth = screenRect.width();
-            int screenHeight = screenRect.height();
-            d->mainWindow->move((screenWidth - d->mainWindow->width()) / 2, (screenHeight - d->mainWindow->height()) / 2);
+            if (currentScreenIndex < screenList.count()) {
+                QRect screenRect = screenList[currentScreenIndex]->geometry();
+                int screenWidth = screenRect.width();
+                int screenHeight = screenRect.height();
+                d->mainWindow->move((screenWidth - d->mainWindow->width()) / 2, (screenHeight - d->mainWindow->height()) / 2);
+            }
         }
 
         connect(d->mainWindow, &MainWindow::dockHidden, this, [=](const QString &dockName) {
