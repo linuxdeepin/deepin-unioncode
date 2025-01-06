@@ -46,7 +46,8 @@ Copilot::Copilot(QObject *parent)
     connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
         switch (responseType) {
         case CopilotApi::multilingual_code_comment:
-            replaceSelectedText(response);
+            if (!response.isEmpty())
+                replaceSelectedText(response);
             break;
         case CopilotApi::inline_completions:
             if (!responseValid(response))
