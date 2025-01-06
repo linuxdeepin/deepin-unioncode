@@ -154,7 +154,7 @@ void InterpreterWidget::setupUi()
     d->interpreterComboBox = new DComboBox();
     d->interpreterComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     QObject::connect(d->interpreterComboBox, &DComboBox::currentTextChanged,
-                     this, &InterpreterWidget::setPackageData);
+                     this, &InterpreterWidget::updatePackageData);
 
     d->selectCustomInterpreter = new DPushButton(tr("Browse"), this);
     d->removeCustomInterpreter = new DPushButton(tr("Remove"), this);
@@ -253,12 +253,11 @@ void InterpreterWidget::updateUi()
     }
 }
 
-void InterpreterWidget::setPackageData(const QString &text)
+void InterpreterWidget::updatePackageData()
 {
-    QString cmd = "pip list";
-    if (text.indexOf("python3") > -1) {
-        cmd = "pip3 list";
-    }
+    auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
+    QString cmd = param.path + " -m pip list";
+    
     QtConcurrent::run(this, &InterpreterWidget::findPackages, cmd);
 }
 

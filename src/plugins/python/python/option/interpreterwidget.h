@@ -68,7 +68,7 @@ private:
     bool getControlValue(QMap<QString, QVariant> &map);
     void setControlValue(const QMap<QString, QVariant> &map);
 
-    void setPackageData(const QString &text);
+    void updatePackageData();
     void findPackages(const QString &cmd);
 
     InterpreterWidgetPrivate *const d;
