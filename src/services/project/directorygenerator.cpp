@@ -9,13 +9,32 @@
 #include <QtConcurrent>
 
 using namespace dpfservice;
+
+struct GeneratorInfo
+{
+    DirectoryAsynParse *parser { nullptr };
+    dpfservice::ProjectInfo projectInfo;
+    QStandardItem *item { nullptr };
+};
+
 class DirectoryGeneratorPrivate
 {
-    friend class dpfservice::DirectoryGenerator;
-    QStandardItem *configureRootItem { nullptr };
-    QHash<QStandardItem *, DirectoryAsynParse *> projectParses {};
+public:
+    GeneratorInfo findGeneratorInfo(DirectoryAsynParse *parser);
+
+    QHash<QStandardItem *, GeneratorInfo> projectParses {};
     dpfservice::ProjectInfo prjInfo;
 };
+
+GeneratorInfo DirectoryGeneratorPrivate::findGeneratorInfo(DirectoryAsynParse *parser)
+{
+    auto iter = std::find_if(projectParses.cbegin(), projectParses.cend(),
+                             [parser](const GeneratorInfo &info) {
+                                 return info.parser == parser;
+                             });
+
+    return iter == projectParses.cend() ? GeneratorInfo() : *iter;
+}
 
 DirectoryGenerator::DirectoryGenerator()
     : d(new DirectoryGeneratorPrivate())
@@ -24,9 +43,9 @@ DirectoryGenerator::DirectoryGenerator()
 
 DirectoryGenerator::~DirectoryGenerator()
 {
-    for (auto parser : d->projectParses.values())
-        if (parser)
-            delete parser;
+    for (auto info : d->projectParses.values())
+        if (info.parser)
+            delete info.parser;
 
     if (d)
         delete d;
@@ -68,18 +87,20 @@ QStandardItem *DirectoryGenerator::createRootItem(const dpfservice::ProjectInfo 
     using namespace dpfservice;
 
     QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
-    d->configureRootItem = rootItem;
-    auto parser = new DirectoryAsynParse();
-    d->projectParses[rootItem] = parser;
-    QObject::connect(d->projectParses[rootItem],
+    GeneratorInfo ginfo;
+    ginfo.parser = new DirectoryAsynParse();
+    ginfo.projectInfo = info;
+    ginfo.item = rootItem;
+    d->projectParses.insert(rootItem, ginfo);
+    QObject::connect(ginfo.parser,
                      &DirectoryAsynParse::itemsCreated,
                      this, &DirectoryGenerator::projectItemsCreated,
                      Qt::UniqueConnection);
-    QObject::connect(d->projectParses[rootItem],
+    QObject::connect(ginfo.parser,
                      &DirectoryAsynParse::reqUpdateItem,
                      this, &DirectoryGenerator::handleItemUpdated,
                      Qt::UniqueConnection);
-    QtConcurrent::run(parser, &DirectoryAsynParse::parseProject, info);
+    QtConcurrent::run(ginfo.parser, &DirectoryAsynParse::parseProject, info);
 
     return rootItem;
 }
@@ -88,7 +109,7 @@ void DirectoryGenerator::removeRootItem(QStandardItem *root)
 {
     if (!root)
         return;
-    auto parser = d->projectParses[root];
+    auto info = d->projectParses[root];
 
     while (root->hasChildren()) {
         root->takeRow(0);
@@ -97,41 +118,48 @@ void DirectoryGenerator::removeRootItem(QStandardItem *root)
 
     delete root;
 
-    if (parser)
-        delete parser;
+    if (info.parser)
+        delete info.parser;
 }
 
 void DirectoryGenerator::projectItemsCreated(QList<QStandardItem *> itemList)
 {
-    auto sourceFiles = d->projectParses[d->configureRootItem]->getFilelist();
-    ProjectInfo tempInfo = prjInfo;
+    auto parser = qobject_cast<DirectoryAsynParse *>(sender());
+    auto info = d->findGeneratorInfo(parser);
+    if (!info.item)
+        return;
+
+    auto sourceFiles = parser->getFilelist();
+    ProjectInfo tempInfo = info.projectInfo;
     tempInfo.setSourceFiles(sourceFiles);
-    ProjectInfo::set(d->configureRootItem, tempInfo);
+    ProjectInfo::set(info.item, tempInfo);
     project.activeProject(tempInfo.kitName(), tempInfo.language(), tempInfo.workspaceFolder());
 
-    auto rootItem = d->projectParses.key(qobject_cast<DirectoryAsynParse *>(sender()));
-    if (rootItem) {
-        while (rootItem->hasChildren()) {
-            rootItem->removeRow(0);
+    if (info.item) {
+        while (info.item->hasChildren()) {
+            info.item->removeRow(0);
         }
-        rootItem->appendRows(itemList);
+        info.item->appendRows(itemList);
     }
 
-    rootItem->setData(Project::Done, Project::ParsingStateRole);
+    info.item->setData(Project::Done, Project::ParsingStateRole);
 }
 
 void DirectoryGenerator::handleItemUpdated(const QString &path)
 {
+    auto parser = qobject_cast<DirectoryAsynParse *>(sender());
+    auto info = d->findGeneratorInfo(parser);
+    if (!info.item)
+        return;
+
     ProjectService *prjSrv = dpfGetService(ProjectService);
     Q_ASSERT(prjSrv);
 
-    auto parser = qobject_cast<DirectoryAsynParse *>(sender());
-    auto rootItem = d->projectParses.key(parser);
-    auto item = parser->findItem(path, rootItem);
+    auto item = parser->findItem(path, info.item);
     if (!item)
-        item = rootItem;
+        item = info.item;
     parser->updateItem(item);
-    if (auto model = rootItem->model())
+    if (auto model = info.item->model())
         Q_EMIT model->layoutChanged();
     prjSrv->restoreExpandState(item);
 }
