@@ -88,6 +88,7 @@ public:
     WindowService *winSrv { nullptr };
     MainController *controller { nullptr };
     QTimer startTimer;
+    bool isReplaceAll { false };
 };
 
 AdvancedSearchWidgetPrivate::AdvancedSearchWidgetPrivate(AdvancedSearchWidget *qq)
@@ -179,7 +180,7 @@ DToolButton *AdvancedSearchWidgetPrivate::registerOperator(const QIcon &icon, co
     btn->setIconSize({ 16, 16 });
     btn->setToolTip(description);
     connect(btn, &DToolButton::clicked, this, handler);
-    
+
     winSrv->registerWidgetToDockHeader(MWNA_ADVANCEDSEARCH, btn);
     return btn;
 }
@@ -461,19 +462,35 @@ void AdvancedSearchWidgetPrivate::handleReplaceAll()
     }
     // 0: cancel 1:contionue
     int code = showMessage(msg);
-    if (1 == code)
+    if (1 == code) {
+        isReplaceAll = true;
         replace(resultMap);
+    }
 }
 
 void AdvancedSearchWidgetPrivate::handleReplaceFinished()
 {
     searchSpinner->setVisible(false);
     searchSpinner->stop();
+    if (isReplaceAll) {
+        isReplaceAll = false;
+        const auto &results = resultWidget->allResult();
+        const auto &items = results.values();
+        const int resultCount = std::accumulate(items.cbegin(), items.cend(), 0,
+                                                [](int sum, const FindItemList &list) {
+                                                    return sum + list.size();
+                                                });
+        QString msg = AdvancedSearchWidget::tr("Replaced %1 occurrences across %2 files with \"%3\"");
+        resultWidget->clear();
+        resultWidget->showMessage(msg.arg(QString::number(results.count()),
+                                          QString::number(resultCount),
+                                          replaceEdit->text()));
+    }
 }
 
 AdvancedSearchWidget::AdvancedSearchWidget(QWidget *parent)
     : QWidget(parent),
-    d(new AdvancedSearchWidgetPrivate(this))
+      d(new AdvancedSearchWidgetPrivate(this))
 {
     d->initUI();
     d->initConnection();
