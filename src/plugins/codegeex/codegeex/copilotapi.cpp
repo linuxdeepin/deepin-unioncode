@@ -86,6 +86,17 @@ void CopilotApi::postCommit(const QString &url,
     processResponse(reply);
 }
 
+void CopilotApi::postReview(const QString &url,
+                            const QString &code,
+                            const QString &locale)
+{
+    QByteArray body = assembleReviewBody(code, locale);
+    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
+    reply->setProperty("responseType", CopilotApi::receiving_by_stream);
+
+    processResponse(reply);
+}
+
 void CopilotApi::postCommand(const QString &url,
                              const QString &code,
                              const QString &locale,
@@ -219,6 +230,21 @@ QByteArray CopilotApi::assembleCommitBody(const CommitMessage &message, const QS
     commitObj.insert("commit_type", message.commit_type);
 
     json.insert("commit_message", commitObj);
+
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
+
+QByteArray CopilotApi::assembleReviewBody(const QString &code, const QString &locale)
+{
+    QJsonObject json;
+    json.insert("ide", qApp->applicationName());
+    json.insert("ide_version", version());
+    json.insert("prompt", "你是一位智能编程助手，你叫CodeGeeX。你会为用户回答关于编程、代码、计算机方面的任何问题，并提供格式规范、可以执行、准确安全的代码，并在必要时提供详细的解释。\n任务：你现在开始扮演一个高级专家工程师，专注于代码审查和软件安全。请根据用户的代码，给出不少于3条全局性的建议。");
+    json.insert("code", code);
+    json.insert("talkId", CodeGeeXManager::instance()->getTalkId());
+    json.insert("locale", locale);
+    json.insert("model", chatModel);
 
     QJsonDocument doc(json);
     return doc.toJson();

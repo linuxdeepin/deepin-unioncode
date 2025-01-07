@@ -171,6 +171,10 @@ public:
                      const QString &code,
                      const QString &locale);
 
+    void postReview(const QString &url,
+                     const QString &code,
+                     const QString &locale);
+
     void postInlineChat(const QString &url,
                         const QString &prompt,
                         const InlineChatInfo &info,
@@ -217,6 +221,9 @@ private:
                                      const QString &locale);
 
     QByteArray assembleCommitBody(const CommitMessage &message,
+                                  const QString &locale);
+
+    QByteArray assembleReviewBody(const QString &code,
                                   const QString &locale);
 
     QByteArray assembleCommandBody(const QString &code,
