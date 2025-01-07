@@ -20,7 +20,6 @@ static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/v3/comp
 static const char *lineChatTip = "LineChatTip";
 static const char *commandFixBug = "fixbug";
 static const char *commandExplain = "explain";
-static const char *commandReview = "code_check";
 static const char *commandTests = "tests";
 
 using namespace CodeGeeX;
@@ -261,7 +260,7 @@ void Copilot::review()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
     if (CodeGeeXManager::instance()->checkRunningState(false)) {
-        copilotApi.postCommand(url, assembleCodeByCurrentFile(selectedText()), locale, commandReview);
+        copilotApi.postReview(url, selectedText(), locale);
         emit messageSended();
     }
     switchToCodegeexPage();
