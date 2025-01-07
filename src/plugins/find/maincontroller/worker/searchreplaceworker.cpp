@@ -43,8 +43,8 @@ void SearchReplaceWorkerPrivate::startNextJob()
     process->setProgram(job.program);
     process->setArguments(job.arguments);
     process->start();
-    if (!job.channelData.isEmpty()) {
-        process->write(job.channelData.toUtf8());
+    if (job.channelData.has_value()) {
+        process->write(job.channelData->toUtf8());
         process->closeWriteChannel();
     }
 }
