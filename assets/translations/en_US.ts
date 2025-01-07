@@ -96,166 +96,171 @@
 <context>
     <name>AdvancedSearchWidget</name>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="151"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="152"/>
         <source>Collapse All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="154"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="155"/>
         <source>Expand All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="157"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="158"/>
         <source>Clear Search Results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="160"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="161"/>
         <source>Refresh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="163"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="164"/>
         <source>Stop Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="195"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="195"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="196"/>
         <source>Match Case</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="196"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="197"/>
         <source>Match Whole Word</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="197"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="198"/>
         <source>Use Regular Expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="200"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="201"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="201"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="202"/>
         <source>Replace All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
         <source>All Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="217"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="218"/>
         <source>Current Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="218"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="219"/>
         <source>Current File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="219"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="220"/>
         <source>Toggle Search Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="230"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="231"/>
         <source>Scope:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="244"/>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="247"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="245"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="248"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="249"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="250"/>
         <source>Files To Include:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="251"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="252"/>
         <source>Files To Exclude:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="332"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="333"/>
         <source>All projects path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="338"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="339"/>
         <source>Current projects path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="344"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="345"/>
         <source>No files are currently open, please open!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="359"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="360"/>
         <source>Advance Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="362"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="363"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="363"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="364"/>
         <source>Continue</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="436"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="437"/>
         <source>No results found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="451"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="452"/>
         <source>Replace 1 occurence across 1 file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="452"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="453"/>
         <source>Replace 1 occurence across 1 file with %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="455"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="456"/>
         <source>Replace %1 occurences across 1 file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="456"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="457"/>
         <source>Replace %1 occurences across 1 file with %2?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="459"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="460"/>
         <source>Replace %1 occurences across %2 files?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="460"/>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="461"/>
         <source>Replace %1 occurences across %2 files with %3?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="483"/>
+        <source>Replaced %1 occurrences across %2 files with &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -365,17 +370,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../src/app/main.cpp" line="113"/>
+        <location filename="../../src/app/main.cpp" line="117"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="116"/>
+        <location filename="../../src/app/main.cpp" line="120"/>
         <source>deepin-unioncode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="119"/>
+        <location filename="../../src/app/main.cpp" line="123"/>
         <source>Deepin Union Code is a lightweight integrated development environment,                                            featured with multilingual and cross platform compatibility.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1667,77 +1672,77 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="974"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="976"/>
         <source>Hide ContextWidget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1057"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1059"/>
         <source>Open rightspace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1100"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1102"/>
         <source>Show docks in this view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1127"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1129"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1141"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1143"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1155"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1157"/>
         <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1160"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1162"/>
         <source>&amp;Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1165"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1167"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1170"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1172"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1180"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1182"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1186"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1188"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1195"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1197"/>
         <source>Report Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1202"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1204"/>
         <source>Help Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1249"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1251"/>
         <source>Expand All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1255"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="1257"/>
         <source>Fold All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1745,7 +1750,7 @@ storage: %2
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="41"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="40"/>
         <source>Inline Chat</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3041,43 +3046,43 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InputEditWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="189"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="194"/>
         <source>reference codebase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="198"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="203"/>
         <source>reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="204"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="209"/>
         <source>connect to network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="224"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="229"/>
         <source>Current File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="227"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="232"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="230"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="235"/>
         <source>Opened Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="234"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="239"/>
         <source>CodeBase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="572"/>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="584"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="591"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="603"/>
         <source>No opened file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3849,22 +3854,22 @@ repos path: %0</source>
 <context>
     <name>ProfileSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="77"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="83"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="78"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="84"/>
         <source>Restart Required--deep-in unioncode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="79"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="85"/>
         <source>The language change will take effect after restart.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="117"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="127"/>
         <source>language:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4326,7 +4331,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="577"/>
+        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="596"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6117,84 +6122,84 @@ not exists support files: %0</source>
 <context>
     <name>SessionItemWidget</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="218"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="238"/>
         <source>Clone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="219"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="239"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="220"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="240"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="263"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="283"/>
         <source>Are you sure to remove this session?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="264"/>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="311"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="284"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="332"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="265"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="285"/>
         <source>Remove</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="273"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="293"/>
         <source>Rename</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="273"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="293"/>
         <source>Rename and Open</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="274"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="294"/>
         <source>Rename Session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="282"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="302"/>
         <source>Clone</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="282"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="302"/>
         <source>Clone and Open</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="283"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="303"/>
         <source>New Session Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="304"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="324"/>
         <source>Please input session name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="390"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="411"/>
         <source>%1 (last session)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="392"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="413"/>
         <source>%1 (current session)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6274,12 +6279,12 @@ not exists support files: %0</source>
 <context>
     <name>SessionModel</name>
     <message>
-        <location filename="../../src/plugins/core/session/sessionmodel.cpp" line="73"/>
+        <location filename="../../src/plugins/core/session/sessionmodel.cpp" line="74"/>
         <source>Session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/session/sessionmodel.cpp" line="73"/>
+        <location filename="../../src/plugins/core/session/sessionmodel.cpp" line="74"/>
         <source>Last Modified</source>
         <translation type="unfinished"></translation>
     </message>
