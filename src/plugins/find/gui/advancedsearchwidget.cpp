@@ -482,8 +482,8 @@ void AdvancedSearchWidgetPrivate::handleReplaceFinished()
                                                 });
         QString msg = AdvancedSearchWidget::tr("Replaced %1 occurrences across %2 files with \"%3\"");
         resultWidget->clear();
-        resultWidget->showMessage(msg.arg(QString::number(results.count()),
-                                          QString::number(resultCount),
+        resultWidget->showMessage(msg.arg(QString::number(resultCount),
+                                          QString::number(results.count()),
                                           replaceEdit->text()));
     }
 }
