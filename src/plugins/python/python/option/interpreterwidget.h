@@ -10,15 +10,21 @@
 
 #include <QAbstractTableModel>
 
-enum ColumnID
-{
+enum ColumnID {
     kPackage,
     kVersion,
     _KCount
 };
 
-struct InterpreterConfig{
+struct InterpreterConfig
+{
     ToolChainData::ToolChainParam version;
+};
+
+struct QueryInfo
+{
+    QVector<QPair<QString, QString>> packageList;
+    QString errMsg;
 };
 
 class InterpreterModelPrivate;
@@ -34,7 +40,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-    void setCustomData(QVector<QPair<QString, QString>>& data);
+    void setCustomData(const QVector<QPair<QString, QString>> &data);
 
 signals:
 
@@ -54,10 +60,6 @@ public:
     void setUserConfig(const QMap<QString, QVariant> &map) override;
     void getUserConfig(QMap<QString, QVariant> &map) override;
 
-signals:
-
-public slots:
-
 private:
     void setupUi();
     void updateUi();
@@ -69,9 +71,12 @@ private:
     void setControlValue(const QMap<QString, QVariant> &map);
 
     void updatePackageData();
-    void findPackages(const QString &cmd);
+    void queryPackages(const QString &cmd);
+    Q_INVOKABLE void applyQueryInfo(const QueryInfo &info);
 
     InterpreterWidgetPrivate *const d;
 };
 
-#endif // INTERPRETERWIDGET_H
+Q_DECLARE_METATYPE(QueryInfo)
+
+#endif   // INTERPRETERWIDGET_H
