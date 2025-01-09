@@ -51,11 +51,14 @@ public:
     void setSessionName(const QString &name);
     QString sessionName() const;
     void setActionText(const QString &actText, const QString &openActText);
+    bool isSwitchToRequested() const;
 
 private:
     void initUI();
+    void handleButtonClicked(int index);
 
     DTK_WIDGET_NAMESPACE::DLineEdit *lineEdit { nullptr };
+    bool isSwitchTo { false };
 };
 
 #endif   // SESSIONDIALOG_H

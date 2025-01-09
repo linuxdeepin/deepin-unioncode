@@ -45,7 +45,7 @@ protected:
 private:
     void reverseArrowDirection();
     void updateTitle();
-    
+
     bool isExpanded { false };
     QString titleText;
     DTK_WIDGET_NAMESPACE::DToolButton *arrowButton { nullptr };

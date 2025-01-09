@@ -195,17 +195,17 @@ QStringList SessionListView::selectedSessions() const
 void SessionListView::runInputDialog(SessionNameInputDialog *dialog,
                                      std::function<void(const QString &)> handler)
 {
-    int ret = dialog->exec();
-    if (ret < 1)
-        return;
+    if (dialog->exec() == QDialog::Accepted) {
+        const auto name = dialog->sessionName();
+        if (name.isEmpty())
+            return;
 
-    const auto name = dialog->sessionName();
-    if (name.isEmpty() || SessionManager::instance()->sessionList().contains(name))
-        return;
-
-    handler(name);
-    model.reset();
-    if (ret == 2)
-        SessionManager::instance()->loadSession(name);
-    Q_EMIT sessionCreated(name);
+        handler(name);
+        model.reset();
+        if (dialog->isSwitchToRequested()) {
+            SessionManager::instance()->loadSession(name);
+            Q_EMIT sessionSwitched();
+        }
+        Q_EMIT sessionCreated(name);
+    }
 }
