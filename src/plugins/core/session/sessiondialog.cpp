@@ -174,6 +174,7 @@ SessionNameInputDialog::SessionNameInputDialog(QWidget *parent)
     : DDialog(parent)
 {
     initUI();
+    connect(this, &SessionNameInputDialog::buttonClicked, this, &SessionNameInputDialog::handleButtonClicked);
 }
 
 void SessionNameInputDialog::initUI()
@@ -181,6 +182,8 @@ void SessionNameInputDialog::initUI()
     setSpacing(10);
     setIcon(QIcon::fromTheme("ide"));
     lineEdit = new DLineEdit(this);
+    QRegExpValidator *validator = new QRegExpValidator(QRegExp("[^/\?:\\\\*]*"), lineEdit);
+    lineEdit->lineEdit()->setValidator(validator);
     lineEdit->setPlaceholderText(tr("Please input session name"));
     connect(lineEdit, &DLineEdit::textChanged, this, [this](const QString &text) {
         getButton(1)->setEnabled(!text.isEmpty());
@@ -194,6 +197,25 @@ void SessionNameInputDialog::initUI()
     getButton(1)->setEnabled(false);
     getButton(2)->setEnabled(false);
     setFocusProxy(lineEdit);
+    setOnButtonClickedClose(false);
+}
+
+void SessionNameInputDialog::handleButtonClicked(int index)
+{
+    if (index == 0)
+        return reject();
+
+    const auto name = sessionName();
+    if (SessionManager::instance()->sessionList().contains(name)) {
+        QString msg = tr("The session already exists, please re-enter.");
+        lineEdit->showAlertMessage(msg);
+        return;
+    }
+
+    if (index == 2)
+        isSwitchTo = true;
+
+    accept();
 }
 
 void SessionNameInputDialog::setSessionName(const QString &name)
@@ -210,4 +232,9 @@ void SessionNameInputDialog::setActionText(const QString &actText, const QString
 {
     getButton(1)->setText(actText);
     getButton(2)->setText(openActText);
+}
+
+bool SessionNameInputDialog::isSwitchToRequested() const
+{
+    return isSwitchTo;
 }
