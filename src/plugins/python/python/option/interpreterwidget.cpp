@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QStackedWidget>
 
 DWIDGET_USE_NAMESPACE
 class InterpreterModelPrivate
@@ -97,7 +98,7 @@ QVariant InterpreterModel::headerData(int section, Qt::Orientation orientation, 
     }
 }
 
-void InterpreterModel::setCustomData(QVector<QPair<QString, QString>> &data)
+void InterpreterModel::setCustomData(const QVector<QPair<QString, QString>> &data)
 {
     beginResetModel();
     d->packageVector = data;
@@ -110,6 +111,8 @@ class InterpreterWidgetPrivate
 
     DComboBox *interpreterComboBox = nullptr;
     DLineEdit *pipSourceEdit = nullptr;
+    QStackedWidget *packagesWidget = nullptr;
+    DLabel *msgLabel = nullptr;
 
     //todo: modified it later: creating a generic component to manage the toolchain
     DPushButton *selectCustomInterpreter = nullptr;
@@ -164,9 +167,16 @@ void InterpreterWidget::setupUi()
     mainLayout->addWidget(d->selectCustomInterpreter, 0, 2);
     mainLayout->addWidget(d->removeCustomInterpreter, 0, 3);
 
-    auto tableframe = new DFrame(this);
-    auto tablelayout = new QVBoxLayout(tableframe);
-    tableframe->setLayout(tablelayout);
+    auto pkgInfoFrame = new DFrame(this);
+    auto pkgLayout = new QVBoxLayout(pkgInfoFrame);
+    pkgInfoFrame->setLayout(pkgLayout);
+
+    d->packagesWidget = new QStackedWidget(this);
+    d->packagesWidget->setFixedHeight(180);
+    d->msgLabel = new DLabel(this);
+    d->msgLabel->setAlignment(Qt::AlignCenter);
+    d->msgLabel->setWordWrap(true);
+    d->msgLabel->setForegroundRole(DPalette::TextWarning);
 
     DTableView *tableView = new DTableView();
     tableView->setFrameShape(QFrame::NoFrame);
@@ -174,17 +184,18 @@ void InterpreterWidget::setupUi()
     tableView->setShowGrid(false);
     tableView->horizontalHeader()->setSectionResizeMode(DHeaderView::Stretch);
     tableView->verticalHeader()->hide();
-    tablelayout->addWidget(tableView);
 
     DHeaderView *headerView = tableView->horizontalHeader();
     headerView->setDefaultAlignment(Qt::AlignLeft);
-
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-
     d->model = new InterpreterModel();
     tableView->setModel(d->model);
-    tableView->setFixedHeight(180);
-    mainLayout->addWidget(tableframe, 1, 0, 1, 4);
+
+    d->packagesWidget->addWidget(tableView);
+    d->packagesWidget->addWidget(d->msgLabel);
+    pkgLayout->addWidget(d->packagesWidget);
+
+    mainLayout->addWidget(pkgInfoFrame, 1, 0, 1, 4);
 
     d->pipSourceEdit = new DLineEdit(this);
     mainLayout->addWidget(new DLabel(tr("PIP Source:"), this), 2, 0);
@@ -257,19 +268,18 @@ void InterpreterWidget::updatePackageData()
 {
     auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
     QString cmd = param.path + " -m pip list";
-    
-    QtConcurrent::run(this, &InterpreterWidget::findPackages, cmd);
+
+    QtConcurrent::run(this, &InterpreterWidget::queryPackages, cmd);
 }
 
-void InterpreterWidget::findPackages(const QString &cmd)
+void InterpreterWidget::queryPackages(const QString &cmd)
 {
     QProcess process;
     connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             &process, [&](int exitcode, QProcess::ExitStatus exitStatus) {
+                QueryInfo info;
                 if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
                     QString output = QString(process.readAllStandardOutput());
-
-                    QVector<QPair<QString, QString>> dataVector;
                     QStringList list = output.split("\n");
                     foreach (QString value, list) {
                         value = value.trimmed();
@@ -280,18 +290,32 @@ void InterpreterWidget::findPackages(const QString &cmd)
                                 || sublist.at(0).indexOf("----") > -1) {
                                 continue;
                             }
-                            dataVector.append(QPair<QString, QString>(sublist.at(0).trimmed(), sublist.at(1).trimmed()));
+                            info.packageList.append(QPair<QString, QString>(sublist.at(0).trimmed(), sublist.at(1).trimmed()));
                         }
                     }
-                    QMutexLocker lk(&d->mutex);
-                    d->model->setCustomData(dataVector);
                 } else {
-                    qInfo() << "Error" << exitcode << exitStatus;
+                    info.errMsg = process.readAllStandardError();
                 }
+                metaObject()->invokeMethod(this,
+                                           "applyQueryInfo",
+                                           Qt::QueuedConnection,
+                                           Q_ARG(QueryInfo, info));
             });
 
     process.start(cmd);
     process.waitForFinished();
+}
+
+void InterpreterWidget::applyQueryInfo(const QueryInfo &info)
+{
+    if (info.errMsg.isEmpty()) {
+        d->packagesWidget->setCurrentIndex(0);
+        QMutexLocker lk(&d->mutex);
+        d->model->setCustomData(info.packageList);
+    } else {
+        d->packagesWidget->setCurrentIndex(1);
+        d->msgLabel->setText(info.errMsg);
+    }
 }
 
 bool InterpreterWidget::getControlValue(QMap<QString, QVariant> &map)
