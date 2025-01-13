@@ -140,8 +140,8 @@ void LanguageClientHandlerPrivate::initIndicStyle()
     editor->indicatorDefine(TextEditor::DotsIndicator, TextEditor::INDIC_DOTS);
     editor->indicatorDefine(TextEditor::SquiggleLowIndicator, TextEditor::INDIC_SQUIGGLELOW);
     editor->indicatorDefine(TextEditor::DotBoxIndicator, TextEditor::INDIC_DOTBOX);
-    editor->indicatorDefine(TextEditor::GradientIndicator, TextEditor::INDIC_GRADIENT);
-    editor->indicatorDefine(TextEditor::GradientIndicator, TextEditor::INDIC_GRADIENTCENTRE);
+    // editor->indicatorDefine(TextEditor::GradientIndicator, TextEditor::INDIC_GRADIENT);
+    // editor->indicatorDefine(TextEditor::GradientIndicator, TextEditor::INDIC_GRADIENTCENTRE);
     editor->indicatorDefine(TextEditor::SquigglePixmapIndicator, TextEditor::INDIC_SQUIGGLEPIXMAP);
     editor->indicatorDefine(TextEditor::ThickCompositionIndicator, TextEditor::INDIC_COMPOSITIONTHICK);
     editor->indicatorDefine(TextEditor::ThinCompositionIndicator, TextEditor::INDIC_COMPOSITIONTHIN);
@@ -469,7 +469,7 @@ void LanguageClientHandlerPrivate::handleHoverEnd(int position)
 
 void LanguageClientHandlerPrivate::handleFollowTypeStart(int position)
 {
-    if (!editor || !documentIsOpened() || editor->wordAtPosition(position).isEmpty()) {
+    if (!editor || !documentIsOpened() || editor->wordAtPoint(editor->pointFromPosition(position)).isEmpty()) {
         handleFollowTypeEnd();
         return;
     }
@@ -805,7 +805,7 @@ void LanguageClientHandler::renameActionTriggered()
         return;
 
     int pos = d->editor->cursorPosition();
-    const auto &symbol = d->editor->wordAtPosition(pos);
+    const auto &symbol = d->editor->wordAtPoint(d->editor->pointFromPosition(pos));
     if (symbol.isEmpty())
         return;
 

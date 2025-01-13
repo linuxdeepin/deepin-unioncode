@@ -501,7 +501,7 @@ void TextEditor::addEOLAnnotation(const QString &title, const QString &content, 
 {
     d->eOLAnnotationRecords.insertMulti(title, line);
     auto style = d->createAnnotationStyle(type);
-    eOLAnnotate(line, content, style);
+    // eOLAnnotate(line, content, style);
 }
 
 void TextEditor::removeEOLAnnotation(const QString &title)
@@ -512,8 +512,8 @@ void TextEditor::removeEOLAnnotation(const QString &title)
     auto lineList = d->eOLAnnotationRecords.values(title);
     d->eOLAnnotationRecords.remove(title);
 
-    for (int line : lineList)
-        clearEOLAnnotations(line);
+    // for (int line : lineList)
+    //     clearEOLAnnotations(line);
 }
 
 void TextEditor::commentOperation()
@@ -990,8 +990,8 @@ bool TextEditor::event(QEvent *event)
 
 void TextEditor::contextMenuEvent(QContextMenuEvent *event)
 {
-    if (!contextMenuNeeded(event->pos().x(), event->pos().y()))
-        return;
+    // if (!contextMenuNeeded(event->pos().x(), event->pos().y()))
+    //     return;
 
     d->tipsDisplayable = false;
     int xPos = event->pos().x();

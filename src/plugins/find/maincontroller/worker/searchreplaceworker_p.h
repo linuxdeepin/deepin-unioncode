@@ -8,6 +8,7 @@
 #include "searchreplaceworker.h"
 
 #include "services/editor/editorservice.h"
+#include <optional>
 
 class SearchReplaceWorkerPrivate : public QObject
 {
