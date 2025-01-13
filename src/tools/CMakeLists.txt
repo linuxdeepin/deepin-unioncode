@@ -1,6 +1,6 @@
 add_subdirectory(debugadapter)
 add_subdirectory(languageadapter)
-add_subdirectory(performancedapter)
+#add_subdirectory(performancedapter)
 
 if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64"
         OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
