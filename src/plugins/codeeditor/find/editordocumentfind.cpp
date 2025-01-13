@@ -32,7 +32,7 @@ public:
     bool findStep(const QString &text, bool isForward);
     void doReplaceAll(TextEditor *editor, const QString &findText,
                       const QString &replaceText, bool caseSensitive = false, bool wholeWords = false);
-    int buildSearchFlags(bool re, bool cs, bool wo, bool wrap, bool forward, FindNextType findNextType, bool posix, bool cxx11);
+    // int buildSearchFlags(bool re, bool cs, bool wo, bool wrap, bool forward, FindNextType findNextType, bool posix, bool cxx11);
 
 public:
     EditorDocumentFind *q;
@@ -67,17 +67,17 @@ QWidget *EditorDocumentFindPrivate::autoAdjustCurrentEditor()
 
 void EditorDocumentFindPrivate::adjustFindStartPosition(TextEditor *editor)
 {
-    int pos = editor->cursorPosition();
-    FindState &state = editor->getLastFindState();
-    if (state.targend != pos)
-        state.startpos = pos;
+    // int pos = editor->cursorPosition();
+    // FindState &state = editor->getLastFindState();
+    // if (state.targend != pos)
+    //     state.startpos = pos;
 }
 
 void EditorDocumentFindPrivate::dealWithZeroFound(TextEditor *editor)
 {
-    FindState &state = editor->getLastFindState();
-    if (state.targstart == state.targend)
-        state.startpos++;
+    // FindState &state = editor->getLastFindState();
+    // if (state.targstart == state.targend)
+    //     state.startpos++;
 }
 
 bool EditorDocumentFindPrivate::findStep(const QString &text, bool isForward)
@@ -100,7 +100,7 @@ bool EditorDocumentFindPrivate::findStep(const QString &text, bool isForward)
             index -= text.length();
         }
 
-        ret = editor->findFirst(text, false, false, false, true, isForward, FINDNEXTTYPE_FINDNEXT, line, index);
+        ret = editor->findFirst(text, false, false, false, true, isForward, line, index);
         isFindFirst = !ret;
         if (ret)
             dealWithZeroFound(editor);
@@ -123,8 +123,8 @@ void EditorDocumentFindPrivate::doReplaceAll(TextEditor *editor, const QString &
     int firstDisLineNum = editor->SendScintilla(TextEditor::SCI_GETFIRSTVISIBLELINE);
     editor->beginUndoAction();
 
-    int flags = buildSearchFlags(false, caseSensitive, wholeWords, false, true, FINDNEXTTYPE_REPLACENEXT, 0, 0);
-    editor->SendScintilla(TextEditor::SCI_SETSEARCHFLAGS, flags);
+    // int flags = buildSearchFlags(false, caseSensitive, wholeWords, false, true, FINDNEXTTYPE_REPLACENEXT, 0, 0);
+    // editor->SendScintilla(TextEditor::SCI_SETSEARCHFLAGS, flags);
 
     FindReplaceInfo findReplaceInfo;
     findReplaceInfo.startRange = 0;
@@ -162,31 +162,31 @@ void EditorDocumentFindPrivate::doReplaceAll(TextEditor *editor, const QString &
     editor->setFirstVisibleLine(firstDisLineNum);
 }
 
-int EditorDocumentFindPrivate::buildSearchFlags(bool re, bool cs, bool wo, bool wrap, bool forward, FindNextType findNextType, bool posix, bool cxx11)
-{
-    int flags = 0;
+// int EditorDocumentFindPrivate::buildSearchFlags(bool re, bool cs, bool wo, bool wrap, bool forward, FindNextType findNextType, bool posix, bool cxx11)
+// {
+//     int flags = 0;
 
-    flags = (cs ? TextEditor::SCFIND_MATCHCASE : 0)
-            | (wo ? TextEditor::SCFIND_WHOLEWORD : 0)
-            | (re ? TextEditor::SCFIND_REGEXP : 0)
-            | (posix ? TextEditor::SCFIND_POSIX : 0)
-            | (cxx11 ? TextEditor::SCFIND_CXX11REGEX : 0);
+//     flags = (cs ? TextEditor::SCFIND_MATCHCASE : 0)
+//             | (wo ? TextEditor::SCFIND_WHOLEWORD : 0)
+//             | (re ? TextEditor::SCFIND_REGEXP : 0)
+//             | (posix ? TextEditor::SCFIND_POSIX : 0)
+//             | (cxx11 ? TextEditor::SCFIND_CXX11REGEX : 0);
 
-    switch (findNextType) {
-    case FINDNEXTTYPE_FINDNEXT:
-        flags |= SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_SKIPCRLFASONE;
-        break;
+//     switch (findNextType) {
+//     case FINDNEXTTYPE_FINDNEXT:
+//         flags |= SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_SKIPCRLFASONE;
+//         break;
 
-    case FINDNEXTTYPE_REPLACENEXT:
-        flags |= SCFIND_REGEXP_EMPTYMATCH_NOTAFTERMATCH | SCFIND_REGEXP_SKIPCRLFASONE;
-        break;
+//     case FINDNEXTTYPE_REPLACENEXT:
+//         flags |= SCFIND_REGEXP_EMPTYMATCH_NOTAFTERMATCH | SCFIND_REGEXP_SKIPCRLFASONE;
+//         break;
 
-    case FINDNEXTTYPE_FINDNEXTFORREPLACE:
-        flags |= SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART | SCFIND_REGEXP_SKIPCRLFASONE;
-        break;
-    }
-    return flags;
-}
+//     case FINDNEXTTYPE_FINDNEXTFORREPLACE:
+//         flags |= SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART | SCFIND_REGEXP_SKIPCRLFASONE;
+//         break;
+//     }
+//     return flags;
+// }
 
 EditorDocumentFind::EditorDocumentFind(QObject *parent)
     : AbstractDocumentFind(parent),
@@ -207,8 +207,8 @@ QString EditorDocumentFind::findString() const
         return {};
 
     QString findText = editor->selectedText();
-    if (findText.isEmpty())
-        findText = editor->wordAtPosition(editor->cursorPosition());
+    // if (findText.isEmpty())
+    //     findText = editor->wordAtPosition(editor->cursorPosition());
 
     return findText;
 }

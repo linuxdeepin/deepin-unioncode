@@ -93,7 +93,7 @@ void TextEditorPrivate::initMargins()
     setMarginVisible(LineNumberMargin, true);
 
     // folding
-    q->setFolding(TextEditor::ArrowFoldStyle, FoldingMargin);
+    q->setFolding(TextEditor::BoxedTreeFoldStyle, FoldingMargin);
 
     // Set the margin symbol
     q->setMarginType(SymbolMargin, TextEditor::SymbolMargin);
@@ -622,9 +622,9 @@ void TextEditorPrivate::updateCacheInfo(int pos, int added)
     }
 
     if (inlineCompletionCache.first != -1 && inlineCompletionCache.first >= line) {
-        const auto &eolStr = q->eolAnnotation(inlineCompletionCache.first);
-        if (eolStr.isEmpty() || !inlineCompletionCache.second.contains(eolStr))
-            inlineCompletionCache.first += added;
+        // const auto &eolStr = q->eolAnnotation(inlineCompletionCache.first);
+        // if (eolStr.isEmpty() || !inlineCompletionCache.second.contains(eolStr))
+        //     inlineCompletionCache.first += added;
     }
 
     // update eolannotation line
@@ -685,7 +685,7 @@ void TextEditorPrivate::cancelInlineCompletion()
     if (inlineCompletionCache.first == -1)
         return;
 
-    q->clearEOLAnnotations(inlineCompletionCache.first);
+    // q->clearEOLAnnotations(inlineCompletionCache.first);
     q->clearAnnotations(inlineCompletionCache.first);
     inlineCompletionCache = qMakePair(-1, QString());
 }
@@ -701,7 +701,7 @@ void TextEditorPrivate::updateInlineCompletion()
     QString part2 = completion.mid(completion.indexOf('\n') + 1);
     QsciStyle cpStyle(1, "", Qt::gray, q->lexer() ? q->lexer()->defaultPaper(-1) : q->paper(),
                       q->lexer() ? q->lexer()->defaultFont() : q->font());
-    q->eOLAnnotate(line, part1, cpStyle);
+    // q->eOLAnnotate(line, part1, cpStyle);
     if (part1 != part2) {
         if (!completionWidget->isCompletionActive()) {
             q->annotate(line, part2, cpStyle);
@@ -724,7 +724,7 @@ void TextEditorPrivate::updateInlineCompletion()
 void TextEditorPrivate::resetThemeColor()
 {
     if (q->lexer()) {
-        q->lexer()->resetStyle();
+        // q->lexer()->resetStyle();
         q->setLexer(q->lexer());
     }
 

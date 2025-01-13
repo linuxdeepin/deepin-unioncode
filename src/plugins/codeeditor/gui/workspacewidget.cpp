@@ -82,7 +82,7 @@ void WorkspaceWidgetPrivate::initActions()
     cmd->setDefaultKeySequence(Qt::CTRL | Qt::Key_Tab);
     connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 
-    QMetaEnum me = QMetaEnum::fromType<QsciCommand::Command>();
+    /*QMetaEnum me = QMetaEnum::fromType<QsciCommand::Command>();
     for (int i = 0; i < me.keyCount(); ++i) {
         QList<QKeySequence> ksList;
         QString actionText;
@@ -456,7 +456,7 @@ void WorkspaceWidgetPrivate::initActions()
                 }
             });
         }
-    }
+    }*/
 }
 
 void WorkspaceWidgetPrivate::handleSetComment()
