@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
+#include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 
 project(performance)
 
@@ -42,7 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     duc-framework
     duc-base
     duc-services
-    unioncode-jsonrpcclient
+    #unioncode-jsonrpcclient
     ${QtUseModules}
     ${PkgUserModules}
     )
