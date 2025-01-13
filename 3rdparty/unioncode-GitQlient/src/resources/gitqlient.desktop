@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=GitQlient
-Comment=A multi-platform Git client made with Qt
-Exec=gitqlient
-Icon=gitqlient
-Categories=Office;

@@ -10,7 +10,7 @@ add_subdirectory(recent)
 add_subdirectory(debugger)
 add_subdirectory(codeeditor)
 add_subdirectory(filebrowser)
-add_subdirectory(collaborators)
+#add_subdirectory(collaborators)
 add_subdirectory(console)
 add_subdirectory(builder)
 #remove it until system lock issue resolved.
