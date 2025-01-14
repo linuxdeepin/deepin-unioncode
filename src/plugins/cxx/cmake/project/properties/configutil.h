@@ -161,6 +161,11 @@ struct TargetRunConfigure
         obj.insert(kEnvironmentItem, env.toJson());
         return obj;
     }
+
+    bool operator == (const TargetRunConfigure &t) const
+    {
+        return this->targetName == t.targetName;
+    }
 };
 
 struct RunConfigure
