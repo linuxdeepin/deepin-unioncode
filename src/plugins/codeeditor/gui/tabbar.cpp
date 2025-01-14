@@ -19,7 +19,6 @@
 #include <QGuiApplication>
 
 DWIDGET_USE_NAMESPACE
-DGUI_USE_NAMESPACE
 
 TabBarPrivate::TabBarPrivate(TabBar *qq)
     : QObject(qq),

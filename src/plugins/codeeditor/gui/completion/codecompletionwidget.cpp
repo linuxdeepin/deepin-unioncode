@@ -129,7 +129,7 @@ bool CodeCompletionWidget::hasAtLeastNRows(int rows)
 
 QString CodeCompletionWidget::filterString()
 {
-    const auto &word = editor()->wordAtPoint(editor()->pointFromPosition(editor()->cursorPosition()));
+    const auto &word = editor()->wordAtPosition(editor()->cursorPosition());
     if (word.isEmpty())
         return {};
 
@@ -480,7 +480,7 @@ void CodeCompletionWidget::automaticInvocation()
         return;
     }
 
-    const auto &word = editor()->wordAtPoint(editor()->pointFromPosition(editor()->cursorPosition()));
+    const auto &word = editor()->wordAtPosition(editor()->cursorPosition());
     if (!completionView->isVisible() || completionModel->rowCount() == 0 || word.isEmpty()) {
         startCompletion();
     } else if (!word.isEmpty()) {

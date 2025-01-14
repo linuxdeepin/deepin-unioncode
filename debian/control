@@ -42,8 +42,7 @@ Build-Depends:
  libcmark-dev,
  libchardet-dev,
  libuchardet-dev (>= 0.0.6),
- libicu-dev,
- libqscintilla2-qt5-dev
+ libicu-dev
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
