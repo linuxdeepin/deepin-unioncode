@@ -1,3 +1,9 @@
+deepin-unioncode (1.4.1) stable; urgency=medium
+
+  * Bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Tue, 14 Jan 2025 10:26:36 +0800
+
 deepin-unioncode (1.4.0) unstable; urgency=medium
 
   * Add session manager
