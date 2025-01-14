@@ -274,6 +274,8 @@ void OpenAiCompatibleLLM::request(const QJsonObject &data)
     connect(reply, &QNetworkReply::finished, this, [=](){
         if (!d->httpResult.isEmpty())
             d->currentConversation->update(d->httpResult);
+        if (reply->error())
+            d->currentConversation->popUserData();
         d->handleReplyFinished(reply);
     });
 
@@ -308,6 +310,7 @@ void OpenAiCompatibleLLM::generate(const QString &prefix, const QString &suffix)
     dataObject.insert("suffix", suffix);
     dataObject.insert("prompt", prefix);
     dataObject.insert("temperature", 0.01);
+    dataObject.insert("stop", "\n\n");
     dataObject.insert("stream", d->stream);
     if (d->maxTokens != 0)
         dataObject.insert("max_tokens", d->maxTokens);

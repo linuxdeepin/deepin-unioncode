@@ -220,7 +220,7 @@ void MessageComponent::initConnect()
                     showChunksReferences();
                 finished = true;
             });
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this,
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestStop, this,
             [=]() {
                 finished = true;
             });

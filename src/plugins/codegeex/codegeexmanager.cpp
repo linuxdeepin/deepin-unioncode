@@ -253,7 +253,8 @@ void CodeGeeXManager::requestAsync(const QString &prompt)
         QJsonObject obj = chatLLM->create(*c);
         if (isConnectToNetWork())
             obj.insert("command", "online_search_v1"); // only worked on CodeGeeX llm
-        emit sendSyncRequest(obj);
+        if (isRunning) // incase stop generate before prompt preprocessed
+            emit sendSyncRequest(obj);
     });
 }
 
@@ -319,7 +320,6 @@ void CodeGeeXManager::onLLMChanged(const LLMInfo &llmInfo)
 {
     if (chatLLM) {
         if (chatLLM->modelState() == AbstractLLM::Busy) {
-            emit terminated();
             stopReceiving();
             chatLLM->cancel();
         }
@@ -405,6 +405,7 @@ void CodeGeeXManager::initLLM(AbstractLLM *llm)
                 emit notify(2, tr("LLM is not valid. %1").arg(errStr));
             else
                 emit notify(2, tr("Error: %1, try again later").arg(data));
+            emit terminated();
             return;
         }
         onResponse(QString::number(answerFlag), data, state);

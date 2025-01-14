@@ -102,7 +102,6 @@ Q_SIGNALS:
     void requestMessageUpdate(const MessageData &msg);
     void chatStarted();
     void crawledWebsite(const QString &msgID, const QList<websiteReference> &websites);
-    void terminated();
     void chatFinished();
     void sessionRecordsUpdated();
     void setTextToSend(const QString &prompt);
@@ -113,6 +112,7 @@ Q_SIGNALS:
     void noChunksFounded();
     void quit();
     void llmChanged(const LLMInfo &info);
+    void terminated();
 
 public Q_SLOTS:
     void slotSendSyncRequest(const QJsonObject &obj);

@@ -224,9 +224,9 @@ void AskPageWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatStarted, this, &AskPageWidget::enterAnswerState);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this, &AskPageWidget::onChatFinished);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::setTextToSend, this, &AskPageWidget::setInputText);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::showCustomWidget, this, &AskPageWidget::showCustomWidget);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::terminated, this, &AskPageWidget::onStopGenerate);
 
     connect(inputEdit, &InputEditWidget::messageSended, this, &AskPageWidget::slotMessageSend);
     connect(inputEdit, &InputEditWidget::pressedEnter, this, &AskPageWidget::slotMessageSend);
@@ -238,16 +238,7 @@ void AskPageWidget::initConnection()
     connect(inputEdit->edit(), &DTextEdit::textChanged, this, [this]() {
         inputWidget->setFixedHeight(inputEdit->height() + inputExtraHeight);
     });
-    connect(stopGenerate, &DPushButton::clicked, this, [this]() {
-        CodeGeeXManager::instance()->stopReceiving();
-        Q_EMIT CodeGeeXManager::instance()->terminated();
-        if (!msgComponents.values().contains(waitComponets)) {
-            QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
-            msgComponents.insert(stopId, waitComponets);
-        }
-        waitComponets->stopWaiting();
-        waitingAnswer = false;
-    });
+    connect(stopGenerate, &DPushButton::clicked, this, &AskPageWidget::onStopGenerate);
     connect(scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged, this, [=]() {
         if (scrollArea->verticalScrollBar()->isVisible()) {
             int maxValue = scrollArea->verticalScrollBar()->maximum();
@@ -360,6 +351,18 @@ void AskPageWidget::updateModelCb()
         CodeGeeXManager::instance()->onLLMChanged(LLMInfo::fromVariantMap(modelCb->currentData().toMap()));
 }
 
+void AskPageWidget::onStopGenerate()
+{
+    CodeGeeXManager::instance()->stopReceiving();
+    if (!msgComponents.values().contains(waitComponets)) {
+        QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
+        msgComponents.insert(stopId, waitComponets);
+    }
+    waitComponets->stopWaiting();
+    waitingAnswer = false;
+    enterInputState();
+}
+
 void AskPageWidget::askQuestion(const QString &question)
 {
     CodeGeeXManager::instance()->sendMessage(question);
@@ -372,7 +375,7 @@ void AskPageWidget::resetBtns()
 
     deleteBtn->setEnabled(!isIntroPageState());
     createNewBtn->setVisible(!isIntroPageState());
-    historyBtn->setVisible(true);
+//    historyBtn->setVisible(true);
 }
 
 void AskPageWidget::setInputText(const QString &prompt)
