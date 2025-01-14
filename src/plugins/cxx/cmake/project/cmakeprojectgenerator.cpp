@@ -599,11 +599,19 @@ void CmakeProjectGenerator::initCMakeParser()
 
 void CmakeProjectGenerator::createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure)
 {
-    if (!runConfigure.targetsRunConfigure.isEmpty())
-        return;
-
     QStringList exeTargetList = TargetsManager::instance()->getExeTargetNamesList();
+
+    QStringList targetsDontUpdate; // targets is already in config and don`t update
+    foreach (auto targetInConfig, runConfigure.targetsRunConfigure) {
+        if (!exeTargetList.contains(targetInConfig.targetName))
+            runConfigure.targetsRunConfigure.removeOne(targetInConfig);
+        else
+            targetsDontUpdate.append(targetInConfig.targetName);
+    }
+
     foreach (auto targetName, exeTargetList) {
+        if (targetsDontUpdate.contains(targetName))
+            continue;
         dpfservice::Target target = TargetsManager::instance()->getTargetByName(targetName);
 
         TargetRunConfigure targetRunConfigure;
