@@ -51,6 +51,7 @@ public Q_SLOTS:
     void setInputText(const QString &prompt);
     void showCustomWidget(QWidget *widget);
     void updateModelCb();
+    void onStopGenerate();
 
 private:
     void initUI();

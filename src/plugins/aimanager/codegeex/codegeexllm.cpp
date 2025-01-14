@@ -492,8 +492,6 @@ void CodeGeeXLLM::request(const QString &prompt, ResponseHandler handler)
 */
 void CodeGeeXLLM::generate(const QString &prefix, const QString &suffix)
 {
-    if (d->talkId.isEmpty())
-        d->createNewSession();
     setModelState(Busy);
 
     auto file = getCurrentFileInfo();
