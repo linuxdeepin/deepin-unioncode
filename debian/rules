@@ -3,6 +3,16 @@ include /usr/share/dpkg/default.mk
 export QT_SELECT=5
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
+define detect_qt_version
+ifneq (,$(shell which qmake6 2>/dev/null))
+    QT_DIR="/usr/lib/$(DEB_HOST_MULTIARCH)/cmake/Qt6"
+else
+    QT_DIR="/usr/lib/$(DEB_HOST_MULTIARCH)/cmake/Qt5"
+endif
+endef
+
+$(eval $(call detect_qt_version))
+
 %:
 	dh $@ --parallel
 
@@ -10,6 +20,8 @@ override_dh_auto_configure:
 	dh_auto_configure -- \
 	  -DCMAKE_BUILD_TYPE=Release \
 	  -DCMAKE_INSTALL_PREFIX=/usr \
+      -DVERSION=$(PACK_VER) \
+	  -DQT_DIR=$(QT_DIR) \
       -DAPP_VERSION=$(DEB_VERSION_UPSTREAM) -DVERSION=$(DEB_VERSION_UPSTREAM) LIB_INSTALL_DIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 

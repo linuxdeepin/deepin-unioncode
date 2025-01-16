@@ -38,7 +38,7 @@ public:
     static Kit fromVariantMap(const QVariantMap &map);
 
     Kit &operator=(const Kit &other);
-    bool operator==(const Kit &other);
+    bool operator==(const Kit &other) const;
 
 private:
     KitPrivate *const d;

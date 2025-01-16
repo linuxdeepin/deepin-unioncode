@@ -186,7 +186,11 @@ void CodeEditComponent::paintEvent(QPaintEvent *event)
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(Qt::black);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     painter.setRenderHint(QPainter::HighQualityAntialiasing);
+#else
+    painter.setRenderHint(QPainter::Antialiasing);
+#endif
     painter.drawRoundedRect(bmp.rect(), 8, 8);
     setMask(bmp);
 
@@ -199,7 +203,7 @@ void CodeEditComponent::initUI()
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
     titleWidget = new DWidget(this);

@@ -152,7 +152,7 @@ QIcon EncodeComboBox::createIcon()
     }
 
     QFontMetrics metrics(font());
-    int fontWidth = metrics.width(curEncodeName) + 20;
+    int fontWidth = metrics.horizontalAdvance(curEncodeName) + 20;
     int fontHeight = metrics.size(Qt::TextSingleLine, curEncodeName).height();
     int iconW = 8;
     int iconH = 5;

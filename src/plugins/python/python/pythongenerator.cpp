@@ -87,8 +87,8 @@ QMap<QString, QVariant> PythonGenerator::getDebugArguments(const dpfservice::Pro
 static QString getEntryFilePath(const QDir &dir)
 {
     QFileInfoList entries = dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-    //Create a QRegExp object with the given regular expression
-    QRegExp regExp("if\\s*__name__\\s*==\\s*['|\"]__main__['|\"]");
+    //Create a QRegularExpression object with the given regular expression
+    QRegularExpression regExp("if\\s*__name__\\s*==\\s*['|\"]__main__['|\"]");
 
     //Loop through files
     foreach (QFileInfo entry, entries) {
@@ -105,7 +105,7 @@ static QString getEntryFilePath(const QDir &dir)
                     QString fileContent = file.readAll();
                     file.close();
                     //Check if the given regular expression matches the file content
-                    if (regExp.indexIn(fileContent) >= 0) {
+                    if (regExp.match(fileContent).hasMatch()) {
                         return entry.filePath();
                     }
                 }

@@ -89,7 +89,7 @@ QString LogUtils::localDataTimeCSV()
  */
 uint LogUtils::lastTimeStamp(const QDateTime &dateTime, uint dayCount)
 {
-    return dateTime.toTime_t() - (86400 * dayCount);
+    return dateTime.toSecsSinceEpoch() - (86400 * dayCount);
 }
 
 /**
@@ -101,7 +101,7 @@ uint LogUtils::lastTimeStamp(const QDateTime &dateTime, uint dayCount)
  */
 QDateTime LogUtils::lastDateTime(const QDateTime &dateTime, uint dayCount)
 {
-    return QDateTime::fromTime_t(lastTimeStamp(dateTime,dayCount));
+    return QDateTime::fromSecsSinceEpoch(lastTimeStamp(dateTime,dayCount));
 }
 
 /**
@@ -122,8 +122,8 @@ QDateTime LogUtils::lastDateTime(const QDateTime &dateTime, uint dayCount)
  */
 bool LogUtils::containLastDay(const QDateTime &src, const QDateTime &dst, uint dayCount)
 {
-    uint srcStamp = src.toTime_t();
-    uint dstStamp = dst.toTime_t();
+    uint srcStamp = src.toSecsSinceEpoch();
+    uint dstStamp = dst.toSecsSinceEpoch();
 
     return dstStamp - (86400 * dayCount) < srcStamp && srcStamp <= dstStamp;
 }

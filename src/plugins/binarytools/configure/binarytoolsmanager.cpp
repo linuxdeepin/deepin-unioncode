@@ -666,7 +666,11 @@ bool BinaryToolsManager::checkAndSetProcessParams(QSharedPointer<ToolProcess> pr
     process->setId(tool.id);
     process->setProgram(tool.command);
     auto args = globalMacroExpander()->expandArguments(tool.arguments);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QStringList argList = args.split(" ", Qt::SkipEmptyParts);
+ #else
     QStringList argList = args.split(" ", QString::SkipEmptyParts);
+ #endif
     process->setArguments(argList);
 
     if (!tool.workingDirectory.isEmpty()) {

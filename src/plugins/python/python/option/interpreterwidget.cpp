@@ -236,7 +236,7 @@ void InterpreterWidget::setupUi()
         int code = dialog.exec();
         if (code == 0) {
             auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
-            if (!d->customInterpreters.contains(param)) {
+            if (!d->customInterpreters.contains(std::move(const_cast<ToolChainData::ToolChainParam&&>(param)))) {
                 DDialog dialog;
                 dialog.setMessage(tr("Default Interpreter can`t be removed"));
                 dialog.setWindowTitle(tr("Warning"));
@@ -269,7 +269,9 @@ void InterpreterWidget::updatePackageData()
     auto param = qvariant_cast<ToolChainData::ToolChainParam>(d->interpreterComboBox->currentData(Qt::UserRole + 1));
     QString cmd = param.path + " -m pip list";
 
-    QtConcurrent::run(this, &InterpreterWidget::queryPackages, cmd);
+    QtConcurrent::run([this, cmd](){
+        this->queryPackages(cmd);
+    });
 }
 
 void InterpreterWidget::queryPackages(const QString &cmd)
@@ -283,7 +285,7 @@ void InterpreterWidget::queryPackages(const QString &cmd)
                     QStringList list = output.split("\n");
                     foreach (QString value, list) {
                         value = value.trimmed();
-                        value = value.replace(QRegExp("[\\s]+"), ",");
+                        value = value.replace(QRegularExpression("[\\s]+"), ",");
                         QStringList sublist = value.split(",");
                         if (sublist.count() > 1) {
                             if (sublist.at(0).indexOf("Package") > -1

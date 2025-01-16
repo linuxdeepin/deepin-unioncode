@@ -157,7 +157,7 @@ bool dpfservice::ProjectGenerator::configure(const dpfservice::ProjectInfo &proj
  */
 QStandardItem *dpfservice::ProjectGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
-    QIcon icon = CustomIcons::icon(info.workspaceFolder());
+    QIcon icon = CustomIcons::icon(QFileInfo(info.workspaceFolder()));
     QString displyName = QFileInfo(info.workspaceFolder()).fileName();
     QString tooltip = info.workspaceFolder();
     auto rootItem = new QStandardItem(icon, displyName);

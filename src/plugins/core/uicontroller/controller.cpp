@@ -35,10 +35,11 @@
 #include <QShortcut>
 #include <QDesktopServices>
 #include <QMenuBar>
-#include <QDesktopWidget>
 #include <QScreen>
 #include <QApplication>
-
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+#include <QDesktopWidget>
+#endif
 static Controller *ins { nullptr };
 
 inline const QString WN_LOADINGWIDGET = "loadingWidget";
@@ -915,18 +916,22 @@ void Controller::initMainWindow()
         loading();
 
         if (!d->mainWindow->isMaximized()) {
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
             auto desktop = QApplication::desktop();
             int currentScreenIndex = desktop->screenNumber(d->mainWindow);
             QList<QScreen *> screenList = QGuiApplication::screens();
-
             if (currentScreenIndex < screenList.count()) {
                 QRect screenRect = screenList[currentScreenIndex]->geometry();
+#else
+            QScreen *currentScreen = d->mainWindow->screen();
+            if (currentScreen) {
+                QRect screenRect = currentScreen->geometry();
+#endif
                 int screenWidth = screenRect.width();
                 int screenHeight = screenRect.height();
                 d->mainWindow->move((screenWidth - d->mainWindow->width()) / 2, (screenHeight - d->mainWindow->height()) / 2);
             }
         }
-
         connect(d->mainWindow, &MainWindow::dockHidden, this, [=](const QString &dockName) {
             if (d->allWidgets.contains(dockName)) {
                 auto &info = d->allWidgets[dockName];
@@ -1363,8 +1368,7 @@ DToolButton *Controller::createDockButton(const WidgetInfo &info)
             btn->setChecked(true);
             dockInfo.hiddenByManual = false;
         }
-    },
-            Qt::UniqueConnection);
+    });
     return btn;
 }
 

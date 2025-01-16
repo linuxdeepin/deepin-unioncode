@@ -5,7 +5,6 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 install(FILES ${CMAKE_SOURCE_DIR}/src/common/resource/icons/ide.svg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps/)
 
 configure_file(util/config.h.in config.h)
-find_package(Qt5Network)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -37,13 +36,13 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-find_package(Qt5 COMPONENTS Concurrent REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Concurrent REQUIRED)
 
 target_link_libraries(
     ${PROJECT_NAME}
     unioncode-jsonrpcclient
-    Qt5::Network
-    Qt5::Concurrent
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Concurrent
     ${DtkWidget_LIBRARIES}
     )
 

@@ -35,7 +35,11 @@ signals:
     void leave();
 
 protected:
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     void enterEvent(QEvent *event) override { emit enter(); }
+#else
+    void enterEvent(QEnterEvent *event) override { emit enter(); }
+#endif
     void leaveEvent(QEvent *event) override { emit leave(); }
 
 private:

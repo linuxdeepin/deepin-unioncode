@@ -120,7 +120,7 @@ void FileTreeView::selRemove()
         countPaths << d->model->filePath(index);
     }
     // Remove duplicates
-    countPaths = countPaths.toSet().toList();
+    countPaths.removeDuplicates();
 
     QString message = tr("Delete operation not be recoverable, delete anyway?");
 

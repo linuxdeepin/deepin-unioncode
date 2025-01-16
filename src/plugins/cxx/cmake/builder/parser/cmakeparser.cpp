@@ -42,6 +42,8 @@ void CMakeParser::stdOutput(const QString &line, OutputPane::OutputFormat format
 void CMakeParser::stdError(const QString &line)
 {
     QString trimmedLine = rightTrimmed(line);
+    QRegularExpressionMatch commonMatch = commonError.match(trimmedLine);
+    QRegularExpressionMatch nextMatch = nextSubError.match(trimmedLine);
 
     auto commonErrorMatch = commonError.match(trimmedLine);
     auto nextSubErrorMatch = nextSubError.match(trimmedLine);
@@ -61,7 +63,7 @@ void CMakeParser::stdError(const QString &line)
                               commonErrorMatch.captured(2).toInt(), TASK_CATEGORY_BUILDSYSTEM);
             lines = 1;
             return;
-        }  else if (trimmedLine.startsWith(QLatin1String("  ")) && !lastTask.isNull()) {
+        } else if (trimmedLine.startsWith(QLatin1String("  ")) && !lastTask.isNull()) {
             if (!lastTask.description.isEmpty())
                 lastTask.description.append(QLatin1Char(' '));
             lastTask.description.append(trimmedLine.trimmed());

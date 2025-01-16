@@ -130,7 +130,7 @@ struct Add : QString, std::string
 QString format(const QString &src)
 {
     QString temp = src;
-    temp.replace(QRegExp("[\\s]+"), " ");
+    temp.replace(QRegularExpression("[\\s]+"), " ");
     while (temp.startsWith(" ")) {
         temp.remove(0 , sizeof(" "));
     }
@@ -424,7 +424,7 @@ void Tools::startAll()
     for (auto ins : d->toolsIns) {
         ins->start();
         qInfo() << "start" << ins->program() << ins->arguments()
-                << "pid :" << ins->pid();
+                << "pid :" << ins->processId();
     }
 }
 

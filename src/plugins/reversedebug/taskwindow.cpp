@@ -57,7 +57,7 @@ public:
     void setup(TimelineWidget *timeline, TaskView *listview)
     {
         QVBoxLayout *layout = new QVBoxLayout(this);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         setLayout(layout);
         layout->addWidget(timeline);

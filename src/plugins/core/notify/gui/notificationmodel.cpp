@@ -76,7 +76,7 @@ QVariant NotificationModel::data(const QModelIndex &index, int role) const
                 return tr("Source: %1").arg(source);
         }
         case kEntityRole:
-            return qVariantFromValue(entity);
+            return QVariant::fromValue(entity);
         default:
             break;
         }

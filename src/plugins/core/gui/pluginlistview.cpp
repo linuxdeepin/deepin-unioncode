@@ -113,7 +113,7 @@ PluginMetaObjectPointer PluginListView::currentPlugin() const
         QString category = item->data(PluginListView::Category).toString();
         const QHash<QString, QQueue<PluginMetaObjectPointer>> &pluginCollections =
                 LifeCycle::getPluginManagerInstance()->pluginCollections();
-        auto &metaObjects = pluginCollections.value(category);
+        const auto &metaObjects = pluginCollections.value(category);
         for (auto metaObject : metaObjects) {
             if (metaObject->name() == pluginName)
                 return metaObject;

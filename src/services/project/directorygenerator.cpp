@@ -100,7 +100,7 @@ QStandardItem *DirectoryGenerator::createRootItem(const dpfservice::ProjectInfo 
                      &DirectoryAsynParse::reqUpdateItem,
                      this, &DirectoryGenerator::handleItemUpdated,
                      Qt::UniqueConnection);
-    QtConcurrent::run(ginfo.parser, &DirectoryAsynParse::parseProject, info);
+    QtConcurrent::run([ginfo, &info](){ ginfo.parser->parseProject(info); });
 
     return rootItem;
 }

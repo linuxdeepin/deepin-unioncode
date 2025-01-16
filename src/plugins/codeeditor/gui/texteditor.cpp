@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QContextMenuEvent>
+#include <QTextCodec>
 
 DWIDGET_USE_NAMESPACE
 
@@ -473,7 +474,7 @@ void TextEditor::addAnnotation(const QString &title, const QString &content, int
         break;
     }
 
-    d->annotationRecords.insertMulti(title, line);
+    d->annotationRecords.insert(title, line);
     static QString formatText("%1:\n%2:\n%3");
     auto msg = formatText.arg(title, typeStr, content);
     addAnnotation(msg, line, type);
@@ -499,7 +500,7 @@ void TextEditor::removeAnnotation(const QString &title)
 
 void TextEditor::addEOLAnnotation(const QString &title, const QString &content, int line, int type)
 {
-    d->eOLAnnotationRecords.insertMulti(title, line);
+    d->eOLAnnotationRecords.insert(title, line);
     auto style = d->createAnnotationStyle(type);
     eOLAnnotate(line, content, style);
 }
@@ -578,7 +579,7 @@ bool TextEditor::hasUncommentedLines(const int &lineFrom, const int &lineTo, con
         return true;
     }
     setSelection(lineFrom, indexFrom, lineTo, indexTo);
-    QStringList lines = selectedText().split(QRegExp("\\r\\n|\\n|\\r"));
+    QStringList lines = selectedText().split(QRegularExpression("\\r\\n|\\n|\\r"));
     for (const QString &line : lines) {
         if (line.trimmed().isEmpty())
             continue;
@@ -617,7 +618,7 @@ void TextEditor::addCommentToSelectedLines(const int &lineFrom, const int &lineT
 
 QString TextEditor::addCommentPrefix(const QString &selectedTexts, const QString &commentSymbol)
 {
-    QStringList lines = selectedTexts.split(QRegExp("\\r\\n|\\n|\\r"));
+    QStringList lines = selectedTexts.split(QRegularExpression("\\r\\n|\\n|\\r"));
     QStringList prefixedLines;
 
     for (const QString &line : lines) {
@@ -634,7 +635,7 @@ QString TextEditor::addCommentPrefix(const QString &selectedTexts, const QString
 
 QString TextEditor::delCommentPrefix(const QString &selectedTexts, const QString &commentSymbol)
 {
-    QStringList lines = selectedTexts.split(QRegExp("\\r\\n|\\n|\\r"));
+    QStringList lines = selectedTexts.split(QRegularExpression("\\r\\n|\\n|\\r"));
     QStringList prefixedLines;
     QRegularExpression regex(commentSymbol);
 
@@ -708,7 +709,7 @@ void TextEditor::replaceRange(int startPosition, int endPosition, const QString 
     SendScintilla(SCI_SETTARGETEND, endPosition);
     SendScintilla(SCI_REPLACETARGET, -1, textAsBytes(text).constData());
     if (changePos)
-        SendScintilla(SCI_GOTOPOS, startPosition + text.length());
+        SendScintilla(SCI_GOTOPOS, startPosition + int(text.length()));
 }
 
 void TextEditor::insertText(const QString &text)
@@ -716,7 +717,7 @@ void TextEditor::insertText(const QString &text)
     auto textData = text.toLocal8Bit();
 
     SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.constData());
-    SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
+    SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + int(textData.size()));
 }
 
 LanguageClientHandler *TextEditor::languageClient() const

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(optioncore)
 
-find_package(Qt5 COMPONENTS Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
 
 FILE(GLOB_RECURSE PROJECT_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
@@ -25,7 +25,7 @@ target_link_libraries(${PROJECT_NAME}
     duc-common
     ${QtUseModules}
     ${PkgUserModules}
-    Qt5::Xml
+    Qt${QT_VERSION_MAJOR}::Xml
 )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

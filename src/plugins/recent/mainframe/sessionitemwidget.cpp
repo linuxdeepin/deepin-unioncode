@@ -187,7 +187,7 @@ void SessionItemWidgetPrivate::initUI()
     contentLayout->addWidget(createContent());
 
     QVBoxLayout *loaderLayout = new QVBoxLayout(contentLoader);
-    loaderLayout->setMargin(0);
+    loaderLayout->setContentsMargins(0, 0, 0, 0);
     loaderLayout->setSpacing(0);
     loaderLayout->addWidget(boxWidget);
     loaderLayout->addStretch();
@@ -322,7 +322,7 @@ void SessionItemWidgetPrivate::runInputDialog(const QString &title, const QStrin
     dlg.setTitle(title);
     dlg.setIcon(QIcon::fromTheme("ide"));
     DLineEdit *lineEdit = new DLineEdit(&dlg);
-    QRegExpValidator *validator = new QRegExpValidator(QRegExp("[^/\?:\\\\*]*"), lineEdit);
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(QRegularExpression("[^/\?:\\\\*]*"), lineEdit);
     lineEdit->lineEdit()->setValidator(validator);
     lineEdit->setPlaceholderText(SessionItemWidget::tr("Please input session name"));
     lineEdit->setText(editText);

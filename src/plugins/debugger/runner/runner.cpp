@@ -206,7 +206,7 @@ bool Runner::execCommand(const RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(process.pid(), line, OutputPane::OutputFormat::StdOut);
+            outputMsg(process.processId(), line, OutputPane::OutputFormat::StdOut);
         }
     });
 
@@ -214,12 +214,12 @@ bool Runner::execCommand(const RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardError);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(process.pid(), line, OutputPane::OutputFormat::StdErr);
+            outputMsg(process.processId(), line, OutputPane::OutputFormat::StdErr);
         }
     });
 
     process.start(info.program, info.arguments);
-    quint64 pid = process.pid();
+    quint64 pid = process.processId();
     QMetaObject::invokeMethod(AppOutputPane::instance(), "createApplicationPane",
                               Q_ARG(const QString &, QString::number(pid)), Q_ARG(QString, info.program));
     outputMsg(pid, startMsg, OutputPane::OutputFormat::NormalMessage);

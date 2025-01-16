@@ -168,7 +168,7 @@ QStandardItem *GradleProjectGenerator::createRootItem(const dpfservice::ProjectI
     QObject::connect(d->projectParses[rootItem], &GradleAsynParse::itemsModified, this, [=](const QList<QStandardItem *> &items){
         doProjectChildsModified(items);
         auto prjService = dpfGetService(ProjectService);
-        prjService->expandItemByFile(d->toExpand.toList());
+        prjService->expandItemByFile(d->toExpand.values());
     });
     QMetaObject::invokeMethod(d->projectParses[rootItem], "parseProject",
                               Q_ARG(const dpfservice::ProjectInfo &, info));

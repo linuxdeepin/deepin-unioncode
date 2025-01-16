@@ -95,12 +95,10 @@ void LoadCoreDialog::setupUi()
     formLayout->addRow(tr("process ID："), d->pidInput);
     formLayout->addRow(tr("recent："), d->historyComboBox);
     formLayout->setSpacing(10);
-    formLayout->setMargin(0);
     formLayout->setContentsMargins(10, 0, 0, 0);
 
     centerLayout->addLayout(formLayout);
     centerLayout->addStretch();
-    centerLayout->setMargin(0);
     centerLayout->setContentsMargins(0, 0, 0, 5);
 
     connect(d->traceDir, &DLineEdit::editingFinished,

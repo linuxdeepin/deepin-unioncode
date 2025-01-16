@@ -141,8 +141,17 @@ QVariantMap parseKeyVal(const QString& str, QString::const_iterator& it, QChar t
         auto v = parseValue(str, skipspaces(++it), terminator);
 //        qInfo() << "Key => " << k;
 //        qInfo() << "Value => " << k;
-        m.insertMulti(k,v);
-        //m.insert(k, v); //insertMulti??
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+        m.insertMulti(k, v);
+#else
+        if (k == "frame") {
+            QVariantList values = m[k].toList();
+            values.prepend(v); // append stack frame from head
+            m[k] = values;
+        } else {
+            m.insert(k, v);
+        }
+#endif
         if (it >= str.cend())
             break;
         if (*it == terminator) {

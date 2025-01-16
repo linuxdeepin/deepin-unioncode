@@ -183,7 +183,9 @@ bool DependenceManager::installPackageList(const QString &plugin, const QString 
         return false;
     }
 
-    QtConcurrent::run(d, &DependenceManagerPrivate::checkInstalled, plugin, name, packageList);
+    QtConcurrent::run([this, plugin, name, packageList]() {
+        return d->checkInstalled(plugin, name, packageList);
+    });
     return true;
 }
 

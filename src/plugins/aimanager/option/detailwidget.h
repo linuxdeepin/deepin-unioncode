@@ -19,7 +19,7 @@ public:
     TwoLineDelegate(QAbstractItemView *parent = nullptr) : DStyledItemDelegate(parent) {}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override {
-        QStyleOptionViewItemV4 opt = option;
+        QStyleOptionViewItem opt = option;
         initStyleOption(&opt, index);
 
         DStyledItemDelegate::paint(painter, opt, index);

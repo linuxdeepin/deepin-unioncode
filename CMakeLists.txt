@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.18.0)
 
 project(deepin-unioncode)
 
@@ -10,6 +10,7 @@ function(print_directory arg)
 endfunction()
 
 set(VERSION $ENV{VERSION})
+
 if (NOT VERSION)
     set(VERSION "0.0.1")
 endif()
@@ -79,17 +80,30 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wl,--as-need -fPIE")
 
-find_package(Dtk COMPONENTS Widget REQUIRED)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+message("   >>> Found Qt version: ${QT_VERSION_MAJOR}")
+if (QT_VERSION_MAJOR MATCHES 6)
+    set(DTK_VERSION_MAJOR 6)
+    set(KF_VERSION_MAJOR 6)
+else()
+    set(DTK_VERSION_MAJOR "")
+    set(KF_VERSION_MAJOR 5)
+
+endif()
+message("   >>> Build with DTK: ${DTK_VERSION_MAJOR}")
+
+find_package(Dtk${DTK_VERSION_MAJOR} COMPONENTS Widget REQUIRED)
 include_directories(${PROJECT_NAME} PRIVATE ${DtkWidget_INCLUDE_DIRS})
 
 # Use Qt modules no WebEngineWidgets WebChannel
 set(QtFindModules Core Gui Widgets Concurrent Network DBus)
+
 foreach(QtModule ${QtFindModules})
-    find_package(Qt5 COMPONENTS ${QtModule} REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS ${QtModule} REQUIRED)
     # include qt module private include directors
-    include_directories(${Qt5${QtModule}_PRIVATE_INCLUDE_DIRS})
+    include_directories(${Qt${QT_VERSION_MAJOR}${QtModule}_PRIVATE_INCLUDE_DIRS})
     # can use target_link_libraries(xxx ${QtUseModules})
-    list(APPEND QtUseModules "Qt5::${QtModule}")
+    list(APPEND QtUseModules "Qt${QT_VERSION_MAJOR}::${QtModule}")
     message("QtModule found ${QtModule} OK!")
 endforeach()
 

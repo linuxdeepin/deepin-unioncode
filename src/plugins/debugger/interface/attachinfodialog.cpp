@@ -56,7 +56,11 @@ void AttachInfoDialog::initUi()
     insertContent(1, view);
 
     connect(edit, &DLineEdit::textChanged, this, [=](const QString &text){
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         proxy->setFilterRegExp(QString(".*%1.*").arg(text));
+#else
+        proxy->setFilterRegularExpression(QString(".*%1.*").arg(text));
+#endif
     });
 
     updateProcess();

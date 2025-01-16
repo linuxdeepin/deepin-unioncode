@@ -80,7 +80,7 @@ QVariant SessionModel::headerData(int section, Qt::Orientation orientation, int 
 void SessionModel::sort(int column, Qt::SortOrder order)
 {
     beginResetModel();
-    qSort(sessionList.begin(), sessionList.end(),
+    std::sort(sessionList.begin(), sessionList.end(),
           [column, order](const QString &s1, const QString &s2) {
               bool ret = false;
               if (column == 0) {

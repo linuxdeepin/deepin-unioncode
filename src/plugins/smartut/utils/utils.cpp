@@ -58,7 +58,11 @@ FolderNode *Utils::recursiveFindOrCreateFolderNode(FolderNode *folder,
             }
         }
     }
-    QStringList parts = directoryWithoutPrefix.split('/', QString::SkipEmptyParts);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QStringList parts = directoryWithoutPrefix.split('/', Qt::SkipEmptyParts);
+#else
+    QStringList parts = directoryWithoutPrefix.split('/', QString ::SkipEmptyParts);
+#endif
     if (!isRelative && !parts.isEmpty())
         parts[0].prepend('/');
 
