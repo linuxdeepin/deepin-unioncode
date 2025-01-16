@@ -5,7 +5,7 @@
 #include "abstractllm.h"
 
 AbstractLLM::AbstractLLM(QObject *parent)
- : QObject(parent)
+    : QObject(parent)
 {
     qRegisterMetaType<ResponseState>("ResponseState");
 }

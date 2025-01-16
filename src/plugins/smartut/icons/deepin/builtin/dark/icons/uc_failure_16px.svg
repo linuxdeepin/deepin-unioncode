@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / status / failure-dark</title>
+    <defs>
+        <linearGradient x1="50%" y1="9.34506346%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#F16464" offset="0%"></stop>
+            <stop stop-color="#C32424" offset="100%"></stop>
+        </linearGradient>
+        <path d="M6,0 C2.7,0 0,2.7 0,6 C0,9.3 2.7,12 6,12 C9.3,12 12,9.3 12,6 C12,2.7 9.3,0 6,0 L6,0 Z" id="path-2"></path>
+        <filter x="-4.2%" y="-4.2%" width="108.3%" height="108.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="-1" in="SourceAlpha" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="ICON-/-status-/-failure-dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="select_active-copy-24" transform="translate(2, 2)">
+            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+            <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+        </g>
+        <path d="M7.96052892,4.01668768 C8.37474248,4.01668768 8.71052892,4.35247412 8.71052892,4.76668768 L8.70954881,6.76668768 L10.7105488,6.76670757 C11.1247624,6.76670757 11.4605488,7.10249401 11.4605488,7.51670757 C11.4605488,7.93092113 11.1247624,8.26670757 10.7105488,8.26670757 L8.70954881,8.26668768 L8.71052892,10.2666877 C8.71052892,10.6809012 8.37474248,11.0166877 7.96052892,11.0166877 C7.54631536,11.0166877 7.21052892,10.6809012 7.21052892,10.2666877 L7.20954881,8.26668768 L5.21054881,8.26670757 C4.79633525,8.26670757 4.46054881,7.93092113 4.46054881,7.51670757 C4.46054881,7.10249401 4.79633525,6.76670757 5.21054881,6.76670757 L7.20954881,6.76668768 L7.21052892,4.76668768 C7.21052892,4.35247412 7.54631536,4.01668768 7.96052892,4.01668768 Z" id="形状结合" fill="#FFFFFF" transform="translate(7.9605, 7.5167) rotate(45) translate(-7.9605, -7.5167)"></path>
+    </g>
+</svg>

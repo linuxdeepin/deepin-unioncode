@@ -15,6 +15,7 @@
 #include "compileoutputpane.h"
 #include "tasks/taskmodel.h"
 #include "common/util/utils.h"
+#include "settingdialog.h"
 
 #include "services/builder/builderservice.h"
 #include "services/editor/editorservice.h"
@@ -179,12 +180,20 @@ void BuildManager::initIssueList()
     filterButton->setContentsMargins(0, 0, 0, 0);
     filterButton->setToolTip(tr("Filter"));
 
+    DToolButton *settingButton = new DToolButton(d->compileWidget);
+    settingButton->setFixedSize(26, 26);
+    settingButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    settingButton->setIcon(QIcon::fromTheme("settings"));
+    settingButton->setContentsMargins(0, 0, 0, 0);
+    settingButton->setToolTip(tr("Settings"));
+
     DFrame *issueTopWidget = new DFrame(d->compileWidget);
     DStyle::setFrameRadius(issueTopWidget, 0);
     issueTopWidget->setLineWidth(0);
     issueTopWidget->setFixedHeight(36);
     QHBoxLayout *hIssueTopLayout = new QHBoxLayout(issueTopWidget);
     hIssueTopLayout->addWidget(issusListText);
+    hIssueTopLayout->addWidget(settingButton);
     hIssueTopLayout->addWidget(filterButton);
     hIssueTopLayout->setSpacing(0);
     hIssueTopLayout->setContentsMargins(0, 0, 5, 0);
@@ -236,6 +245,7 @@ void BuildManager::initIssueList()
         QPoint menuPos = buttonPos + QPoint(0, 5);
         filterMenu->popup(menuPos);
     });
+    connect(settingButton, &DToolButton::clicked, this, &BuildManager::showSettingDialog);
 }
 
 void BuildManager::initCompileOutput()
@@ -406,6 +416,12 @@ void BuildManager::slotResetBuildUI()
     d->problemOutputPane->clearContents();
 
     uiController.switchContext(tr("&Build"));
+}
+
+void BuildManager::showSettingDialog()
+{
+    SettingDialog dlg;
+    dlg.exec();
 }
 
 void BuildManager::setActivatedProjectInfo(const QString &kitName, const QString &workingDir)

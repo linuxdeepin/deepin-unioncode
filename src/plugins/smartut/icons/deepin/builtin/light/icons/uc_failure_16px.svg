@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / status / failure-light</title>
+    <defs>
+        <linearGradient x1="50%" y1="7.36725122%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FF7A7A" offset="0%"></stop>
+            <stop stop-color="#E52626" offset="100%"></stop>
+        </linearGradient>
+        <path d="M6,0 C2.7,0 0,2.7 0,6 C0,9.3 2.7,12 6,12 C9.3,12 12,9.3 12,6 C12,2.7 9.3,0 6,0 L6,0 Z" id="path-2"></path>
+        <filter x="-4.2%" y="-4.2%" width="108.3%" height="108.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="-1" in="SourceAlpha" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.05 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="ICON-/-status-/-failure-light" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="图标/状态图标/Selected-Light" transform="translate(2, 2)">
+            <g id="select_active-copy-24">
+                <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+            </g>
+            <path d="M5.96052892,2.01668768 C6.37474248,2.01668768 6.71052892,2.35247412 6.71052892,2.76668768 L6.70954881,4.76668768 L8.71054881,4.76670757 C9.12476238,4.76670757 9.46054881,5.10249401 9.46054881,5.51670757 C9.46054881,5.93092113 9.12476238,6.26670757 8.71054881,6.26670757 L6.70954881,6.26668768 L6.71052892,8.26668768 C6.71052892,8.68090124 6.37474248,9.01668768 5.96052892,9.01668768 C5.54631536,9.01668768 5.21052892,8.68090124 5.21052892,8.26668768 L5.20954881,6.26668768 L3.21054881,6.26670757 C2.79633525,6.26670757 2.46054881,5.93092113 2.46054881,5.51670757 C2.46054881,5.10249401 2.79633525,4.76670757 3.21054881,4.76670757 L5.20954881,4.76668768 L5.21052892,2.76668768 C5.21052892,2.35247412 5.54631536,2.01668768 5.96052892,2.01668768 Z" id="形状结合" fill="#FFFFFF" transform="translate(5.9605, 5.5167) rotate(45) translate(-5.9605, -5.5167)"></path>
+        </g>
+    </g>
+</svg>

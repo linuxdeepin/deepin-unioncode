@@ -59,7 +59,7 @@ public:
     QString modelPath { "" };
     QString apiKey { "" };
     double temprature { 1.0 };
-    int maxTokens = 0; // default not set
+    int maxTokens = 0;   // default not set
     bool stream { true };
 
     QByteArray httpResult {};
@@ -70,7 +70,7 @@ public:
 };
 
 OpenAiCompatibleLLMPrivate::OpenAiCompatibleLLMPrivate(OpenAiCompatibleLLM *qq)
- : q(qq)
+    : q(qq)
 {
     manager = new QNetworkAccessManager(qq);
     currentConversation = new OpenAiCompatibleConversation();
@@ -90,7 +90,7 @@ QNetworkReply *OpenAiCompatibleLLMPrivate::postMessage(const QString &url, const
     request.setRawHeader("Authorization", "Bearer " + apiKey.toUtf8());
 
     if (QThread::currentThread() != qApp->thread()) {
-        QNetworkAccessManager* threadManager(new QNetworkAccessManager);
+        QNetworkAccessManager *threadManager(new QNetworkAccessManager);
         OpenAiCompatibleLLM::connect(QThread::currentThread(), &QThread::finished, threadManager, &QNetworkAccessManager::deleteLater);
         return threadManager->post(request, body);
     }
@@ -105,7 +105,7 @@ QNetworkReply *OpenAiCompatibleLLMPrivate::getMessage(const QString &url, const 
     request.setRawHeader("Authorization", "Bearer " + apiKey.toUtf8());
 
     if (QThread::currentThread() != qApp->thread()) {
-        QNetworkAccessManager* threadManager(new QNetworkAccessManager);
+        QNetworkAccessManager *threadManager(new QNetworkAccessManager);
         OpenAiCompatibleLLM::connect(QThread::currentThread(), &QThread::finished, threadManager, &QNetworkAccessManager::deleteLater);
         return threadManager->get(request);
     }

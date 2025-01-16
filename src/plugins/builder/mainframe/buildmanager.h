@@ -58,6 +58,7 @@ public slots:
     void slotBuildState(const BuildState &buildstate);
     void slotOutputNotify(const BuildState &state, const BuildCommandInfo &commandInfo);
     void slotResetBuildUI();
+    void showSettingDialog();
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
