@@ -53,7 +53,7 @@ QVariant LocalTreeModel::data(const QModelIndex &index, int role) const
     if (role == Qt::ToolTipRole)
         QToolTip::showText(QCursor::pos(), item->data(index.column()).toString());
 
-    if(role == Qt::TextColorRole && item->hasUpdated() == true && index.column() == 1)
+    if(role == Qt::ForegroundRole && item->hasUpdated() == true && index.column() == 1)
         return QVariant(QColor(Qt::red));
 
     if (role != Qt::DisplayRole)
@@ -161,10 +161,8 @@ void LocalTreeModel::clearHighlightItems()
 
 void LocalTreeModel::appendItem(LocalTreeItem *parent, const IVariables &vars)
 {
-    QWriteLocker locker(&mutex);
     if (!items.contains(parent) && parent != rootItem)
         return;
-    locker.unlock();
 
     if (parent) {
         QList<LocalTreeItem *> newItems;
@@ -183,9 +181,7 @@ void LocalTreeModel::appendItem(LocalTreeItem *parent, const IVariables &vars)
                 item->setVariable(var.var);
                 parent->appendChild(item);
 
-                locker.relock();
                 items.append(item);
-                locker.unlock();
 
                 endInsertRows();
             }
@@ -198,6 +194,7 @@ void LocalTreeModel::appendItem(LocalTreeItem *parent, const IVariables &vars)
 
 void LocalTreeModel::setDatas(IVariables &datas)
 {
+    QWriteLocker locker(&mutex);
     appendItem(rootItem, datas);
 }
 

@@ -18,7 +18,7 @@
 
 #include <QTime>
 #include <QLineEdit>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 
 DWIDGET_USE_NAMESPACE
 class MainWindowPrivate

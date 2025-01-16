@@ -91,7 +91,7 @@ void RunPropertyPage::updateData()
                 d->exeComboBox->insertItem(index, iterExe->targetName);
                 if (iter->runConfigure.defaultTargetName == iterExe->targetName) {
                     d->exeComboBox->setCurrentIndex(index);
-                    d->runConfigPane->setTargetRunParam(iterExe);
+                    d->runConfigPane->setTargetRunParam(&(*iterExe));
                 }
             }
             break;

@@ -34,7 +34,7 @@ public:
     {
         QString name;
         QString path;
-        bool operator ==(const ToolChainParam &param) {
+        bool operator ==(const ToolChainParam &param) const {
             return (this->name == param.name && this->path == param.path);
         }
     };

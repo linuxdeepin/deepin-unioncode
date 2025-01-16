@@ -50,7 +50,7 @@ void LocalTreeItem::setChildrenUpdated(bool updated)
 
 LocalTreeItem *LocalTreeItem::updateVariable(dap::Variable &var)
 {
-    auto it = std::find_if(children.begin(), children.end(), [&](const auto& child) {
+    auto it = std::find_if(children.begin(), children.end(), [&](const auto &child) {
         return child->itemVariable.name == var.name;
     });
 

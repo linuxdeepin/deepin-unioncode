@@ -58,7 +58,11 @@ void CodeCompletionWidget::initConnection()
 {
     connect(completionView, &CodeCompletionView::doubleClicked, this, &CodeCompletionWidget::execute);
     connect(proxyModel, &CodeCompletionModel::modelReset, this, [this] {
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         proxyModel->setFilterRegExp(filterString());
+#else
+        proxyModel->setFilterRegularExpression(filterString());
+#endif
         modelContentChanged();
     });
     connect(proxyModel, &CodeCompletionModel::layoutChanged, this, &CodeCompletionWidget::modelContentChanged);
@@ -555,7 +559,10 @@ void CodeCompletionWidget::cursorPositionChanged()
     QString filter = filterString();
     if (filter.isEmpty())
         return;
-
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     proxyModel->setFilterRegExp(filter);
+#else
+    proxyModel->setFilterRegularExpression(filter);
+#endif
     proxyModel->invalidate();
 }

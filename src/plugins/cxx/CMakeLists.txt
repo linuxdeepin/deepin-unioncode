@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(cxx)
 
-find_package(Qt5 COMPONENTS Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties")
 
@@ -40,11 +40,10 @@ target_link_libraries(${PROJECT_NAME}
     duc-base
     duc-services
     duc-common
-    Qt5::Xml
+    Qt${QT_VERSION_MAJOR}::Xml
     ${QtUseModules}
     ${PkgUserModules}
     )
 
 install_logo(${PROJECT_NAME}.svg)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
-

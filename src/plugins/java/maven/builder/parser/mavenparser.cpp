@@ -7,6 +7,8 @@
 #include "common/type/task.h"
 #include "common/util/fileutils.h"
 
+#include <QRegularExpression>
+
 const char TASK_CATEGORY_BUILDSYSTEM[] = "Task.Category.Buildsystem";
 
 MavenParser::MavenParser()
@@ -17,7 +19,7 @@ MavenParser::MavenParser()
 void MavenParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     QString newContent = line;
-    QRegExp exp("\\033\\[(\\d*;*\\d*)m");
+    QRegularExpression exp("\\033\\[(\\d*;*\\d*)m");
     newContent.replace(exp, "");
 
     if (newContent.indexOf("[ERROR]") != -1) {
@@ -33,7 +35,7 @@ void MavenParser::stdOutput(const QString &line, OutputPane::OutputFormat format
 void MavenParser::stdError(const QString &line)
 {
     QString newContent = line;
-    QRegExp exp("/.*:\\[(\\d*),(\\d*)\\]");
+    QRegularExpression exp("/.*:\\[(\\d*),(\\d*)\\]");
     int pos = newContent.indexOf(exp);
     QString filePath;
     int lineNumber = -1;
@@ -48,7 +50,7 @@ void MavenParser::stdError(const QString &line)
             }
         }
     } else {
-        QRegExp pomExp("Non-parseable POM /.*:");
+        QRegularExpression pomExp("Non-parseable POM /.*:");
         QString header = "Non-parseable POM ";
         pos = newContent.indexOf(pomExp);
         if (pos != -1) {

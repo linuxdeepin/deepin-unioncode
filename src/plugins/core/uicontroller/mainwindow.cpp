@@ -87,7 +87,7 @@ MainWindow::~MainWindow()
 DDockWidget *MainWindow::createDockWidget(DWidget *widget)
 {
     DDockWidget *dock = new DDockWidget(this);
-    dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 
     if (dock->titleBarWidget())
         delete dock->titleBarWidget();
@@ -447,7 +447,7 @@ void MainWindow::setToolbar(Qt::ToolBarArea area, QWidget *widget)
 {
     DToolBar *tb = new DToolBar(this);
     tb->setContentsMargins(0, 0, 0, 0);
-    tb->layout()->setMargin(0);
+    tb->layout()->setContentsMargins(0, 0, 0, 0);
     tb->setMovable(false);
     tb->setFloatable(false);
 

@@ -80,7 +80,7 @@ void PageControlComponent::initUI()
 {
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->setSpacing(3);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(mainLayout);
 
     initPageButtons();
@@ -90,7 +90,7 @@ void PageControlComponent::initPageButtons()
 {
     pageButtonsLayout = new QHBoxLayout;
     pageButtonsLayout->setSpacing(3);
-    pageButtonsLayout->setMargin(0);
+    pageButtonsLayout->setContentsMargins(0, 0, 0, 0);
 
     preButton = createPushButton();
     preButton->setText("<");

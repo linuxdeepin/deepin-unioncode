@@ -8,6 +8,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR true)
 add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")
 
 find_package(ICU COMPONENTS i18n uc REQUIRED)
+if(${QT_VERSION_MAJOR} MATCHES 6)
+    find_package(Qt6 COMPONENTS Core5Compat REQUIRED)
+endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(CMARK REQUIRED libcmark)
 pkg_check_modules(CHARDET REQUIRED chardet)
@@ -52,5 +55,11 @@ target_link_libraries(${PROJECT_NAME}
     ICU::i18n
     ICU::uc
 )
+
+if(${QT_VERSION_MAJOR} MATCHES 6)
+target_link_libraries(${PROJECT_NAME}
+    Qt6::Core5Compat
+)
+endif()
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

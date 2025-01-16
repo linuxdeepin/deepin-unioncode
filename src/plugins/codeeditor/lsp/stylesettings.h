@@ -82,7 +82,7 @@ public:
     };
 
     explicit StyleSettings(QObject *parent = nullptr);
-    explicit StyleSettings(const StyleSettings &other);
+    StyleSettings(const StyleSettings &other);
     ~StyleSettings();
     StyleSettings &operator=(const StyleSettings &other);
 

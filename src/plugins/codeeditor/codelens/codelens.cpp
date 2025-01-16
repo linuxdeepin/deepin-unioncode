@@ -34,12 +34,12 @@ CodeLens::CodeLens(QWidget *parent)
     d->lens = new CodeLensTree();
     d->gLayout = new QGridLayout();
     d->gLayout->addWidget(d->lens);
-    d->gLayout->setMargin(0);
+    d->gLayout->setContentsMargins(0, 0, 0, 0);
     
     QHBoxLayout *mainLayout = new QHBoxLayout();
     DFrame *mainFrame = new DFrame(this);
     mainLayout->addWidget(mainFrame);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainFrame->setLayout(d->gLayout);
     mainFrame->setLineWidth(0);
     DStyle::setFrameRadius(mainFrame, 0);

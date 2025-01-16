@@ -28,7 +28,7 @@ void CurrentProjectLocator::prepareSearch(const QString &searchText)
     if (projectService->getActiveProjectInfo) {
         auto project = projectService->getActiveProjectInfo();
         auto sourceFile = project.sourceFiles();
-        fileList = sourceFile.toList();
+        fileList = sourceFile.values();
     }
 
     setFileList(fileList);

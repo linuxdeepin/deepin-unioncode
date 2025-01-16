@@ -35,32 +35,35 @@ void sortParentItem(QStandardItem *parentItem)
     QList<QStandardItem *> fileList;
     QList<QStandardItem *> directoryList;
     QList<QStandardItem *> others;
-
     int count = parentItem->rowCount();
-
-    for (int row = 0; row < count; row++) {
-        auto child = parentItem->child(row);
+    // Traverse in reverse to avoid issues with changing index
+    for (int row = count - 1; row >= 0; --row) {
+        QStandardItem *child = parentItem->child(row);
         if (child->text() == kProjectFile) {
             cmakeFileList.append(parentItem->takeChild(row));
             continue;
         }
-
         auto absolutePath = child->toolTip();
         QFileInfo fileInfo(absolutePath);
-        if (fileInfo.isFile())
-            fileList.append(parentItem->takeChild(row));
-        else if (fileInfo.isDir())
-            directoryList.append(parentItem->takeChild(row));
-        else
-            others.append(parentItem->takeChild(row));
+        child = parentItem->takeRow(row).first();
+        if (fileInfo.isFile()) {
+            fileList.append(child);
+        } else if (fileInfo.isDir()) {
+            directoryList.append(child);
+        } else {
+            others.append(child);
+        }
     }
-    parentItem->removeRows(0, parentItem->rowCount());
-
-    //fileList is already sorted
+    // Sort directories, files, and others
     std::sort(directoryList.begin(), directoryList.end(), [](const QStandardItem *item1, const QStandardItem *item2) {
         return item1->text().toLower().localeAwareCompare(item2->text().toLower()) < 0;
     });
+    std::sort(fileList.begin(), fileList.end(), [](const QStandardItem *item1, const QStandardItem *item2) {
+        return item1->text().toLower().localeAwareCompare(item2->text().toLower()) < 0;
+    });
 
+    parentItem->removeRows(0, parentItem->rowCount());
+    // Append lists in desired order
     for (auto item : cmakeFileList)
         parentItem->appendRow(item);
     for (auto item : directoryList)
@@ -281,7 +284,7 @@ void CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfservice::Pro
 
     tempInfo.setSourceFiles(commonFiles + cmakeFiles);
     auto exePrograms = TargetsManager::instance()->getExeTargetNamesList();
-    qSort(exePrograms.begin(), exePrograms.end(), [](const QString &s1, const QString &s2) {
+    std::sort(exePrograms.begin(), exePrograms.end(), [](const QString &s1, const QString &s2){
         return s1.toLower() < s2.toLower();
     });
     tempInfo.setExePrograms(exePrograms);

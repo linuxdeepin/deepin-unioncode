@@ -6,6 +6,8 @@
 #include "gui/texteditor.h"
 #include "lsp/languageclienthandler.h"
 
+#include <QRegularExpression>
+
 CompletionSortFilterProxyModel::CompletionSortFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
@@ -17,7 +19,11 @@ bool CompletionSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
     if (!index.isValid())
         return false;
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     const QRegExp regexp = filterRegExp();
+#else
+    const QRegularExpression regexp = filterRegularExpression();
+#endif
     if (regexp.pattern().isEmpty() || sourceModel()->rowCount(index) > 0)
         return true;
 
@@ -30,11 +36,13 @@ bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, con
     auto leftStr = sourceLeft.data(CodeCompletionModel::SortTextRole).toString();
     auto rightStr = sourceRight.data(CodeCompletionModel::SortTextRole).toString();
     bool ret = leftStr < rightStr;
-
-    const QRegExp regexp = filterRegExp();
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    QRegExp regexp = filterRegExp();
+#else
+    QRegularExpression regexp = filterRegularExpression();
+#endif
     if (regexp.pattern().isEmpty())
         return ret;
-
     auto leftTextStr = sourceLeft.data(CodeCompletionModel::FilterTextRole).toString();
     auto rightTextStr = sourceRight.data(CodeCompletionModel::FilterTextRole).toString();
     bool leftStartsWith = leftTextStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
@@ -43,7 +51,6 @@ bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, con
         return true;
     else if (!leftStartsWith && rightStartsWith)
         return false;
-
     return ret;
 }
 

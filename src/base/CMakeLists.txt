@@ -13,7 +13,7 @@ add_library(
     ${PROJECT_SOURCES}
 )
 
-find_package(Dtk COMPONENTS Widget Core Gui REQUIRED)
+find_package(Dtk${DTK_VERSION_MAJOR} COMPONENTS Widget Core Gui REQUIRED)
 
 target_link_libraries(
     ${PROJECT_NAME}

@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QApplication>
+#include <QWidget>
 
 constexpr char kKeyboardShortcuts[] = "KeyboardShortcuts";
 static ActionManager *m_instance = nullptr;

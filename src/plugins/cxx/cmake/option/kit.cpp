@@ -175,7 +175,7 @@ Kit &Kit::operator=(const Kit &other)
     return *this;
 }
 
-bool Kit::operator==(const Kit &other)
+bool Kit::operator==(const Kit &other) const
 {
     return d->id == other.d->id;
 }

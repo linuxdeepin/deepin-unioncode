@@ -289,7 +289,7 @@ struct MarkedString : std::string
     std::string language;
     std::string value;
     MarkedString() = default;
-    MarkedString(const std::string &language, const std::string value)
+    MarkedString(const std::string &language, const std::string &value)
         : language(language), value(value){}
     MarkedString(const std::string &other)
         : std::string(other){
