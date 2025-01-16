@@ -388,44 +388,44 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="96"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="102"/>
         <source>This operation will delete all the content of this session. confirm to delete it?</source>
         <translation>该操作将删除该会话的全部内容，确定删除吗?</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="97"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="103"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="98"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="104"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="147"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="158"/>
         <source>stop generate</source>
         <translation>终止生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="177"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="188"/>
         <source>delete this session</source>
         <translation>删除该会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="184"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="195"/>
         <source>history sessions</source>
         <translation>历史会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="190"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="202"/>
         <source>create new session</source>
         <translation>创建新会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="202"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="213"/>
         <source>Ask question here, press Enter to send...</source>
         <translation>在这里提问，按Enter键发送...</translation>
     </message>
@@ -960,88 +960,93 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="246"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="256"/>
         <source>Compile Output</source>
         <translation>编译输出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="172"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="173"/>
         <source>Issues list</source>
         <translation>问题列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="180"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="181"/>
         <source>Filter</source>
         <translation>信息过滤</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="195"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="188"/>
+        <source>Settings</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="204"/>
         <source>All</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="200"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="209"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="204"/>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="383"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="213"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="393"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="280"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="290"/>
         <source>Clear Output</source>
         <translation>清空输出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="383"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="393"/>
         <source>The project does not have an associated build kit. Please reopen the project and select the corresponding build tool.</source>
         <translation>该工程没有关联的构建工具，请重新打开该工程并选择对应的构建工具.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="408"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="418"/>
         <source>&amp;Build</source>
         <translation>编译(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="484"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="500"/>
         <source>Execute command failed!
 </source>
         <translation>执行命令失败！
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="488"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="504"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="496"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="512"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="499"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="515"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="503"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="519"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="531"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="547"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -1282,64 +1287,85 @@ storage: %2
     </message>
 </context>
 <context>
-    <name>CodeGeeX::AskApi</name>
+    <name>CodeGeeXLLM</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="388"/>
-        <source>Install</source>
-        <translation>安装</translation>
+        <location filename="../../src/plugins/aimanager/codegeex/codegeexllm.cpp" line="392"/>
+        <source>Login</source>
+        <translation>登录</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/codegeex/codegeexllm.cpp" line="394"/>
+        <source>Please login to use CodeGeeX.</source>
+        <translation>请登录后使用CodeGeex.</translation>
     </message>
 </context>
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="175"/>
-        <source>CodeGeeX is not avaliable, please logging in</source>
-        <translation>CodeGeeX不可用，请先登录</translation>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="187"/>
+        <source>Install</source>
+        <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="186"/>
-        <source>Request timed out, please check the network or if the model is available.</source>
-        <translation>请求超时，请检查网络或者大模型是否可用。</translation>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="227"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="281"/>
+        <source>No selected LLM or current LLM is not avaliable</source>
+        <translation>未选择模型或者当前模型不可用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="553"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="334"/>
+        <source>llm named: %1 is not avaliable.</source>
+        <translation>名为%1的模型不可用</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="405"/>
+        <source>LLM is not valid. %1</source>
+        <translation>模型是无效的。%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="407"/>
+        <source>Error: %1, try again later</source>
+        <translation>错误：%1，稍后再试</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="488"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
         <translation>该工程还没有建立文件索引，@codebase无法正常使用.确认是否现在创建索引</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="558"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="493"/>
         <source>Confirm</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="571"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="506"/>
         <source>It may take servel minutes</source>
         <translation>该过程也许会耗费若干分钟</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="581"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
         <source>Indexing Done</source>
         <translation>创建索引完成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="581"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
         <source>Indexing Failed</source>
         <translation>建立索引失败</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="642"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="577"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation>在为工程%1建立文件索引时出现错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex/askapi.cpp" line="390"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="188"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation>文件索引功能不可用，可能会导致@codebase等功能无法正常使用，请安装相应的环境。
 安装过程可能会耗费若干分钟。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="240"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="159"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation>工程%1的文件索引尚未完全完成，可能会导致结果不准确.</translation>
     </message>
@@ -1347,22 +1373,7 @@ storage: %2
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="122"/>
-        <source>Welcome to CodeGeeX</source>
-        <translation>欢迎使用CodeGeeX</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="132"/>
-        <source>A must-have all-round AI tool for developers</source>
-        <translation>开发者必备的全能AI工具</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="148"/>
-        <source>Go to login</source>
-        <translation>前往登录</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="210"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="176"/>
         <source>Creating a new session...</source>
         <translation>创建新的会话中...</translation>
     </message>
@@ -1371,21 +1382,11 @@ storage: %2
     <name>CodeGeex</name>
     <message>
         <location filename="../../src/plugins/codegeex/codegeex.cpp" line="58"/>
-        <source>Login</source>
-        <translation>登录</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="59"/>
-        <source>Please login to use CodeGeeX.</source>
-        <translation>请登录后使用CodeGeex.</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="63"/>
         <source>Install</source>
         <translation>安装</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="64"/>
+        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="59"/>
         <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
         <translation>安装Python Conda虚拟环境，以用于文件索引功能。否则可能导致@codebase或部分Ai功能异常。</translation>
     </message>
@@ -1777,37 +1778,37 @@ storage: %2
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="40"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="31"/>
         <source>Inline Chat</source>
         <translation>内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="113"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="56"/>
         <source>Add Comment</source>
         <translation>添加注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="114"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="57"/>
         <source>Fix Bug</source>
         <translation>修复bug</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="115"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="58"/>
         <source>Explain Code</source>
         <translation>解释代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="116"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="59"/>
         <source>Review Code</source>
         <translation>代码审查</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="117"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="60"/>
         <source>Generate Unit Tests</source>
         <translation>生成单元测试</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="118"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="61"/>
         <source>Generate git commits</source>
         <translation>生成git commits</translation>
     </message>
@@ -2264,14 +2265,39 @@ Delete anyway?</source>
         <translation>找不到配套工具。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="128"/>
+        <source>Disabled</source>
+        <translation>禁用</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="129"/>
+        <source>Auto Complete LLM:</source>
+        <translation>自动补全模型：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="156"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="145"/>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="158"/>
         <source>Remove</source>
         <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="197"/>
+        <source>You can&apos;t delete default CodeGeeX`s LLM!</source>
+        <translation>无法删除默认的 CodeGeeX 模型！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="198"/>
+        <source>Delete Warining</source>
+        <translation>删除警告</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/detailwidget.cpp" line="200"/>
+        <source>Ok</source>
+        <translation>确定</translation>
     </message>
 </context>
 <context>
@@ -2675,6 +2701,61 @@ Delete anyway?</source>
     </message>
 </context>
 <context>
+    <name>GeneralSettingWidget</name>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="43"/>
+        <source>Test Framework</source>
+        <translation>测试框架</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="45"/>
+        <source>Template</source>
+        <translation>模板</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="49"/>
+        <source>Name Format</source>
+        <translation>名称格式</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="82"/>
+        <source>None</source>
+        <translation>空</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="101"/>
+        <source>Select Template</source>
+        <translation>选择模板</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="113"/>
+        <source>Delete Template</source>
+        <translation>删除模板</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="114"/>
+        <source>Are you sure to delete this template?</source>
+        <translation>你确定要删除这个模板吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="115"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="116"/>
+        <source>Ok</source>
+        <comment>button</comment>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/generalsettingwidget.cpp" line="128"/>
+        <source>Please input a valid format, e.g.ut_${filename}.cpp</source>
+        <translation>请输入有效的格式，例如：ut_${filename}.cpp</translation>
+    </message>
+</context>
+<context>
     <name>GenerateDialog</name>
     <message>
         <location filename="../../src/plugins/linglong/gui/generatedialog.cpp" line="54"/>
@@ -2800,6 +2881,11 @@ need to manually copy the source code to this path</source>
         <location filename="../../src/plugins/console/generateinput.cpp" line="48"/>
         <source>Generate</source>
         <translation>生成</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/console/generateinput.cpp" line="79"/>
+        <source>Please try again later</source>
+        <translation>请稍后再试</translation>
     </message>
 </context>
 <context>
@@ -3033,47 +3119,47 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="340"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="239"/>
         <source>  Press %1 to inline chat</source>
         <translation>  按%1进行内联聊天</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="207"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="215"/>
         <source>Esc to close</source>
         <translation>Esc 退出对话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="208"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="216"/>
         <source>Submit Edit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="217"/>
         <source>quick question</source>
         <translation>快问快答</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="211"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="219"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="213"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="221"/>
         <source>Accept</source>
         <translation>接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="215"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="223"/>
         <source>Reject</source>
         <translation>拒绝</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="286"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="292"/>
         <source>Ask a question here, press Enter to send</source>
         <translation>在这里提问，按Enter键发送</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="295"/>
+        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="301"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation>继续提问，按Enter键发送</translation>
     </message>
@@ -3133,12 +3219,12 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterModel</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="92"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="93"/>
         <source>Package</source>
         <translation>软件包</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="94"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="95"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
@@ -3146,61 +3232,61 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InterpreterWidget</name>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="152"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="155"/>
         <source>Python Interpreter:</source>
         <translation>Python解释器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="159"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="162"/>
         <source>Browse</source>
         <translation>浏览</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="160"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="221"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="163"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="232"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="190"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="201"/>
         <source>PIP Source:</source>
         <translation>pip镜像源：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
         <source>Select Local Interpreter</source>
         <translation>选择本地解释器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="204"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="215"/>
         <source>Selected Interpreter already exists</source>
         <translation>选择的解释器已经存在</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="205"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="231"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="242"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="220"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="231"/>
         <source>Confirm the removal of this interpreter?</source>
         <translation>确认移除这个解释器？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="230"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="241"/>
         <source>Default Interpreter can`t be removed</source>
         <translation>默认解释器无法被删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="207"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="223"/>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="233"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="218"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="234"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="244"/>
         <source>Yes</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="224"/>
+        <location filename="../../src/plugins/python/python/option/interpreterwidget.cpp" line="235"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3881,14 +3967,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>ProblemOutputPane</name>
-    <message>
-        <location filename="../../src/plugins/builder/mainframe/problemoutputpane.cpp" line="57"/>
-        <source>Clear</source>
-        <translation>清除</translation>
-    </message>
-</context>
-<context>
     <name>ProfileSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="83"/>
@@ -3957,6 +4035,14 @@ repos path: %0</source>
         <location filename="../../src/plugins/project/projectcore.cpp" line="324"/>
         <source>Confirm</source>
         <translation>确定</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectItemModel</name>
+    <message>
+        <location filename="../../src/plugins/smartut/common/projectitemmodel.cpp" line="118"/>
+        <source> [Ungenerated]</source>
+        <translation> [未生成的]</translation>
     </message>
 </context>
 <context>
@@ -4069,6 +4155,113 @@ repos path: %0</source>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="857"/>
         <source>Cancel</source>
         <translation>取消</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectTreeView</name>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="133"/>
+        <source>Open File</source>
+        <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="140"/>
+        <source>Generate UT</source>
+        <translation>生成单元测试</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="145"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="148"/>
+        <source>Unignore</source>
+        <translation>取消忽略</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="150"/>
+        <source>Ignore</source>
+        <translation>忽略</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="152"/>
+        <source>Show Containing Folder</source>
+        <translation>显示所在文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="161"/>
+        <source>Collapse</source>
+        <translation>折叠</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="163"/>
+        <source>Expand</source>
+        <translation>展开</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="164"/>
+        <source>Collapse All</source>
+        <translation>折叠所有</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="165"/>
+        <source>Expand All</source>
+        <translation>展开所有</translation>
+    </message>
+</context>
+<context>
+    <name>PromptSettingWidget</name>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="35"/>
+        <source>Select Prompt</source>
+        <translation>选择提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="41"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="93"/>
+        <source>Add Prompt</source>
+        <translation>添加提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="42"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="135"/>
+        <source>Delete Prompt</source>
+        <translation>删除提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="96"/>
+        <source>Please input the name of the prompt</source>
+        <translation>请输入提示词名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="98"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="137"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="99"/>
+        <source>OK</source>
+        <comment>button</comment>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="116"/>
+        <source>A prompt named &quot;%1&quot; already exists</source>
+        <translation>已存在名为“%1”的提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="136"/>
+        <source>Are you sure you want to delete the &quot;%1&quot; prompt</source>
+        <translation>您确定要删除名为“%1”的提示词吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="138"/>
+        <source>Ok</source>
+        <comment>button</comment>
+        <translation>确定</translation>
     </message>
 </context>
 <context>
@@ -4451,17 +4644,12 @@ not exists support files: %0</source>
         <translation>编译配置：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="60"/>
-        <source>Code Completion:</source>
-        <translation>代码补全：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="66"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="58"/>
         <source>Global Language Preference:</source>
         <translation>全局语言偏好：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="74"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="66"/>
         <source>Commits Language Preference:</source>
         <translation>Commits语言偏好：</translation>
     </message>
@@ -4834,7 +5022,7 @@ not exists support files: %0</source>
         <translation>自动获取入口文件</translation>
     </message>
     <message>
-        <location filename="../../src/services/ai/aiservice.h" line="25"/>
+        <location filename="../../src/services/ai/aiservice.h" line="26"/>
         <source>ZhiPu</source>
         <translation>智谱</translation>
     </message>
@@ -5093,6 +5281,29 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/debugger/reversedebug/rrdialog.cpp" line="174"/>
         <source>Open Directory</source>
         <translation>打开目录</translation>
+    </message>
+</context>
+<context>
+    <name>ResourceSettingWidget</name>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="41"/>
+        <source>Source Files</source>
+        <translation>源文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="43"/>
+        <source>Target Location</source>
+        <translation>目标位置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="126"/>
+        <source>Select target location</source>
+        <translation>选择目标位置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="139"/>
+        <source>Please input a valid path with the selected project</source>
+        <translation>请输入与所选项目相关的有效路径</translation>
     </message>
 </context>
 <context>
@@ -6168,86 +6379,94 @@ not exists support files: %0</source>
 <context>
     <name>SessionItemWidget</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="238"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="239"/>
         <source>Clone</source>
         <translation>克隆</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="239"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="240"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="240"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="241"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="283"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="284"/>
         <source>Are you sure to remove this session?</source>
         <translation>确定要删除会话吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="284"/>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="332"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="285"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="336"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="285"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="286"/>
         <source>Remove</source>
         <comment>button</comment>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="293"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="294"/>
         <source>Rename</source>
         <comment>button</comment>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="293"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="294"/>
         <source>Rename and Open</source>
         <comment>button</comment>
         <translation>重命名并打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="294"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="295"/>
         <source>Rename Session</source>
         <translation>重命名会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="302"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="303"/>
         <source>Clone</source>
         <comment>button</comment>
         <translation>克隆</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="302"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="303"/>
         <source>Clone and Open</source>
         <comment>button</comment>
         <translation>克隆并打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="303"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="304"/>
         <source>New Session Name</source>
         <translation>输入会话名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="324"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="327"/>
         <source>Please input session name</source>
         <translation>请输入会话名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="411"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="420"/>
         <source>%1 (last session)</source>
         <translation>%1（最后的会话）</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="413"/>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="422"/>
         <source>%1 (current session)</source>
         <translation>%1（当前的会话）</translation>
+    </message>
+</context>
+<context>
+    <name>SessionItemWidgetPrivate</name>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/sessionitemwidget.cpp" line="346"/>
+        <source>The session already exists, please re-enter.</source>
+        <translation>该会话已存在，请重新输入</translation>
     </message>
 </context>
 <context>
@@ -6338,15 +6557,93 @@ not exists support files: %0</source>
 <context>
     <name>SessionNameInputDialog</name>
     <message>
-        <location filename="../../src/plugins/core/session/sessiondialog.cpp" line="184"/>
+        <location filename="../../src/plugins/core/session/sessiondialog.cpp" line="187"/>
         <source>Please input session name</source>
         <translation>请输入会话名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/session/sessiondialog.cpp" line="191"/>
+        <location filename="../../src/plugins/core/session/sessiondialog.cpp" line="194"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/session/sessiondialog.cpp" line="210"/>
+        <source>The session already exists, please re-enter.</source>
+        <translation>该会话已存在，请重新输入</translation>
+    </message>
+</context>
+<context>
+    <name>SettingDialog</name>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="29"/>
+        <source>Settings</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="43"/>
+        <source>Select Prompt</source>
+        <translation>选择提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="49"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="103"/>
+        <source>Add Prompt</source>
+        <translation>添加提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="50"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="145"/>
+        <source>Delete Prompt</source>
+        <translation>删除提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="69"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="108"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="147"/>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="83"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="70"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="109"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="148"/>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="84"/>
+        <source>OK</source>
+        <comment>button</comment>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="106"/>
+        <source>Please input the name of the prompt</source>
+        <translation>请输入提示词名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="126"/>
+        <source>A prompt named &quot;%1&quot; already exists</source>
+        <translation>已存在名为“%1”的提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="146"/>
+        <source>Are you sure you want to delete the &quot;%1&quot; prompt</source>
+        <translation>您确定要删除名为“%1”的提示词吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="62"/>
+        <source>General</source>
+        <translation>通用设置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="63"/>
+        <source>Prompt</source>
+        <translation>提示词</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="64"/>
+        <source>Resource</source>
+        <translation>工程资源</translation>
     </message>
 </context>
 <context>
@@ -6469,6 +6766,52 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="130"/>
         <source>Export</source>
         <translation>导出</translation>
+    </message>
+</context>
+<context>
+    <name>SmartUTManager</name>
+    <message>
+        <location filename="../../src/plugins/smartut/manager/smartutmanager.cpp" line="117"/>
+        <source>A model named &quot;%1&quot; was not found</source>
+        <translation>未找到名为“%1”的模型</translation>
+    </message>
+</context>
+<context>
+    <name>SmartUTWidget</name>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="72"/>
+        <source>The current resource is not configured</source>
+        <translation>当前资源信息未配置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="82"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please click the Setting button &quot;%1&quot; in the upper right corner to configure&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;请点击右上角的的设置按钮“%1”进行配置&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="120"/>
+        <source>Generate unit test files</source>
+        <translation>生成单元测试文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="121"/>
+        <source>Run</source>
+        <translation>运行</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="122"/>
+        <source>Generate coverage report</source>
+        <translation>生成覆盖率报告</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="123"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="128"/>
+        <source>Select Model:</source>
+        <translation>选择模型：</translation>
     </message>
 </context>
 <context>
@@ -6644,60 +6987,60 @@ not exists support files: %0</source>
 <context>
     <name>TabBarPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="74"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="75"/>
         <source>Save Changes</source>
         <translation>保存更改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="76"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="77"/>
         <source>The file %1 has unsaved changes, will save?</source>
         <translation>文件 %1 有未保存的更改，是否保存？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="77"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="78"/>
         <source>Save</source>
         <comment>button</comment>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="78"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="79"/>
         <source>Do Not Save</source>
         <comment>button</comment>
         <translation>不保存</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="79"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="80"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="113"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="114"/>
         <source>Copy File Path</source>
         <translation>拷贝文件路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="117"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="118"/>
         <source>Copy File Name</source>
         <translation>拷贝文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="124"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="125"/>
         <source>Close This File</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="128"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="129"/>
         <source>Close All Files</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="131"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="132"/>
         <source>Close All Files Except This</source>
         <translation>关闭除该文件的所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="138"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="139"/>
         <source>Show Containing Folder</source>
         <translation>显示所在文件夹</translation>
     </message>
@@ -6716,6 +7059,19 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="211"/>
         <source>File not found: %1</source>
         <translation>找不到文件：%1</translation>
+    </message>
+</context>
+<context>
+    <name>TaskManager</name>
+    <message>
+        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="102"/>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="103"/>
+        <source>Fix Issue</source>
+        <translation>修复问题</translation>
     </message>
 </context>
 <context>
