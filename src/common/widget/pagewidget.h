@@ -13,11 +13,11 @@ class PageWidget : public DTK_WIDGET_NAMESPACE::DWidget
 public:
     explicit PageWidget(QWidget *parent = nullptr);
     virtual ~PageWidget() = 0;
-    virtual void saveConfig(){}
-    virtual void readConfig(){}
+    virtual void saveConfig() {}
+    virtual void readConfig() {}
 
-    virtual void setUserConfig(const QMap<QString, QVariant> &map){}
-    virtual void getUserConfig( QMap<QString, QVariant> &map){}
+    virtual void setUserConfig(const QMap<QString, QVariant> &map) {}
+    virtual void getUserConfig(QMap<QString, QVariant> &map) {}
 };
 
-#endif // PAGEWIDGET_H
+#endif   // PAGEWIDGET_H
