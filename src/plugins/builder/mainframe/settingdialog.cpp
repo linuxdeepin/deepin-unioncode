@@ -11,6 +11,7 @@
 #include <DLineEdit>
 
 #include <QVBoxLayout>
+#include <QEvent>
 
 DWIDGET_USE_NAMESPACE
 

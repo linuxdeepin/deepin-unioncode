@@ -10,6 +10,7 @@
 #include <DDialog>
 
 #include <QVBoxLayout>
+#include <QEvent>
 
 DWIDGET_USE_NAMESPACE
 
