@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QEvent>
 
 DWIDGET_USE_NAMESPACE
 
