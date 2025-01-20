@@ -13,6 +13,7 @@
 
 class PromptSettingWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
+    Q_OBJECT
 public:
     explicit PromptSettingWidget(QWidget *parent = nullptr);
 

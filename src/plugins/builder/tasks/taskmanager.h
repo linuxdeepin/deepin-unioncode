@@ -12,6 +12,7 @@
 
 namespace dpfservice {
 class AiService;
+class WindowService;
 }
 
 /**
@@ -37,8 +38,8 @@ public slots:
     void triggerDefaultHandler(const QModelIndex &index);
 
     void showSpecificTasks(ShowType type);
-    void showContextMenu();
-    void fixIssueWithAi();
+    void showContextMenu(const QPoint &pos);
+    void fixIssueWithAi(const QModelIndex &index);
 
 private:
     explicit TaskManager(QObject *parent = nullptr);
@@ -49,6 +50,7 @@ private:
     QSharedPointer<TaskModel> model;
     QSharedPointer<TaskFilterProxyModel> filterModel;
     dpfservice::AiService *aiSrv = nullptr;
+    dpfservice::WindowService *winSrv = nullptr;
 };
 
 #endif   // TASKMANAGER_H

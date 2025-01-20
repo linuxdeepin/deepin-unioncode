@@ -84,7 +84,7 @@ void PromptSettingWidget::updateSettings()
     }
 
     const auto &activePrompt = setting->value(kActiveGroup, kActivePrompt).toString();
-    promptEdit->setPlainText(prompts.value(activePrompt).toString());
+    promptCB->setCurrentText(activePrompt);
 }
 
 void PromptSettingWidget::handleAddPrompt()

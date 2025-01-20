@@ -53,7 +53,7 @@ public:
     QNetworkReply *getMessage(const QString &url, const QString &apiKey);
     void replyMessage(const QString &data, AbstractLLM::ResponseState state, AbstractLLM::ResponseHandler handler);
     void processResponse(QNetworkReply *reply, AbstractLLM::ResponseHandler handler = nullptr);
-    void handleReplyFinished(QNetworkReply *reply);
+    void handleReplyFinished(QNetworkReply *reply, AbstractLLM::ResponseHandler handler = nullptr);
 
     QString modelName { "" };
     QString modelPath { "" };
@@ -161,13 +161,13 @@ void OpenAiCompatibleLLMPrivate::processResponse(QNetworkReply *reply, AbstractL
     });
 }
 
-void OpenAiCompatibleLLMPrivate::handleReplyFinished(QNetworkReply *reply)
+void OpenAiCompatibleLLMPrivate::handleReplyFinished(QNetworkReply *reply, AbstractLLM::ResponseHandler handler)
 {
     if (q->modelState() == AbstractLLM::Idle)   // llm is alread stopped
         return;
     if (reply->error()) {
         qWarning() << "NetWork Error: " << reply->errorString();
-        emit q->dataReceived(reply->errorString(), AbstractLLM::ResponseState::Failed);
+        replyMessage(reply->errorString(), AbstractLLM::Failed, handler);
     }
     q->setModelState(AbstractLLM::Idle);
 }
@@ -296,7 +296,7 @@ void OpenAiCompatibleLLM::request(const QString &prompt, ResponseHandler handler
     QNetworkReply *reply = d->postMessage(modelPath() + "/completions", d->apiKey, QJsonDocument(dataObject).toJson());
     connect(this, &OpenAiCompatibleLLM::requstCancel, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::finished, this, [=](){
-        d->handleReplyFinished(reply);
+        d->handleReplyFinished(reply, handler);
     });
 
     d->processResponse(reply, handler);

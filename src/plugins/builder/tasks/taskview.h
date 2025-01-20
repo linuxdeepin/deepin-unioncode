@@ -14,6 +14,9 @@ public:
     explicit TaskView(QWidget *parent = nullptr);
     ~TaskView() override;
     void resizeEvent(QResizeEvent *e) override;
+
+signals:
+    void sigFixIssue(const QModelIndex &index);
 };
 
-#endif // TASKVIEW_H
+#endif   // TASKVIEW_H

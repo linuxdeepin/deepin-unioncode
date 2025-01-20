@@ -118,13 +118,7 @@ AbstractLLM *SmartUTManager::findModel(const QString &model)
         return nullptr;
     }
 
-    auto llm = d->aiSrv->getLLM(*iter);
-    //    if (!llm->checkValid(&d->errorMsg)) {
-    //        delete llm;
-    //        return nullptr;
-    //    }
-
-    return llm;
+    return d->aiSrv->getLLM(*iter);
 }
 
 QString SmartUTManager::userPrompt(const QString &framework) const
@@ -152,36 +146,20 @@ QString SmartUTManager::userPrompt(const QString &framework) const
     return prompt;
 }
 
-void SmartUTManager::generateUTFiles(const QString &model, NodeItem *item)
+void SmartUTManager::generateUTFiles(const QString &model,
+                                     NodeItem *item,
+                                     std::function<bool(NodeItem *item)> checkItemValid)
 {
-    auto checkValid = [](NodeItem *item) {
-        return !item->hasChildren()
-                && item->itemNode->isFileNodeType()
-                && item->state != Ignored
-                && item->state != Waiting
-                && item->state != Generating;
-    };
-
-    if (checkValid(item)) {
+    if (checkItemValid(item)) {
         item->state = Waiting;
         item->userCache.clear();
         Q_EMIT itemStateChanged(item);
         d->taskPool.addGenerateTask({ model, item });
     } else if (item->hasChildren()) {
         for (int i = 0; i < item->rowCount(); ++i) {
-            generateUTFiles(model, static_cast<NodeItem *>(item->child(i)));
+            generateUTFiles(model, static_cast<NodeItem *>(item->child(i)), checkItemValid);
         }
     }
-}
-
-void SmartUTManager::runTest(const dpfservice::ProjectInfo &prjInfo)
-{
-    //TODO:
-}
-
-void SmartUTManager::generateCoverageReport(const dpfservice::ProjectInfo &prjInfo)
-{
-    //TODO:
 }
 
 void SmartUTManager::stop()

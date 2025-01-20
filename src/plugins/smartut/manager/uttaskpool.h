@@ -44,7 +44,7 @@ Q_SIGNALS:
     void stoped(NodeItem *item);
 
 private:
-    void createModels(const QString &model);
+    bool createModels(const QString &model);
 
     QQueue<Task> taskQueue;
     QMap<QString, QList<AbstractLLM *>> idleModels;

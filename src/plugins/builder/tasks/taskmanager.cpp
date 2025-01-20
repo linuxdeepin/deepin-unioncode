@@ -8,6 +8,7 @@
 #include "common/common.h"
 #include "services/option/optionmanager.h"
 #include "services/ai/aiservice.h"
+#include "services/window/windowservice.h"
 
 #include <QMenu>
 
@@ -32,6 +33,9 @@ void TaskManager::clearTasks()
 TaskManager::TaskManager(QObject *parent)
     : QObject(parent)
 {
+    aiSrv = dpfGetService(AiService);
+    winSrv = dpfGetService(WindowService);
+    
     view = new TaskView();
     model.reset(new TaskModel());
     filterModel.reset(new TaskFilterProxyModel());
@@ -53,6 +57,8 @@ TaskManager::TaskManager(QObject *parent)
             this, &TaskManager::triggerDefaultHandler);
     connect(view, &TaskView::customContextMenuRequested,
             this, &TaskManager::showContextMenu);
+    connect(view, &TaskView::sigFixIssue,
+            this, &TaskManager::fixIssueWithAi);
 }
 
 QString TaskManager::readContext(const QString &path, int codeLine)
@@ -96,22 +102,22 @@ void TaskManager::showSpecificTasks(ShowType type)
     filterModel->setFilterType(type);
 }
 
-void TaskManager::showContextMenu()
+void TaskManager::showContextMenu(const QPoint &pos)
 {
     QMenu menu;
     menu.addAction(tr("Clear"), this, &TaskManager::clearTasks);
-    auto act = menu.addAction(tr("Fix Issue"), this, &TaskManager::fixIssueWithAi);
     
-    auto pos = QCursor::pos();
-    if (!view->indexAt(view->mapFromGlobal(pos)).isValid())
+    auto index = view->indexAt(pos);
+    auto act = menu.addAction(tr("Smart Analysis"), this, std::bind(&TaskManager::fixIssueWithAi, this, index));
+    if (!index.isValid())
         act->setEnabled(false);
 
-    menu.exec(pos);
+    menu.exec(QCursor::pos());
 }
 
-void TaskManager::fixIssueWithAi()
+void TaskManager::fixIssueWithAi(const QModelIndex &index)
 {
-    auto realIndex = filterModel->mapToSource(view->currentIndex());
+    auto realIndex = filterModel->mapToSource(index);
     const auto &task = model->task(realIndex);
     if (task.isNull())
         return;
@@ -130,9 +136,8 @@ void TaskManager::fixIssueWithAi()
     }
 
     prompt += task.description;
-    if (!aiSrv)
-        aiSrv = dpfGetService(AiService);
     aiSrv->chatWithAi(prompt);
+    winSrv->showWidgetAtRightspace(MWNA_CODEGEEX);
 }
 
 void TaskManager::currentChanged(const QModelIndex &index)

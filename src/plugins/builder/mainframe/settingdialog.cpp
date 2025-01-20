@@ -193,6 +193,5 @@ bool SettingDialog::eventFilter(QObject *obj, QEvent *e)
 
 QString SettingDialog::defaultIssueFixPrompt()
 {
-    return "How can I resolve this? If you propose a fix, please make it concise."
-           "For the code present, we get this error:";
+    return "如何解决这个问题？如果你提出修复方案，请尽量简洁。对于当前代码，我们遇到以下错误：";
 }

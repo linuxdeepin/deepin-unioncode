@@ -26,6 +26,7 @@ public:
     void initConnecttion();
 
     void setItemIgnoreState(NodeItem *item, bool ignore);
+    void createUTActoins(QMenu *menu, NodeItem *item);
 
 public:
     ProjectTreeView *q;
@@ -84,6 +85,40 @@ void ProjectTreeViewPrivate::setItemIgnoreState(NodeItem *item, bool ignore)
     }
 }
 
+void ProjectTreeViewPrivate::createUTActoins(QMenu *menu, NodeItem *item)
+{
+    if (item->itemNode->isFileNodeType()) {
+        auto act = menu->addAction(ProjectTreeView::tr("Open File"), this, [item] {
+            editor.openFile(QString(), item->itemNode->filePath());
+        });
+        act->setEnabled(QFile::exists(item->itemNode->filePath()));
+    }
+
+    bool allIgnored = Utils::checkAllState(item, Ignored);
+    QAction *act = nullptr;
+    if (Utils::checkAllState(item, Completed))
+        act = menu->addAction(ProjectTreeView::tr("Regenerate"), this, std::bind(&ProjectTreeView::reqGenerateUTFile, q, item));
+    else if (!item->itemNode->isFileNodeType() && Utils::checkAnyState(item, Completed))
+        act = menu->addAction(ProjectTreeView::tr("Continue To Generate"), this, std::bind(&ProjectTreeView::reqContinueToGenerate, q, item));
+    else
+        act = menu->addAction(ProjectTreeView::tr("Generate"), this, std::bind(&ProjectTreeView::reqGenerateUTFile, q, item));
+    act->setEnabled(!allIgnored);
+
+    bool started = Utils::checkAnyState(item, Generating);
+    if (started)
+        menu->addAction(ProjectTreeView::tr("Stop"), this, std::bind(&ProjectTreeView::reqStopGenerate, q, item));
+
+    if (allIgnored)
+        menu->addAction(ProjectTreeView::tr("Unignore"), this, std::bind(&ProjectTreeViewPrivate::setItemIgnoreState, this, item, false));
+    else
+        menu->addAction(ProjectTreeView::tr("Ignore"), this, std::bind(&ProjectTreeViewPrivate::setItemIgnoreState, this, item, true));
+
+    act = menu->addAction(ProjectTreeView::tr("Show Containing Folder"), this, [item] {
+        DDesktopServices::showFileItem(item->itemNode->filePath());
+    });
+    act->setEnabled(QFile::exists(item->itemNode->filePath()));
+}
+
 ProjectTreeView::ProjectTreeView(ViewType type, QWidget *parent)
     : DTreeView(parent),
       d(new ProjectTreeViewPrivate(this))
@@ -128,32 +163,8 @@ void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
         return;
 
     QMenu menu;
-    if (d->viewType == UnitTest) {
-        if (item->itemNode->isFileNodeType()) {
-            auto act = menu.addAction(tr("Open File"), this, [item] {
-                editor.openFile(QString(), item->itemNode->filePath());
-            });
-            act->setEnabled(QFile::exists(item->itemNode->filePath()));
-        }
-
-        bool allIgnored = Utils::checkAllState(item, Ignored);
-        auto act = menu.addAction(tr("Generate UT"), this, std::bind(&ProjectTreeView::reqGenerateUTFile, this, item));
-        act->setEnabled(!allIgnored);
-
-        bool started = Utils::checkAnyState(item, Generating);
-        if (started)
-            menu.addAction(tr("Stop"), this, std::bind(&ProjectTreeView::reqStopGenerate, this, item));
-
-        if (allIgnored)
-            menu.addAction(tr("Unignore"), this, std::bind(&ProjectTreeViewPrivate::setItemIgnoreState, d, item, false));
-        else
-            menu.addAction(tr("Ignore"), this, std::bind(&ProjectTreeViewPrivate::setItemIgnoreState, d, item, true));
-
-        act = menu.addAction(tr("Show Containing Folder"), this, [item] {
-            DDesktopServices::showFileItem(item->itemNode->filePath());
-        });
-        act->setEnabled(QFile::exists(item->itemNode->filePath()));
-    }
+    if (d->viewType == UnitTest)
+        d->createUTActoins(&menu, item);
 
     if (!item->itemNode->isFileNodeType()) {
         menu.addSeparator();
@@ -165,5 +176,6 @@ void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(tr("Expand All"), this, &ProjectTreeView::expandAll);
     }
 
-    menu.exec(QCursor::pos());
+    if (!menu.actions().isEmpty())
+        menu.exec(QCursor::pos());
 }

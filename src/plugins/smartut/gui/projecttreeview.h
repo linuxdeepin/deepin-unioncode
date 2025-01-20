@@ -32,6 +32,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void reqGenerateUTFile(NodeItem *item);
+    void reqContinueToGenerate(NodeItem *item);
     void reqStopGenerate(NodeItem *item);
 
 protected:
