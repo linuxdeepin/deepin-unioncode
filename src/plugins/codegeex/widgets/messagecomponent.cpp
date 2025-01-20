@@ -173,6 +173,8 @@ void MessageComponent::initSenderInfo()
     editButton->setFixedSize(QSize(24, 24));
     editButton->setToolTip(tr("edit"));
 
+    auto currentLLMInfo = CodeGeeXManager::instance()->getCurrentLLMInfo();
+
     switch (messageData.messageType()) {
     case MessageData::Ask: {
         senderName->setText("You");
@@ -180,8 +182,9 @@ void MessageComponent::initSenderInfo()
         break;
     }
     case MessageData::Anwser:
-        senderName->setText("CodeGeeX");
-        senderHead->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(24, 24));
+        senderName->setText(currentLLMInfo.modelName);
+        if (!currentLLMInfo.icon.isNull())
+            senderHead->setPixmap(currentLLMInfo.icon.pixmap(24, 24));
         editButton->setVisible(false);
         break;
     }

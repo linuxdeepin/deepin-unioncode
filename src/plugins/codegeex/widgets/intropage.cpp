@@ -66,7 +66,6 @@ void IntroPage::initUI()
     mainLayout->addStretch(1);
     initSuggestContent();
     mainLayout->addStretch(1);
-    initLogoutButton();
 }
 
 void IntroPage::initLogo()
@@ -76,10 +75,11 @@ void IntroPage::initLogo()
     logoLayout->setSpacing(20);
     qobject_cast<QVBoxLayout *>(layout())->addLayout(logoLayout);
 
-    DLabel *logo = new DLabel(this);
-    logo->setAlignment(Qt::AlignHCenter);
-    logo->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(50));
-    logoLayout->addWidget(logo);
+//    DLabel *logo = new DLabel(this);
+//    logo->setAlignment(Qt::AlignHCenter);
+//    logo->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(50));
+//    logoLayout->addWidget(logo);
+    logoLayout->addSpacing(70);
 
     DLabel *logoLabel = new DLabel(this);
     logoLabel->setAlignment(Qt::AlignHCenter);
@@ -87,7 +87,7 @@ void IntroPage::initLogo()
     auto font = logoLabel->font();
     font.setPointSize(11);
     logoLabel->setFont(font);
-    logoLabel->setText(tr("Welcome to CodeGeeX"));
+    logoLabel->setText(tr("Welcome to Chat"));
     logoLayout->addWidget(logoLabel);
 }
 
@@ -98,9 +98,9 @@ void IntroPage::initIntroContent()
     introLayout->setSpacing(10);
     qobject_cast<QVBoxLayout *>(layout())->addLayout(introLayout);
 
-    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>", "</font>"));
-    appendDescLabel(introLayout, tr("CodeGeeX provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.").arg("<font style='color:dodgerblue;'>", "</font>"));
-    appendDescLabel(introLayout, tr("Also, you can directly %1 ask CodeGeeX any questions %2.").arg("<font style='color:dodgerblue;'>", "</font>"));
+    appendDescLabel(introLayout, tr("Chat provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>", "</font>"));
+    appendDescLabel(introLayout, tr("Chat provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.").arg("<font style='color:dodgerblue;'>", "</font>"));
+    appendDescLabel(introLayout, tr("Also, you can directly %1 ask Chat any questions %2.").arg("<font style='color:dodgerblue;'>", "</font>"));
 }
 
 void IntroPage::initSuggestContent()
@@ -115,17 +115,6 @@ void IntroPage::initSuggestContent()
     appendSuggestButton(suggestLayout, tr("How to iterate through a dictionary in Python?"), "codegeex_comment");
     appendSuggestButton(suggestLayout, tr("Write a quicksort function."), "codegeex_function");
     appendSuggestButton(suggestLayout, tr("What is the best way to start learning JavaScript?"), "codegeex_advice");
-}
-
-void IntroPage::initLogoutButton()
-{
-    QHBoxLayout *hlayout = new QHBoxLayout;
-    auto logoutButton = new DCommandLinkButton(tr("logout"));
-
-    hlayout->addWidget(logoutButton);
-    hlayout->setAlignment(Qt::AlignHCenter);
-
-    qobject_cast<QVBoxLayout *>(layout())->addLayout(hlayout);
 }
 
 void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)

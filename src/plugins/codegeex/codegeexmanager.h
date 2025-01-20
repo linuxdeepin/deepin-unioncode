@@ -53,6 +53,7 @@ public:
     bool condaHasInstalled();
 
     AbstractLLM *getCurrentLLM() const;
+    LLMInfo getCurrentLLMInfo() const;
 
     void setLocale(CodeGeeX::Locale locale);
 
@@ -148,6 +149,7 @@ private:
 
     int answerFlag = 0; // use to identify every single answer
     AbstractLLM *chatLLM { nullptr };
+    LLMInfo currentInfo;
     AbstractLLM *liteLLM { nullptr }; //codegeex Lite.
     CodeGeeX::Locale locale { CodeGeeX::Zh };
 };

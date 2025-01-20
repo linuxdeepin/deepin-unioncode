@@ -48,7 +48,6 @@ private:
     void initLogo();
     void initIntroContent();
     void initSuggestContent();
-    void initLogoutButton();
 
     void appendDescLabel(QVBoxLayout *layout, const QString &text);
     void appendSuggestButton(QVBoxLayout *layout, const QString &text, const QString &iconName = "");
