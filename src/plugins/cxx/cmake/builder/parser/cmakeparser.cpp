@@ -6,7 +6,7 @@
 
 #include "common/util/fileutils.h"
 #include "common/util/qtcassert.h"
-
+#include "services/project/projectservice.h"
 
 const char COMMON_ERROR_PATTERN[] = "^CMake Error at (.*):([0-9]*)( \\((.*)\\))?:";
 const char NEXT_SUBERROR_PATTERN[] = "^CMake Error in (.*):";
@@ -14,14 +14,19 @@ const char LOCATION_LINE_PATTERN[] = ":(\\d+):(?:(\\d+))?$";
 
 const char TASK_CATEGORY_BUILDSYSTEM[] = "Task.Category.Buildsystem";
 
+QString assembleCmakePath(const QString &relativePath)
+{
+    auto prjService = dpfGetService(dpfservice::ProjectService);
+    QString workSpace = prjService->getActiveProjectInfo().workspaceFolder();
+    return workSpace + QDir::separator() + relativePath;
+}
+
 CMakeParser::CMakeParser()
 {
     commonError.setPattern(QLatin1String(COMMON_ERROR_PATTERN));
-    commonError.setMinimal(true);
     QTC_CHECK(commonError.isValid());
 
     nextSubError.setPattern(QLatin1String(NEXT_SUBERROR_PATTERN));
-    nextSubError.setMinimal(true);
     QTC_CHECK(nextSubError.isValid());
 
     locationLine.setPattern(QLatin1String(LOCATION_LINE_PATTERN));
@@ -38,6 +43,8 @@ void CMakeParser::stdError(const QString &line)
 {
     QString trimmedLine = rightTrimmed(line);
 
+    auto commonErrorMatch = commonError.match(trimmedLine);
+    auto nextSubErrorMatch = nextSubError.match(trimmedLine);
     switch (expectTripleLineErrorData) {
     case NONE:
         if (trimmedLine.isEmpty() && !lastTask.isNull()) {
@@ -47,12 +54,11 @@ void CMakeParser::stdError(const QString &line)
                 skippedFirstEmptyLine = true;
             return;
         }
-        if (skippedFirstEmptyLine)
-            skippedFirstEmptyLine = false;
+        skippedFirstEmptyLine = false;
 
-        if (commonError.indexIn(trimmedLine) != -1) {
-            lastTask = Task(Task::Error, QString(), Utils::FileName::fromUserInput(commonError.cap(1)),
-                              commonError.cap(2).toInt(), TASK_CATEGORY_BUILDSYSTEM);
+        if (commonErrorMatch.hasMatch()) {
+            lastTask = Task(Task::Error, QString(), Utils::FileName::fromUserInput(assembleCmakePath(commonErrorMatch.captured(1))),
+                              commonErrorMatch.captured(2).toInt(), TASK_CATEGORY_BUILDSYSTEM);
             lines = 1;
             return;
         }  else if (trimmedLine.startsWith(QLatin1String("  ")) && !lastTask.isNull()) {
@@ -72,8 +78,8 @@ void CMakeParser::stdError(const QString &line)
                               Utils::FileName(), -1, TASK_CATEGORY_BUILDSYSTEM);
             lines = 1;
             return;
-        } else if (nextSubError.indexIn(trimmedLine) != -1) {
-            lastTask = Task(Task::Error, QString(), Utils::FileName::fromUserInput(nextSubError.cap(1)), -1,
+        } else if (nextSubErrorMatch.hasMatch()) {
+            lastTask = Task(Task::Error, QString(), Utils::FileName::fromUserInput(assembleCmakePath(nextSubErrorMatch.captured(1))), -1,
                               TASK_CATEGORY_BUILDSYSTEM);
             lines = 1;
             return;

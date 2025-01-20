@@ -28,8 +28,8 @@ private:
     TripleLineError expectTripleLineErrorData = NONE;
 
     Task lastTask;
-    QRegExp commonError;
-    QRegExp nextSubError;
+    QRegularExpression commonError;
+    QRegularExpression nextSubError;
     QRegularExpression locationLine;
     bool skippedFirstEmptyLine = false;
     int lines = 0;
