@@ -111,7 +111,7 @@ void ResourceSettingWidget::handleProjectChanged()
 
     QString target = targetLocationEdit->text();
     if (target.isEmpty()) {
-        QString path = prjInfo.workspaceFolder() + QDir::separator() + "test";
+        QString path = prjInfo.workspaceFolder() + QDir::separator() + "tests";
         targetLocationEdit->setText(path);
     } else if (prjInfoCache.isVaild() && target.startsWith(prjInfoCache.workspaceFolder())) {
         const auto &subFolder = target.mid(prjInfoCache.workspaceFolder().size());

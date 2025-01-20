@@ -9,21 +9,26 @@
 #include "utils/utils.h"
 #include "event/eventreceiver.h"
 
+#include "services/window/windowservice.h"
+
 #include <DLabel>
 #include <DGuiApplicationHelper>
 
 #include <QVBoxLayout>
 #include <QFileInfo>
 #include <QDir>
+#include <QMenu>
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
+using namespace dpfservice;
 
 SmartUTWidget::SmartUTWidget(QWidget *parent)
     : QWidget(parent)
 {
     initUI();
     initConnection();
+    winSrv = dpfGetService(WindowService);
 }
 
 void SmartUTWidget::showSettingDialog()
@@ -53,9 +58,11 @@ void SmartUTWidget::initUI()
 
 void SmartUTWidget::initConnection()
 {
-    connect(generateBtn, &DToolButton::clicked, this, qOverload<>(&SmartUTWidget::createUTFiles));
+    connect(generateBtn, &DToolButton::clicked, this, &SmartUTWidget::generateAllUTFiles);
+    connect(continueBtn, &DToolButton::clicked, this, &SmartUTWidget::continueToGenerateAll);
     connect(stopBtn, &DToolButton::clicked, SmartUTManager::instance(), qOverload<>(&SmartUTManager::stop));
-    connect(prjView, &ProjectTreeView::reqGenerateUTFile, this, qOverload<NodeItem *>(&SmartUTWidget::createUTFiles));
+    connect(prjView, &ProjectTreeView::reqGenerateUTFile, this, &SmartUTWidget::generateUTFiles);
+    connect(prjView, &ProjectTreeView::reqContinueToGenerate, this, &SmartUTWidget::continueToGenerate);
     connect(prjView, &ProjectTreeView::reqStopGenerate, SmartUTManager::instance(), qOverload<NodeItem *>(&SmartUTManager::stop));
     connect(SmartUTManager::instance(), &SmartUTManager::itemStateChanged, this, &SmartUTWidget::updateItemState);
     connect(EventDistributeProxy::instance(), &EventDistributeProxy::sigLLMCountChanged, this, &SmartUTWidget::updateModelList);
@@ -118,27 +125,21 @@ QWidget *SmartUTWidget::createMainWidget()
     modelCB = new DComboBox(this);
     modelCB->addItems(SmartUTManager::instance()->modelList());
     generateBtn = createButton("uc_generate", tr("Generate unit test files"));
-    runBtn = createButton("uc_run", tr("Run"));
-    reportBtn = createButton("uc_report", tr("Generate coverage report"));
+    continueBtn = createButton("uc_run", tr("Continue to generate"));
     stopBtn = createButton("uc_stop", tr("Stop"));
-    stopBtn->setVisible(false);
+    stopBtn->setEnabled(false);
 
     QHBoxLayout *bottomLayout = new QHBoxLayout;
     bottomLayout->setContentsMargins(10, 10, 10, 10);
     bottomLayout->addWidget(new DLabel(tr("Select Model:"), this));
     bottomLayout->addWidget(modelCB, 1);
+    bottomLayout->addWidget(continueBtn);
     bottomLayout->addWidget(generateBtn);
     bottomLayout->addWidget(stopBtn);
-    bottomLayout->addWidget(runBtn);
-    bottomLayout->addWidget(reportBtn);
 
     layout->addWidget(prjView, 1);
     layout->addWidget(new DHorizontalLine(this));
     layout->addLayout(bottomLayout);
-
-    // TODO: run and report
-    runBtn->setVisible(false);
-    reportBtn->setVisible(false);
 
     return widget;
 }
@@ -182,14 +183,66 @@ void SmartUTWidget::fillProjectView(const QString &workspace, const QStringList 
     prjView->setRootProjectNode(prjNode);
 }
 
-void SmartUTWidget::createUTFiles()
+bool SmartUTWidget::checkModelValid()
 {
-    SmartUTManager::instance()->generateUTFiles(modelCB->currentText(), prjView->rootItem());
+    auto model = modelCB->currentText();
+    QString errMsg;
+    bool valid = false;
+    auto llm = SmartUTManager::instance()->findModel(model);
+    if (!llm) {
+        errMsg = SmartUTManager::instance()->lastError();
+    } else {
+        valid = llm->checkValid(&errMsg);
+        delete llm;
+    }
+
+    if (!valid)
+        winSrv->notify(2, "SmartUT", errMsg, {});
+
+    return valid;
 }
 
-void SmartUTWidget::createUTFiles(NodeItem *item)
+void SmartUTWidget::generateAllUTFiles()
 {
-    SmartUTManager::instance()->generateUTFiles(modelCB->currentText(), item);
+    generateUTFiles(prjView->rootItem());
+}
+
+void SmartUTWidget::generateUTFiles(NodeItem *item)
+{
+    if (!checkModelValid())
+        return;
+
+    auto checkItemValid = [](NodeItem *item) {
+        return !item->hasChildren()
+                && item->itemNode->isFileNodeType()
+                && item->state != Ignored
+                && item->state != Waiting
+                && item->state != Generating;
+    };
+
+    SmartUTManager::instance()->generateUTFiles(modelCB->currentText(), item, checkItemValid);
+}
+
+void SmartUTWidget::continueToGenerateAll()
+{
+    continueToGenerate(prjView->rootItem());
+}
+
+void SmartUTWidget::continueToGenerate(NodeItem *item)
+{
+    if (!checkModelValid())
+        return;
+
+    auto checkItemValid = [](NodeItem *item) {
+        return !item->hasChildren()
+                && item->itemNode->isFileNodeType()
+                && item->state != Ignored
+                && item->state != Waiting
+                && item->state != Generating
+                && item->state != Completed;
+    };
+
+    SmartUTManager::instance()->generateUTFiles(modelCB->currentText(), item, checkItemValid);
 }
 
 void SmartUTWidget::updateModelList()
@@ -203,10 +256,11 @@ void SmartUTWidget::updateModelList()
 void SmartUTWidget::updateItemState(NodeItem *item)
 {
     auto updateBtn = [this](bool isGenerating) {
-        generateBtn->setVisible(!isGenerating);
-        stopBtn->setVisible(isGenerating);
+        generateBtn->setEnabled(!isGenerating);
+        continueBtn->setEnabled(!isGenerating);
+        stopBtn->setEnabled(isGenerating);
     };
-    
+
     prjView->updateItem(item);
     if (item->state == Generating || item->state == Waiting) {
         updateBtn(true);

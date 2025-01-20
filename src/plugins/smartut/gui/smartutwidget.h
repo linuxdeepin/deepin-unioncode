@@ -10,6 +10,10 @@
 
 #include <QStackedWidget>
 
+namespace dpfservice {
+class WindowService;
+}
+
 class ProjectTreeView;
 class SettingDialog;
 class NodeItem;
@@ -22,8 +26,10 @@ public:
     void showSettingDialog();
 
 public Q_SLOTS:
-    void createUTFiles();
-    void createUTFiles(NodeItem *item);
+    void generateAllUTFiles();
+    void generateUTFiles(NodeItem *item);
+    void continueToGenerateAll();
+    void continueToGenerate(NodeItem *item);
     void updateModelList();
     void updateItemState(NodeItem *item);
 
@@ -34,16 +40,17 @@ private:
     QWidget *createMainWidget();
 
     void fillProjectView(const QString &workspace, const QStringList &fileList);
+    bool checkModelValid();
 
 private:
     QStackedWidget *mainWidget { nullptr };
     DTK_WIDGET_NAMESPACE::DComboBox *modelCB { nullptr };
     DTK_WIDGET_NAMESPACE::DToolButton *generateBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DToolButton *continueBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DToolButton *stopBtn { nullptr };
-    DTK_WIDGET_NAMESPACE::DToolButton *runBtn { nullptr };
-    DTK_WIDGET_NAMESPACE::DToolButton *reportBtn { nullptr };
     ProjectTreeView *prjView { nullptr };
     SettingDialog *settingDlg { nullptr };
+    dpfservice::WindowService *winSrv { nullptr };
 };
 
 #endif   // SMARTUTWIDGET_H

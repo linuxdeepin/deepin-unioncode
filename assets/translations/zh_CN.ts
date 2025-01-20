@@ -4160,52 +4160,62 @@ repos path: %0</source>
 <context>
     <name>ProjectTreeView</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="133"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="91"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="140"/>
-        <source>Generate UT</source>
-        <translation>生成单元测试</translation>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="100"/>
+        <source>Regenerate</source>
+        <translation>重新生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="145"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="102"/>
+        <source>Continue To Generate</source>
+        <translation>继续生成</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="104"/>
+        <source>Generate</source>
+        <translation>生成</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="109"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="148"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="112"/>
         <source>Unignore</source>
         <translation>取消忽略</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="150"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="114"/>
         <source>Ignore</source>
         <translation>忽略</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="152"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="116"/>
         <source>Show Containing Folder</source>
         <translation>显示所在文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="161"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="172"/>
         <source>Collapse</source>
         <translation>折叠</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="163"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="174"/>
         <source>Expand</source>
         <translation>展开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="164"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="175"/>
         <source>Collapse All</source>
         <translation>折叠所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="165"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="176"/>
         <source>Expand All</source>
         <translation>展开所有</translation>
     </message>
@@ -6779,37 +6789,32 @@ not exists support files: %0</source>
 <context>
     <name>SmartUTWidget</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="72"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="79"/>
         <source>The current resource is not configured</source>
         <translation>当前资源信息未配置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="82"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="89"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please click the Setting button &quot;%1&quot; in the upper right corner to configure&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;请点击右上角的的设置按钮“%1”进行配置&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="120"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="127"/>
         <source>Generate unit test files</source>
         <translation>生成单元测试文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="121"/>
-        <source>Run</source>
-        <translation>运行</translation>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="128"/>
+        <source>Continue to generate</source>
+        <translation>继续生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="122"/>
-        <source>Generate coverage report</source>
-        <translation>生成覆盖率报告</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="123"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="129"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="134"/>
         <source>Select Model:</source>
         <translation>选择模型：</translation>
     </message>
@@ -7056,7 +7061,7 @@ not exists support files: %0</source>
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="211"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="223"/>
         <source>File not found: %1</source>
         <translation>找不到文件：%1</translation>
     </message>
@@ -7064,14 +7069,14 @@ not exists support files: %0</source>
 <context>
     <name>TaskManager</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="102"/>
+        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="108"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="103"/>
-        <source>Fix Issue</source>
-        <translation>修复问题</translation>
+        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="111"/>
+        <source>Smart Analysis</source>
+        <translation>智能分析</translation>
     </message>
 </context>
 <context>

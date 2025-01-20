@@ -36,9 +36,9 @@ public:
     QString lastError() const;
 
 public Q_SLOTS:
-    void generateUTFiles(const QString &model, NodeItem *item);
-    void runTest(const dpfservice::ProjectInfo &prjInfo);
-    void generateCoverageReport(const dpfservice::ProjectInfo &prjInfo);
+    void generateUTFiles(const QString &model,
+                         NodeItem *item,
+                         std::function<bool(NodeItem *item)> checkItemValid);
     void stop();
     void stop(NodeItem *item);
 

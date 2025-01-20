@@ -4123,52 +4123,62 @@ repos path: %0</source>
 <context>
     <name>ProjectTreeView</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="133"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="91"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="140"/>
-        <source>Generate UT</source>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="100"/>
+        <source>Regenerate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="145"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="102"/>
+        <source>Continue To Generate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="104"/>
+        <source>Generate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="109"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="148"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="112"/>
         <source>Unignore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="150"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="114"/>
         <source>Ignore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="152"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="116"/>
         <source>Show Containing Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="161"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="172"/>
         <source>Collapse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="163"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="174"/>
         <source>Expand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="164"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="175"/>
         <source>Collapse All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="165"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="176"/>
         <source>Expand All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6733,37 +6743,32 @@ not exists support files: %0</source>
 <context>
     <name>SmartUTWidget</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="72"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="79"/>
         <source>The current resource is not configured</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="82"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="89"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please click the Setting button &quot;%1&quot; in the upper right corner to configure&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="120"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="127"/>
         <source>Generate unit test files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="121"/>
-        <source>Run</source>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="128"/>
+        <source>Continue to generate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="122"/>
-        <source>Generate coverage report</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="123"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="129"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/smartut/gui/smartutwidget.cpp" line="134"/>
         <source>Select Model:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7010,7 +7015,7 @@ not exists support files: %0</source>
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="211"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="223"/>
         <source>File not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7018,13 +7023,13 @@ not exists support files: %0</source>
 <context>
     <name>TaskManager</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="102"/>
+        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="108"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="103"/>
-        <source>Fix Issue</source>
+        <location filename="../../src/plugins/builder/tasks/taskmanager.cpp" line="111"/>
+        <source>Smart Analysis</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

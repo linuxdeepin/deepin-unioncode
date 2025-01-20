@@ -6,5 +6,6 @@
         <file>texts/rebuild_16px.svg</file>
         <file>texts/filter_16px.svg</file>
         <file>texts/clear_log_16px.svg</file>
+        <file>texts/uc_repair_16px.svg</file>
     </qresource>
 </RCC>
