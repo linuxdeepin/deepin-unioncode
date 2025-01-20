@@ -147,6 +147,9 @@ void AddModelDialogPrivate::slotAddModel()
         return;
     }
     newLLMInfo.type = cbLLMType->currentData().value<LLMType>();
+    if (newLLMInfo.type == LLMType::OPENAI)
+        newLLMInfo.icon = QIcon::fromTheme("uc_openai");
+
     newLLMInfo.modelPath = leApiUrl->text();
     if (newLLMInfo.modelPath.isEmpty()) {
         leApiUrl->showAlertMessage(AddModelDialog::tr("This field cannot be empty."));

@@ -93,6 +93,11 @@ AbstractLLM *CodeGeeXManager::getCurrentLLM() const
     return chatLLM;
 }
 
+LLMInfo CodeGeeXManager::getCurrentLLMInfo() const
+{
+    return currentInfo;
+}
+
 void CodeGeeXManager::setLocale(CodeGeeX::Locale locale)
 {
     this->locale = locale;
@@ -338,6 +343,7 @@ void CodeGeeXManager::onLLMChanged(const LLMInfo &llmInfo)
 
     chatLLM = selectedLLM;
     initLLM(chatLLM);
+    currentInfo = llmInfo;
     emit llmChanged(llmInfo);
 }
 
