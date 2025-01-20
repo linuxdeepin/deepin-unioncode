@@ -138,7 +138,7 @@ void UTTaskPool::handleModelStateChanged(AbstractLLM *llm)
     }
 }
 
-bool UTTaskPool::createModels(const QString &model)
+void UTTaskPool::createModels(const QString &model)
 {
     QList<AbstractLLM *> models;
     for (int i = 0; i < kMaxModelCount; ++i) {
