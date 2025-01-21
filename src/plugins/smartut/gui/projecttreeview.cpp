@@ -138,6 +138,11 @@ void ProjectTreeView::setRootProjectNode(ProjectNode *rootNode)
     d->model->setRootProjectNode(rootNode);
 }
 
+void ProjectTreeView::updateProjectNode(ProjectNode *prjNode)
+{
+    d->model->updateProjectNode(prjNode);
+}
+
 NodeItem *ProjectTreeView::rootItem() const
 {
     return d->model->rootItem();

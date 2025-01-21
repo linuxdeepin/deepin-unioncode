@@ -5,6 +5,8 @@
 #ifndef SMARTUTWIDGET_H
 #define SMARTUTWIDGET_H
 
+#include "common/itemnode.h"
+
 #include <DToolButton>
 #include <DComboBox>
 
@@ -39,7 +41,8 @@ private:
     QWidget *createBlankPage();
     QWidget *createMainWidget();
 
-    void fillProjectView(const QString &workspace, const QStringList &fileList);
+    void setProjectList(const QString &workspace, const QStringList &fileList);
+    std::vector<std::unique_ptr<FileNode>> createFileNodes(const QString &workspace, const QStringList &fileList);
     bool checkModelValid();
 
 private:

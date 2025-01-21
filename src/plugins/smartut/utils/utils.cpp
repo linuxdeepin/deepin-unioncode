@@ -258,7 +258,7 @@ QStringList Utils::queryCodePart(const QString &content, const QString &type)
 
 bool Utils::checkAnyState(NodeItem *item, ItemState state)
 {
-    if (auto node = item->itemNode->asFileNode()) {
+    if (item->itemNode->asFileNode()) {
         return item->state == state;
     } else if (item->hasChildren()) {
         for (int i = 0; i < item->rowCount(); ++i) {
@@ -271,7 +271,7 @@ bool Utils::checkAnyState(NodeItem *item, ItemState state)
 
 bool Utils::checkAllState(NodeItem *item, ItemState state)
 {
-    if (auto node = item->itemNode->asFileNode()) {
+    if (item->itemNode->asFileNode()) {
         return item->state == state;
     } else if (item->hasChildren()) {
         for (int i = 0; i < item->rowCount(); ++i) {

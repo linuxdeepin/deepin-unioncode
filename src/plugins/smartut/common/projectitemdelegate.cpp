@@ -68,34 +68,33 @@ bool ProjectItemDelegate::editorEvent(QEvent *event,
                                       const QStyleOptionViewItem &option,
                                       const QModelIndex &index)
 {
-    if (!index.isValid() || !model || event->type() != QEvent::MouseButtonRelease)
-        return false;
+    if (event->type() == QEvent::MouseButtonRelease || event->type() == QEvent::MouseButtonDblClick) {
+        QStyleOptionViewItem opt = option;
+        opt.rect.adjust(10, 0, -10, 0);
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
 
-    QStyleOptionViewItem opt = option;
-    opt.rect.adjust(10, 0, -10, 0);
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        int depth = itemDepth(index);
+        if (index.model()->flags(index).testFlag(Qt::ItemIsUserCheckable)) {
+            const QRect checkRect = checkBoxRect(depth, opt.rect);
+            if (checkRect.contains(mouseEvent->pos())) {
+                Qt::CheckState state = static_cast<Qt::CheckState>(index.data(Qt::CheckStateRole).toInt());
+                Qt::CheckState newState = state == Qt::Checked ? Qt::Unchecked : Qt::Checked;
 
-    int depth = itemDepth(index);
-    if (index.model()->flags(index).testFlag(Qt::ItemIsUserCheckable)) {
-        const QRect checkRect = checkBoxRect(depth, opt.rect);
-        if (checkRect.contains(mouseEvent->pos())) {
-            Qt::CheckState state = static_cast<Qt::CheckState>(index.data(Qt::CheckStateRole).toInt());
-            Qt::CheckState newState = state == Qt::Checked ? Qt::Unchecked : Qt::Checked;
+                updateChildrenCheckState(model, index, newState);
+                updateParentCheckState(model, index);
+                return true;
+            }
+        }
 
-            updateChildrenCheckState(model, index, newState);
-            updateParentCheckState(model, index);
+        const QRect arRect = arrowRect(depth, opt.rect);
+        if (arRect.contains(mouseEvent->pos())) {
+            if (view->isExpanded(index)) {
+                view->collapse(index);
+            } else {
+                view->expand(index);
+            }
             return true;
         }
-    }
-
-    const QRect arRect = arrowRect(depth, opt.rect);
-    if (arRect.contains(mouseEvent->pos())) {
-        if (view->isExpanded(index)) {
-            view->collapse(index);
-        } else {
-            view->expand(index);
-        }
-        return true;
     }
 
     return false;

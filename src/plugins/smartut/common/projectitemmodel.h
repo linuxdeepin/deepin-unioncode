@@ -21,6 +21,7 @@ public:
     void setRootProjectNode(ProjectNode *rootNode);
     void setRootItem(NodeItem *root);
     NodeItem *rootItem() const;
+    void updateProjectNode(ProjectNode *prjNode);
     void clear();
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;

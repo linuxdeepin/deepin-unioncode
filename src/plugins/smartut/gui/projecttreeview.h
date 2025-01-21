@@ -23,6 +23,7 @@ public:
 
     ViewType viewType() const;
     void setRootProjectNode(ProjectNode *rootNode);
+    void updateProjectNode(ProjectNode *prjNode);
     NodeItem *rootItem() const;
 
     void clear();
