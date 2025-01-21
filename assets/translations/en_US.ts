@@ -62,7 +62,7 @@
     </message>
     <message>
         <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="97"/>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="195"/>
+        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="198"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
@@ -83,12 +83,12 @@
     </message>
     <message>
         <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="146"/>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="152"/>
+        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="155"/>
         <source>This field cannot be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="184"/>
+        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="187"/>
         <source>Error Information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1282,69 +1282,69 @@ storage: %2
 <context>
     <name>CodeGeeXManager</name>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="187"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="192"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="227"/>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="281"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="232"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="286"/>
         <source>No selected LLM or current LLM is not avaliable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="334"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="339"/>
         <source>llm named: %1 is not avaliable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="405"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="411"/>
         <source>LLM is not valid. %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="407"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="413"/>
         <source>Error: %1, try again later</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="488"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="494"/>
         <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="493"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="499"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="506"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="512"/>
         <source>It may take servel minutes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="522"/>
         <source>Indexing Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="516"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="522"/>
         <source>Indexing Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="577"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="583"/>
         <source>The error occurred when performing rag on project %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="188"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="193"/>
         <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
  the installation process may take several minutes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="159"/>
+        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="164"/>
         <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3260,22 +3260,22 @@ need to manually copy the source code to this path</source>
     <name>IntroPage</name>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="90"/>
-        <source>Welcome to CodeGeeX</source>
+        <source>Welcome to Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="101"/>
-        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
+        <source>Chat provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="102"/>
-        <source>CodeGeeX provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.</source>
+        <source>Chat provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="103"/>
-        <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
+        <source>Also, you can directly %1 ask Chat any questions %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3296,11 +3296,6 @@ need to manually copy the source code to this path</source>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="117"/>
         <source>What is the best way to start learning JavaScript?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="123"/>
-        <source>logout</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3738,13 +3733,13 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="239"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="242"/>
         <source>Online Searching</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="330"/>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="380"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="333"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="383"/>
         <source>Show Reference</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4186,52 +4181,52 @@ repos path: %0</source>
 <context>
     <name>PromptSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="35"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="36"/>
         <source>Select Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="41"/>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="93"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="42"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="94"/>
         <source>Add Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="42"/>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="135"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="43"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="136"/>
         <source>Delete Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="96"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="97"/>
         <source>Please input the name of the prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="98"/>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="137"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="99"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="138"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="99"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="100"/>
         <source>OK</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="116"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="117"/>
         <source>A prompt named &quot;%1&quot; already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="136"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="137"/>
         <source>Are you sure you want to delete the &quot;%1&quot; prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="138"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="139"/>
         <source>Ok</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
@@ -4914,7 +4909,7 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="23"/>
-        <source>CodeGeeX</source>
+        <source>Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5257,22 +5252,22 @@ not exists support files: %0</source>
 <context>
     <name>ResourceSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="41"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="42"/>
         <source>Source Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="43"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="44"/>
         <source>Target Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="126"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="127"/>
         <source>Select target location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="139"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="140"/>
         <source>Please input a valid path with the selected project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6540,57 +6535,57 @@ not exists support files: %0</source>
 <context>
     <name>SettingDialog</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="29"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="30"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="43"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="44"/>
         <source>Select Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="49"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="103"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="50"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="104"/>
         <source>Add Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="50"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="145"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="51"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="146"/>
         <source>Delete Prompt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="69"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="108"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="147"/>
-        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="83"/>
-        <source>Cancel</source>
-        <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="70"/>
         <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="109"/>
         <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="148"/>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="83"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="71"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="110"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="149"/>
         <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="84"/>
         <source>OK</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="106"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="107"/>
         <source>Please input the name of the prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="126"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="127"/>
         <source>A prompt named &quot;%1&quot; already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="146"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="147"/>
         <source>Are you sure you want to delete the &quot;%1&quot; prompt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7015,7 +7010,7 @@ not exists support files: %0</source>
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="223"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="222"/>
         <source>File not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
