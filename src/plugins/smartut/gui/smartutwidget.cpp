@@ -38,7 +38,7 @@ void SmartUTWidget::showSettingDialog()
 
     if (settingDlg->exec() == QDialog::Accepted) {
         const auto &fileList = settingDlg->selectedFileList();
-        fillProjectView(settingDlg->selectedProject(), fileList);
+        setProjectList(settingDlg->selectedProject(), fileList);
     }
 }
 
@@ -144,13 +144,32 @@ QWidget *SmartUTWidget::createMainWidget()
     return widget;
 }
 
-void SmartUTWidget::fillProjectView(const QString &workspace, const QStringList &fileList)
+void SmartUTWidget::setProjectList(const QString &workspace, const QStringList &fileList)
 {
-    prjView->clear();
+    auto fileNodes = createFileNodes(workspace, fileList);
+    if (fileNodes.empty()) {
+        prjView->clear();
+        mainWidget->setCurrentIndex(0);
+        return;
+    } else {
+        mainWidget->setCurrentIndex(1);
+    }
+
+    ProjectNode *prjNode = new ProjectNode(workspace);
+    prjNode->addNestedNodes(std::move(fileNodes), workspace);
+    if (prjView->rootItem() && prjView->rootItem()->filePath() == workspace) {
+        prjView->updateProjectNode(prjNode);
+    } else {
+        prjView->clear();
+        prjView->setRootProjectNode(prjNode);
+    }
+}
+
+std::vector<std::unique_ptr<FileNode>> SmartUTWidget::createFileNodes(const QString &workspace, const QStringList &fileList)
+{
     auto setting = SmartUTManager::instance()->utSetting();
     const auto &target = settingDlg->targetLocation();
     const auto &nameFormat = setting->value(kGeneralGroup, kNameFormat).toString();
-
     QSet<QString> utFileCache;
     std::vector<std::unique_ptr<FileNode>> fileNodes;
     for (const auto &f : fileList) {
@@ -171,16 +190,7 @@ void SmartUTWidget::fillProjectView(const QString &workspace, const QStringList 
         fileNodes.emplace_back(std::move(fileNode));
     }
 
-    if (fileNodes.empty()) {
-        mainWidget->setCurrentIndex(0);
-        return;
-    } else {
-        mainWidget->setCurrentIndex(1);
-    }
-
-    ProjectNode *prjNode = new ProjectNode(workspace);
-    prjNode->addNestedNodes(std::move(fileNodes), workspace);
-    prjView->setRootProjectNode(prjNode);
+    return fileNodes;
 }
 
 bool SmartUTWidget::checkModelValid()

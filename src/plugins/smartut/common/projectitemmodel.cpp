@@ -12,6 +12,7 @@ class ProjectItemModelPrivate
 public:
     QStandardItem *findChildItem(QStandardItem *item, const Node *node);
     void addFolderNode(NodeItem *parent, FolderNode *folderNode, QSet<Node *> *seen);
+    void syncProjectItems(NodeItem *targetItem, NodeItem *srcItem);
 
 public:
     NodeItem *rootItem { nullptr };
@@ -63,6 +64,43 @@ void ProjectItemModelPrivate::addFolderNode(NodeItem *parent, FolderNode *folder
     }
 }
 
+void ProjectItemModelPrivate::syncProjectItems(NodeItem *targetItem, NodeItem *srcItem)
+{
+    if (!targetItem || !srcItem)
+        return;
+
+    QHash<QString, NodeItem *> targetChildren;
+    for (int i = 0; i < targetItem->rowCount(); ++i) {
+        NodeItem *child = static_cast<NodeItem *>(targetItem->child(i));
+        if (child)
+            targetChildren.insert(child->filePath(), child);
+    }
+
+    for (int i = 0; i < srcItem->rowCount(); ++i) {
+        NodeItem *sourceChild = static_cast<NodeItem *>(srcItem->child(i));
+        if (!sourceChild)
+            continue;
+
+        QString key = sourceChild->filePath();
+        if (targetChildren.contains(key)) {
+            syncProjectItems(targetChildren[key], sourceChild);
+            targetChildren.remove(key);
+        } else {
+            auto newItem = new NodeItem(sourceChild->itemNode);
+            targetItem->appendRow(newItem);
+            if (sourceChild->hasChildren()) {
+                QSet<Node *> seen;
+                addFolderNode(newItem, newItem->itemNode->asFolderNode(), &seen);
+            }
+        }
+    }
+
+    for (NodeItem *item : qAsConst(targetChildren)) {
+        if (item->state != Generating)
+            targetItem->removeRow(item->row());
+    }
+}
+
 ProjectItemModel::ProjectItemModel(ProjectTreeView *parent)
     : QStandardItemModel(parent),
       d(new ProjectItemModelPrivate())
@@ -93,6 +131,14 @@ void ProjectItemModel::setRootItem(NodeItem *root)
 NodeItem *ProjectItemModel::rootItem() const
 {
     return d->rootItem;
+}
+
+void ProjectItemModel::updateProjectNode(ProjectNode *prjNode)
+{
+    QSet<Node *> seen;
+    NodeItem item(prjNode);
+    d->addFolderNode(&item, prjNode, &seen);
+    d->syncProjectItems(d->rootItem, &item);
 }
 
 void ProjectItemModel::clear()

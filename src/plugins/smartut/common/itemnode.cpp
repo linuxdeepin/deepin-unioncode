@@ -139,6 +139,23 @@ FolderNode *FolderNode::folderNode(const QString &directory) const
     return iter == children.cend() ? nullptr : static_cast<FolderNode *>(iter->get());
 }
 
+Node *FolderNode::findNode(const std::function<bool(Node *)> &filter)
+{
+    if (filter(this))
+        return this;
+
+    for (const std::unique_ptr<Node> &n : children) {
+        if (n->asFileNode() && filter(n.get())) {
+            return n.get();
+        } else if (FolderNode *folder = n->asFolderNode()) {
+            Node *result = folder->findNode(filter);
+            if (result)
+                return result;
+        }
+    }
+    return nullptr;
+}
+
 FolderNode *FolderNode::findChildFolderNode(const std::function<bool(FolderNode *)> &predicate) const
 {
     for (const std::unique_ptr<Node> &n : children) {

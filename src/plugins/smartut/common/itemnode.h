@@ -91,6 +91,7 @@ public:
     const QList<Node *> nodes() const;
     FolderNode *folderNode(const QString &directory) const;
 
+    Node *findNode(const std::function<bool(Node *)> &filter);
     FolderNode *findChildFolderNode(const std::function<bool(FolderNode *)> &predicate) const;
 
     using FolderNodeFactory = std::function<std::unique_ptr<FolderNode>(const QString &)>;
@@ -136,6 +137,11 @@ class NodeItem : public QStandardItem
 public:
     explicit NodeItem(Node *node)
         : itemNode(node) {}
+
+    inline QString filePath() const
+    {
+        return itemNode ? itemNode->filePath() : "";
+    }
 
     Node *itemNode { nullptr };
     ItemState state { None };
