@@ -23,8 +23,6 @@ DWIDGET_USE_NAMESPACE
 
 constexpr int kRadius { 8 };
 constexpr int kNotificationSourceHeight { 15 };
-constexpr int kNotificationLineWidth { 388 };
-constexpr int kNotificationMessageWidth { 310 };
 constexpr int kNotificationActionHeight { 32 };
 constexpr int kNotificationSpacing { 10 };
 
@@ -83,10 +81,25 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
 {
     int height = kNotificationSpacing * 2;
     QString message = index.data(Qt::DisplayRole).toString();
-    auto f = DFontSizeManager::instance()->get(DFontSizeManager::T5);
-    QFontMetrics fontMetrics(f);
-    QRect boundingRect = fontMetrics.boundingRect(0, 0, kNotificationMessageWidth, 0, Qt::TextWordWrap, message);
-    height += boundingRect.height();
+    QFontMetrics fm(option.font);
+    int fontLeading = fm.leading();
+    // Layout the message
+    int textWidth = closeButtonRect(option.rect).left()
+            - view->iconSize().width() - kNotificationSpacing;
+
+    message.replace(QLatin1Char('\n'), QChar::LineSeparator);
+    QTextLayout tl(message);
+    tl.beginLayout();
+    while (true) {
+        QTextLine line = tl.createLine();
+        if (!line.isValid())
+            break;
+        line.setLineWidth(textWidth);
+        height += fontLeading;
+        line.setPosition(QPoint(0, height));
+        height += static_cast<int>(line.height());
+    }
+    tl.endLayout();
 
     QString source = index.data(kSourceRole).toString();
     if (!source.isEmpty()) {
@@ -98,7 +111,7 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
         height += kNotificationActionHeight;
     }
 
-    return { kNotificationLineWidth, height };
+    return { option.rect.width(), height };
 }
 
 void ItemDelegate::drawBackground(QPainter *painter, const QStyleOptionViewItem &option) const
