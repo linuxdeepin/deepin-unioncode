@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(javascript)
 
-find_package(Qt${QT_DESIRED_VERSION} COMPONENTS Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
+
+if (${QT_VERSION_MAJOR} MATCHES 6)
+    find_package(Qt6 REQUIRED COMPONENTS Qml)
+else()
+    find_package(Qt5 REQUIRED COMPONENTS Script ScriptTools Qml)
+endif()
 
 set(javascript_CPP
     javascriptplugin.cpp
@@ -37,10 +43,35 @@ target_link_libraries(${PROJECT_NAME}
     duc-base
     duc-services
     duc-common
-    Qt${QT_DESIRED_VERSION}::Xml
+    Qt${QT_VERSION_MAJOR}::Xml
     ${QtUseModules}
     ${PkgUserModules}
     )
+
+if (${QT_VERSION_MAJOR} MATCHES 6)
+    target_link_libraries(${PROJECT_NAME}
+        duc-framework
+        duc-base
+        duc-services
+        duc-common
+        Qt6::Xml
+        Qt6::Qml
+        ${QtUseModules}
+        ${PkgUserModules}
+        )
+else()
+    target_link_libraries(${PROJECT_NAME}
+        duc-framework
+        duc-base
+        duc-services
+        duc-common
+        Qt5::Xml
+        Qt5::Script
+        Qt5::ScriptTools
+        ${QtUseModules}
+        ${PkgUserModules}
+        )
+endif()
 
 install_logo(${PROJECT_NAME}.svg)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
