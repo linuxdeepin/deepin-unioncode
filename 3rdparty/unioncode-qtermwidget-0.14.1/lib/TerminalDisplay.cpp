@@ -252,19 +252,19 @@ void TerminalDisplay::fontChange(const QFont&)
 void TerminalDisplay::calDrawTextAdditionHeight(QPainter& painter)
 {
     QRect test_rect, feedback_rect;
-	test_rect.setRect(1, 1, _fontWidth * 4, _fontHeight);
+    test_rect.setRect(1, 1, _fontWidth * 4, _fontHeight);
     painter.drawText(test_rect, Qt::AlignBottom, LTR_OVERRIDE_CHAR + QLatin1String("Mq"), &feedback_rect);
 
-	//qDebug() << "test_rect:" << test_rect << "feeback_rect:" << feedback_rect;
+    //qDebug() << "test_rect:" << test_rect << "feeback_rect:" << feedback_rect;
 
-	_drawTextAdditionHeight = (feedback_rect.height() - _fontHeight) / 2;
-	if(_drawTextAdditionHeight < 0) {
-	  _drawTextAdditionHeight = 0;
-	}
+    _drawTextAdditionHeight = (feedback_rect.height() - _fontHeight) / 2;
+    if(_drawTextAdditionHeight < 0) {
+      _drawTextAdditionHeight = 0;
+    }
 
-	// update the original content
+    // update the original content
     _drawTextTestFlag = false;
-	update();
+    update();
 }
 
 void TerminalDisplay::setVTFont(const QFont& f)
@@ -276,8 +276,9 @@ void TerminalDisplay::setVTFont(const QFont& f)
     //     this ensures the same handling for all platforms
     // but then there was revealed that various Linux distros
     // have this problem too...
-    font.setStyleStrategy(QFont::ForceIntegerMetrics);
-
+#if QT_VERSION < 0x060000
+  font.setStyleStrategy(QFont::ForceIntegerMetrics);
+#endif
   QFontMetrics metrics(font);
 
   if ( !QFontInfo(font).fixedPitch() )
@@ -1946,7 +1947,13 @@ void TerminalDisplay::mousePressEvent(QMouseEvent* ev)
           spot->activate(QLatin1String("click-action"));
     }
   }
-  else if ( ev->button() == Qt::MidButton )
+  else if ( ev->button() ==
+#if QT_VERSION >= 0x060000
+            Qt::MiddleButton
+#else
+            Qt::MidButton
+#endif
+             )
   {
     if ( _mouseMarks || (ev->modifiers() & Qt::ShiftModifier) )
       emitSelection(true,ev->modifiers() & Qt::ControlModifier);
@@ -2037,7 +2044,13 @@ void TerminalDisplay::mouseMoveEvent(QMouseEvent* ev)
     int button = 3;
     if (ev->buttons() & Qt::LeftButton)
         button = 0;
-    if (ev->buttons() & Qt::MidButton)
+    if (ev->buttons() &
+#if QT_VERSION >= 0x060000
+            Qt::MiddleButton
+#else
+            Qt::MidButton
+#endif
+        )
         button = 1;
     if (ev->buttons() & Qt::RightButton)
         button = 2;
@@ -2079,7 +2092,14 @@ void TerminalDisplay::mouseMoveEvent(QMouseEvent* ev)
   if (_actSel == 0) return;
 
  // don't extend selection while pasting
-  if (ev->buttons() & Qt::MidButton) return;
+  if (ev->buttons()  &
+#if QT_VERSION >= 0x060000
+      Qt::MiddleButton
+#else
+      Qt::MidButton
+#endif
+      )
+      return;
 
   extendSelection( ev->pos() );
 }
@@ -2334,9 +2354,21 @@ void TerminalDisplay::mouseReleaseEvent(QMouseEvent* ev)
 
   if ( !_mouseMarks &&
        ((ev->button() == Qt::RightButton && !(ev->modifiers() & Qt::ShiftModifier))
-                        || ev->button() == Qt::MidButton) )
+                        || ev->button() ==
+#if QT_VERSION >= 0x060000
+                Qt::MiddleButton
+#else
+                Qt::MidButton
+#endif
+))
   {
-    emit mouseSignal( ev->button() == Qt::MidButton ? 1 : 2,
+    emit mouseSignal( ev->button() ==
+#if QT_VERSION >= 0x060000
+                           Qt::MiddleButton
+#else
+                           Qt::MidButton
+#endif
+                           ? 1 : 2,
                       charColumn + 1,
                       charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,
                       2);
@@ -2483,8 +2515,8 @@ void TerminalDisplay::mouseDoubleClickEvent(QMouseEvent* ev)
 
 void TerminalDisplay::wheelEvent( QWheelEvent* ev )
 {
-  if (ev->orientation() != Qt::Vertical)
-    return;
+    if (ev->angleDelta().y() == 0)
+        return;
 
   // if the terminal program is not interested mouse events
   // then send the event to the scrollbar if the slider has room to move
@@ -2503,10 +2535,10 @@ void TerminalDisplay::wheelEvent( QWheelEvent* ev )
         // to get a reasonable scrolling speed, scroll by one line for every 5 degrees
         // of mouse wheel rotation.  Mouse wheels typically move in steps of 15 degrees,
         // giving a scroll of 3 lines
-        int key = ev->delta() > 0 ? Qt::Key_Up : Qt::Key_Down;
+        int key = ev->angleDelta().y() > 0 ? Qt::Key_Up : Qt::Key_Down;
 
-        // QWheelEvent::delta() gives rotation in eighths of a degree
-        int wheelDegrees = ev->delta() / 8;
+        // QWheelEvent::angleDelta().y() gives rotation in eighths of a degree
+        int wheelDegrees = ev->angleDelta().y() / 8;
         int linesToScroll = abs(wheelDegrees) / 5;
 
         QKeyEvent keyScrollEvent(QEvent::KeyPress,key,Qt::NoModifier);
@@ -2519,14 +2551,17 @@ void TerminalDisplay::wheelEvent( QWheelEvent* ev )
   {
     // terminal program wants notification of mouse activity
 
-    int charLine;
-    int charColumn;
-    getCharacterPosition( ev->pos() , charLine , charColumn );
-
-    emit mouseSignal( ev->delta() > 0 ? 4 : 5,
-                      charColumn + 1,
-                      charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,
-                      0);
+      int charLine;
+      int charColumn;
+#if QT_VERSION <= 0x060000
+      getCharacterPosition( ev->pos() , charLine , charColumn );
+#else
+      getCharacterPosition( ev->position().toPoint() , charLine , charColumn );
+#endif
+      emit mouseSignal( ev->angleDelta().y() > 0 ? 4 : 5,
+                       charColumn + 1,
+                       charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,
+                       0);
   }
 }
 

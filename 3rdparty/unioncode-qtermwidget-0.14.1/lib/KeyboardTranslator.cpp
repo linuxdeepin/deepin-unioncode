@@ -34,6 +34,7 @@
 #include <QKeySequence>
 #include <QDir>
 #include <QtDebug>
+#include <QRegularExpression>
 
 #include "tools.h"
 
@@ -532,10 +533,10 @@ QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const 
     text = text.simplified();
 
     // title line: keyboard "title"
-    static QRegExp title(QLatin1String("keyboard\\s+\"(.*)\""));
+    QRegularExpression title(QLatin1String("keyboard\\s+\"(.*)\""));
     // key line: key KeySequence : "output"
     // key line: key KeySequence : command
-    static QRegExp key(QLatin1String("key\\s+([\\w\\+\\s\\-\\*\\.]+)\\s*:\\s*(\"(.*)\"|\\w+)"));
+    QRegularExpression key(QLatin1String("key\\s+([\\w\\+\\s\\-\\*\\.]+)\\s*:\\s*(\"(.*)\"|\\w+)"));
 
     QList<Token> list;
     if ( text.isEmpty() )
@@ -543,30 +544,31 @@ QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const 
         return list;
     }
 
-    if ( title.exactMatch(text) )
+    if ( title.match(text).hasMatch() )
     {
+        auto match = title.match(text);
         Token titleToken = { Token::TitleKeyword , QString() };
-        Token textToken = { Token::TitleText , title.capturedTexts().at(1) };
-
+        Token textToken = { Token::TitleText , match.capturedTexts().at(1) };
         list << titleToken << textToken;
     }
-    else if  ( key.exactMatch(text) )
+    else if  ( key.match(text).hasMatch() )
     {
+        auto match = key.match(text);
         Token keyToken = { Token::KeyKeyword , QString() };
-        Token sequenceToken = { Token::KeySequence , key.capturedTexts().value(1).remove(QLatin1Char(' ')) };
+        Token sequenceToken = { Token::KeySequence , match.capturedTexts().value(1).remove(QLatin1Char(' ')) };
 
         list << keyToken << sequenceToken;
 
-        if ( key.capturedTexts().at(3).isEmpty() )
+        if ( match.capturedTexts().size() < 4 || match.capturedTexts().at(3).isEmpty() )
         {
             // capturedTexts()[2] is a command
-            Token commandToken = { Token::Command , key.capturedTexts().at(2) };
+            Token commandToken = { Token::Command , match.capturedTexts().at(2) };
             list << commandToken;
         }
         else
         {
             // capturedTexts()[3] is the output string
-           Token outputToken = { Token::OutputText , key.capturedTexts().at(3) };
+           Token outputToken = { Token::OutputText , match.capturedTexts().at(3) };
            list << outputToken;
         }
     }
@@ -664,7 +666,8 @@ QByteArray KeyboardTranslator::Entry::escapedText(bool expandWildCards,Qt::Keybo
 
         if ( replacement == 'x' )
         {
-            result.replace(i,1,"\\x"+QByteArray(1,ch).toHex());
+            QByteArray data = "\\x"+QByteArray(1,ch).toHex();
+            result.replace(i,1,data);
         } else if ( replacement != 0 )
         {
             result.remove(i,1);
@@ -682,7 +685,7 @@ QByteArray KeyboardTranslator::Entry::unescape(const QByteArray& input) const
     for ( int i = 0 ; i < result.count()-1 ; i++ )
     {
 
-        QByteRef ch = result[i];
+        auto ch = result[i];
         if ( ch == '\\' )
         {
            char replacement[2] = {0,0};

@@ -188,8 +188,10 @@ Q_OBJECT
      */
     void receivedData(const char* buffer, int length);
 
-  protected:
-      void setupChildProcess();
+#if QT_VERSION < 0x060000
+protected:
+    void setupChildProcess() override;
+#endif
 
   private slots:
     // called when data is received from the terminal process

@@ -28,8 +28,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(QT_MINIMUM_VERSION "5.7.1")
 set(LXQTBT_MINIMUM_VERSION "0.6.0")
 
-find_package(Qt5Widgets "${QT_MINIMUM_VERSION}" REQUIRED)
-find_package(Qt5LinguistTools "${QT_MINIMUM_VERSION}" REQUIRED)
+#find_package(Qt5Widgets "${QT_MINIMUM_VERSION}" REQUIRED)
+#find_package(Qt5LinguistTools "${QT_MINIMUM_VERSION}" REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR}Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR}LinguistTools REQUIRED)
+if (${QT_VERSION_MAJOR} MATCHES 6)
+    find_package(Qt6Core5Compat REQUIRED)
+endif()
 find_package(lxqt-build-tools ${LXQTBT_MINIMUM_VERSION} REQUIRED)
 
 if(USE_UTF8PROC)
@@ -110,9 +115,15 @@ message(STATUS "Translations will be installed in: ${TRANSLATIONS_DIR}")
 
 CHECK_FUNCTION_EXISTS(updwtmpx HAVE_UPDWTMPX)
 
-qt5_wrap_cpp(MOCS ${HDRS})
-qt5_wrap_ui(UI_SRCS ${UI})
-set(PKG_CONFIG_REQ "Qt5Widgets")
+if (${QT_VERSION_MAJOR} MATCHES 6)
+    qt6_wrap_cpp(MOCS ${HDRS})
+    qt6_wrap_ui(UI_SRCS ${UI})
+else()
+    qt5_wrap_cpp(MOCS ${HDRS})
+    qt5_wrap_ui(UI_SRCS ${UI})
+endif()
+
+set(PKG_CONFIG_REQ "Qt${QT_VERSION_MAJOR}Widgets")
 
 lxqt_translate_ts(QTERMWIDGET_QM
     TRANSLATION_DIR "lib/translations"
@@ -127,7 +138,10 @@ lxqt_translate_ts(QTERMWIDGET_QM
 )
 
 add_library(${QTERMWIDGET_LIBRARY_NAME} SHARED ${SRCS} ${MOCS} ${UI_SRCS} ${QTERMWIDGET_QM})
-target_link_libraries(${QTERMWIDGET_LIBRARY_NAME} Qt5::Widgets)
+target_link_libraries(${QTERMWIDGET_LIBRARY_NAME} Qt${QT_VERSION_MAJOR}::Widgets)
+if (${QT_VERSION_MAJOR} MATCHES 6)
+    target_link_libraries(${QTERMWIDGET_LIBRARY_NAME} Qt6::Core5Compat)
+endif()
 
 if(APPLE)
     target_compile_definitions(${QTERMWIDGET_LIBRARY_NAME}
