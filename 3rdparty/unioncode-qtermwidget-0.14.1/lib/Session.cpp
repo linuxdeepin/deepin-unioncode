@@ -30,13 +30,13 @@
 
 // Qt
 #include <QApplication>
-#include <QByteRef>
 #include <QDir>
 #include <QFile>
 #include <QRegExp>
 #include <QStringList>
 #include <QFile>
 #include <QtDebug>
+#include <QRegularExpression>
 
 #include "Pty.h"
 //#include "kptyprocess.h"
@@ -381,7 +381,11 @@ void Session::setUserTitle( int what, const QString & caption )
 
     if (what == 31) {
         QString cwd=caption;
+#if QT_VERSION >= 0x060000
+        cwd=cwd.replace( QRegularExpression(QLatin1String("^~")), QDir::homePath() );
+#else
         cwd=cwd.replace( QRegExp(QLatin1String("^~")), QDir::homePath() );
+#endif
         emit openUrlRequest(cwd);
     }
 

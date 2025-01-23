@@ -78,8 +78,12 @@ public:
   union
   {
     /** The unicode character value for this character. */
-    wchar_t character;
-    /**
+#if QT_VERSION >= 0x060000
+      char16_t character;
+#else
+      wchar_t character;
+#endif
+      /**
      * Experimental addition which allows a single Character instance to contain more than
      * one unicode character.
      *
