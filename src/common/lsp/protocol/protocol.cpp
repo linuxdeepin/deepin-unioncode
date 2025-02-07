@@ -35,6 +35,8 @@ const QString K_DOCUMENTSYMBOL { "documentSymbol" };
 const QString K_HIERARCHICALDOCUMENTSYMBOLSUPPORT { "hierarchicalDocumentSymbolSupport" };
 const QString K_PUBLISHDIAGNOSTICS { "publishDiagnostics" };
 const QString K_RELATEDINFOMATION { "relatedInformation" };
+const QString K_CATEGORYSUPPORT { "categorySupport" };
+const QString K_CODEACTIONSINLINE { "codeActionsInline" };
 const QString K_INITIALIZATIONOPTIONS { "initializationOptions" };
 const QString K_PROCESSID { "processId" };
 const QString K_ROOTPATH { "rootPath" };
@@ -234,7 +236,8 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                                                                                                                                                                                                    K_DOCUMENTSYMBOL,
                                                                                                                                                                                                    QJsonObject { { K_HIERARCHICALDOCUMENTSYMBOLSUPPORT, true } },
                                                                                                                                                                                            },
-                                            { K_PUBLISHDIAGNOSTICS, QJsonObject { { K_RELATEDINFOMATION, true } } },
+                                            { K_PUBLISHDIAGNOSTICS, QJsonObject { { K_CATEGORYSUPPORT, true }, { K_CODEACTIONSINLINE, true } } },
+                                            { "inactiveRegionsCapabilities", QJsonObject { { "inactiveRegions", true } } },
                                             { "definition", QJsonObject { { { "dynamicRegistration", true }, { "linkSupport", true } } } },
                                             { "colorProvider", QJsonObject { { "dynamicRegistration", true } } },
                                             { "declaration", QJsonObject { { "dynamicRegistration", true }, { "linkSupport", true } } },

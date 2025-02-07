@@ -189,8 +189,8 @@ void CodeEditor::initEditorService()
     editorService->showLineWidget = std::bind(&WorkspaceWidget::showLineWidget, workspaceWidget, _1, _2);
     editorService->closeLineWidget = std::bind(&WorkspaceWidget::closeLineWidget, workspaceWidget);
     editorService->cursorPosition = std::bind(&WorkspaceWidget::cursorPosition, workspaceWidget);
-    editorService->registerDiagnosticRepairTool = std::bind(&WorkspaceWidget::registerDiagnosticRepairTool, workspaceWidget, _1, _2);
-    editorService->getDiagnosticRepairTool = std::bind(&WorkspaceWidget::getDiagnosticRepairTool, workspaceWidget);
+    editorService->registerDiagnosticRepairTool = std::bind(&ResourceManager::registerDiagnosticRepairTool, ResourceManager::instance(), _1, _2);
+    editorService->getDiagnosticRepairTool = std::bind(&ResourceManager::getDiagnosticRepairTool, ResourceManager::instance());
     editorService->lineText = std::bind(&WorkspaceWidget::lineText, workspaceWidget, _1, _2);
     editorService->eOLAnnotate = std::bind(&WorkspaceWidget::eOLAnnotate, workspaceWidget, _1, _2, _3, _4, _5);
     editorService->clearEOLAnnotation = std::bind(&WorkspaceWidget::clearEOLAnnotation, workspaceWidget, _1, _2);

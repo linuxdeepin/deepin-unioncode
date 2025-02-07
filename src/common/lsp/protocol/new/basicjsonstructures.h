@@ -574,20 +574,6 @@ struct DiagnosticRelatedInformation
 };
 std::string toJsonValueStr(const DiagnosticRelatedInformation &val);
 
-struct Diagnostic
-{
-    Range range;
-    std::optional<Enum::DiagnosticSeverity::type_value> severity;
-    std::optional<std::any> code;   // int or string
-    std::optional<CodeDescription> codeDescription;
-    std::optional<std::string> source;
-    std::optional<std::string> message;
-    std::optional<std::vector<Enum::DiagnosticTag::type_value>> tags;
-    std::optional<std::vector<DiagnosticRelatedInformation>> relatedInformation;
-    std::optional<std::string> data;   // unknown;
-};
-std::string toJsonValueStr(const Diagnostic &val);
-
 struct Command
 {
     std::string title;
@@ -650,7 +636,6 @@ struct DeleteFile
     std::optional<ChangeAnnotationIdentifier> annotationId;
 };
 std::string toJsonValueStr(const DeleteFile &val);
-;
 
 struct WorkspaceEdit
 {
@@ -724,6 +709,31 @@ struct PartialResultParams
 };
 std::string toJsonValueStr(const PartialResultParams &params);
 
+
+struct CodeAction {
+    QString title;
+    std::optional<QString> kind;
+    // std::optional<std::vector<Diagnostic>> diagnostics;
+    std::optional<bool> isPreferred;
+    std::optional<WorkspaceEdit> edit;
+    std::optional<Command> command;
+};
+std::string toJsonValueStr(const CodeAction &val);
+
+struct Diagnostic
+{
+    Range range;
+    std::optional<Enum::DiagnosticSeverity::type_value> severity;
+    std::optional<std::any> code;   // int or string
+    std::optional<CodeDescription> codeDescription;
+    std::optional<QString> source;
+    QString message;
+    std::optional<std::vector<Enum::DiagnosticTag::type_value>> tags;
+    std::optional<std::vector<DiagnosticRelatedInformation>> relatedInformation;
+    std::optional<QList<newlsp::CodeAction>> codeActions;
+    QString category;
+};
+std::string toJsonValueStr(const Diagnostic &val);
 }   // lsp
 
 #endif   // BASICJSONSTRUCTURES_H

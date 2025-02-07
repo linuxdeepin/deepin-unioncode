@@ -258,11 +258,11 @@ std::string toJsonValueStr(const Diagnostic &val)
         ret = json::addValue(ret, json::KV{"title", std::any_cast<int>(val.code)});
     else if (any_contrast<std::string>(val.code))
         ret = json::addValue(ret, json::KV{"title", std::any_cast<std::string>(val.code)});
-    ret = json::addValue(ret, json::KV{"data", val.data});
+    // ret = json::addValue(ret, json::KV{"data", val.data});
     ret = json::addValue(ret, json::KV{"tags", val.tags});
     ret = json::addValue(ret, json::KV{"range", val.range});
-    ret = json::addValue(ret, json::KV{"source", val.source});
-    ret = json::addValue(ret, json::KV{"message", val.message});
+    ret = json::addValue(ret, json::KV{"source", val.source->toStdString()});
+    ret = json::addValue(ret, json::KV{"message", val.message.toStdString()});
     ret = json::addValue(ret, json::KV{"severity", val.severity});
     ret = json::addValue(ret, json::KV{"codeDescription", val.codeDescription});
     ret = json::addValue(ret, json::KV{"relatedInformation", val.relatedInformation});

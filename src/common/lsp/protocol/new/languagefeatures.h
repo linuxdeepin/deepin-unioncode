@@ -930,21 +930,6 @@ struct CodeActionParams : WorkDoneProgressParams, PartialResultParams {
     Range range;
     CodeActionContext context;
 };
-struct CodeAction {
-    struct Disabled {
-        std::string reason;
-    };
-    std::string title;
-    std::optional<Enum::CodeActionKind::type_value> kind;
-    std::optional<std::vector<Diagnostic>> diagnostics;
-    std::optional<bool> isPreferred;
-    std::optional<Disabled> disabled;
-    std::optional<WorkspaceEdit> edit;
-    std::optional<Command> command;
-    std::optional<std::string> data; //LSPAny
-};
-std::string toJsonValueStr(const CodeAction::Disabled &val);
-std::string toJsonValueStr(const CodeAction &val);
 std::string toJsonValueStr(const CodeActionContext &val);
 std::string toJsonValueStr(const CodeActionParams &val);
 

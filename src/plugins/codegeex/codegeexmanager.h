@@ -98,6 +98,9 @@ public:
     QString promptPreProcessing(const QString &originText);
     QString getChunks(const QString &queryText);
 
+    // repair
+    void repairDiagnostic(const QString &info);
+
 Q_SIGNALS:
     void sendSyncRequest(const QJsonObject &obj);
     void requestMessageUpdate(const MessageData &msg);
@@ -127,6 +130,7 @@ private:
     void initConnections();
     void initLLM(AbstractLLM *llm);
     QString modifiedData(const QString &data);
+    QString readContext(const QString &path, int codeLine);
 
     QString sessionId;
     QString userId;
