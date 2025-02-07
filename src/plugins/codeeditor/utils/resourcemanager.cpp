@@ -11,6 +11,7 @@ class ResourceManagerPrivate
 {
 public:
     QList<AbstractInlineCompletionProvider *> providerList;
+    QMap<QString, ResourceManager::RepairCallback> repairToolInfo;
 };
 
 ResourceManager::ResourceManager()
@@ -42,4 +43,17 @@ void ResourceManager::registerInlineCompletionProvider(AbstractInlineCompletionP
 QList<AbstractInlineCompletionProvider *> ResourceManager::inlineCompletionProviders() const
 {
     return d->providerList;
+}
+
+void ResourceManager::registerDiagnosticRepairTool(const QString &toolName, RepairCallback callback)
+{
+    if (d->repairToolInfo.contains(toolName) || !callback)
+        return;
+
+    d->repairToolInfo.insert(toolName, callback);
+}
+
+QMap<QString, ResourceManager::RepairCallback> ResourceManager::getDiagnosticRepairTool() const
+{
+    return d->repairToolInfo;
 }

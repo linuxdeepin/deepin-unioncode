@@ -7,6 +7,8 @@
 
 #include "base/abstractinlinecompletionprovider.h"
 
+#include <functional>
+
 class ResourceManagerPrivate;
 class ResourceManager
 {
@@ -15,6 +17,10 @@ public:
 
     void registerInlineCompletionProvider(AbstractInlineCompletionProvider *provider);
     QList<AbstractInlineCompletionProvider *> inlineCompletionProviders() const;
+
+    using RepairCallback = std::function<void(const QString &info)>;
+    void registerDiagnosticRepairTool(const QString &toolName, RepairCallback callback);
+    QMap<QString, RepairCallback> getDiagnosticRepairTool() const;
 
 private:
     ResourceManager();

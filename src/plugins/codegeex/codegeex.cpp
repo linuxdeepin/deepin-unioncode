@@ -13,6 +13,7 @@
 #include "services/option/optionservice.h"
 #include "services/option/optiondatastruct.h"
 #include "services/ai/aiservice.h"
+#include "services/editor/editorservice.h"
 #include "copilot.h"
 
 #include "base/abstractwidget.h"
@@ -69,6 +70,9 @@ bool CodeGeex::start()
     aiService->generateRag = std::bind(&CodeGeeXManager::generateRag, CodeGeeXManager::instance(), _1);
     aiService->query = std::bind(&CodeGeeXManager::query, CodeGeeXManager::instance(), _1, _2, _3);
     aiService->chatWithAi = std::bind(&CodeGeeXManager::requestAsync, CodeGeeXManager::instance(), _1);
+
+    auto editSrv = dpfGetService(EditorService);
+    editSrv->registerDiagnosticRepairTool("AI", std::bind(&CodeGeeXManager::repairDiagnostic, CodeGeeXManager::instance(), _1));
 
     return true;
 }

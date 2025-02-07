@@ -66,10 +66,6 @@ public:
     void showLineWidget(int line, QWidget *widget);
     void closeLineWidget();
 
-    using RepairCallback = std::function<void(const QString &info)>;
-    void registerDiagnosticRepairTool(const QString &toolName, RepairCallback callback);
-    QMap<QString, RepairCallback> getDiagnosticRepairTool() const;
-
 protected:
     bool event(QEvent *event) override;
 

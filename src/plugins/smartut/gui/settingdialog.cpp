@@ -76,38 +76,47 @@ void SettingDialog::initUI()
     mainWidget->addWidget(promptWidget);
     mainWidget->addWidget(resourceWidget);
 
+    QHBoxLayout *btnLayout = new QHBoxLayout;
+    cancelBtn = new QPushButton(tr("Cancel", "button"), this);
+    cancelBtn->setFixedWidth(165);
+    okBtn = new DSuggestButton(tr("OK", "button"), this);
+    okBtn->setFixedWidth(165);
+    btnLayout->addWidget(cancelBtn, 0, Qt::AlignRight);
+    btnLayout->addWidget(new DVerticalLine(this));
+    btnLayout->addWidget(okBtn, 0, Qt::AlignLeft);
+
     layout->addWidget(btnBox, 0, Qt::AlignTop | Qt::AlignHCenter);
     layout->addWidget(mainWidget, 1);
+    layout->addLayout(btnLayout);
     addContent(contentWidget);
-
-    addButton(tr("Cancel", "button"));
-    addButton(tr("OK", "button"), true, DDialog::ButtonRecommend);
 }
 
 void SettingDialog::initConnection()
 {
     connect(btnBox, &DButtonBox::buttonClicked, this, &SettingDialog::handleSwitchWidget);
     connect(this, &SettingDialog::buttonClicked, this, &SettingDialog::handleButtonClicked);
+    connect(cancelBtn, &QPushButton::clicked, this, &SettingDialog::reject);
+    connect(okBtn, &DSuggestButton::clicked, this, &SettingDialog::handleButtonClicked);
 }
 
 void SettingDialog::handleSwitchWidget(QAbstractButton *btn)
 {
+    btn->setChecked(true);
     auto index = btnBox->id(btn);
     mainWidget->setCurrentIndex(index);
 }
 
-void SettingDialog::handleButtonClicked(int index)
+void SettingDialog::handleButtonClicked()
 {
-    if (index != 1)
-        return reject();
-
     if (!generalWidget->apply()) {
-        mainWidget->setCurrentWidget(generalWidget);
+        int index = mainWidget->indexOf(generalWidget);
+        handleSwitchWidget(btnBox->button(index));
         return;
     }
 
     if (!resourceWidget->apply()) {
-        mainWidget->setCurrentWidget(resourceWidget);
+        int index = mainWidget->indexOf(resourceWidget);
+        handleSwitchWidget(btnBox->button(index));
         return;
     }
 

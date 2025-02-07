@@ -388,27 +388,6 @@ std::string toJsonValueStr(const CodeActionParams &val)
     return json::addScope(ret);
 }
 
-std::string toJsonValueStr(const CodeAction::Disabled &val)
-{
-    std::string ret;
-    ret = json::addValue(ret, json::KV{"reason", val.reason});
-    return json::addScope(ret);
-}
-
-std::string toJsonValueStr(const CodeAction &val)
-{
-    std::string ret;
-    ret = json::addValue(ret, json::KV{"title", val.title});
-    ret = json::addValue(ret, json::KV{"kind", val.kind});
-    ret = json::addValue(ret, json::KV{"diagnostics", val.diagnostics});
-    ret = json::addValue(ret, json::KV{"isPreferred", val.isPreferred});
-    ret = json::addValue(ret, json::KV{"disabled", val.disabled});
-    ret = json::addValue(ret, json::KV{"edit", val.edit});
-    ret = json::addValue(ret, json::KV{"command", val.command});
-    ret = json::addValue(ret, json::KV{"data", val.data});
-    return json::addScope(ret);
-}
-
 std::string toJsonValueStr(const CodeActionContext &val)
 {
     std::string ret;

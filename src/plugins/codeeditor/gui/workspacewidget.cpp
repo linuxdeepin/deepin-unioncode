@@ -1371,19 +1371,6 @@ void WorkspaceWidget::closeLineWidget()
         tabWidget->closeLineWidget();
 }
 
-void WorkspaceWidget::registerDiagnosticRepairTool(const QString &toolName, RepairCallback callback)
-{
-    if (d->repairToolInfo.contains(toolName) || !callback)
-        return;
-
-    d->repairToolInfo.insert(toolName, callback);
-}
-
-QMap<QString, WorkspaceWidget::RepairCallback> WorkspaceWidget::getDiagnosticRepairTool() const
-{
-    return d->repairToolInfo;
-}
-
 bool WorkspaceWidget::event(QEvent *event)
 {
     if (event->type() == QEvent::WindowActivate)

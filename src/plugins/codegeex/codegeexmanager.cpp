@@ -181,6 +181,31 @@ QString CodeGeeXManager::getChunks(const QString &queryText)
     return "";
 }
 
+void CodeGeeXManager::repairDiagnostic(const QString &info)
+{
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(info.toLocal8Bit(), &error);
+    if (error.error != QJsonParseError::NoError) {
+        qWarning() << error.errorString();
+        return;
+    }
+
+    auto obj = doc.object();
+    const auto &fileName = obj.value("fileName").toString();
+    const auto &msg = obj.value("msg").toString();
+    const auto &range = obj.value("range").toObject();
+    const auto &start = range.value("start").toObject();
+    const auto &line = start.value("line").toInt();
+
+    if (fileName.isEmpty() || line < 0)
+        return;
+
+    const QString context = readContext(fileName, line);
+    QString prompt = context + "\n\n如何解决这个问题？如果你提出修复方案，请尽量简洁。对于当前代码，我们遇到以下错误：";
+    prompt += msg;
+    requestAsync(prompt);
+}
+
 QString CodeGeeXManager::promptPreProcessing(const QString &originText)
 {
     QString processedText = PrePrompt;
@@ -191,8 +216,8 @@ QString CodeGeeXManager::promptPreProcessing(const QString &originText)
         if (!condaHasInstalled()) {   // if not x86 or arm. @codebase can not be use
             QStringList actions { "ai_rag_install", tr("Install") };
             emit notify(0, CodeGeeXManager::tr("The file indexing feature is not available, which may cause functions such as @codebase to not work properly."
-                                                                       "Please install the required environment.\n the installation process may take several minutes."),
-                                          actions);
+                                               "Please install the required environment.\n the installation process may take several minutes."),
+                        actions);
         } else {
             QString prompt = QString("Translate this passage into English :\"%1\", with the requirements: Do not provide responses other than translation.").arg(message.remove("@CodeBase"));
             auto englishPrompt = requestSync(prompt);
@@ -249,7 +274,7 @@ void CodeGeeXManager::requestAsync(const QString &prompt)
 
     answerFlag++;
     startReceiving();
-    QtConcurrent::run([=](){
+    QtConcurrent::run([=]() {
         auto processedText = promptPreProcessing(prompt);
         if (processedText.isEmpty())
             return;
@@ -257,8 +282,8 @@ void CodeGeeXManager::requestAsync(const QString &prompt)
         c->addUserData(processedText);
         QJsonObject obj = chatLLM->create(*c);
         if (isConnectToNetWork())
-            obj.insert("command", "online_search_v1"); // only worked on CodeGeeX llm
-        if (isRunning) // incase stop generate before prompt preprocessed
+            obj.insert("command", "online_search_v1");   // only worked on CodeGeeX llm
+        if (isRunning)   // incase stop generate before prompt preprocessed
             emit sendSyncRequest(obj);
     });
 }
@@ -388,9 +413,9 @@ void CodeGeeXManager::initConnections()
         windowService->notify(type, "Ai", message, actions);
     });
     connect(this, &CodeGeeXManager::sendSyncRequest, this, &CodeGeeXManager::slotSendSyncRequest);
-    connect(this, &CodeGeeXManager::llmChanged, Copilot::instance(), [=](const LLMInfo &info){
+    connect(this, &CodeGeeXManager::llmChanged, Copilot::instance(), [=](const LLMInfo &info) {
         auto aiSrv = dpfGetService(AiService);
-        auto copilotLLM = aiSrv->getLLM(info); // Use a new LLM to avoid affecting chatLLM
+        auto copilotLLM = aiSrv->getLLM(info);   // Use a new LLM to avoid affecting chatLLM
         if (copilotLLM)
             Copilot::instance()->setCopilotLLM(copilotLLM);
     });
@@ -477,6 +502,15 @@ QString CodeGeeXManager::modifiedData(const QString &data)
     retData.replace("\\\\", "\\");
 
     return retData;
+}
+
+QString CodeGeeXManager::readContext(const QString &path, int codeLine)
+{
+    auto editorSrv = dpfGetService(EditorService);
+    Edit::Range range;
+    range.start.line = qMax(0, codeLine - 3);
+    range.end.line = codeLine + 3;
+    return editorSrv->rangeText(path, range);
 }
 
 QString CodeGeeXManager::condaRootPath() const

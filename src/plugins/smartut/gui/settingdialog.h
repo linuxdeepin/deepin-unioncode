@@ -32,13 +32,15 @@ private:
     void initConnection();
 
     void handleSwitchWidget(QAbstractButton *btn);
-    void handleButtonClicked(int index);
+    void handleButtonClicked();
 
     GeneralSettingWidget *generalWidget { nullptr };
     PromptSettingWidget *promptWidget { nullptr };
     ResourceSettingWidget *resourceWidget { nullptr };
     DTK_WIDGET_NAMESPACE::DButtonBox *btnBox { nullptr };
     QStackedWidget *mainWidget { nullptr };
+    QPushButton *cancelBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DSuggestButton *okBtn { nullptr };
 };
 
 #endif   // SETTINGDIALOG_H
