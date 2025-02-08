@@ -433,8 +433,8 @@ void LanguageClientHandlerPrivate::handleHoveredStart(int position)
     if (!textRange.isEmpty() && textRange.contaions(position))
         return;
 
-    auto startPos = editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true);
-    auto endPos = editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), true);
+    auto startPos = editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), false);
+    auto endPos = editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), false);
     // hover in the empty area
     if (startPos == endPos)
         return;
