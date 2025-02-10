@@ -42,7 +42,7 @@ class MainDialogPrivate
 MainDialog::MainDialog(DWidget *parent)
     : DAbstractDialog(parent), d(new MainDialogPrivate())
 {
-    setMinimumSize(800, 600);
+    setMinimumSize(611, 427);
     TemplateVector templateVec;
     TemplateParser::readTemplateConfig(templateVec);
     setupUI(templateVec);
@@ -127,6 +127,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     treeView->expandAll();
 
     connect(btnbox, &DButtonBox::buttonClicked, this, [=](QAbstractButton *button) {
+        d->detailStackedWidget->setCurrentWidget(d->blankWidget);
         if (button == newFileButton) {
             QStandardItemModel *StandardModel = new QStandardItemModel();
             QStandardItem *rootItem = StandardModel->invisibleRootItem();
