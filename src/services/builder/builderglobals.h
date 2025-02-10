@@ -20,7 +20,8 @@ enum BuildState
 {
     kNoBuild,
     kBuilding,
-    kBuildFailed
+    kBuildFailed,
+    kBuildNotSupport,
 };
 
 enum BuildMenuType

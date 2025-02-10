@@ -24,6 +24,7 @@
 #include "services/builder/buildergenerator.h"
 #include "services/option/optionmanager.h"
 #include "services/project/projectservice.h"
+#include "services/language/languageservice.h"
 
 #include <DGuiApplicationHelper>
 #include <DComboBox>
@@ -428,6 +429,14 @@ void BuildManager::setActivatedProjectInfo(const QString &kitName, const QString
 {
     d->activedKitName = kitName;
     d->activedWorkingDir = workingDir;
+    auto service = dpfGetService(LanguageService);
+    if (service) {
+        auto generator = service->create<LanguageGenerator>(kitName);
+        if (generator && generator->isNeedBuild())
+            slotBuildState(BuildState::kNoBuild);
+        else
+            slotBuildState(BuildState::kBuildNotSupport);
+    }
 }
 
 void BuildManager::clearActivatedProjectInfo()
@@ -615,22 +624,33 @@ void BuildManager::slotBuildState(const BuildState &buildState)
     switch (buildState) {
     case BuildState::kNoBuild:
     case BuildState::kBuildFailed: {
+        d->buildCancelBtn->setEnabled(true);
         d->buildCancelBtn->setIcon(QIcon::fromTheme("build"));
         auto cmd = ActionManager::instance()->command("Build.Build");
         auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(Command::keySequencesToNativeString(cmd->keySequences()).join(" | "));
         d->buildCancelBtn->setToolTip(toolTip);
         d->rebuildAction->setEnabled(true);
         d->cleanAction->setEnabled(true);
+        d->buildAction->setEnabled(true);
         d->cancelAction->setEnabled(false);
     } break;
     case BuildState::kBuilding: {
+        d->buildCancelBtn->setEnabled(true);
         d->buildCancelBtn->setIcon(QIcon::fromTheme("cancel"));
         auto cmd = ActionManager::instance()->command("Build.Cancel");
         auto toolTip = QString(MWMBA_CANCEL).append(" %1").arg(Command::keySequencesToNativeString(cmd->keySequences()).join(" | "));
         d->buildCancelBtn->setToolTip(toolTip);
         d->rebuildAction->setEnabled(false);
         d->cleanAction->setEnabled(false);
+        d->buildAction->setEnabled(true);
         d->cancelAction->setEnabled(true);
+    } break;
+    case BuildState::kBuildNotSupport: {
+        d->buildCancelBtn->setEnabled(false);
+        d->rebuildAction->setEnabled(false);
+        d->cleanAction->setEnabled(false);
+        d->buildAction->setEnabled(false);
+        d->cancelAction->setEnabled(false);
     } break;
     }
 }
