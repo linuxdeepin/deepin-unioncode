@@ -39,6 +39,7 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         TargetsManager::instance()->readTargets(projectInfo.buildFolder(), projectInfo.workspaceFolder());
+        emit ProjectCmakeProxy::instance()->projectedChanged(projectInfo);
     }
 
     if (event.data() == project.fileDeleted.name) {

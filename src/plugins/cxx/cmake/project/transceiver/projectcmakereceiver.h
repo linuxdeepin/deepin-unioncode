@@ -45,6 +45,7 @@ signals:
     void openProjectPropertys(const dpfservice::ProjectInfo &prjInfo);
     void nodeExpanded(const QString &filePath);
     void nodeCollapsed(const QString &filePath);
+    void projectedChanged(const dpfservice::ProjectInfo &prjInfo);
 
 private:
     QString buildCommandUuid;

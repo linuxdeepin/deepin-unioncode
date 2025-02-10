@@ -7,7 +7,6 @@
 #include "base/baseitemdelegate.h"
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
-#include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
@@ -20,7 +19,6 @@
 #include <DGuiApplicationHelper>
 #include <DDialog>
 
-#include <QMenu>
 #include <QTextBlock>
 #include <QLineEdit>
 

@@ -142,6 +142,16 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
         this->clearCMake(this->rootItem);
     });
+
+    connect(ProjectCmakeProxy::instance(), &ProjectCmakeProxy::projectedChanged, this, [=](const dpfservice::ProjectInfo &prjInfo) {
+        if (prjInfo.kitName() != toolKitName()) {
+            runCMake->setEnabled(false);
+            clearCMake->setEnabled(false);
+        } else {
+            runCMake->setEnabled(true);
+            clearCMake->setEnabled(true);
+        }
+    });
 }
 
 void CmakeProjectGenerator::clearCMake(QStandardItem *root)
@@ -322,7 +332,10 @@ QMenu *CmakeProjectGenerator::createItemMenu(const QStandardItem *item)
         }
     }
 
-    createBuildMenu(menu);
+    // When the right-clicked project is not the active project, compile-related shortcuts cannot be used.
+    auto service = dpfGetService(ProjectService);
+    if (dpfservice::ProjectInfo::get(root).workspaceFolder() == service->getActiveProjectInfo().workspaceFolder())
+        createBuildMenu(menu);
     QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
@@ -639,6 +652,7 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
             menu->addAction(command->action());
         }
     };
+
     addBuildMenu("Build.Build");
     addBuildMenu("Build.Rebuild");
     addBuildMenu("Build.Clean");

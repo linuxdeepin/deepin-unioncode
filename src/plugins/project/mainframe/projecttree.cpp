@@ -233,7 +233,8 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
         menu = rootMenu(rootItem);
         // add action that running.
         auto runCommand = ActionManager::instance()->command("Debug.Running");
-        if (runCommand && runCommand->action()) {
+        if (getActiveProjectInfo().workspaceFolder() == dpfservice::ProjectInfo::get(rootItem).workspaceFolder()
+            && runCommand && runCommand->action()) {
             menu->addSeparator();
             menu->addAction(runCommand->action());
         }
