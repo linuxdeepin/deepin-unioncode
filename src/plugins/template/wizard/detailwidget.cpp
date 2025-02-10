@@ -43,32 +43,39 @@ class DetailWidgetPrivate
 };
 
 DetailWidget::DetailWidget(DWidget *parent)
-    : DScrollArea(parent)
+    : DWidget(parent)
     , d(new DetailWidgetPrivate())
 {
 
 }
 
+
 DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
-    : DScrollArea(parent)
+    : DWidget(parent)
     , d(new DetailWidgetPrivate())
 {
-    setLineWidth(0);
     d->templatePath = templatePath;
     if (!TemplateParser::readWizardConfig(d->templatePath, d->wizardInfo))
         return;
-    
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->setContentsMargins(10, 0, 20, 0);
-    vLayout->addSpacing(10);
 
-    DWidget *widget = new DWidget(this);
-    widget->setLayout(vLayout);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(10, 0, 10, 0);
+    mainLayout->addSpacing(10);
+    mainLayout->setAlignment(Qt::AlignTop);
+
+    QWidget *scrollWidget = new QWidget(this);
+    QVBoxLayout *scrollLayout = new QVBoxLayout(scrollWidget);
+    scrollLayout->setAlignment(Qt::AlignTop);
+    DScrollArea *scrollArea = new DScrollArea(this);
+    scrollArea->setLineWidth(0);
+    scrollArea->setWidget(scrollWidget);
+    scrollArea->setWidgetResizable(true);
 
     DWidget *bottomWidget = new DWidget(this);
-    QHBoxLayout * bottomLayout = new QHBoxLayout(); //创建一个按钮布局
+    QHBoxLayout * bottomLayout = new QHBoxLayout(bottomWidget); //创建一个按钮布局
     bottomWidget->setLayout(bottomLayout);
-    bottomWidget->setContentsMargins(8, 0, 0, 0);
+    bottomLayout->setContentsMargins(20, 2, 20, 2);
+    bottomWidget->setFixedHeight(40);
 
     DPushButton *cancel = new DPushButton(tr("Cancel"));
     cancel->setFixedSize(173, 36);
@@ -86,7 +93,7 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     connect(create, &DSuggestButton::clicked, [&](){
         PojectGenParam param;
         if(this->getGenParams(param))
-        generate(param);
+            generate(param);
     });
 
     connect(cancel, &DPushButton::clicked, this , &DetailWidget::closeSignal);
@@ -97,26 +104,29 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
             if (page->typeId == "Project") {
                 auto pane = new ProjectPane(page->shortTitle, this);
                 d->paneList.append(pane);
-                vLayout->addWidget(pane);
+                scrollLayout->addWidget(pane);
             } else if (page->typeId == "Fields") {
-                vLayout->addWidget(new DHorizontalLine(this));
+                scrollLayout->addWidget(new DHorizontalLine(this));
                 auto pane = new FieldsPane(*page, this);
-                vLayout->addWidget(pane);
+                scrollLayout->addWidget(pane);
                 d->paneList.append(pane);
             } else if (page->typeId == "Kits") {
-                vLayout->addWidget(new DHorizontalLine(this));
+                scrollLayout->addWidget(new DHorizontalLine(this));
                 auto pane = new KitsPane(*page, this);
-                vLayout->addWidget(pane);
+                scrollLayout->addWidget(pane);
                 d->paneList.append(pane);
             }
         }
     } else {
         auto iter = d->wizardInfo.configures.begin();
         QFormLayout *fLayout = new QFormLayout();
-        fLayout->setSpacing(10);
+        fLayout->setHorizontalSpacing(20);
+        fLayout->setVerticalSpacing(13);
 
         for (; iter != d->wizardInfo.configures.end(); ++iter) {
             QHBoxLayout *hLayout = new QHBoxLayout();
+            hLayout->setSpacing(10);
+
             if (iter->displayName == "File Name")
                 d->label = new DLabel(tr("File Name:"), this);
             else if(iter->displayName == "Project Name")
@@ -125,7 +135,6 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
                 d->label = new DLabel(tr("Location:"), this);
 
             d->label->setMinimumSize(55, 20);
-            d->label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             d->label->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 
             if ("lineEdit" == iter->type) {
@@ -134,7 +143,6 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
                     lineEdit->setText(iter->defaultValues.at(0));
                 }
                 hLayout->addWidget(lineEdit);
-                hLayout->setSpacing(10);
 
                 d->lineEditMap.insert(iter->key, lineEdit);
                 if (iter->browse) {
@@ -155,18 +163,18 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
 
                 auto displayName = iter->displayName;
                 connect(create, &DSuggestButton::clicked, [this, lineEdit, displayName](){
-                     if(!lineEdit->text().isEmpty()) {
-                         return;
-                     }
-                     QString alertMsg;
-                     if (displayName == "File Name")
+                    if(!lineEdit->text().isEmpty()) {
+                        return;
+                    }
+                    QString alertMsg;
+                    if (displayName == "File Name")
                         alertMsg = tr("The filename can't be empty!");
-                     else if (displayName == "Project Name")
+                    else if (displayName == "Project Name")
                         alertMsg = tr("The project can't be empty!");
-                     else if (displayName == "Location")
+                    else if (displayName == "Location")
                         alertMsg = tr("The address can't be empty!");
 
-                     lineEdit->showAlertMessage(alertMsg);
+                    lineEdit->showAlertMessage(alertMsg);
                 });
             } else if ("comboBox" == iter->type) {
                 DComboBox *comboBox = new DComboBox(this);
@@ -181,12 +189,13 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
 
             fLayout->addRow(d->label, hLayout);
         }
-        vLayout->addLayout(fLayout);
+        scrollLayout->addLayout(fLayout);
+        scrollLayout->addStretch();
     }
+
+    mainLayout->addWidget(scrollArea, Qt::AlignTop);
     //make the button at bottom
-    vLayout->addWidget(bottomWidget);
-    setWidget(widget);
-    setWidgetResizable(true);
+    mainLayout->addWidget(bottomWidget, Qt::AlignBottom);
 }
 
 DetailWidget::~DetailWidget()

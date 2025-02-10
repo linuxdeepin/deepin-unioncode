@@ -15,7 +15,7 @@ DWIDGET_USE_NAMESPACE
 using namespace templateMgr;
 
 class DetailWidgetPrivate;
-class DetailWidget : public DTK_WIDGET_NAMESPACE::DScrollArea
+class DetailWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
