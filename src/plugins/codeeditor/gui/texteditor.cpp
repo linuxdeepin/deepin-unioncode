@@ -522,11 +522,6 @@ void TextEditor::commentOperation()
     if (fileCommentSettings.isEmpty())
         return;
 
-    int lineFrom = 0, indexFrom = 0;
-    int lineTo = 0, indexTo = 0;
-
-    getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
-
     if (!hasSelectedText()) {
         int cursorLine = 0, cursorIndex = 0;
         getCursorPosition(&cursorLine, &cursorIndex);
@@ -541,13 +536,16 @@ void TextEditor::commentOperation()
             addCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex, fileCommentSettings);
         else
             delCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex, fileCommentSettings);
-        return;
-    }
+    } else {
+        int lineFrom = 0, indexFrom = 0;
+        int lineTo = 0, indexTo = 0;
+        getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
 
-    if (hasUncommentedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings))
-        addCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings);
-    else
-        delCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings);
+        if (hasUncommentedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings))
+            addCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings);
+        else
+            delCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings);
+    }
 }
 
 QString TextEditor::getFileType()
@@ -604,10 +602,10 @@ void TextEditor::addCommentToSelectedLines(const int &lineFrom, const int &lineT
         else
             setSelection(lineFrom, indexFrom, lineTo, indexTo + settings.at(CommentSettings::BlockEnd).size());
     } else {
-        setSelection(lineFrom, 0, lineTo, indexTo);
+        setSelection(lineFrom, indexFrom, lineTo, indexTo);
         selectedTexts = this->selectedText();
         selectedTexts = addCommentPrefix(selectedTexts, settings.at(CommentSettings::Line));
-        this->replaceRange(lineFrom, 0, lineTo, indexTo, selectedTexts);
+        this->replaceRange(lineFrom, indexFrom, lineTo, indexTo, selectedTexts);
         if (text(lineTo).trimmed().isEmpty() || indexTo == 0)
             setSelection(lineFrom, indexFrom, lineTo, indexTo);
         else
