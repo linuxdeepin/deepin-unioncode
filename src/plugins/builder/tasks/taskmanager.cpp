@@ -137,7 +137,7 @@ void TaskManager::fixIssueWithAi(const QModelIndex &index)
 
     prompt += task.description;
     aiSrv->chatWithAi(prompt);
-    winSrv->showWidgetAtRightspace(MWNA_CODEGEEX);
+    winSrv->showWidgetAtRightspace(MWNA_CHAT);
 }
 
 void TaskManager::currentChanged(const QModelIndex &index)
