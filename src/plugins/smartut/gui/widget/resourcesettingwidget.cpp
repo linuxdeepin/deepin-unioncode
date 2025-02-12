@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QEvent>
+#include <QPainterPath>
 
 DWIDGET_USE_NAMESPACE
 

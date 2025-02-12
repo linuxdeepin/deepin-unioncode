@@ -6,12 +6,12 @@
 #include "environmentview.h"
 #include "advancedsettingsdialog.h"
 #include "models/binarytoolsmodel.h"
+#include "models/toolitemdelegate.h"
 #include "configure/binarytoolsmanager.h"
 #include "widgets/combinationcomboxbox.h"
 #include "widgets/iconcombobox.h"
 #include "constants.h"
 
-#include "base/baseitemdelegate.h"
 #include "common/widget/variablechooser.h"
 
 #include <DComboBox>
@@ -143,20 +143,25 @@ QWidget *BinaryToolsConfigViewPrivate::createLeftWidget()
     DFrame *widget = new DFrame(q);
     widget->setFixedWidth(200);
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
-    mainLayout->setContentsMargins(10, 10, 10, 6);
+    mainLayout->setContentsMargins(0, 6, 0, 0);
     mainLayout->setSpacing(0);
 
+    QVBoxLayout *viewLayout = new QVBoxLayout;
+    viewLayout->setContentsMargins(8, 0, 8, 0);
     toolTree = new DTreeView(q);
+    toolTree->setIndentation(0);
     toolTree->setFrameShape(QFrame::NoFrame);
     toolTree->setDragEnabled(false);
     toolTree->header()->setVisible(false);
     toolTree->setModel(&treeModel);
-    toolTree->setItemDelegate(new BaseItemDelegate(toolTree));
+    toolTree->setItemDelegate(new ToolItemDelegate(toolTree));
     toolTree->setIconSize({ 16, 16 });
     toolTree->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+    viewLayout->addWidget(toolTree);
 
     addBtn = new DToolButton(q);
-    addBtn->setIconSize({ 16, 16 });
+    addBtn->setIconSize({ 12, 12 });
+    addBtn->setFixedHeight(24);
     addBtn->setIcon(DStyle::standardIcon(q->style(), DStyle::SP_IncreaseElement));
     addBtn->setPopupMode(QToolButton::InstantPopup);
     QMenu *addMenu = new QMenu(q);
@@ -168,16 +173,18 @@ QWidget *BinaryToolsConfigViewPrivate::createLeftWidget()
     addBtn->setMenu(addMenu);
 
     delBtn = new DToolButton(q);
-    delBtn->setIconSize({ 16, 16 });
+    delBtn->setIconSize({ 12, 12 });
+    delBtn->setFixedSize(24, 24);
     delBtn->setIcon(DStyle::standardIcon(q->style(), DStyle::SP_DecreaseElement));
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
-    btnLayout->setContentsMargins(0, 0, 0, 0);
+    btnLayout->setContentsMargins(8, 6, 8, 6);
     btnLayout->addWidget(addBtn);
     btnLayout->addWidget(delBtn);
     btnLayout->addStretch(1);
 
-    mainLayout->addWidget(toolTree);
+    mainLayout->addLayout(viewLayout);
+    mainLayout->addWidget(new DHorizontalLine(q));
     mainLayout->addLayout(btnLayout);
     return widget;
 }
@@ -244,6 +251,7 @@ QWidget *BinaryToolsConfigViewPrivate::createRightWidget()
     DLabel *cmdIconLabel = new DLabel(BinaryToolsConfigView::tr("Tool icon:"), q);
     iconCB = new IconComboBox(q);
     iconCB->setFixedWidth(240);
+    iconCB->setFocusPolicy(Qt::NoFocus);
     mainLayout->addWidget(cmdIconLabel, IconRow, 0);
     mainLayout->addWidget(iconCB, IconRow, 1);
 
@@ -434,7 +442,7 @@ void BinaryToolsConfigViewPrivate::handleShowAdvanceSettings()
     const auto tool = treeModel.toolForIndex(currentIndex);
     if (!tool)
         return;
-    
+
     dialog.setAdvancedSettings(tool->advSettings);
     int code = dialog.exec();
     if (code == 1) {

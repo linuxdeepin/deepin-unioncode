@@ -21,6 +21,7 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *e) override;
 
 private:
     void initUI();

@@ -30,10 +30,12 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     DWidget *mainFrame = new DWidget(this);
     addContent(mainFrame);
     QVBoxLayout *vLayout = new QVBoxLayout(mainFrame);
+    vLayout->setSpacing(0);
     d->configView = new BinaryToolsConfigView(mainFrame);
 
     DLabel *configLabel = new DLabel(tr("Running Configuration:"), this);
     vLayout->addWidget(configLabel);
+    vLayout->addSpacing(15);
     vLayout->addWidget(d->configView);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout(mainFrame);
@@ -52,6 +54,7 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     buttonLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     buttonLayout->setContentsMargins(0, 0, 0, 0);
 
+    vLayout->addSpacing(20);
     vLayout->addLayout(buttonLayout);
 
     connect(okButton, &DPushButton::clicked, this, &BinaryToolsDialog::saveClicked);

@@ -268,11 +268,6 @@ void ProjectItemDelegate::drawFileNameItem(QPainter *painter,
     if (view->viewType() == ProjectTreeView::UnitTest)
         stateRect = drawItemState(painter, opt, index);
 
-#ifdef DTKWIDGET_CLASS_DPaletteHelper
-    DPalette palette = DPaletteHelper::instance()->palette(option.widget);
-#else
-    DPalette palette = DGuiApplicationHelper::instance()->applicationPalette();
-#endif
     QRect nameRect = opt.rect;
     nameRect.setLeft(iconRect.right() + kPadding);
     if (stateRect.isValid())

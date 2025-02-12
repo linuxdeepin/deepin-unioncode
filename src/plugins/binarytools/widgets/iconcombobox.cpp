@@ -14,6 +14,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QStylePainter>
+#include <QBitmap>
 
 DGUI_USE_NAMESPACE
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
@@ -88,17 +89,20 @@ void IconItemDelegate::paintItemBackgroundAndGeomerty(QPainter *painter,
     painter->save();
 
     bool isSelected = (option.state & QStyle::State_Selected);
-    
+
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
-        const DPalette &pl = DPaletteHelper::instance()->palette(option.widget);
+    const DPalette &pl = DPaletteHelper::instance()->palette(option.widget);
 #else
-        const DPalette &pl = DGuiApplicationHelper::instance()->applicationPalette();
+    const DPalette &pl = DGuiApplicationHelper::instance()->applicationPalette();
 #endif
-    
-    QColor backgroundColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::ItemBackground);
+
+    QColor backgroundColor = pl.color(QPalette::Active, QPalette::Shadow);
     bool isHover = option.state & QStyle::StateFlag::State_MouseOver;
-    if (isSelected || isHover)
+    if (isSelected) {
         backgroundColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::LightLively);
+    } else if (isHover) {
+        backgroundColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::ObviousBackground);
+    }
 
     QRectF backgroundRect = option.rect;
     QSizeF iconSize = view->iconSize();
@@ -113,18 +117,6 @@ void IconItemDelegate::paintItemBackgroundAndGeomerty(QPainter *painter,
 
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->fillPath(path, backgroundColor);
-    if (isHover) {
-        QRectF outLineRect = backgroundRect;
-        outLineRect.setSize(outLineRect.size() - QSizeF(1.5, 1.5));
-        outLineRect.moveCenter(backgroundRect.center());
-        QPainterPath outLinePath;
-        outLinePath.addRoundedRect(outLineRect, 8, 8);
-        backgroundColor.setAlpha(40);
-        painter->setPen(backgroundColor);
-        painter->drawPath(outLinePath);
-    }
-
-    painter->setRenderHint(QPainter::Antialiasing, false);
     painter->restore();
 }
 
@@ -134,12 +126,16 @@ void IconItemDelegate::paintItemIcon(QPainter *painter,
 {
     // init icon geomerty
     QRectF iconRect = itemIconRect(option.rect);
-    bool isEnabled = option.state & QStyle::State_Enabled;
 
     // draw icon
+    QIcon::Mode iconMode = QIcon::Normal;
+    if (!(option.state.testFlag(QStyle::State_Enabled)))
+        iconMode = QIcon::Disabled;
+    if (option.state.testFlag(QStyle::State_Selected))
+        iconMode = QIcon::Selected;
     const qreal pixelRatio = painter->device()->devicePixelRatioF();
     const QPixmap &px = getIconPixmap(option.icon, iconRect.size().toSize(), pixelRatio,
-                                      isEnabled ? QIcon::Normal : QIcon::Disabled);
+                                      iconMode);
     qreal x = iconRect.x();
     qreal y = iconRect.y();
     qreal w = px.width() / px.devicePixelRatio();
@@ -161,10 +157,13 @@ IconComboBox::IconComboBox(QWidget *parent)
 void IconComboBox::initUI()
 {
     iconFrame = new QFrame(this, Qt::Popup);
+    iconFrame->setAttribute(Qt::WA_TranslucentBackground);
+    iconFrame->installEventFilter(this);
     QHBoxLayout *layout = new QHBoxLayout(iconFrame);
     layout->setContentsMargins(0, 0, 0, 0);
 
     iconView = new QListView(this);
+    iconView->setFrameShape(QFrame::NoFrame);
     iconView->setViewMode(QListView::IconMode);
     iconView->setFlow(QListView::LeftToRight);
     iconView->setDragDropMode(QListView::NoDragDrop);
@@ -262,4 +261,38 @@ void IconComboBox::paintEvent(QPaintEvent *event)
     opt.currentIcon = QIcon::fromTheme(icon());
     // draw the icon and text
     painter.drawControl(QStyle::CE_ComboBoxLabel, opt);
+}
+
+bool IconComboBox::eventFilter(QObject *obj, QEvent *e)
+{
+    if (iconFrame) {
+        switch (e->type()) {
+        case QEvent::Paint: {
+            QPainter painter(iconFrame);
+            painter.setRenderHint(QPainter::Antialiasing);
+
+            auto p = iconFrame->palette();
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(p.brush(QPalette::Normal, QPalette::Base));
+
+            QPainterPath path;
+            path.addRoundedRect(iconFrame->rect(), 18, 18);
+            painter.drawPath(path);
+        } break;
+        case QEvent::Resize: {
+            QPixmap pixmap(iconFrame->size());
+            pixmap.fill(Qt::transparent);
+            QPainter painter(&pixmap);
+            painter.setRenderHint(QPainter::Antialiasing);
+            painter.setBrush(Qt::black);
+            painter.setPen(Qt::NoPen);
+            painter.drawRoundedRect(iconFrame->rect(), 18, 18);
+            iconFrame->setMask(pixmap.mask());
+        } break;
+        default:
+            break;
+        }
+    }
+
+    return QComboBox::eventFilter(obj, e);
 }
