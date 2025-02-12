@@ -184,6 +184,7 @@ public:
     void gotoDefinition();
     void showDiagnosticTip(int pos, const newlsp::Diagnostic diagnostic);
     void applyWorkspaceEdit(const newlsp::WorkspaceEdit &edit);
+    bool isHtmlContentEmpty(const QString &html);
 
 public slots:
     void handleTokenFull(const QList<lsp::Data> &tokens, const QString &filePath);
