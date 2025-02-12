@@ -26,6 +26,7 @@
 
 #include <QApplication>
 #include <QTextDocumentFragment>
+#include <QRegularExpression>
 
 #include <bitset>
 #include <regex>
@@ -303,7 +304,7 @@ void LanguageClientHandlerPrivate::handleShowHoverInfo(const newlsp::Hover &hove
         showText = markupContent.value;
         if (markupContent.kind == newlsp::Enum::MarkupKind::get()->Markdown) {
             char *output = cmark_markdown_to_html(showText.c_str(), showText.size(), CMARK_OPT_DEFAULT);
-            showText = output;
+            showText = isHtmlContentEmpty(output) ? "" : output;
             free(output);
         }
     } else if (newlsp::any_contrast<newlsp::MarkedString>(hover.contents)) {
@@ -662,6 +663,16 @@ void LanguageClientHandlerPrivate::applyWorkspaceEdit(const newlsp::WorkspaceEdi
                                  change.newText.c_str(), true);
         }
     }
+}
+
+bool LanguageClientHandlerPrivate::isHtmlContentEmpty(const QString &html)
+{
+    QString stripped = html;
+    stripped.replace(QRegularExpression("<[^>]*>"), "");
+
+    stripped.replace(QRegularExpression("&nbsp;", QRegularExpression::CaseInsensitiveOption), " ");
+    stripped.replace(QRegularExpression("\\s+"), " ");
+    return stripped.trimmed().isEmpty();
 }
 
 void LanguageClientHandlerPrivate::handleSwitchHeaderSource(const QString &file)
