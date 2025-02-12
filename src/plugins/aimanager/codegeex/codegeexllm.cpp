@@ -22,6 +22,9 @@ static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/v3/comp
 static const char *kUrlCreateNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
 static const char *kUrlQueryUserInfo = "https://codegeex.cn/prod/code/oauth/getUserInfo";
 
+// might useful later.
+//static const char *kUrlQueryMessage = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
+
 QString uuid()
 {
     QUuid uuid = QUuid::createUuid();
@@ -509,7 +512,7 @@ void CodeGeeXLLM::generate(const QString &prefix, const QString &suffix)
 //    ProjectService *prjSrv = dpfGetService(ProjectService);
     QJsonArray context;
     context.append(activeContextItem);
-//    QJsonObject queryResults = CodeGeeXManager::instance()->query(prjSrv->getActiveProjectInfo().workspaceFolder(), prefix, 5);
+//    QJsonObject queryResults = ChatManager::instance()->query(prjSrv->getActiveProjectInfo().workspaceFolder(), prefix, 5);
 //    QJsonArray chunks = queryResults["Chunks"].toArray();
 
 //    for (auto chunk : chunks) {

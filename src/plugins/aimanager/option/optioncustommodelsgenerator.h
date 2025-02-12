@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef OPTIONCODEGEEXGENERATOR_H
-#define OPTIONCODEGEEXGENERATOR_H
+#ifndef OPTIONCHATGENERATOR_H
+#define OPTIONCHATGENERATOR_H
 
 #include "services/option/optiongenerator.h"
 
@@ -15,4 +15,4 @@ public:
     virtual QWidget *optionWidget() override;
 };
 
-#endif // OPTIONCODEGEEXGENERATOR_H
+#endif // OPTIONCHATGENERATOR_H

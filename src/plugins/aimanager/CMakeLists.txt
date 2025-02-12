@@ -16,7 +16,7 @@ foreach(QtModule ${QtFindModules})
     message("QtModule found ${QtModule} OK!")
 endforeach()
 
-FILE(GLOB CODEGEEX_FILES
+FILE(GLOB ALL_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
@@ -26,7 +26,7 @@ FILE(GLOB CODEGEEX_FILES
 
 add_library(${PROJECT_NAME}
     SHARED
-    ${CODEGEEX_FILES}
+    ${ALL_FILES}
     aimanager.qrc
     )
 
