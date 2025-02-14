@@ -13,6 +13,7 @@ add_library(
     ${PROJECT_SOURCES}
 )
 
+# let code be position independent
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 find_package(Dtk${DTK_VERSION_MAJOR} COMPONENTS Widget Core Gui REQUIRED)
