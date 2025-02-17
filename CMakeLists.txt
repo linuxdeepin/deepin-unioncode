@@ -10,6 +10,8 @@ function(print_directory arg)
 endfunction()
 
 set(VERSION $ENV{VERSION})
+# build with -fPIC flag in .a library on arm64
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if (NOT VERSION)
     set(VERSION "0.0.1")
