@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "addmodeldialog.h"
+#include "modelconfigdialog.h"
 #include "services/ai/aiservice.h"
 #include "aimanager.h"
 
@@ -21,8 +21,8 @@ DWIDGET_USE_NAMESPACE
 class AddModelDialogPrivate
 {
 public:
-    friend class AddModelDialog;
-    AddModelDialogPrivate(AddModelDialog *qq) : q(qq) {}
+    friend class ModelConfigDialog;
+    AddModelDialogPrivate(ModelConfigDialog *qq) : q(qq) {}
     void initUi();
     void initConnection();
 
@@ -45,34 +45,34 @@ private:
 
     void showWaitingState(bool waiting);
     void showErrorInfoDialog(const QString &error);
-    AddModelDialog *q;
+    ModelConfigDialog *q;
     LLMInfo LLMAppended;
 };
 
 void AddModelDialogPrivate::initUi()
 {
     q->setFixedWidth(543);
-    QLabel *lbModelName = new QLabel(AddModelDialog::tr("Model Name"));
+    QLabel *lbModelName = new QLabel(ModelConfigDialog::tr("Model Name"));
     lbModelName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     leLLMName = new DLineEdit(q);
-    leLLMName->setPlaceholderText(AddModelDialog::tr("Required, please enter."));
+    leLLMName->setPlaceholderText(ModelConfigDialog::tr("Required, please enter."));
 
-    QLabel *lbLLMType = new QLabel(AddModelDialog::tr("Model Type"));
+    QLabel *lbLLMType = new QLabel(ModelConfigDialog::tr("Model Type"));
     lbLLMType->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     cbLLMType = new DComboBox(q);
-    cbLLMType->addItem(AddModelDialog::tr("OpenAi(Compatible)"), LLMType::OPENAI);
+    cbLLMType->addItem(ModelConfigDialog::tr("OpenAi(Compatible)"), LLMType::OPENAI);
 
-    QLabel *lbApiUrl = new QLabel(AddModelDialog::tr("Api Path"));
+    QLabel *lbApiUrl = new QLabel(ModelConfigDialog::tr("Api Path"));
     lbApiUrl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     leApiUrl = new DLineEdit(q);
-    leApiUrl->setPlaceholderText(AddModelDialog::tr("Required, please enter."));
+    leApiUrl->setPlaceholderText(ModelConfigDialog::tr("Required, please enter."));
 
-    QLabel *lbApiKey = new QLabel(AddModelDialog::tr("Api Key"));
+    QLabel *lbApiKey = new QLabel(ModelConfigDialog::tr("Api Key"));
     lbApiKey->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     leApiKey = new DPasswordEdit(q);
-    leApiKey->setPlaceholderText(AddModelDialog::tr("Optional, please enter."));
+    leApiKey->setPlaceholderText(ModelConfigDialog::tr("Optional, please enter."));
 
-    q->setWindowTitle(AddModelDialog::tr("Add Model"));
+    q->setWindowTitle(ModelConfigDialog::tr("Add Model"));
 
     mainWidget = new QWidget(q);
     QVBoxLayout *mainLayout = new QVBoxLayout(mainWidget);
@@ -94,9 +94,9 @@ void AddModelDialogPrivate::initUi()
     gridLayout->addWidget(leApiKey, 3, 1);
 
     okButton = new DSuggestButton(q);
-    okButton->setText(AddModelDialog::tr("Confirm"));
+    okButton->setText(ModelConfigDialog::tr("Confirm"));
     cancelButton = new DPushButton(q);
-    cancelButton->setText(AddModelDialog::tr("Cancel"));
+    cancelButton->setText(ModelConfigDialog::tr("Cancel"));
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(cancelButton);
     buttonLayout->addWidget(new DVerticalLine(q));
@@ -104,7 +104,7 @@ void AddModelDialogPrivate::initUi()
 
     mainLayout->addLayout(gridLayout);
     mainLayout->addSpacing(10);
-    auto label = new DLabel(AddModelDialog::tr("To test if the model is available, the system will send a small amount of information, which will consume a small amount of tokens."), q);
+    auto label = new DLabel(ModelConfigDialog::tr("To test if the model is available, the system will send a small amount of information, which will consume a small amount of tokens."), q);
     label->setWordWrap(true);
     label->setForegroundRole(DPalette::PlaceholderText);
     mainLayout->addWidget(label);
@@ -117,7 +117,7 @@ void AddModelDialogPrivate::initUi()
     checkingLayout->setSpacing(20);
     spinner = new DSpinner(checkingWidget);
     spinner->setFixedSize(32, 32);
-    QLabel *lbCheck = new QLabel(AddModelDialog::tr("Checking... please wait."), checkingWidget);
+    QLabel *lbCheck = new QLabel(ModelConfigDialog::tr("Checking... please wait."), checkingWidget);
     lbCheck->setAlignment(Qt::AlignCenter);
     checkingLayout->addStretch(1);
     checkingLayout->addWidget(spinner, 0, Qt::AlignCenter);
@@ -132,10 +132,10 @@ void AddModelDialogPrivate::initUi()
 
 void AddModelDialogPrivate::initConnection()
 {
-    AddModelDialog::connect(okButton, &DSuggestButton::clicked, q, [=](){
+    ModelConfigDialog::connect(okButton, &DSuggestButton::clicked, q, [=](){
         slotAddModel();
     });
-    AddModelDialog::connect(cancelButton, &DSuggestButton::clicked, q, &AddModelDialog::reject);
+    ModelConfigDialog::connect(cancelButton, &DSuggestButton::clicked, q, &ModelConfigDialog::reject);
 }
 
 void AddModelDialogPrivate::slotAddModel()
@@ -143,7 +143,7 @@ void AddModelDialogPrivate::slotAddModel()
     LLMInfo newLLMInfo;
     newLLMInfo.modelName = leLLMName->text();
     if (newLLMInfo.modelName.isEmpty()) {
-        leLLMName->showAlertMessage(AddModelDialog::tr("This field cannot be empty."));
+        leLLMName->showAlertMessage(ModelConfigDialog::tr("This field cannot be empty."));
         return;
     }
     newLLMInfo.type = cbLLMType->currentData().value<LLMType>();
@@ -152,7 +152,7 @@ void AddModelDialogPrivate::slotAddModel()
 
     newLLMInfo.modelPath = leApiUrl->text();
     if (newLLMInfo.modelPath.isEmpty()) {
-        leApiUrl->showAlertMessage(AddModelDialog::tr("This field cannot be empty."));
+        leApiUrl->showAlertMessage(ModelConfigDialog::tr("This field cannot be empty."));
         return;
     }
     newLLMInfo.apikey = leApiKey->text();
@@ -184,7 +184,7 @@ void AddModelDialogPrivate::showErrorInfoDialog(const QString &error)
 {
     DDialog dialog;
     dialog.setIcon(QIcon::fromTheme("dialog-warning"));
-    dialog.setWindowTitle(AddModelDialog::tr("Error Information"));
+    dialog.setWindowTitle(ModelConfigDialog::tr("Error Information"));
     auto warningText = new DLabel(error, q);
     warningText->setTextInteractionFlags(Qt::TextSelectableByMouse);
     warningText->setWordWrap(true);
@@ -195,26 +195,39 @@ void AddModelDialogPrivate::showErrorInfoDialog(const QString &error)
     mainLayout->addWidget(warningText, 0, Qt::AlignTop | Qt::AlignLeft);
     dialog.addContent(mainWidget);
 
-    dialog.addButton(AddModelDialog::tr("Confirm"));
+    dialog.addButton(ModelConfigDialog::tr("Confirm"));
     dialog.exec(); 
 }
 
-AddModelDialog::AddModelDialog(QWidget *parent)
+ModelConfigDialog::ModelConfigDialog(QWidget *parent)
 : DDialog(parent), d(new AddModelDialogPrivate(this))
 {
     d->initUi();
     d->initConnection();
 }
 
-AddModelDialog::~AddModelDialog()
+ModelConfigDialog::~ModelConfigDialog()
 {
     delete d;
 }
 
-LLMInfo AddModelDialog::getNewLLmInfo()
+LLMInfo ModelConfigDialog::getLLmInfo()
 {
     if (!d->LLMAppended.modelName.isEmpty())
         return d->LLMAppended;
     else
         return LLMInfo();
+}
+
+void ModelConfigDialog::setLLmInfo(const LLMInfo &llmInfo)
+{
+    d->leLLMName->setText(llmInfo.modelName);
+
+    int index = d->cbLLMType->findData(QVariant::fromValue(llmInfo.type));
+    if (index != -1) {
+        d->cbLLMType->setCurrentIndex(index);
+    }
+
+    d->leApiUrl->setText(llmInfo.modelPath);
+    d->leApiKey->setText(llmInfo.apikey);
 }

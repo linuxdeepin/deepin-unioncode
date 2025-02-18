@@ -10,13 +10,14 @@
 
 class LLMInfo;
 class AddModelDialogPrivate;
-class AddModelDialog : public Dtk::Widget::DDialog
+class ModelConfigDialog : public Dtk::Widget::DDialog
 {
     Q_OBJECT
 public:
-    AddModelDialog(QWidget *parent = nullptr);
-    ~AddModelDialog();
-    LLMInfo getNewLLmInfo(); 
+    ModelConfigDialog(QWidget *parent = nullptr);
+    ~ModelConfigDialog();
+    LLMInfo getLLmInfo();
+    void setLLmInfo(const LLMInfo &llmInfo);
 
 private:
     AddModelDialogPrivate *d;
