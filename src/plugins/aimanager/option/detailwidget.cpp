@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "detailwidget.h"
-#include "addmodeldialog.h"
+#include "modelconfigdialog.h"
 #include "aimanager.h"
 
 #include <DTableView>
@@ -98,7 +98,7 @@ class DetailWidgetPrivate
     friend class DetailWidget;
     DListView *modelsView = nullptr;
     LLMModels *LLMModel = nullptr;
-    AddModelDialog *addModelDialog = nullptr;
+    ModelConfigDialog *addModelDialog = nullptr;
     DComboBox *cbCompletedLLM = nullptr;
 };
 
@@ -175,10 +175,10 @@ void DetailWidget::setupUi()
     vLayout->addLayout(buttonLayout);
 
     connect(buttonAdd, &DToolButton::clicked, this, [=](){
-        auto dialog = new AddModelDialog(this);
+        auto dialog = new ModelConfigDialog(this);
         auto code = dialog->exec();
         if (code == QDialog::Accepted) {
-            auto newLLM = dialog->getNewLLmInfo();
+            auto newLLM = dialog->getLLmInfo();
             d->LLMModel->appendLLM(newLLM);
             if (d->cbCompletedLLM->findData(newLLM.toVariant()) != -1)
                 d->cbCompletedLLM->addItem(newLLM.modelName, newLLM.toVariant());
@@ -204,6 +204,31 @@ void DetailWidget::setupUi()
         d->LLMModel->removeLLM(llmInfo);
         if (d->cbCompletedLLM->findData(llmInfo.toVariant()) != -1)
             d->cbCompletedLLM->removeItem(d->cbCompletedLLM->findData(llmInfo.toVariant()));
+    });
+    connect(d->modelsView, &DListView::doubleClicked, this, [this](const QModelIndex &index){
+        if (!index.isValid())
+            return;
+
+        auto dialog = new ModelConfigDialog(this);
+        auto llmInfo = d->LLMModel->allLLMs().at(index.row());
+        dialog->setLLmInfo(llmInfo);
+        auto code = dialog->exec();
+        if (code == QDialog::Accepted) {
+            auto changedLLMInfo = dialog->getLLmInfo();
+            bool isSame = llmInfo == changedLLMInfo;
+            if (!isSame) {
+                // remove original one
+                d->LLMModel->removeLLM(llmInfo);
+                if (d->cbCompletedLLM->findData(llmInfo.toVariant()) != -1)
+                    d->cbCompletedLLM->removeItem(d->cbCompletedLLM->findData(llmInfo.toVariant()));
+
+                // add changed one
+                d->LLMModel->appendLLM(changedLLMInfo);
+                if (d->cbCompletedLLM->findData(changedLLMInfo.toVariant()) == -1)
+                    d->cbCompletedLLM->addItem(changedLLMInfo.modelName, changedLLMInfo.toVariant());
+            }
+        }
+        dialog->deleteLater();
     });
 }
 
