@@ -18,82 +18,6 @@
     </message>
 </context>
 <context>
-    <name>AddModelDialog</name>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="55"/>
-        <source>Model Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="58"/>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="68"/>
-        <source>Required, please enter.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="60"/>
-        <source>Model Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="63"/>
-        <source>OpenAi(Compatible)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="65"/>
-        <source>Api Path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="70"/>
-        <source>Api Key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="73"/>
-        <source>Optional, please enter.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="75"/>
-        <source>Add Model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="97"/>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="198"/>
-        <source>Confirm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="99"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="107"/>
-        <source>To test if the model is available, the system will send a small amount of information, which will consume a small amount of tokens.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="120"/>
-        <source>Checking... please wait.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="146"/>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="155"/>
-        <source>This field cannot be empty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/aimanager/option/addmodeldialog.cpp" line="187"/>
-        <source>Error Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>AdvancedSearchWidget</name>
     <message>
         <location filename="../../src/plugins/find/gui/advancedsearchwidget.cpp" line="152"/>
@@ -388,44 +312,44 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="102"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="102"/>
         <source>This operation will delete all the content of this session. confirm to delete it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="103"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="103"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="104"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="104"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="158"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="158"/>
         <source>stop generate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="188"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="188"/>
         <source>delete this session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="195"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="195"/>
         <source>history sessions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="202"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="202"/>
         <source>create new session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="213"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="213"/>
         <source>Ask question here, press Enter to send...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -537,95 +461,95 @@
 <context>
     <name>BinaryToolsConfigView</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="163"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="168"/>
         <source>Add Tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="167"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="172"/>
         <source>Add Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="192"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="199"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="197"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="204"/>
         <source>Combination:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="202"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="209"/>
         <source>Executable:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="210"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="217"/>
         <source>Arguments:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="223"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="230"/>
         <source>Output:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="226"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="235"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="233"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="242"/>
         <source>Ignore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="227"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="236"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="234"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="243"/>
         <source>Show in application output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="228"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="237"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="235"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="244"/>
         <source>Replace current document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="232"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="239"/>
         <source>Error output:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="241"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="248"/>
         <source>Add this tool to the toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="250"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="258"/>
         <source>Environment:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="263"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="271"/>
         <source>Advanced Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="414"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="422"/>
         <source>Select Executabel Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="424"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="432"/>
         <source>Select Working Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="244"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="251"/>
         <source>Tool icon:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="215"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="222"/>
         <source>Working directory:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -638,18 +562,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="35"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="36"/>
         <source>Running Configuration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="40"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="42"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="42"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="44"/>
         <source>Ok</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
@@ -952,88 +876,88 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="256"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="257"/>
         <source>Compile Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="173"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="174"/>
         <source>Issues list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="181"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="182"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="188"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="189"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="204"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="205"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="209"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="210"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="213"/>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="393"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="214"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="394"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="290"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="291"/>
         <source>Clear Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="393"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="394"/>
         <source>The project does not have an associated build kit. Please reopen the project and select the corresponding build tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="418"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="419"/>
         <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="500"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="509"/>
         <source>Execute command failed!
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="504"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="513"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="512"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="521"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="515"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="524"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="519"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="528"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="547"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="556"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -1097,6 +1021,97 @@ storage: %2
     </message>
 </context>
 <context>
+    <name>ChatManager</name>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="161"/>
+        <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="214"/>
+        <source>Install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="215"/>
+        <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
+ the installation process may take several minutes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="254"/>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="308"/>
+        <source>No selected LLM or current LLM is not avaliable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="361"/>
+        <source>llm named: %1 is not avaliable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="433"/>
+        <source>LLM is not valid. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="435"/>
+        <source>Error: %1, try again later</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="525"/>
+        <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="530"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="543"/>
+        <source>It may take servel minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="553"/>
+        <source>Indexing Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="553"/>
+        <source>Indexing Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chatmanager.cpp" line="614"/>
+        <source>The error occurred when performing rag on project %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ChatPlugin</name>
+    <message>
+        <location filename="../../src/plugins/chat/chat.cpp" line="59"/>
+        <source>Install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/chat/chat.cpp" line="60"/>
+        <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ChatWidget</name>
+    <message>
+        <location filename="../../src/plugins/chat/widgets/chatwidget.cpp" line="176"/>
+        <source>Creating a new session...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmakeAsynParse</name>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="308"/>
@@ -1117,47 +1132,47 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="275"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="285"/>
         <source>Files in project %1 have changed, needs to run cmake to update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="326"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="339"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="348"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="361"/>
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="352"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="365"/>
         <source>Copy to Clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="355"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="368"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="502"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="515"/>
         <source>Project Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="512"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="525"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="513"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="526"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="514"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="527"/>
         <source>Kit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1178,12 +1193,12 @@ storage: %2
 <context>
     <name>CodeEditComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="268"/>
+        <location filename="../../src/plugins/chat/widgets/codeeditcomponent.cpp" line="268"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="273"/>
+        <location filename="../../src/plugins/chat/widgets/codeeditcomponent.cpp" line="273"/>
         <source>Insert into code area</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1269,104 +1284,13 @@ storage: %2
 <context>
     <name>CodeGeeXLLM</name>
     <message>
-        <location filename="../../src/plugins/aimanager/codegeex/codegeexllm.cpp" line="392"/>
+        <location filename="../../src/plugins/aimanager/codegeex/codegeexllm.cpp" line="395"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/aimanager/codegeex/codegeexllm.cpp" line="394"/>
+        <location filename="../../src/plugins/aimanager/codegeex/codegeexllm.cpp" line="397"/>
         <source>Please login to use CodeGeeX.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CodeGeeXManager</name>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="192"/>
-        <source>Install</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="232"/>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="286"/>
-        <source>No selected LLM or current LLM is not avaliable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="339"/>
-        <source>llm named: %1 is not avaliable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="411"/>
-        <source>LLM is not valid. %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="413"/>
-        <source>Error: %1, try again later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="494"/>
-        <source>This project has not yet established a file index, @codebase wont`t work directly. Confirm whether to create one now.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="499"/>
-        <source>Confirm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="512"/>
-        <source>It may take servel minutes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="522"/>
-        <source>Indexing Done</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="522"/>
-        <source>Indexing Failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="583"/>
-        <source>The error occurred when performing rag on project %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="193"/>
-        <source>The file indexing feature is not available, which may cause functions such as @codebase to not work properly.Please install the required environment.
- the installation process may take several minutes.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeexmanager.cpp" line="164"/>
-        <source>The indexing of project %1 has not been completed, which may cause the results to be inaccurate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CodeGeeXWidget</name>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="176"/>
-        <source>Creating a new session...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CodeGeex</name>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="58"/>
-        <source>Install</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="59"/>
-        <source>Install a Python Conda virtual environment for using the file indexing feature.                         Without it, there may be abnormalities in the @codebase and some AI functionalities.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1751,37 +1675,37 @@ storage: %2
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="31"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="31"/>
         <source>Inline Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="56"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="56"/>
         <source>Add Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="57"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="57"/>
         <source>Fix Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="58"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="58"/>
         <source>Explain Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="59"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="59"/>
         <source>Review Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="60"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="60"/>
         <source>Generate Unit Tests</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="61"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="61"/>
         <source>Generate git commits</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2175,58 +2099,58 @@ Delete anyway?</source>
 <context>
     <name>DetailWidget</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="73"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="80"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="75"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="82"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="131"/>
         <source>File Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="123"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="133"/>
         <source>Project Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="125"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="135"/>
         <source>Location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="149"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="157"/>
         <source>Choose path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="163"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="171"/>
         <source>The filename can&apos;t be empty!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="165"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="173"/>
         <source>The project can&apos;t be empty!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="167"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="175"/>
         <source>The address can&apos;t be empty!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="203"/>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="212"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="225"/>
         <source>error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="225"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3076,7 +3000,7 @@ need to manually copy the source code to this path</source>
 <context>
     <name>HistoryListWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/historylistwidget.cpp" line="68"/>
+        <location filename="../../src/plugins/chat/widgets/historylistwidget.cpp" line="68"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3084,47 +3008,47 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InlineChatWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="239"/>
+        <location filename="../../src/plugins/chat/copilot.cpp" line="239"/>
         <source>  Press %1 to inline chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="215"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="214"/>
         <source>Esc to close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="215"/>
         <source>Submit Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="217"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="216"/>
         <source>quick question</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="219"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="218"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="221"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="220"/>
         <source>Accept</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="223"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="222"/>
         <source>Reject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="292"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="291"/>
         <source>Ask a question here, press Enter to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inlinechatwidget.cpp" line="301"/>
+        <location filename="../../src/plugins/chat/widgets/inlinechatwidget.cpp" line="300"/>
         <source>Continue to ask a question, press Enter to send</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3132,43 +3056,43 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InputEditWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="194"/>
         <source>reference codebase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="203"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="203"/>
         <source>reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="209"/>
         <source>connect to network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="229"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="229"/>
         <source>Current File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="232"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="232"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="235"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="235"/>
         <source>Opened Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="239"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="239"/>
         <source>CodeBase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="591"/>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="603"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="591"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="603"/>
         <source>No opened file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3259,42 +3183,42 @@ need to manually copy the source code to this path</source>
 <context>
     <name>IntroPage</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="90"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="90"/>
         <source>Welcome to Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="101"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="101"/>
         <source>Chat provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="102"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="102"/>
         <source>Chat provides inline chat functionality in editor, Press %1 Ctrl + T %2 to use it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="103"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="103"/>
         <source>Also, you can directly %1 ask Chat any questions %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="112"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="112"/>
         <source>Try the following questions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="115"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="115"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="116"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="116"/>
         <source>Write a quicksort function.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="117"/>
+        <location filename="../../src/plugins/chat/widgets/intropage.cpp" line="117"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3481,37 +3405,37 @@ need to manually copy the source code to this path</source>
 <context>
     <name>LanguageClientHandlerPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="526"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="528"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="528"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="530"/>
         <source>Rename Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="534"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="536"/>
         <source>Switch Header/Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="537"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="539"/>
         <source>Follow Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="540"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="542"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="543"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="545"/>
         <source>Format Selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="598"/>
+        <location filename="../../src/plugins/codeeditor/lsp/languageclienthandler.cpp" line="600"/>
         <source>%1: &lt;a href=&apos;repair&apos;&gt;Repair with %2&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3565,13 +3489,13 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="256"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="269"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="257"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="270"/>
         <source>Tip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="269"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="270"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3728,19 +3652,95 @@ repos path: %0</source>
 <context>
     <name>MessageComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="174"/>
+        <location filename="../../src/plugins/chat/widgets/messagecomponent.cpp" line="174"/>
         <source>edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="242"/>
+        <location filename="../../src/plugins/chat/widgets/messagecomponent.cpp" line="242"/>
         <source>Online Searching</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="333"/>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="383"/>
+        <location filename="../../src/plugins/chat/widgets/messagecomponent.cpp" line="333"/>
+        <location filename="../../src/plugins/chat/widgets/messagecomponent.cpp" line="383"/>
         <source>Show Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ModelConfigDialog</name>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="55"/>
+        <source>Model Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="58"/>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="68"/>
+        <source>Required, please enter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="60"/>
+        <source>Model Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="63"/>
+        <source>OpenAi(Compatible)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="65"/>
+        <source>Api Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="70"/>
+        <source>Api Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="73"/>
+        <source>Optional, please enter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="75"/>
+        <source>Add Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="97"/>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="198"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="99"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="107"/>
+        <source>To test if the model is available, the system will send a small amount of information, which will consume a small amount of tokens.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="120"/>
+        <source>Checking... please wait.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="146"/>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="155"/>
+        <source>This field cannot be empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="187"/>
+        <source>Error Information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3830,6 +3830,14 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/core/notify/gui/notificationmodel.cpp" line="76"/>
         <source>Source: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OptionCustomModelsGenerator</name>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/optioncustommodelsgenerator.h" line="14"/>
+        <source>Models</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3998,7 +4006,7 @@ repos path: %0</source>
 <context>
     <name>ProjectItemModel</name>
     <message>
-        <location filename="../../src/plugins/smartut/common/projectitemmodel.cpp" line="118"/>
+        <location filename="../../src/plugins/smartut/common/projectitemmodel.cpp" line="164"/>
         <source> [Ungenerated]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4024,93 +4032,93 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="243"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="494"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="732"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="244"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="495"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="733"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="247"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="489"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="248"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="490"/>
         <source>New Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="260"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="261"/>
         <source>Show Containing Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="499"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="627"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="500"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="628"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="508"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="509"/>
         <source>Open In Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="522"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="523"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="623"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="728"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="624"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="729"/>
         <source>New Document Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="630"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="672"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="707"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="736"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="761"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="819"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="858"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="631"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="673"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="708"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="737"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="762"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="820"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="859"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="699"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="700"/>
         <source>New Dirctory Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="703"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="704"/>
         <source>New Dirctory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="755"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="756"/>
         <source>Delete operation not be recoverable, delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="759"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="760"/>
         <source>Delete: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="817"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="818"/>
         <source>A directory with name %1 already exists. please reanme it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="666"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="670"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="856"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="667"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="671"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="857"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="671"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="762"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="818"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="857"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="672"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="763"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="819"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="858"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4158,22 +4166,22 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="172"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="177"/>
         <source>Collapse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="174"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="179"/>
         <source>Expand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="175"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="180"/>
         <source>Collapse All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="176"/>
+        <location filename="../../src/plugins/smartut/gui/projecttreeview.cpp" line="181"/>
         <source>Expand All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4181,52 +4189,52 @@ repos path: %0</source>
 <context>
     <name>PromptSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="36"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="37"/>
         <source>Select Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="42"/>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="94"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="43"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="95"/>
         <source>Add Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="43"/>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="136"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="44"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="137"/>
         <source>Delete Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="97"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="98"/>
         <source>Please input the name of the prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="99"/>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="138"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="139"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="101"/>
         <source>OK</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="117"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="118"/>
         <source>A prompt named &quot;%1&quot; already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="137"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="138"/>
         <source>Are you sure you want to delete the &quot;%1&quot; prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="139"/>
+        <location filename="../../src/plugins/smartut/gui/widget/promptsettingwidget.cpp" line="140"/>
         <source>Ok</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
@@ -4329,17 +4337,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="548"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="549"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="549"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="550"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="550"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="551"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4529,7 +4537,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/inputeditwidget.cpp" line="596"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="596"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4610,12 +4618,12 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="58"/>
+        <location filename="../../src/plugins/chat/option/detailwidget.cpp" line="58"/>
         <source>Global Language Preference:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="66"/>
+        <location filename="../../src/plugins/chat/option/detailwidget.cpp" line="66"/>
         <source>Commits Language Preference:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5252,22 +5260,22 @@ not exists support files: %0</source>
 <context>
     <name>ResourceSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="42"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="43"/>
         <source>Source Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="44"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="45"/>
         <source>Target Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="127"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="128"/>
         <source>Select target location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="140"/>
+        <location filename="../../src/plugins/smartut/gui/widget/resourcesettingwidget.cpp" line="141"/>
         <source>Please input a valid path with the selected project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5709,52 +5717,52 @@ not exists support files: %0</source>
 <context>
     <name>Runner</name>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="105"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="103"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="105"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="103"/>
         <source>The project does not have an associated build kit. Please reopen the project and select the corresponding build tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="163"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="161"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="181"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="179"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="186"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="184"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="193"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="191"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="196"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="194"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="200"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="198"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="232"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="230"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -6535,57 +6543,57 @@ not exists support files: %0</source>
 <context>
     <name>SettingDialog</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="30"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="31"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="44"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="45"/>
         <source>Select Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="50"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="104"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="51"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="105"/>
         <source>Add Prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="51"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="146"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="52"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="147"/>
         <source>Delete Prompt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="70"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="109"/>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="148"/>
-        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="83"/>
-        <source>Cancel</source>
-        <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="71"/>
         <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="110"/>
         <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="149"/>
-        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="84"/>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="80"/>
+        <source>Cancel</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="72"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="111"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="150"/>
+        <location filename="../../src/plugins/smartut/gui/settingdialog.cpp" line="82"/>
         <source>OK</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="107"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="108"/>
         <source>Please input the name of the prompt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="127"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="128"/>
         <source>A prompt named &quot;%1&quot; already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="147"/>
+        <location filename="../../src/plugins/builder/mainframe/settingdialog.cpp" line="148"/>
         <source>Are you sure you want to delete the &quot;%1&quot; prompt</source>
         <translation type="unfinished"></translation>
     </message>

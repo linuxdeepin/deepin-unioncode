@@ -11,7 +11,7 @@ class OptionCustomModelsGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionCustomModelsGenerator();
-    inline static QString kitName() { return "Models"; }
+    inline static QString kitName() { return tr("Models"); }
     virtual QWidget *optionWidget() override;
 };
 
