@@ -46,4 +46,5 @@ add_subdirectory(chat)
 add_subdirectory(git)
 add_subdirectory(linglong)
 add_subdirectory(aimanager)
-add_subdirectory(smartut)
+#disable this plugin until tested.
+#add_subdirectory(smartut)
