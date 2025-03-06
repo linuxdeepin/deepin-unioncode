@@ -8,6 +8,7 @@
 #include "services/window/windowservice.h"
 #include "base/abstractaction.h"
 #include "common/actionmanager/actionmanager.h"
+#include "common/util/utils.h"
 
 using namespace dpfservice;
 
@@ -69,5 +70,10 @@ void TemplateManager::addMenu()
 void TemplateManager::newWizard()
 {
     MainDialog *mainDlg = new MainDialog();
+
+    if (utils::isWayland()) {
+        mainDlg->setWindowFlag(Qt::WindowStaysOnTopHint, true);
+    }
+
     mainDlg->exec();
 }

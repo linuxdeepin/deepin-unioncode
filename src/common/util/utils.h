@@ -8,6 +8,7 @@
 #include <DToolButton>
 
 #include <QAction>
+#include <QApplication>
 
 DWIDGET_USE_NAMESPACE
 namespace utils {
@@ -37,7 +38,11 @@ namespace utils {
 
         return iconBtn;
     }
-    
+
+    static bool isWayland()
+    {
+        return QApplication::platformName() == "wayland";
+    }
 }
 
 #endif
