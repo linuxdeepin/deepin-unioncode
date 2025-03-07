@@ -211,6 +211,11 @@ void DetailWidget::setupUi()
 
         auto dialog = new ModelConfigDialog(this);
         auto llmInfo = d->LLMModel->allLLMs().at(index.row());
+
+        // default model can't changed.
+        if (llmInfo.isdefault)
+            return;
+
         dialog->setLLmInfo(llmInfo);
         auto code = dialog->exec();
         if (code == QDialog::Accepted) {
@@ -229,6 +234,23 @@ void DetailWidget::setupUi()
             }
         }
         dialog->deleteLater();
+    });
+    connect(d->modelsView, &DListView::clicked, this, [=](const QModelIndex &index){
+        if (!index.isValid())
+            return;
+
+        auto llmInfo = d->LLMModel->allLLMs().at(index.row());
+        if (llmInfo.isdefault) {
+            buttonRemove->setEnabled(false);
+            // Restore default palette when disabled
+            buttonRemove->setPalette(QPalette()); // 或者使用 QApplication::palette()
+        } else {
+            buttonRemove->setEnabled(true);
+            // dislay color
+            auto pa = buttonRemove->palette();
+            pa.setColor(QPalette::ButtonText, warningColor);
+            buttonRemove->setPalette(pa);
+        }
     });
 }
 

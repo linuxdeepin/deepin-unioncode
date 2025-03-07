@@ -36,13 +36,14 @@ struct LLMInfo
     QString apikey = "";
     QIcon icon;
     LLMType type;
+    bool isdefault = false;
     bool operator==(const LLMInfo &info) const
     {
         return (this->modelName == info.modelName
                 && this->modelPath == info.modelPath
                 && this->apikey == info.apikey
                 && this->type == info.type);
-    };
+    }
     QVariant toVariant() const
     {
         QVariantMap map;
