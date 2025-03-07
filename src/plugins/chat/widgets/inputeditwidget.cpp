@@ -117,6 +117,8 @@ public:
     QStringList selectedFiles;
     QMap<QString, QStringList> tagMap;
 
+    bool isAnswering = false;
+
 private:
     void initEdit();
     void initButtonBox();
@@ -137,10 +139,13 @@ void InputEditWidgetPrivate::initEdit()
     edit->setAutoSelectCode(true);
     InputEditWidget::connect(edit, &InputEdit::textChanged, q, [this]() {
         auto currentText = edit->toPlainText();
-        if (currentText.isEmpty())
-            sendButton->setEnabled(false);
-        else
-            sendButton->setEnabled(true);
+
+        if (!isAnswering) {
+            if (currentText.isEmpty())
+                sendButton->setEnabled(false);
+            else
+                sendButton->setEnabled(true);
+        }
 
         q->setFixedHeight(edit->height() + buttonBox->height());
         auto cursor = edit->textCursor();
@@ -525,7 +530,7 @@ bool InputEditWidget::eventFilter(QObject *watched, QEvent *event)
             case Qt::Key_Return:
                 if (keyEvent->modifiers() & Qt::AltModifier)
                     d->edit->insertPlainText("\n");
-                else if (!d->referencePopup->isVisible())
+                else if (!d->referencePopup->isVisible() && !d->isAnswering)
                     emit pressedEnter();
                 else
                     emit handleKey(keyEvent);
@@ -631,6 +636,21 @@ void InputEditWidget::switchNetworkBtnVisible(bool visible)
         d->netWorkBtn->setChecked(false);
         ChatManager::instance()->connectToNetWork(false);
     }
+}
+
+void InputEditWidget::enableSendBtn()
+{
+    d->sendButton->setEnabled(true);
+}
+
+void InputEditWidget::disableSendBtn()
+{
+    d->sendButton->setEnabled(false);
+}
+
+void InputEditWidget::setAnswering(bool isAnswering)
+{
+    d->isAnswering = isAnswering;
 }
 
 // use to restore tag, : remove tag then Ctrl+z
