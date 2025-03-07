@@ -132,6 +132,9 @@ void AskPageWidget::onLLMChanged(int index)
         inputEdit->switchNetworkBtnVisible(false);
     else
         inputEdit->switchNetworkBtnVisible(true);
+
+    onStopGenerate();
+
     OptionManager::getInstance()->setValue(optionCategory, selectedLLM, llmInfo.toVariant());
 }
 
