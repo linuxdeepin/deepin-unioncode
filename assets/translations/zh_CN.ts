@@ -329,27 +329,27 @@
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="158"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="161"/>
         <source>stop generate</source>
         <translation>终止生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="188"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="191"/>
         <source>delete this session</source>
         <translation>删除该会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="195"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="198"/>
         <source>history sessions</source>
         <translation>历史会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="202"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="206"/>
         <source>create new session</source>
         <translation>创建新会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="213"/>
+        <location filename="../../src/plugins/chat/widgets/askpagewidget.cpp" line="218"/>
         <source>Ask question here, press Enter to send...</source>
         <translation>在这里提问，按Enter键发送...</translation>
     </message>
@@ -3091,43 +3091,43 @@ need to manually copy the source code to this path</source>
 <context>
     <name>InputEditWidget</name>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="199"/>
         <source>reference codebase</source>
         <translation>引用代码库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="203"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="208"/>
         <source>reference</source>
         <translation>引用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="214"/>
         <source>connect to network</source>
         <translation>联网</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="229"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="234"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="232"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="237"/>
         <source>Select File</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="235"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="240"/>
         <source>Opened Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="239"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="244"/>
         <source>CodeBase</source>
         <translation>代码库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="591"/>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="603"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="596"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="608"/>
         <source>No opened file</source>
         <translation>没有打开的文件</translation>
     </message>
@@ -3714,7 +3714,6 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="58"/>
-        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="68"/>
         <source>Required, please enter.</source>
         <translation>必填项，请输入</translation>
     </message>
@@ -3732,6 +3731,11 @@ repos path: %0</source>
         <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="65"/>
         <source>Api Path</source>
         <translation>Api路径</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="68"/>
+        <source>Root path, such as https://server/v1 (no /chat)</source>
+        <translation>根路径，如 https://server/v1（不加 /chat）</translation>
     </message>
     <message>
         <location filename="../../src/plugins/aimanager/option/modelconfigdialog.cpp" line="70"/>
@@ -4574,7 +4578,7 @@ repos path: %0</source>
         <translation>用户行为分析</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="596"/>
+        <location filename="../../src/plugins/chat/widgets/inputeditwidget.cpp" line="601"/>
         <source>Select File</source>
         <translation>选择文件</translation>
     </message>
