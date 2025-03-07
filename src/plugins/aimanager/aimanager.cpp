@@ -161,12 +161,14 @@ QList<LLMInfo> AiManager::getDefaultLLM()
     liteInfo.modelName = CodeGeeXChatModelLite;
     liteInfo.modelPath = kCodeGeeXModelPath;
     liteInfo.type = LLMType::ZHIPU_CODEGEEX;
+    liteInfo.isdefault = true;
 
     LLMInfo proInfo;
     proInfo.icon = QIcon::fromTheme("codegeex_model_pro");
     proInfo.modelName = CodeGeeXChatModelPro;
     proInfo.modelPath = kCodeGeeXModelPath;
     proInfo.type = LLMType::ZHIPU_CODEGEEX;
+    proInfo.isdefault = true;
 
     return { liteInfo, proInfo };
 }
