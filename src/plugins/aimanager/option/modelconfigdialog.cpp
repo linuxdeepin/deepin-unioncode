@@ -65,7 +65,7 @@ void AddModelDialogPrivate::initUi()
     QLabel *lbApiUrl = new QLabel(ModelConfigDialog::tr("Api Path"));
     lbApiUrl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     leApiUrl = new DLineEdit(q);
-    leApiUrl->setPlaceholderText(ModelConfigDialog::tr("Required, please enter."));
+    leApiUrl->setPlaceholderText(ModelConfigDialog::tr("Root path, such as https://server/v1 (no /chat)"));
 
     QLabel *lbApiKey = new QLabel(ModelConfigDialog::tr("Api Key"));
     lbApiKey->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
