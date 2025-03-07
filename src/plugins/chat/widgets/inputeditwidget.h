@@ -69,6 +69,10 @@ public:
     void popupReference();
     void accept(const QModelIndex &index);
     void switchNetworkBtnVisible(bool visible);
+    void enableSendBtn();
+    void disableSendBtn();
+
+    void setAnswering(bool isAnswering);
 
 signals:
     void pressedEnter();

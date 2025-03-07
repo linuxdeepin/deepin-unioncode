@@ -284,7 +284,8 @@ void AskPageWidget::enterAnswerState()
 
     progressCalcNum = 0;
     inputEdit->edit()->clear();
-    inputEdit->setEnabled(false);
+    inputEdit->disableSendBtn();
+    inputEdit->setAnswering(true);
 
     if (deleteBtn)
         deleteBtn->setEnabled(false);
@@ -300,7 +301,8 @@ void AskPageWidget::enterAnswerState()
 void AskPageWidget::enterInputState()
 {
     stopWidget->hide();
-    inputEdit->setEnabled(true);
+    inputEdit->enableSendBtn();
+    inputEdit->setAnswering(false);
     inputEdit->edit()->setPlaceholderText(placeHolderText);
 
     if (deleteBtn)
