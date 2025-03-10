@@ -1,3 +1,9 @@
+deepin-unioncode (1.4.6) stable; urgency=medium
+
+  * Bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Mon, 10 Mar 2025 17:01:50 +0800
+
 deepin-unioncode (1.4.5) unstable; urgency=medium
 
   * Disable smartut
