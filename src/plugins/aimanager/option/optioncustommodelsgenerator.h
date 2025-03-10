@@ -9,6 +9,7 @@
 
 class OptionCustomModelsGenerator : public dpfservice::OptionGenerator
 {
+    Q_OBJECT
 public:
     OptionCustomModelsGenerator();
     inline static QString kitName() { return tr("Models"); }
