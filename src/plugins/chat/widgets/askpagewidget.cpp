@@ -359,6 +359,9 @@ void AskPageWidget::updateModelCb()
 
 void AskPageWidget::onStopGenerate()
 {
+    if (!waitComponets)
+        return;
+
     ChatManager::instance()->stopReceiving();
     if (!msgComponents.values().contains(waitComponets)) {
         QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
