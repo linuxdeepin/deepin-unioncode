@@ -16,7 +16,6 @@ class DirectoryAsynParsePrivate;
 class DirectoryAsynParse : public QFileSystemWatcher
 {
     Q_OBJECT
-    friend class DirectoryAsynParse;
     DirectoryAsynParsePrivate *const d;
 
 public:
