@@ -16,12 +16,21 @@
 
 void AiPlugin::initialize()
 {
+    // load Ai service.
+    QString errStr;
+    auto &ctx = dpfInstance.serviceContext();
+    if (!ctx.load(dpfservice::AiService::name(), &errStr)) {
+        qCritical() << errStr;
+    }
 }
 
 bool AiPlugin::start()
 {    
     using namespace dpfservice;
     auto aiService = dpfGetService(AiService);
+    if (!aiService)
+        return false;
+
     auto impl = AiManager::instance();
     using namespace std::placeholders;
     aiService->getAllModel = std::bind(&AiManager::getAllModel, impl);

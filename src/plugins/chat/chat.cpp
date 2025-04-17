@@ -12,7 +12,6 @@
 #include "services/window/windowservice.h"
 #include "services/option/optionservice.h"
 #include "services/option/optiondatastruct.h"
-#include "services/ai/aiservice.h"
 #include "services/editor/editorservice.h"
 #include "copilot.h"
 
@@ -27,12 +26,6 @@ using namespace dpfservice;
 
 void ChatPlugin::initialize()
 {
-    // load Ai service.
-    QString errStr;
-    auto &ctx = dpfInstance.serviceContext();
-    if (!ctx.load(AiService::name(), &errStr)) {
-        qCritical() << errStr;
-    }
 }
 
 bool ChatPlugin::start()
