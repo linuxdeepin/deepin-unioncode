@@ -76,8 +76,11 @@ void DetailsButton::paintEvent(QPaintEvent *event)
     arrowOpt.palette = pal;
     style()->drawPrimitive(checked ? QStyle::PE_IndicatorArrowUp : QStyle::PE_IndicatorArrowDown, &arrowOpt, &p, this);
 }
-
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 void DetailsButton::enterEvent(QEvent *event)
+#else
+void DetailsButton::enterEvent(QEnterEvent *event)
+#endif
 {
     d->hover = true;
     return QAbstractButton::enterEvent(event);
@@ -86,5 +89,5 @@ void DetailsButton::enterEvent(QEvent *event)
 void DetailsButton::leaveEvent(QEvent *event)
 {
     d->hover = false;
-    return QAbstractButton::enterEvent(event);
+    return QAbstractButton::leaveEvent(event);
 }

@@ -25,7 +25,7 @@ public:
         int pos = 0;
         QString fileName;
 
-        bool operator==(const PosRecord &other)
+        bool operator==(const PosRecord &other) const
         {
             return pos == other.pos && fileName == other.fileName;
         }

@@ -11,13 +11,18 @@
 #include "services/window/windowservice.h"
 #include "services/debugger/debuggerservice.h"
 #include "base/abstractwidget.h"
+
+#if QT_VERSION <= 0x060000
 #include "debugger/jsdebugger.h"
 
 #include <QtWidgets/QAction>
 #include <QtScript>
+
 #ifndef QT_NO_SCRIPTTOOLS
 #include <QtScriptTools>
 #endif
+#endif
+
 #include <QMainWindow>
 #include <QApplication>
 
@@ -53,13 +58,14 @@ bool JavascriptPlugin::start()
         projectService->implGenerator<JSProjectGenerator>(JSProjectGenerator::toolKitName(), &errorString);
     }
 
-    // debugger register.
+#if QT_VERSION <= 0x060000
+    // debugger register. Qt6 dose not supprt
     auto jsDebugger = new JSDebugger(qApp);
     auto debuggerService = dpfGetService(DebuggerService);
     if (debuggerService && debuggerService->registerDebugger) {
         debuggerService->registerDebugger("local", jsDebugger);
     }
-
+#endif
     return true;
 }
 

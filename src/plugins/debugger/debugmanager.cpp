@@ -253,7 +253,11 @@ void DebugManager::handleEvents(const dpf::Event &event)
 
 bool DebugManager::runCoredump(const QString &target, const QString &core, const QString &kit)
 {
-    return QtConcurrent::run(currentDebugger, &AbstractDebugger::runCoredump, target, core, kit);
+    // return QtConcurrent::run(currentDebugger, &AbstractDebugger::runCoredump, target, core, kit);
+    auto future = QtConcurrent::run([&, this](){
+        currentDebugger->runCoredump(target, core, kit);
+    });
+    return future.isRunning();
 }
 
 void DebugManager::rrReplay(const QString &target)

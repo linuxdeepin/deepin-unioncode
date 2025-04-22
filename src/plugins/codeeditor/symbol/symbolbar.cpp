@@ -95,7 +95,11 @@ void CurmbItem::mousePressEvent(QMouseEvent *event)
     QWidget::mousePressEvent(event);
 }
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 void CurmbItem::enterEvent(QEvent *event)
+#else
+void CurmbItem::enterEvent(QEnterEvent *event)
+#endif
 {
     isHover = true;
     update();
@@ -188,15 +192,18 @@ void SymbolBar::setPath(const QString &path)
             break;
         }
     }
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    auto itemList = displayPath.split(QDir::separator(), Qt::SkipEmptyParts);
+ #else
     auto itemList = displayPath.split(QDir::separator(), QString::SkipEmptyParts);
+ #endif
     for (int i = 0; i < itemList.size(); ++i) {
         CurmbItem *item = new CurmbItem(CurmbItem::FilePath, i, this);
         setFixedHeight(item->height());
         item->setText(itemList[i]);
         item->setToolTip(path);
         if (i == itemList.size() - 1)
-            item->setIcon(DFileIconProvider::globalProvider()->icon(path));
+            item->setIcon(DFileIconProvider::globalProvider()->icon(QFileInfo(path)));
 
         QString filePath = workspaceDir + QDir::separator() + itemList.mid(0, i + 1).join(QDir::separator());
         item->setUserData(filePath);

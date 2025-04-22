@@ -1,12 +1,11 @@
 // SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 #ifndef JSDebugger_H
 #define JSDebugger_H
 
 #include "base/abstractdebugger.h"
-
+#if QT_VERSION <= 0x060000
 #include <QObject>
 #include <QtScript/QScriptEngine>
 #include <QScriptEngineDebugger>
@@ -72,4 +71,5 @@ private:
     AbstractWidget *codeEditor = nullptr;
 };
 
+#endif
 #endif // JSDebugger_H

@@ -38,7 +38,11 @@ void SearchReplaceWorkerPrivate::startNextJob()
     process.reset(new QProcess);
     connect(process.get(), &QProcess::readyReadStandardOutput, q,
             std::bind(&SearchReplaceWorker::handleReadSearchResult, q, job.keyword, job.flags));
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     connect(process.get(), qOverload<int>(&QProcess::finished), q, &SearchReplaceWorker::processDone);
+#else
+    connect(process.get(), &QProcess::finished, q, &SearchReplaceWorker::processDone);
+#endif
 
     process->setProgram(job.program);
     process->setArguments(job.arguments);

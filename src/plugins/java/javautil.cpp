@@ -12,8 +12,8 @@
 QString JavaUtil::getMainClassPath(const QDir &dir)
 {
     QFileInfoList entries = dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-    //Create a QRegExp object with the given regular expression
-    QRegExp regExp("public\\s+static\\s+void\\s+main\\s*\\(\\s*");
+    //Create a QRegularExpression object with the given regular expression
+    QRegularExpression regExp("public\\s+static\\s+void\\s+main\\s*\\(\\s*");
 
     //Loop through files
     foreach (QFileInfo entry, entries) {
@@ -43,7 +43,7 @@ QString JavaUtil::getMainClassPath(const QDir &dir)
                 }
                 QString output = process.readAllStandardOutput();
                 //Check if the given regular expression matches the file content
-                if (regExp.indexIn(output) >= 0) {
+                if (regExp.match(output).hasMatch()) {
                     return entry.filePath();
                 }
             }

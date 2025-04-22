@@ -136,7 +136,7 @@ void ProfileSettingWidget::setupUi()
         d->cbChooseLanguage->addItem(iter.key(), iter.value());
     }
 
-    d->hlayout->setMargin(10);
+    d->hlayout->setContentsMargins(10, 10, 10, 10);
     d->hlayout->setSpacing(10);
     d->hlayout->addWidget(d->languageEdit);
     d->hlayout->addWidget(d->cbChooseLanguage, 5, Qt::AlignmentFlag::AlignRight);

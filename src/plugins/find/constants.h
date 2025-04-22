@@ -46,7 +46,7 @@ struct FindItem
     QStringList capturedTexts;
     QString context;
 
-    inline bool operator==(const FindItem &other)
+    inline bool operator==(const FindItem &other) const
     {
         return filePathName == other.filePathName && line == other.line
                 && column == other.column;

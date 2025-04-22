@@ -89,7 +89,7 @@ void NotificationManagerPrivate::addContent(QWidget *widget)
         mainWindow->installEventFilter(q);
         QVBoxLayout *layout = new QVBoxLayout(notificationContent);
         layout->setSpacing(0);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, 0, 0);
         layout->setDirection(QBoxLayout::BottomToTop);
         notificationContent->show();
     }

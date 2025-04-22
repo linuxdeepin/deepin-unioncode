@@ -21,7 +21,7 @@
 #include "Qsci/qscilexer.h"
 
 #include <cmark.h>
-#include <DApplicationHelper>
+#include <DGuiApplicationHelper>
 #include <DFrame>
 
 #include <QApplication>

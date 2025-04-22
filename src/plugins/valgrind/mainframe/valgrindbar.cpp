@@ -93,20 +93,18 @@ void ValgrindBar::initValgrindbar()
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(d->btnBox);
     hLayout->setAlignment(Qt::AlignLeft);
-    hLayout->setMargin(0);
+    hLayout->setContentsMargins(0, 0, 0, 0);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->stackedWidget);
     vLayout->setContentsMargins(0, 0, 0, 0);
-    vLayout->setMargin(0);
     d->mainFrame->setLayout(vLayout);
     d->mainFrame->setLineWidth(0);
     vLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(d->mainFrame);
-    mainLayout->setMargin(0);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     DStyle::setFrameRadius(d->mainFrame, 0);
     this->setLayout(mainLayout);

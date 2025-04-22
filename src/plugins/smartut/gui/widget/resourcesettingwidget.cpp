@@ -75,7 +75,7 @@ void ResourceSettingWidget::updateSettings()
     for (const auto &info : infoList) {
         const auto &itemText = QFileInfo(info.workspaceFolder()).baseName();
         if (projectCB->findText(itemText) == -1)
-            projectCB->addItem(itemText, qVariantFromValue(info));
+            projectCB->addItem(itemText, QVariant::fromValue(info));
     }
 }
 

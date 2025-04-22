@@ -154,7 +154,7 @@ void PythonDebugger::slotReceiveClientInfo(const QString &ppid,
                                            const QString &projectPath,
                                            const QString &projectCachePath)
 {
-    if (ppid != getppid())
+    if (ppid != QString::number(getppid()))
         return;
     d->port = 0;
     d->process.close();

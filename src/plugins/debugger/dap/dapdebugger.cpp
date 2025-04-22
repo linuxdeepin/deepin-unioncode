@@ -241,7 +241,7 @@ void DAPDebugger::startRerverseDebug(const QString &target)
     QMap<QString, QVariant> param;
     param.insert("program", "rr");
 
-    d->requestDAPPortPpid = QString(getpid());
+    d->requestDAPPortPpid = QString::number(getpid());
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "getDebugPort");
@@ -316,7 +316,7 @@ void DAPDebugger::attachDebug(const QString &processId)
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "getDebugPort");
-    d->requestDAPPortPpid = QString(getpid());
+    d->requestDAPPortPpid = QString::number(getpid());
     msg << d->requestDAPPortPpid
         << debuggerTool
         << processId
@@ -1226,7 +1226,11 @@ void DAPDebugger::initializeView()
 
     d->threadSelector = new DComboBox(d->stackPane);
     d->threadSelector->setMinimumWidth(240);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     connect(d->threadSelector, QOverload<const QString &>::of(&DComboBox::activated), this, &DAPDebugger::currentThreadChanged);
+#else
+    connect(d->threadSelector, &DComboBox::textActivated, this, &DAPDebugger::currentThreadChanged);
+#endif
 
     QHBoxLayout *hLayout = new QHBoxLayout(d->stackPane);
     hLayout->setAlignment(Qt::AlignLeft);
@@ -1460,7 +1464,7 @@ bool DAPDebugger::requestDebugPort(const QMap<QString, QVariant> &param, const Q
         if (generator) {
             d->isCustomDap = customDap;
             QString retMsg;
-            d->requestDAPPortPpid = QString(getpid());
+            d->requestDAPPortPpid = QString::number(getpid());
             printOutput(tr("Requesting debug port..."));
             if (!generator->requestDAPPort(d->requestDAPPortPpid, param, retMsg)) {
                 printOutput(retMsg, OutputPane::ErrorMessage);

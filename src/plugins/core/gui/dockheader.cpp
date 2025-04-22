@@ -80,11 +80,11 @@ void DockHeader::setHeaderNames(const QList<QAction *> &headers)
     DMenu *menu = new DMenu(this);
     menu->addActions(headers);
     d->select->show();
-    connect(d->select, &DPushButton::clicked, this, [=]() {
+    connect(d->select, &DPushButton::clicked, menu, [=]() {
         auto action = menu->exec(mapToGlobal(geometry().bottomLeft()));
         if (action)
             setHeaderName(action->text());
-    }, Qt::UniqueConnection);
+    });
 }
 
 void DockHeader::mousePressEvent(QMouseEvent *event)

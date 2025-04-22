@@ -38,7 +38,12 @@ bool JSGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &re
 {
     Q_UNUSED(param)
     Q_UNUSED(retMsg)
+#if QT_VERSION <= 0x060000
     return true;
+#else
+    retMsg = tr("JavaScript cannot be debugged in the current version of the IDE.");
+    return false;
+#endif
 }
 
 bool JSGenerator::requestDAPPort(const QString &ppid, const QMap<QString, QVariant> &param, QString &retMsg)

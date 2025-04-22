@@ -113,7 +113,7 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent, EnvType type)
 
     // instert to layout.
     d->vLayout->setSpacing(0);
-    d->vLayout->setMargin(0);
+    d->vLayout->setContentsMargins(0, 0, 0, 0);
     d->vLayout->addWidget(d->tableView);
     d->vLayout->addLayout(btnLayout);
     d->vLayout->addWidget(d->enableEnvCB);

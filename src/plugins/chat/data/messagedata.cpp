@@ -18,7 +18,11 @@ MessageData::MessageData(const QString &id, Type type)
 
 void MessageData::updateData(const QString &data)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QStringList lines = data.split("\n", Qt::SkipEmptyParts);
+ #else
     QStringList lines = data.split("\n", QString::SkipEmptyParts);
+ #endif
     if (lines.length() < msgDataLines.length())
         return;
 

@@ -7,7 +7,7 @@
 #include "maven/mavenbuild.h"
 #include "javautil.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 using namespace dpfservice;
 

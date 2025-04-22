@@ -332,24 +332,28 @@ gotpty:
             (st.st_mode & (S_IRGRP|S_IXGRP|S_IROTH|S_IWOTH|S_IXOTH))) &&
             !d->chownpty(true)) {
         qWarning()
-        << "chownpty failed for device " << ptyName << "::" << d->ttyName
-        << "\nThis means the communication can be eavesdropped." << endl;
+                << "chownpty failed for device " << ptyName << "::" << d->ttyName
+#if QT_VERSION >= 0x060000
+                << "\nThis means the communication can be eavesdropped." << Qt::endl;
+#else
+                << "\nThis means the communication can be eavesdropped." << endl;
+#endif
     }
 
-#if defined (HAVE__GETPTY) || defined (HAVE_GRANTPT)
+#    if defined(HAVE__GETPTY) || defined(HAVE_GRANTPT)
 grantedpt:
-#endif
+#    endif
 
-#ifdef HAVE_REVOKE
+#    ifdef HAVE_REVOKE
     revoke(d->ttyName.data());
-#endif
+#    endif
 
-#ifdef HAVE_UNLOCKPT
+#    ifdef HAVE_UNLOCKPT
     unlockpt(d->masterFd);
-#elif defined(TIOCSPTLCK)
+#    elif defined(TIOCSPTLCK)
     int flag = 0;
     ioctl(d->masterFd, TIOCSPTLCK, &flag);
-#endif
+#    endif
 
     d->slaveFd = ::open(d->ttyName.data(), O_RDWR | O_NOCTTY);
     if (d->slaveFd < 0) {
@@ -359,11 +363,11 @@ grantedpt:
         return false;
     }
 
-#if (defined(__svr4__) || defined(__sgi__))
+#    if (defined(__svr4__) || defined(__sgi__))
     // Solaris
     ioctl(d->slaveFd, I_PUSH, "ptem");
     ioctl(d->slaveFd, I_PUSH, "ldterm");
-#endif
+#    endif
 
 #endif /* HAVE_OPENPTY */
 

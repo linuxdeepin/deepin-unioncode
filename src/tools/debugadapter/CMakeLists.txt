@@ -47,7 +47,7 @@ add_executable(${PROJECT_NAME} main.cpp
     ${${PROJECT_NAME}_SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-  Qt5::DBus
+  Qt${QT_VERSION_MAJOR}::DBus
   duc-common
   )
 

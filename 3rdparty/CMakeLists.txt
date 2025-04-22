@@ -1,5 +1,7 @@
 add_subdirectory(cppdap)
-add_subdirectory(unioncode-GitQlient)
 add_subdirectory(unioncode-qscintilla214)
+if (QT_VERSION_MAJOR MATCHES 5)
+add_subdirectory(unioncode-GitQlient)
+endif()
 add_subdirectory(unioncode-qtermwidget-0.14.1)
 add_subdirectory(unioncode-jsonrpccpp)

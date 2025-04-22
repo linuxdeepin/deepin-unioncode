@@ -112,7 +112,7 @@ void RunConfigPane::setupUi()
         d->environmentWidget->getValues(d->targetRunParam->env);
     });
 
-    vLayout->setMargin(0);
+    vLayout->setContentsMargins(0, 0, 0, 0);
 }
 
 void RunConfigPane::updateUi()

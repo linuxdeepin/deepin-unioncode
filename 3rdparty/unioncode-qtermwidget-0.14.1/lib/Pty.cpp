@@ -317,10 +317,11 @@ int Pty::foregroundProcessGroup() const
     return 0;
 }
 
+// TODO: we need to handle this
+#if QT_VERSION < 0x060000
 void Pty::setupChildProcess()
 {
     KPtyProcess::setupChildProcess();
-
     // reset all signal handlers
     // this ensures that terminal applications respond to
     // signals generated via key sequences such as Ctrl+C
@@ -328,11 +329,13 @@ void Pty::setupChildProcess()
     struct sigaction action;
     sigset_t sigset;
     sigemptyset(&action.sa_mask);
+    sigemptyset(&sigset);
     action.sa_handler = SIG_DFL;
     action.sa_flags = 0;
     for (int signal=1;signal < NSIG; signal++) {
-        sigaction(signal,&action,0L);
+        sigaction(signal,&action,nullptr);
         sigaddset(&sigset, signal);
     }
-    sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+    sigprocmask(SIG_UNBLOCK, &sigset, nullptr);
 }
+#endif

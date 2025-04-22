@@ -220,12 +220,12 @@ void CMakeCbpParser::parseBuildTargetOption()
     if (attributes().hasAttribute("output")) {
         buildTarget.output = (attributes().value("output").toString());
     } else if (attributes().hasAttribute("type")) {
-        const QStringRef value = attributes().value("type");
-        if (value == "0" || value == "1")
+        const QStringView value = attributes().value("type");
+        if (value == QString("0") || value == QString("1"))
             buildTarget.type = kExecutable;
-        else if (value == "2")
+        else if (value == QString("2"))
             buildTarget.type = kStaticLibrary;
-        else if (value == "3")
+        else if (value == QString("3"))
             buildTarget.type = kDynamicLibrary;
         else
             buildTarget.type = kUtility;

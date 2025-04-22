@@ -170,7 +170,7 @@ void DetailsView::setupUi()
 {
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(2);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     DFrame *detailFrame = new DFrame(this);
     auto detailLayout = new QHBoxLayout(detailFrame);
     DStyle::setFrameRadius(detailFrame, 0);
@@ -178,12 +178,12 @@ void DetailsView::setupUi()
 
     auto midLayout = new QVBoxLayout();
     midLayout->setSpacing(0);
-    midLayout->setMargin(0);
+    midLayout->setContentsMargins(0, 0, 0, 0);
     initMetaInfoLayout();
 
     auto operationLayout = new QHBoxLayout();
     operationLayout->setSpacing(0);
-    operationLayout->setMargin(0);
+    operationLayout->setContentsMargins(0, 0, 0, 0);
     loadBtn = new DSuggestButton(this);
     loadBtn->setFixedSize(86, 36);
     loadBtn->setToolTip(tr("reLaunch when changed!"));

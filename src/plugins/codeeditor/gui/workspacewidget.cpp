@@ -1073,8 +1073,8 @@ QStringList WorkspaceWidget::modifiedFiles() const
         files << tabWidget->modifiedFiles();
 
     // Delete duplicates
-    auto tmp = files.toSet();
-    return tmp.toList();
+    files.removeDuplicates();
+    return files;
 }
 
 QString WorkspaceWidget::rangeText(const QString &fileName, const dpfservice::Edit::Range &range)
@@ -1190,8 +1190,8 @@ QStringList WorkspaceWidget::openedFiles() const
         files << tabWidget->openedFiles();
 
     // Delete duplicates
-    auto tmp = files.toSet();
-    return tmp.toList();
+    files.removeDuplicates();
+    return files;
 }
 
 QString WorkspaceWidget::fileText(const QString &fileName) const

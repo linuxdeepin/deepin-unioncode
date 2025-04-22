@@ -266,7 +266,11 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
                     info.setRunProgram(iterRun->targetPath);
                     QStringList arguments;
                     if (!iterRun->arguments.isEmpty())
+                    #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                        arguments = iterRun->arguments.split(" ", Qt::SkipEmptyParts);
+                    #else
                         arguments = iterRun->arguments.split(" ", QString::SkipEmptyParts);
+                    #endif
                     info.setRunCustomArgs(arguments);
                     info.setRunWorkspaceDir(iterRun->workDirectory);
                     info.setCurrentProgram(iterRun->targetName);

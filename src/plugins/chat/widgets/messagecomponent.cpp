@@ -288,8 +288,8 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
                 updateMessage(addedMsgData);
             }
 
-            QRegExp re("```([a-z]*|[A-Z]*)");
-            if (re.exactMatch(addedLine) && currentUpdateState == Label) {
+            QRegularExpression re("```([a-z]*|[A-Z]*)");
+            if (re.match(addedLine).hasMatch() && currentUpdateState == Label) {
                 // create new code edit component
                 messageData.appendData({ addedLine });
                 currentUpdateState = CodeEdit;

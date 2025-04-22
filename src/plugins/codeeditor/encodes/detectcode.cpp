@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QTextCodec>
+#include <QRegularExpression>
 
 #include <stdio.h>
 
@@ -143,7 +144,7 @@ QByteArray DetectCode::getFileEncodingFormat(QString filepath, QByteArray conten
     /* chardet encoding recognition */
     QString str(content);
     // Match is Chinese (only in UTF-8 encoding)
-    bool bFlag = str.contains(QRegExp("[\\x4e00-\\x9fa5]+"));
+    bool bFlag = str.contains(QRegularExpression("[\\x4e00-\\x9fa5]+"));
     if (bFlag) {
         const QByteArray suffix = "为增加探测率保留的中文";
         QByteArray newContent = content;

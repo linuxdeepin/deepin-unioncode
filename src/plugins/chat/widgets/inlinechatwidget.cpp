@@ -19,7 +19,7 @@
 #include <DGuiApplicationHelper>
 
 #include <QAction>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QKeyEvent>
 #include <QVBoxLayout>
 #include <QFutureWatcher>
@@ -396,13 +396,14 @@ void InlineChatWidgetPrivate::handleAskFinished(const QString &response)
         // Remove needless datas
         if (codeInfo.isSelectEmpty) {
             while (i < lines.size()) {
-                QRegExp rx("(\\d+)");
-                if (rx.indexIn(lines[i]) == -1) {
+                QRegularExpression rx("(\\d+)");
+                if (!rx.match(lines[i]).hasMatch()) {
                     ++i;
                     continue;
                 }
 
-                int number = rx.cap(1).toInt();
+                // int number = rx.captured(1).toInt();
+                int number = rx.match(lines[1]).captured(1).toInt();
                 if (number < codeInfo.curosrLine) {
                     lines.removeAt(i);
                     continue;
@@ -413,7 +414,7 @@ void InlineChatWidgetPrivate::handleAskFinished(const QString &response)
 
         // Remove numbers at the beginning of each line
         for (int i = 0; i < lines.size(); ++i) {
-            lines[i] = lines[i].remove(QRegExp("^\\d+\\s{2}"));
+            lines[i] = lines[i].remove(QRegularExpression("^\\d+\\s{2}"));
         }
         codePart = lines.join('\n');
         codePart.remove("【cursor】");
@@ -554,7 +555,8 @@ bool InlineChatWidgetPrivate::askForChat()
     answerLabel->clear();
 
     auto *futureWatcher = new QFutureWatcher<QString>();
-    futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, false));
+    // futureWatcher->setFuture(QtConcurrent::run(this, &InlineChatWidgetPrivate::createPrompt, question, false));
+    futureWatcher->setFuture(QtConcurrent::run([this, &question](){ return this->createPrompt(question, false); }));
     connect(futureWatcher, &QFutureWatcher<QString>::finished, this, &InlineChatWidgetPrivate::handleCreatePromptFinished);
     futureWatcherList << futureWatcher;
     return true;
@@ -705,7 +707,7 @@ QString InlineChatWidgetPrivate::createFormatCode(const QString &file, const QSt
 
     codeInfo.isSelectEmpty = false;
     QString tempCode = code;
-    tempCode.remove(QRegExp("\\s+"));
+    tempCode.remove(QRegularExpression("\\s+"));
     if (tempCode.isEmpty()) {
         Edit::Range beforeRange = range;
         beforeRange.start.line -= 3;
@@ -759,7 +761,7 @@ void InlineChatWidget::start()
     const auto &textRange = d->calculateTextRange(d->chatInfo.fileName, pos);
     // TODO: Inline chat in the blank space
     auto rangeText = d->editSrv->rangeText(d->chatInfo.fileName, textRange);
-    rangeText.remove(QRegExp("\\s+"));
+    rangeText.remove(QRegularExpression("\\s+"));
     if (rangeText.isEmpty())
         return;
 

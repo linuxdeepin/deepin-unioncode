@@ -68,7 +68,11 @@ public:
         if (!index.isValid())
             return false;
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         const QRegExp regexp = filterRegExp();
+#else
+        const QRegularExpression regexp = filterRegularExpression();
+#endif
         if (regexp.pattern().isEmpty() || sourceModel()->rowCount(index) > 0)
             return true;
 
@@ -246,7 +250,11 @@ void VariableChooserPrivate::updateDescription(const QModelIndex &index, const Q
 
 void VariableChooserPrivate::updateFilter(const QString &filter)
 {
-    sortModel->setFilterRegExp(QRegExp::escape(filter));
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    sortModel->setFilterRegExp(QRegularExpression::escape(filter));
+#else
+    sortModel->setFilterRegularExpression(QRegularExpression::escape(filter));
+#endif
     treeView->expandAll();
 }
 

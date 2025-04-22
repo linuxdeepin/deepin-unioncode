@@ -159,10 +159,10 @@ void QTermWidget::search(bool forwards, bool next)
     qDebug() << "current selection starts at: " << startColumn << startLine;
     qDebug() << "current cursor position: " << m_impl->m_terminalDisplay->screenWindow()->cursorPosition();
 
-    QRegExp regExp(m_searchBar->searchText());
-    regExp.setPatternSyntax(m_searchBar->useRegularExpression() ? QRegExp::RegExp : QRegExp::FixedString);
-    regExp.setCaseSensitivity(m_searchBar->matchCase() ? Qt::CaseSensitive : Qt::CaseInsensitive);
-
+    QRegularExpression regExp(m_searchBar->searchText(),
+                              m_searchBar->matchCase() ? QRegularExpression::CaseInsensitiveOption|
+                                                             QRegularExpression::UseUnicodePropertiesOption
+                                                       : QRegularExpression::UseUnicodePropertiesOption);
     HistorySearch *historySearch =
             new HistorySearch(m_impl->m_session->emulation(), regExp, forwards, startColumn, startLine, this);
     connect(historySearch, SIGNAL(matchFound(int, int, int, int)), this, SLOT(matchFound(int, int, int, int)));
@@ -253,13 +253,17 @@ void QTermWidget::startTerminalTeletype()
 void QTermWidget::init(int startnow)
 {
     m_layout = new QVBoxLayout();
-    m_layout->setMargin(0);
+    m_layout->setContentsMargins(0, 0, 0, 0);
     setLayout(m_layout);
 
     // translations
     // First check $XDG_DATA_DIRS. This follows the implementation in libqtxdg
     QString d = QFile::decodeName(qgetenv("XDG_DATA_DIRS"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QStringList dirs = d.split(QLatin1Char(':'), Qt::SkipEmptyParts);
+ #else
     QStringList dirs = d.split(QLatin1Char(':'), QString::SkipEmptyParts);
+ #endif
     if (dirs.isEmpty()) {
         dirs.append(QString::fromLatin1("/usr/local/share"));
         dirs.append(QString::fromLatin1("/usr/share"));
