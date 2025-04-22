@@ -97,7 +97,7 @@ bool ReverseDebugger::execCommand(const dpfservice::RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(process.pid(), line, OutputPane::OutputFormat::StdOut);
+            outputMsg(process.processId(), line, OutputPane::OutputFormat::StdOut);
         }
     });
 
@@ -105,13 +105,13 @@ bool ReverseDebugger::execCommand(const dpfservice::RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardError);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(process.pid(), line, OutputPane::OutputFormat::StdErr);
+            outputMsg(process.processId(), line, OutputPane::OutputFormat::StdErr);
         }
     });
 
     process.start(program, arguments);
     uiController.switchContext(tr("&Application Output"));
-    quint64 pid = process.pid();
+    quint64 pid = process.processId();
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
                                .arg(program, arguments.join(" "), info.workingDir);
     QMetaObject::invokeMethod(AppOutputPane::instance(), "createApplicationPane",

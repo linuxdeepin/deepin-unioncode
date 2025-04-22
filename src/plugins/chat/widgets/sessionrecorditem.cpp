@@ -46,7 +46,7 @@ void SessionRecordItem::onRecordClicked()
 void SessionRecordItem::initUI()
 {
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
 
@@ -55,13 +55,13 @@ void SessionRecordItem::initUI()
     layout->addWidget(recordButton);
 
     QHBoxLayout *btnLayout = new QHBoxLayout;
-    btnLayout->setMargin(10);
+    btnLayout->setContentsMargins(10, 10, 10, 10);
     btnLayout->setSpacing(10);
 
     recordButton->setLayout(btnLayout);
 
     QVBoxLayout *textLayout = new QVBoxLayout;
-    textLayout->setMargin(0);
+    textLayout->setContentsMargins(0, 0, 0, 0);
     textLayout->setSpacing(5);
 
     promotLabel = new DLabel(recordButton);

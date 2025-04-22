@@ -68,8 +68,8 @@ GDBDebugger::~GDBDebugger()
 void GDBDebugger::init()
 {
     //use to debugging adapter
-//    DebugManager::instance()->command("set logging file /tmp/log.txt");
-//    DebugManager::instance()->command("set logging on");
+   DebugManager::instance()->command("set logging file /tmp/log.txt");
+   DebugManager::instance()->command("set logging on");
 
     QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
     DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
@@ -630,11 +630,16 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 // -stack-list-frames => StackTrace Reqeust
                 if (!d->inferiorRunning) {
                     QList<gdbmi::Frame> stackFrames;
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
                     auto stackTrace = record.payload.toMap().value("stack").toList().first().toMap().values("frame");
-                    for (const auto& e: stackTrace) {
+#else
+                    auto stacks = record.payload.toMap().value("stack").toList();
+                    auto stackTrace = stacks.first().toMap().value("frame").toList();
+#endif
+                     for (const auto& e : stackTrace) {
                         auto frame = gdbmi::Frame::parseMap(e.toMap());
                         stackFrames.prepend(frame);
-                    }
+                     }
                     d->stackFrames = stackFrames;
                     emit updateStackFrame(stackFrames);
                 }
@@ -644,7 +649,7 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 auto data = record.payload.toMap();
                 auto bp = gdbmi::Breakpoint::parseMap(data.value("bkpt").toMap());
                 d->breakpoints.insert(bp.number, bp);
-                emit breakpointInserted(bp);
+                // emit breakpointInserted(bp); //unused
             }
         }
         emit updateExceptResponse(record.token, record.payload);

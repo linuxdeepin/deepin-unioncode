@@ -190,7 +190,7 @@ void ProjectItemDelegate::drawCheckBox(int depth,
 
     bool isSelected = (option.state & QStyle::State_Selected) && option.showDecorationSelected;
     if (isSelected) {
-        opt.palette.setColor(QPalette::Foreground, option.palette.color(QPalette::HighlightedText));
+        opt.palette.setColor(QPalette::WindowText, option.palette.color(QPalette::HighlightedText));
         opt.palette.setColor(QPalette::Highlight, option.palette.color(QPalette::HighlightedText));
     }
 

@@ -115,7 +115,7 @@ void TabWidgetPrivate::initUI()
 
     editorLayout = new QStackedLayout();
     editorLayout->setSpacing(0);
-    editorLayout->setMargin(0);
+    editorLayout->setContentsMargins(0, 0, 0, 0);
     editorLayout->addWidget(spaceWidget);
 
     tabBar = new TabBar(q);

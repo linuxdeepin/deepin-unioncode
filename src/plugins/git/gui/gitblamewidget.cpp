@@ -139,8 +139,14 @@ void GitBlameWidget::setGitInfo(const QStringList &infos)
     forever {
         QTC_CHECK(prevPos < pos);
         int afterParen = prevPos + parenPos;
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         result.append(info.midRef(prevPos, stripPos));
         result.append(info.midRef(afterParen, pos - afterParen));
+#else
+        QStringView infoView(info);
+        result.append(infoView.mid(prevPos, stripPos));
+        result.append(infoView.mid(afterParen, pos - afterParen));
+#endif
         prevPos = pos;
         QTC_CHECK(prevPos != 0);
         if (pos == info.size())

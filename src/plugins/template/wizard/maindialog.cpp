@@ -233,7 +233,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
 
     QVBoxLayout *rightLayout = new QVBoxLayout();
     rightLayout->addWidget(detailFrame);
-    rightLayout->setMargin(10);
+    rightLayout->setContentsMargins(10, 10, 10, 10);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addLayout(leftLayout);

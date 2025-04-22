@@ -10,6 +10,7 @@
 #include <QList>
 #include <QVariant>
 #include <QVector>
+#include <QMutex>
 
 enum ColumnType {
     kName,

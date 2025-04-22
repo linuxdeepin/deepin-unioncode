@@ -165,7 +165,7 @@ void DirectoryAsynParse::updateItem(QStandardItem *item)
     if (!dir.exists())
         return;
 
-    QStringList tempFileList = d->fileList.toList();
+    QStringList tempFileList = d->fileList.values();
     QStringList existingPaths;
     // Remove non-existent items
     for (int i = item->rowCount() - 1; i >= 0; --i) {
@@ -188,7 +188,8 @@ void DirectoryAsynParse::updateItem(QStandardItem *item)
         }
     }
 
-    d->fileList = tempFileList.toSet();
+    for (auto tempFile : tempFileList)
+        d->fileList.insert(tempFile);
     bool hasAdded = false;
     // Process directory entries
     const QFileInfoList entries = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);

@@ -26,7 +26,11 @@ void CommandExecuter::buildProject()
     QString sourcePath = CommandParser::instance().value("b");
     QString destPath = CommandParser::instance().value("d");
     QString kit = CommandParser::instance().value("k");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QStringList args = CommandParser::instance().value("a").trimmed().split(" ", Qt::SkipEmptyParts);
+ #else
     QStringList args = CommandParser::instance().value("a").trimmed().split(" ", QString::SkipEmptyParts);
+ #endif
     QString elfPath = CommandParser::instance().value("t");
 
     if (sourcePath.isEmpty()) {

@@ -249,7 +249,7 @@ void DebugManager::breakInsert(const QString &path, const QString &condition, bo
 void DebugManager::updateExceptResponse(const int token, const QVariant& payload)
 {
     if (d->resposeExpected.contains(token)) {
-        auto& expect = d->resposeExpected.value(token);
+        const auto& expect = d->resposeExpected.value(token);
         if(expect.handler)
             expect.handler(payload);
         if (expect.action == ResponseEntry::ResponseEntry::ResponseAction_t::Temporal)

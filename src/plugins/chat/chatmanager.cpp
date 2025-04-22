@@ -163,7 +163,7 @@ QString ChatManager::getChunks(const QString &queryText)
             context += "\n<context>\n";
             for (auto chunk : chunks) {
                 context += chunk.toObject()["fileName"].toString();
-                context += '\n```';
+                context += QChar('\n```');
                 context += chunk.toObject()["content"].toString();
                 context += "```\n\n";
             }

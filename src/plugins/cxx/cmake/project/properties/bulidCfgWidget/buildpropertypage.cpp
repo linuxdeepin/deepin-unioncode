@@ -101,7 +101,7 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(mainFrame);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 }
 
 DetailPropertyWidget::~DetailPropertyWidget()
@@ -259,7 +259,7 @@ void BuildPropertyPage::setupOverviewUI()
     hLayout->setSpacing(10);
 
     overviewLayout->setSpacing(0);
-    overviewLayout->setMargin(0);
+    overviewLayout->setContentsMargins(0, 0, 0, 0);
     overviewLayout->setSpacing(10);
 
     auto formlayout = new QFormLayout(this);

@@ -13,7 +13,10 @@ add_library(
     ${PROJECT_SOURCES}
 )
 
-find_package(Dtk COMPONENTS Widget Core Gui REQUIRED)
+# let code be position independent
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+find_package(Dtk${DTK_VERSION_MAJOR} COMPONENTS Widget Core Gui REQUIRED)
 
 target_link_libraries(
     ${PROJECT_NAME}

@@ -157,10 +157,17 @@ Settings::~Settings()
 QStringList Settings::groupList() const
 {
     QSet<QString> groupList;
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     groupList += QSet<QString>::fromList(d->settingData.values.keys());
     groupList += QSet<QString>::fromList(d->defaultData.values.keys());
-
     return groupList.toList();
+#else
+    for (auto i : d->settingData.values.keys())
+        groupList += i;
+    for (auto i : d->defaultData.values.keys())
+        groupList += i;
+    return groupList.values();
+#endif
 }
 
 QStringList Settings::keyList(const QString &group) const
@@ -168,11 +175,17 @@ QStringList Settings::keyList(const QString &group) const
     QSet<QString> keyList;
     const auto &&kg = d->settingData.values.value(group);
     const auto &&dkg = d->defaultData.values.value(group);
-
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     keyList += QSet<QString>::fromList(kg.keys());
     keyList += QSet<QString>::fromList(dkg.keys());
-
     return keyList.toList();
+#else
+    for (auto i : kg)
+        keyList += i.toString();
+    for (auto i : dkg)
+        keyList += i.toString();
+    return keyList.values();
+#endif
 }
 
 bool Settings::contains(const QString &group, const QString &key) const

@@ -203,7 +203,7 @@ QRect SearchResultItemDelegate::drawResultCount(QPainter *painter, const QStyleO
     QStyleOptionViewItem opt = option;
     painter->setFont(opt.font);
     auto resultCount = QString::number(index.model()->rowCount(index));
-    auto countWidth = qMax(opt.fontMetrics.width(resultCount) + ItemMargin, CountNumberSize);
+    auto countWidth = qMax(opt.fontMetrics.horizontalAdvance(resultCount) + ItemMargin, CountNumberSize);
 
     QRect countRect = opt.rect;
     countRect.setSize({ countWidth, CountNumberSize });
@@ -320,7 +320,7 @@ void SearchResultItemDelegate::drawNameItem(QPainter *painter, const QStyleOptio
                                                palette.color(QPalette::Normal, DPalette::TextTips), {});
 
     QRect pathRect = nameRect;
-    pathRect.setLeft(nameRect.left() + opt.fontMetrics.width(fileName) + SpacePadding);
+    pathRect.setLeft(nameRect.left() + opt.fontMetrics.horizontalAdvance(fileName) + SpacePadding);
     drawDisplay(painter, option, pathRect, filePath, { pathFormat });
 }
 

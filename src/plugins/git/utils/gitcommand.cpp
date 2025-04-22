@@ -72,7 +72,11 @@ void GitCommandPrivate::startNextJob()
     process.reset(new QProcess);
     connect(process.get(), &QProcess::readyReadStandardOutput, this, &GitCommandPrivate::readStandardOutput);
     connect(process.get(), &QProcess::readyReadStandardError, this, &GitCommandPrivate::readStandardError);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     connect(process.get(), qOverload<int>(&QProcess::finished), this, &GitCommandPrivate::processDone);
+#else
+    connect(process.get(), &QProcess::finished, this, &GitCommandPrivate::processDone);
+#endif
     setupProcess(process.get(), jobList.at(currentJob));
     process->start();
 }

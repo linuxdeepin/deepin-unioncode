@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(python)
 
-find_package(Qt5 COMPONENTS Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
 
 set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)
@@ -29,11 +29,10 @@ target_link_libraries(${PROJECT_NAME}
     duc-services
     duc-common
     cppdap
-    Qt5::Xml
+    Qt${QT_VERSION_MAJOR}::Xml
     ${QtUseModules}
     ${PkgUserModules}
     )
 
 install_logo(${PROJECT_NAME}.svg)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
-

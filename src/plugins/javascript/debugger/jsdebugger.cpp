@@ -12,6 +12,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QAction>
+#if QT_VERSION <= 0x060000
 
 #define SAFE_DELETE(p) \
 if (p) {               \
@@ -251,3 +252,5 @@ void JSDebugger::setupDebugEnv()
     runState = kNoRun;
     emit runStateChanged(kNoRun);
 }
+
+#endif

@@ -7,6 +7,8 @@
 #include "common/type/task.h"
 #include "common/util/fileutils.h"
 
+#include <QRegularExpression>
+
 const char TASK_CATEGORY_BUILDSYSTEM[] = "Task.Category.Buildsystem";
 
 GradleParser::GradleParser()
@@ -25,7 +27,7 @@ void GradleParser::stdOutput(const QString &line, OutputPane::OutputFormat forma
 void GradleParser::stdError(const QString &line)
 {
     QString newContent = line;
-    QRegExp exp("/.*:(\\d*):");
+    QRegularExpression exp("/.*:(\\d*):");
     int ret = newContent.indexOf(exp);
     QString filePath;
     int lineNumber = -1;

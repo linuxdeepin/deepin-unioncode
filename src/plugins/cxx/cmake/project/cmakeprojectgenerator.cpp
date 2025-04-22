@@ -280,7 +280,6 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
             [=](const QString &path) {
                 if (d->projectsWaitingUpdate.contains(thisProject))
                     return;
-
                 auto windowService = dpfGetService(WindowService);
                 windowService->notify(0, "CMakeProject", tr("Files in project %1 have changed, needs to run cmake to update").arg(thisProject->text()), {});
                 d->projectsWaitingUpdate.append(thisProject);
@@ -586,7 +585,7 @@ void CmakeProjectGenerator::projectParseFinished(const CmakeAsynParse::ParseInfo
         return;
 
     auto prjService = dpfGetService(ProjectService);
-    prjService->expandItemByFile(d->toExpand.toList());
+    prjService->expandItemByFile(d->toExpand.values());
 }
 
 void CmakeProjectGenerator::initCMakeParser()

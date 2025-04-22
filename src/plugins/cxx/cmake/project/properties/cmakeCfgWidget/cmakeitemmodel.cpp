@@ -46,7 +46,7 @@ CMakeItem::CMakeItem()
 CMakeItem::CMakeItem(const QByteArray *key, const QByteArray *value)
 {
     this->key = QString::fromStdString(key->toStdString());
-    this->value = value;
+    this->value = QVariant(*value);
 }
 
 CMakeItem::itemType CMakeItem::dataToType(const QByteArray &data)

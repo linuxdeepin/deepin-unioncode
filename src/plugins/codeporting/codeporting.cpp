@@ -157,16 +157,12 @@ const QList<QStringList> CodePorting::getDependLibReport() const
  */
 QList<QString> findAll(QString pattern, QString str, bool Greedy)
 {
-    QRegExp rxlen(pattern);
-    rxlen.setMinimal(Greedy);
-    int position = 0;
-    QList<QString> strList;
-    while (position >= 0) {
-        position = rxlen.indexIn(str, position);
-        if (position < 0)
-            break;
-        strList << rxlen.cap(1);
-        position += rxlen.matchedLength();
+    QRegularExpression re(pattern);
+    QRegularExpressionMatchIterator i = re.globalMatch(str);
+    QStringList strList;
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        strList << match.captured(1);
     }
     return strList;
 }

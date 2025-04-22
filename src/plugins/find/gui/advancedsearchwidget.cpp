@@ -279,14 +279,14 @@ SearchParams AdvancedSearchWidgetPrivate::searchParams()
 
         const auto &infoList = projectSrv->getAllProjectInfo();
         for (const auto &info : infoList) {
-            params.projectFileList.append(info.sourceFiles().toList());
+            params.projectFileList.append(info.sourceFiles().values());
         }
     } break;
     case CurrentProject: {
         params.editFileList = editSrv->openedFiles();
 
         const auto &info = projectSrv->getActiveProjectInfo();
-        params.projectFileList.append(info.sourceFiles().toList());
+        params.projectFileList.append(info.sourceFiles().values());
     } break;
     case CurrentFile: {
         auto curFile = editSrv->currentFile();
@@ -301,9 +301,13 @@ SearchParams AdvancedSearchWidgetPrivate::searchParams()
     params.flags |= caseBtn->isChecked() ? SearchCaseSensitively : SearchNoFlag;
     params.flags |= wholeWordBtn->isChecked() ? SearchWholeWords : SearchNoFlag;
     params.flags |= regexBtn->isChecked() ? SearchRegularExpression : SearchNoFlag;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    params.includeList = includeEdit->text().trimmed().split(",", Qt::SkipEmptyParts);
+    params.excludeList = excludeEdit->text().trimmed().split(",", Qt::SkipEmptyParts); 
+#else
     params.includeList = includeEdit->text().trimmed().split(",", QString::SkipEmptyParts);
-    params.excludeList = excludeEdit->text().trimmed().split(",", QString::SkipEmptyParts);
-
+    params.excludeList = excludeEdit->text().trimmed().split(",", QString::SkipEmptyParts); 
+#endif
     return params;
 }
 

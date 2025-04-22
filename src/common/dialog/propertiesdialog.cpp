@@ -174,7 +174,7 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     bgGroup->setItemMargins(QMargins(0, 0, 0, 0));
     bgGroup->setBackgroundRole(QPalette::Window);
     bgGroup->setUseWidgetBackground(false);
-    bgGpLayout->setMargin(0);
+    bgGpLayout->setContentsMargins(0, 0, 0, 0);
 
     DFrame *wrapperFrame = new DFrame(bgGroup);
     wrapperFrame->setLineWidth(0);

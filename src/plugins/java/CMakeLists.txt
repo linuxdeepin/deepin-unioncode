@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(java)
 
-find_package(Qt5 COMPONENTS Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
     maven/mavengenerator.cpp
@@ -89,11 +89,10 @@ target_link_libraries(${PROJECT_NAME}
     duc-base
     duc-services
     duc-common
-    Qt5::Xml
+    Qt${QT_VERSION_MAJOR}::Xml
     ${QtUseModules}
     ${PkgUserModules}
     )
 
 install_logo(${PROJECT_NAME}.svg)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
-

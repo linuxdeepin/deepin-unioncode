@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(chat)
 
-find_package(KF5SyntaxHighlighting)
+find_package(KF${KF_VERSION_MAJOR}SyntaxHighlighting)
 pkg_check_modules(CMARK REQUIRED libcmark)
 
 FILE(GLOB CHAT_FILES
@@ -34,7 +34,7 @@ target_link_libraries(${PROJECT_NAME}
     ${QtUseModules}
     ${PkgUserModules}
     ${DtkWidget_LIBRARIES}
-    KF5::SyntaxHighlighting
+   KF${KF_VERSION_MAJOR}::SyntaxHighlighting
     ${CMARK_LIBRARIES}
 )
 

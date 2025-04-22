@@ -63,10 +63,12 @@ public:
             return operator<<(std::list<QString>(qListStr.begin(), qListStr.end()));
         }
 
-        std::string operator << (const QStringList &qStrList)
-        {
-            return operator<<(std::list<QString>(qStrList.begin(), qStrList.end()));
-        }
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+         std::string operator << (const QStringList &qStrList)
+         {
+             return operator<<(std::list<QString>(qStrList.begin(), qStrList.end()));
+         }
+#endif
     };
 
     struct Stderr : LogFormat, LogValue{

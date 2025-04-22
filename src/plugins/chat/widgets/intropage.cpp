@@ -37,7 +37,7 @@ void SuggestButton::paintEvent(QPaintEvent *event)
     QFontMetrics fm(font());
     if (event->rect().width() < minimumWidth) {
         auto gap = minimumWidth - event->rect().width();
-        auto length = fm.width(originalText) - gap;
+        auto length = fm.horizontalAdvance(originalText) - gap;
         if (length < 0)
             return DPushButton::paintEvent(event);
         setText(fm.elidedText(text(), Qt::ElideRight, length));
@@ -123,7 +123,7 @@ void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
     descLayout->setAlignment(Qt::AlignTop);
 
     DLabel *icon = new DLabel(this);
-    icon->setMargin(2);
+    icon->setContentsMargins(2, 2, 2, 2);
     icon->setFixedSize(16, 16);
 
     labelToPaint.append(icon);

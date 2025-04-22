@@ -99,7 +99,7 @@ void DapSession::slotReceiveClientInfo(const QString &ppid, const QString &kit, 
     param.insert("targetPath", targetPath);
     param.insert("arguments", arguments);
 
-    if(ppid == getppid())
+    if(ppid == QString::number(getppid()))
         emit sigSendToClient(ppid, d->serverInfo.port(), kit, param);
 }
 
@@ -118,8 +118,9 @@ bool DapSession::start()
 
     auto checkPortFree = [](int port) {
         QProcess process;
-        QString cmd = QString("fuser %1/tcp").arg(port);
-        process.start(cmd);
+        QString program = "fuser";
+        QStringList param = { QString("%1/tcp").arg(port) };
+        process.start(program, param);
         process.waitForFinished();
         QString ret = process.readAll();
         if (ret.isEmpty())
@@ -312,24 +313,23 @@ void DapSession::registerHanlder()
     // execute debugger and debuggee after configurate done response
     d->session->registerSentHandler([&](const dap::ResponseOrError<dap::ConfigurationDoneResponse> &response) {
         Q_UNUSED(response)
-        connect(d->debugger, &DebugManager::asyncRunning, DapProxy::instance(),
-                [this](const QString& processName, const QString& theadId) mutable {
-            // TODO(Any):multi-thread condition should be done.
-            Q_UNUSED(theadId)
-            dap::integer pointerSize;
-            dap::ProcessEvent processEvent;
-            processEvent.name = processName.toStdString();
-            processEvent.startMethod = "launch";
-            processEvent.systemProcessId = d->debugger->getProcessId();
-            processEvent.pointerSize = pointerSize;
-            d->session->send(processEvent);
-            Log("--> Server sent process Event to client\n")
-
-            configured.fire();
-        }, Qt::UniqueConnection);
-
         emit DapProxy::instance()->sigLaunchLocal();
     });
+    connect(d->debugger, &DebugManager::asyncRunning, DapProxy::instance(),
+            [this](const QString& processName, const QString& theadId) mutable {
+                // TODO(Any):multi-thread condition should be done.
+                Q_UNUSED(theadId)
+                dap::integer pointerSize;
+                dap::ProcessEvent processEvent;
+                processEvent.name = processName.toStdString();
+                processEvent.startMethod = "launch";
+                processEvent.systemProcessId = d->debugger->getProcessId();
+                processEvent.pointerSize = pointerSize;
+                d->session->send(processEvent);
+                Log("--> Server sent process Event to client\n")
+
+                    configured.fire();
+            });
 
     // The Launch request is made when the client instructs the debugger adapter
     // to start the debuggee. This request contains the launch arguments.

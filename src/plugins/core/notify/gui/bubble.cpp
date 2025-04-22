@@ -96,7 +96,11 @@ void Bubble::showEvent(QShowEvent *event)
     DFloatingWidget::showEvent(event);
 }
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 void Bubble::enterEvent(QEvent *event)
+#else
+void Bubble::enterEvent(QEnterEvent *event)
+#endif
 {
     if (d->timer && d->timer->isActive())
         d->timer->stop();

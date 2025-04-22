@@ -144,8 +144,9 @@ protected:
     /**
      * @reimp
      */
-    virtual void setupChildProcess();
-
+#if QT_VERSION < 0x060000 // move to KPtyProcess()
+    void setupChildProcess() override;
+#endif
 private:
     Q_PRIVATE_SLOT(d_func(), void _k_onStateChanged(QProcess::ProcessState))
 };

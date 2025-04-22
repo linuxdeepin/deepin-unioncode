@@ -182,7 +182,7 @@ void SessionNameInputDialog::initUI()
     setSpacing(10);
     setIcon(QIcon::fromTheme("ide"));
     lineEdit = new DLineEdit(this);
-    QRegExpValidator *validator = new QRegExpValidator(QRegExp("[^/\?:\\\\*]*"), lineEdit);
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(QRegularExpression("[^/\?:\\\\*]*"), lineEdit);
     lineEdit->lineEdit()->setValidator(validator);
     lineEdit->setPlaceholderText(tr("Please input session name"));
     connect(lineEdit, &DLineEdit::textChanged, this, [this](const QString &text) {

@@ -94,21 +94,18 @@ void ChatWidget::initUI()
 //        welcome_label->setText(tr("Welcome to Chat"));//\nA must-have all-round AI tool for developers
 //        welcome_label->setWordWrap(true);
 //        welcome_label->setAlignment(Qt::AlignCenter);
-
-//        auto font = welcome_label->font();
-//        font.setPixelSize(14);
-//        font.setWeight(500);
-//        welcome_label->setFont(font);
-
+        // auto font = welcome_label->font();
+        // font.setPixelSize(14);
+        // font.setWeight(QFont::Medium);
+        // welcome_label->setFont(font);
 //        auto descrption_label = new DLabel(loginWidget);
 //        descrption_label->setText(tr("A must-have all-round AI tool for developers"));
 //        descrption_label->setWordWrap(true);
 //        descrption_label->setAlignment(Qt::AlignCenter);
-
-//        font = descrption_label->font();
-//        font.setPixelSize(12);
-//        font.setWeight(400);
-//        descrption_label->setFont(font);
+        // font = descrption_label->font();
+        // font.setPixelSize(12);
+        // font.setWeight(QFont::Normal);
+        // descrption_label->setFont(font);
 
 //        verticalLayout->addSpacing(30);
 //        verticalLayout->addWidget(welcome_label);
@@ -141,7 +138,7 @@ void ChatWidget::initAskWidget()
     stackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
 
     auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     mainLayout->addWidget(stackWidget);

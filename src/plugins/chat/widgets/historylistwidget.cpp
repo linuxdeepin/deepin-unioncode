@@ -79,7 +79,7 @@ void HistoryListWidget::initUI()
     mainLayout->addWidget(itemsContainer);
 
     QVBoxLayout *containerLayout = new QVBoxLayout;
-    containerLayout->setMargin(0);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
     containerLayout->setSpacing(10);
     itemsContainer->setLayout(containerLayout);
 
