@@ -24,7 +24,7 @@ class DLabel;
 DWIDGET_END_NAMESPACE
 
 // webengine could not used on some platform
-#ifdef LOONGARCH64
+#ifdef UNSUPPORTPLATFORM
 #define NOT_USE_WEBENGINE
 #endif
 
