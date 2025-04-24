@@ -4,6 +4,10 @@ project(core)
 
 if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
     add_definitions(-DUNSUPPORTPLATFORM)
+    message(STATUS "Skipping WebEngineWidgets for mips64 platform.")
+else()
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineWidgets REQUIRED)
+    target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
 endif()
 
 FILE(GLOB_RECURSE PROJECT_SOURCES
@@ -29,13 +33,5 @@ target_link_libraries(${PROJECT_NAME}
     ${PkgUserModules}
     ${DtkWidget_LIBRARIES}
     )
-
-if(NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64")
-    # loogarch not support web engine now, maybe remove this condition later.
-    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineWidgets REQUIRED)
-    target_link_libraries(${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
-else()
-    message(STATUS "Skipping WebEngineWidgets for loongarch64 platform.")
-endif()
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
