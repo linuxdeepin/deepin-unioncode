@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.18)
 
 project(core)
 
-if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64")
-    add_definitions(-DLOONGARCH64)
+if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
+    add_definitions(-DUNSUPPORTPLATFORM)
 endif()
 
 FILE(GLOB_RECURSE PROJECT_SOURCES
