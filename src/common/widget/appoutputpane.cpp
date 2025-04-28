@@ -22,9 +22,11 @@
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
-void defaultStopHandler(const QString &id)
+void defaultStopHandler(const QString &pid)
 {
-    QProcess::startDetached("kill -9 " + id);
+    QProcess process;
+    process.start("kill", {"-9", pid});
+    process.waitForFinished();
 }
 
 class OutputWindowPrivate
