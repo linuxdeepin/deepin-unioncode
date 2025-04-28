@@ -1,3 +1,9 @@
+deepin-unioncode (1.4.11) UNRELEASED; urgency=medium
+
+  * Bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Mon, 28 Apr 2025 16:09:10 +0800
+
 deepin-unioncode (1.4.10) UNRELEASED; urgency=medium
 
   * Adapt qt6.8
