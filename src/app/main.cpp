@@ -4,6 +4,7 @@
 
 #include "common/common.h"
 #include "common/settings/settings.h"
+#include "common/util/utils.h"
 
 #include <framework/framework.h>
 #include <framework/lifecycle/pluginsetting.h>
@@ -103,10 +104,12 @@ void openProject(const QString &path)
 int main(int argc, char *argv[])
 {
     // some platform opengl drive with wrong，so use OpenGLES instead.
-    if (QSysInfo::currentCpuArchitecture().contains("arm")) {
-        QSurfaceFormat format;
-        format.setRenderableType(QSurfaceFormat::OpenGLES);
-        format.setDefaultFormat(format);
+    if(utils::isWayland())  {
+        if (QSysInfo::currentCpuArchitecture().contains("arm")) {
+            QSurfaceFormat format;
+            format.setRenderableType(QSurfaceFormat::OpenGLES);
+            format.setDefaultFormat(format);
+        }
     }
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
