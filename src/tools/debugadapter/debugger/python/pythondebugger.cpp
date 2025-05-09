@@ -144,7 +144,30 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     d->process.setProcessEnvironment(env);
     d->process.start("/bin/bash", options);
     d->process.waitForStarted();
-    QThread::msleep(500);  // The port may not start listening immediately when Python starts, resulting in the IDE being unable to connect. Wait for 500ms.
+
+    // debugpy may not ready when launched,so we should delay when it start listen port.
+    const int maxRetries = 50;
+    const int retryInterval = 100;
+    bool portReady = false;
+
+    for (int i = 0; i < maxRetries && !portReady; i++) {
+        QProcess checkPort;
+        QString cmd = QString("netstat -an | grep LISTEN | grep %1").arg(d->port);
+        checkPort.start("bash", {"-c", cmd});
+        checkPort.waitForFinished();
+        
+        if (!checkPort.readAll().isEmpty()) {
+            portReady = true;
+            qInfo() << "Debugpy port" << d->port << "is ready after" << (i + 1) * retryInterval << "ms";
+            break;
+        }
+        
+        QThread::msleep(retryInterval);
+    }
+
+    if (!portReady) {
+        qWarning() << "Debugpy port" << d->port << "failed to start after" << maxRetries * retryInterval << "ms";
+    }
 }
 
 void PythonDebugger::slotReceiveClientInfo(const QString &ppid,
