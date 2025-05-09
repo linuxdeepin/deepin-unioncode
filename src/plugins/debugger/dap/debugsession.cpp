@@ -785,7 +785,6 @@ void DebugSession::setName(string &_name)
 void DebugSession::shutdown()
 {
     if (raw) {
-        raw->disconnect({});
         raw.reset(nullptr);
     }
 }
