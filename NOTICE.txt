@@ -1,0 +1,114 @@
+This file provides copyright and license information for the deepin-unioncode project and its dependencies, as required by their respective licenses.
+
+---
+
+Project: deepin-unioncode
+Source: https://github.com/linuxdeepin/deepin-unioncode
+
+1. Configuration and Build Files
+   Files: .gitlab-ci.yml, .github/*, .gitignore, .clang-format, .clog.toml, .project.json, debian/*, *.qrc, .tx/*, *CMakeLists.txt, *.cmake, *.cmake.in, *.pc.in, *.txt, src/*.json, src/*.xml, src/*.policy, src/*.js, src/*.ini, src/*.qss, src/*.css, src/*.theme, src/*/templates/*, src/*.psd, src/configures/*, src/tools/eventrecorder/include/*.gitignore, src/tools/eventrecorder/Doxyfile, src/tools/eventrecorder/preload/syscall*.cc, src/tools/eventrecorder/preload/*.S, rpm/*.spec, *.sh, *.cfg
+   Copyright: None
+   License: CC0-1.0
+   License Text: Creative Commons CC0 1.0 Universal (Public Domain Dedication). See https://creativecommons.org/publicdomain/zero/1.0/
+
+2. Documentation
+   Files: README*.md, docs/*, *.md
+   Copyright: UnionTech Software Technology Co., Ltd.
+   License: CC-BY-4.0
+   License Text: Creative Commons Attribution 4.0 International. See https://creativecommons.org/licenses/by/4.0/
+
+3. Translations, Assets, Images, Desktop Files, Scripts, Plugins, and Tools
+   Files: translations/*.ts, assets/*, src/apps/*/assets/*, src/*.png, src/*.svg, src/*.jpg, src/*.desktop, src/scripts/*, src/plugin/*, src/tool/*
+   Copyright: UnionTech Software Technology Co., Ltd.
+   License: GPL-3.0-or-later
+   License Text: GNU General Public License, version 3 or later. See https://www.gnu.org/licenses/gpl-3.0.html
+
+4. FlameGraph
+   Files: 3rdparty/scripts/*
+   Copyright: 2013 Brendan Gregg
+   License: GPL-3.0-or-later
+   License Text: GNU General Public License, version 3 or later. See https://www.gnu.org/licenses/gpl-3.0.html
+
+5. cppdap and diff_match_patch
+   Files: 3rdparty/cppdap/src/*, 3rdparty/cppdap/include/*, 3rdparty/cppdap/examples/*, 3rdparty/cppdap/fuzz/*, 3rdparty/cppdap/kokoro/*, 3rdparty/cppdap/CONTRIBUTING, 3rdparty/diff-match-patch/*
+   Copyright: 2019 Google LLC
+   License: Apache-2.0
+   License Text: Apache License, Version 2.0. See https://www.apache.org/licenses/LICENSE-2.0
+
+6. googletest
+   Files: 3rdparty/cppdap/third_party/googletest/*
+   Copyright: 2019 Google LLC
+   License: BSD-3-Clause
+   License Text: BSD 3-Clause License. See https://opensource.org/licenses/BSD-3-Clause
+
+7. nlohmann JSON
+   Files: 3rdparty/cppdap/third_party/json/*
+   Copyright: 2019 Google LLC
+   License: MIT
+   License Text: MIT License. See https://opensource.org/licenses/MIT
+
+8. GitQlient
+   Files: 3rdparty/unioncode-GitQlient/*
+   Copyright: 2011-2017 Peter Spiess-Knafl <dev@spiessknafl.at>, 2021 Francesc Martinez <es.linkedin.com/in/cescmm/en>, 2012 Peter Spiess-Knafl <dev@spiessknafl.at>, 2016 Jean-Daniel Michaud <jean.daniel.michaud@gmail.com>, 2016 Alexandre Poirot <alexandre.poirot@legrand.fr>, 2017 Jacques Software <software@jacques.com.au>
+   License: LGPL-2.1-or-later
+   License Text: GNU Lesser General Public License, version 2.1 or later. See https://www.gnu.org/licenses/lgpl-2.1.html
+
+9. jsonrpc
+   Files: 3rdparty/unioncode-jsonrpccpp/*
+   Copyright: 2015 Alexandre Poirot
+   License: MIT
+   License Text: MIT License. See https://opensource.org/licenses/MIT
+
+10. qtermwidget
+    Files: 3rdparty/unioncode-qtermwidget-0.14.1/*
+    Copyright: Adriaan de Groot <groot@kde.org>, 2010 KDE e.V <kde-ev-board@kde.org>, 2002-2007 Oswald Buddenhagen <ossi@kde.org>, 2006-2008 Robert Knight <robertknight@gmail.com>, 2002 Waldo Bastian <bastian@kde.org>, 2008 e_k <e_k@users.sourceforge.net>
+    License: GPL-2.0-or-later
+    License Text: GNU General Public License, version 2 or later. See https://www.gnu.org/licenses/gpl-2.0.html
+
+11. qtermwidget (Examples and Libraries)
+    Files: 3rdparty/unioncode-qtermwidget-0.14.1/example/*, 3rdparty/unioncode-qtermwidget-0.14.1/lib/*
+    Copyright: Adriaan de Groot <groot@kde.org>, 2010 KDE e.V <kde-ev-board@kde.org>, 2002-2007 Oswald Buddenhagen <ossi@kde.org>, 2006-2008 Robert Knight <robertknight@gmail.com>, 2002 Waldo Bastian <bastian@kde.org>, 2008 e_k <e_k@users.sourceforge.net>
+    License: LGPL-2.0-or-later
+    License Text: GNU Lesser General Public License, version 2 or later. See https://www.gnu.org/licenses/lgpl-2.0.html
+
+12. qtermwidget (CMake Files)
+    Files: 3rdparty/unioncode-qtermwidget-0.14.1/pyqt/cmake/*, 3rdparty/unioncode-qtermwidget-0.14.1/cmake/*
+    Copyright: 2012 Luca Beltrame <lbeltrame@kde.org>, 2012 Rolf Eike Beer <eike@sf-mail.de>, 2007-2014 Simon Edwards <simon@simonzone.com>
+    License: BSD-3-Clause
+    License Text: BSD 3-Clause License. See https://opensource.org/licenses/BSD-3-Clause
+
+13. qscintilla
+    Files: 3rdparty/unioncode-qscintilla214/src/*
+    Copyright: 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
+    License: GPL-3.0-or-later
+    License Text: GNU General Public License, version 3 or later. See https://www.gnu.org/licenses/gpl-3.0.html
+
+14. scintilla
+    Files: 3rdparty/unioncode-qscintilla214/scintilla/*
+    Copyright: 1998-2021 Neil Hodgson <neilh@scintilla.org>
+    License: HPND (Historical Permission Notice and Disclaimer)
+    License Text: See https://www.scintilla.org/License.txt
+
+15. Event Recorder (Architecture-Specific Files)
+    Files: src/tools/eventrecorder/aarch64/*, src/tools/eventrecorder/mips64/*, src/tools/eventrecorder/sw64/*, src/tools/eventrecorder/x86_64/*
+    Copyright: 1993 Branko Lankester <branko@hacktic.nl>
+    License: BSD-Protection
+    License Text: BSD Protection License. See https://fedoraproject.org/wiki/Licensing/BSD#Protection
+
+16. Event Recorder (ScopedFd, easylogging, linenoise)
+    Files: src/tools/eventrecorder/ScopedFd.h, src/tools/eventrecorder/easylogging*, src/tools/eventrecorder/linenoise*
+    Copyright: 2012-2018 Zuhd Web Services
+    License: MIT
+    License Text: MIT License. See https://opensource.org/licenses/MIT
+
+17. Event Recorder (Wait)
+    Files: src/tools/eventrecorder/Wait*
+    Copyright: 2002 Niels Provos <provos@citi.umich.edu>
+    License: BSD-Protection
+    License Text: BSD Protection License. See https://fedoraproject.org/wiki/Licensing/BSD#Protection
+
+18. Event Recorder (DWARF and ELF)
+    Files: src/tools/eventrecorder/include/dwarf/*, src/tools/eventrecorder/include/elf/*
+    Copyright: 2013 Austin T. Clements
+    License: MIT
+    License Text: MIT License. See https://opensource.org/licenses/MIT
