@@ -115,7 +115,7 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     auto checkPortFree = [](int port) {
         QProcess process;
         QString cmd = QString("fuser %1/tcp").arg(port);
-        process.start(cmd);
+        process.start("bash", {"-c", cmd});
         process.waitForFinished();
         QString ret = process.readAll();
         if (ret.isEmpty())
