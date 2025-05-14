@@ -89,7 +89,6 @@ class DebuggerPrivate
     DEBUG::DebugSession *currentSession { nullptr };
 
     dap::integer threadId = 0;
-    QList<dap::integer> threads;
     StackFrameData currentValidFrame;
 
     /**
@@ -736,17 +735,6 @@ void DAPDebugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "ThreadEvent";
-
-        if (event.reason == "started")
-            d->threads.append(event.threadId);
-
-        if (event.reason == "exited") {
-            d->threads.removeOne(event.threadId);
-            if (d->threads.isEmpty()) {
-                printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
-                updateRunState(kNoRun);
-            }
-        }
     });
 
     // The event indicates that the target has produced some output.
@@ -1361,7 +1349,6 @@ void DAPDebugger::exitDebug()
 
     d->threadId = 0;
 
-    d->threads.clear();
     d->threadSelector->clear();
 }
 
