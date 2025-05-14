@@ -30,6 +30,7 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+#include <set>
 
 #ifdef ENABLE_LOG
 #define Log(message) printf("%s", message);
@@ -418,7 +419,9 @@ class Impl : public dap::Session {
     // "body" is an optional field for some events, such as "Terminated Event".
     bool body_ok = true;
     d->field("body", [&](dap::Deserializer* d) {
-        if (!typeinfo->deserialize(d, data)) {
+        // todo: to completed
+        std::set<std::string> bodyCanBeEmpty { "terminated" };
+        if (!typeinfo->deserialize(d, data) && bodyCanBeEmpty.find(event) == bodyCanBeEmpty.end()) {
             body_ok = false;
         }
         return true;
