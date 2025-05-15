@@ -32,6 +32,7 @@ public:
                                  OutputPane::OutputFormat format,
                                  OutputPane::AppendMode mode);
 
+    void setProcessStarted(const QString &id);
     void setProcessFinished(const QString &id);
 
     using StopHandler = std::function<void()>;
