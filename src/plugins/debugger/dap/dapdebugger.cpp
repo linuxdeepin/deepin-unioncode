@@ -213,6 +213,19 @@ void DAPDebugger::startDebug()
     if (d->currentSession == d->remoteSession)
         d->currentSession = d->localSession;
 
+    QMetaObject::invokeMethod(this, [=](){
+        auto appOutPutPane = AppOutputPane::instance();
+        appOutPutPane->createApplicationPane("debugPane", "debugTarget");
+        appOutPutPane->setStopHandler("debugPane", [=]() {
+            abortDebug();
+            d->outputPane = appOutPutPane->defaultPane();
+        });
+        d->outputPane = appOutPutPane->getOutputPaneById("debugPane");
+
+        appOutPutPane->bindToolBarToPane(debugToolBarName, d->outputPane);
+        AppOutputPane::instance()->setProcessFinished("debugPane"); // only show log untill debuggee launching
+    });
+
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
@@ -1600,16 +1613,7 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     } else {
         debugService->getModel()->clear();
         debugService->getModel()->addSession(d->currentSession);
-
-        auto appOutPutPane = AppOutputPane::instance();
-        appOutPutPane->createApplicationPane("debugPane", "debugTarget");
-        appOutPutPane->setStopHandler("debugPane", [=]() {
-            abortDebug();
-            d->outputPane = appOutPutPane->defaultPane();
-        });
-        d->outputPane = appOutPutPane->getOutputPaneById("debugPane");
-
-        appOutPutPane->bindToolBarToPane(debugToolBarName, d->outputPane);
+        AppOutputPane::instance()->setProcessStarted("debugPane");
     }
 }
 
