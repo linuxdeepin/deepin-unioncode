@@ -89,11 +89,6 @@ Files: 3rdparty/cppdap/src/*
 Copyright: 2019 Google LLC
 License: Apache-2.0
 
-# googletest
-Files: 3rdparty/cppdap/third_party/googletest/*
-Copyright: 2019 Google LLC
-License: BSD-3-Clause
-
 # nolhmann
 Files: 3rdparty/cppdap/third_party/json/*
 Copyright: 2019 Google LLC

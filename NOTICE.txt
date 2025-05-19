@@ -35,79 +35,73 @@ Source: https://github.com/linuxdeepin/deepin-unioncode
    License: Apache-2.0
    License Text: Apache License, Version 2.0. See https://www.apache.org/licenses/LICENSE-2.0
 
-6. googletest
-   Files: 3rdparty/cppdap/third_party/googletest/*
-   Copyright: 2019 Google LLC
-   License: BSD-3-Clause
-   License Text: BSD 3-Clause License. See https://opensource.org/licenses/BSD-3-Clause
-
-7. nlohmann JSON
+6. nlohmann JSON
    Files: 3rdparty/cppdap/third_party/json/*
    Copyright: 2019 Google LLC
    License: MIT
    License Text: MIT License. See https://opensource.org/licenses/MIT
 
-8. GitQlient
+7. GitQlient 1.4.3
    Files: 3rdparty/unioncode-GitQlient/*
    Copyright: 2011-2017 Peter Spiess-Knafl <dev@spiessknafl.at>, 2021 Francesc Martinez <es.linkedin.com/in/cescmm/en>, 2012 Peter Spiess-Knafl <dev@spiessknafl.at>, 2016 Jean-Daniel Michaud <jean.daniel.michaud@gmail.com>, 2016 Alexandre Poirot <alexandre.poirot@legrand.fr>, 2017 Jacques Software <software@jacques.com.au>
    License: LGPL-2.1-or-later
    License Text: GNU Lesser General Public License, version 2.1 or later. See https://www.gnu.org/licenses/lgpl-2.1.html
 
-9. jsonrpc
+8. jsonrpc 1.4.1
    Files: 3rdparty/unioncode-jsonrpccpp/*
    Copyright: 2015 Alexandre Poirot
    License: MIT
    License Text: MIT License. See https://opensource.org/licenses/MIT
 
-10. qtermwidget
+9. qtermwidget 0.14.1
     Files: 3rdparty/unioncode-qtermwidget-0.14.1/*
     Copyright: Adriaan de Groot <groot@kde.org>, 2010 KDE e.V <kde-ev-board@kde.org>, 2002-2007 Oswald Buddenhagen <ossi@kde.org>, 2006-2008 Robert Knight <robertknight@gmail.com>, 2002 Waldo Bastian <bastian@kde.org>, 2008 e_k <e_k@users.sourceforge.net>
     License: GPL-2.0-or-later
     License Text: GNU General Public License, version 2 or later. See https://www.gnu.org/licenses/gpl-2.0.html
 
-11. qtermwidget (Examples and Libraries)
+10. qtermwidget (Examples and Libraries)
     Files: 3rdparty/unioncode-qtermwidget-0.14.1/example/*, 3rdparty/unioncode-qtermwidget-0.14.1/lib/*
     Copyright: Adriaan de Groot <groot@kde.org>, 2010 KDE e.V <kde-ev-board@kde.org>, 2002-2007 Oswald Buddenhagen <ossi@kde.org>, 2006-2008 Robert Knight <robertknight@gmail.com>, 2002 Waldo Bastian <bastian@kde.org>, 2008 e_k <e_k@users.sourceforge.net>
     License: LGPL-2.0-or-later
     License Text: GNU Lesser General Public License, version 2 or later. See https://www.gnu.org/licenses/lgpl-2.0.html
 
-12. qtermwidget (CMake Files)
+11. qtermwidget (CMake Files)
     Files: 3rdparty/unioncode-qtermwidget-0.14.1/pyqt/cmake/*, 3rdparty/unioncode-qtermwidget-0.14.1/cmake/*
     Copyright: 2012 Luca Beltrame <lbeltrame@kde.org>, 2012 Rolf Eike Beer <eike@sf-mail.de>, 2007-2014 Simon Edwards <simon@simonzone.com>
     License: BSD-3-Clause
     License Text: BSD 3-Clause License. See https://opensource.org/licenses/BSD-3-Clause
 
-13. qscintilla
+12. qscintilla 2.14
     Files: 3rdparty/unioncode-qscintilla214/src/*
     Copyright: 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
     License: GPL-3.0-or-later
     License Text: GNU General Public License, version 3 or later. See https://www.gnu.org/licenses/gpl-3.0.html
 
-14. scintilla
+13. scintilla
     Files: 3rdparty/unioncode-qscintilla214/scintilla/*
     Copyright: 1998-2021 Neil Hodgson <neilh@scintilla.org>
     License: HPND (Historical Permission Notice and Disclaimer)
     License Text: See https://www.scintilla.org/License.txt
 
-15. Event Recorder (Architecture-Specific Files)
+14. Event Recorder (Architecture-Specific Files)
     Files: src/tools/eventrecorder/aarch64/*, src/tools/eventrecorder/mips64/*, src/tools/eventrecorder/sw64/*, src/tools/eventrecorder/x86_64/*
     Copyright: 1993 Branko Lankester <branko@hacktic.nl>
     License: BSD-Protection
     License Text: BSD Protection License. See https://fedoraproject.org/wiki/Licensing/BSD#Protection
 
-16. Event Recorder (ScopedFd, easylogging, linenoise)
+15. Event Recorder (ScopedFd, easylogging, linenoise)
     Files: src/tools/eventrecorder/ScopedFd.h, src/tools/eventrecorder/easylogging*, src/tools/eventrecorder/linenoise*
     Copyright: 2012-2018 Zuhd Web Services
     License: MIT
     License Text: MIT License. See https://opensource.org/licenses/MIT
 
-17. Event Recorder (Wait)
+16. Event Recorder (Wait)
     Files: src/tools/eventrecorder/Wait*
     Copyright: 2002 Niels Provos <provos@citi.umich.edu>
     License: BSD-Protection
     License Text: BSD Protection License. See https://fedoraproject.org/wiki/Licensing/BSD#Protection
 
-18. Event Recorder (DWARF and ELF)
+17. Event Recorder (DWARF and ELF)
     Files: src/tools/eventrecorder/include/dwarf/*, src/tools/eventrecorder/include/elf/*
     Copyright: 2013 Austin T. Clements
     License: MIT
