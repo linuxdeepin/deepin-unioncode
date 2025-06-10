@@ -35,6 +35,15 @@ void PIPInstaller::install(const InstallInfo &info)
     return install("python3", info);
 }
 
+bool PIPInstaller::checkPipExists(const QString &python)
+{
+    QProcess process;
+    process.start(python, { "-m", "pip", "--version" });
+    process.waitForFinished();
+
+    return process.exitCode() == 0;
+}
+
 bool PIPInstaller::checkInstalled(const QString &python, const QString &package)
 {
     // remove extra dependency
@@ -61,16 +70,32 @@ void PIPInstaller::install(const QString &python, const InstallInfo &info)
     if (!termSrv)
         termSrv = dpfGetService(TerminalService);
 
-    QStringList args { "-m", "pip", "install" };
-    args << info.packageList
-         << "--target"
-         << Utils::packageInstallPath(python);
-
+    uiController.doSwitch(MWNA_EDIT);
+    uiController.switchContext(TERMINAL_TAB_TEXT);
     const auto &map = OptionManager::getInstance()->getValue(option::CATEGORY_PYTHON, "Interpreter").toMap();
     const auto &pipSrc = map.value("pipSource").toString();
-    if (!pipSrc.isEmpty())
-        args << "-i" << pipSrc;
 
-    uiController.switchContext(TERMINAL_TAB_TEXT);
-    termSrv->executeCommand(info.plugin.isEmpty() ? "PIPInstaller" : info.plugin, python, args, "", QStringList());
+    // Check if pip exists, if not install python3-pip first
+    if (!checkPipExists(python)) {
+        // Install python3-pip and then install packages in one command
+        QString installCommand = QString("apt install python3-pip -y && %1 -m pip install").arg(python);
+        QStringList packages = info.packageList;
+        installCommand += " " + packages.join(" ");
+        installCommand += " --target " + Utils::packageInstallPath(python);
+        if (!pipSrc.isEmpty())
+            installCommand += " -i " + pipSrc;
+
+        termSrv->executeCommand(info.plugin.isEmpty() ? "PIPInstaller" : info.plugin, "sudo", { installCommand }, "", QStringList());
+    } else {
+        // pip exists, install packages directly
+        QStringList args { "-m", "pip", "install" };
+        args << info.packageList
+             << "--target"
+             << Utils::packageInstallPath(python);
+
+        if (!pipSrc.isEmpty())
+            args << "-i" << pipSrc;
+
+        termSrv->executeCommand(info.plugin.isEmpty() ? "PIPInstaller" : info.plugin, python, args, "", QStringList());
+    }
 }

@@ -25,6 +25,7 @@ public:
     void install(const QString &python, const InstallInfo &info);
 
 private:
+    bool checkPipExists(const QString &python);
     dpfservice::TerminalService *termSrv { nullptr };
 };
 
