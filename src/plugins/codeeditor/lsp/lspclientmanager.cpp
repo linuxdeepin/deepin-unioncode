@@ -28,12 +28,17 @@ newlsp::Client *LSPClientManager::get(const newlsp::ProjectKey &key)
     if (!key.isValid())
         return nullptr;
 
+    auto selectLSP = [key](newlsp::Client *client) {
+        qApp->metaObject()->invokeMethod(client, "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
+        if (!client->isValid())
+            qApp->metaObject()->invokeMethod(client, "initRequest");
+    };
+
     if (clientHash.contains(key)) {
-        qApp->metaObject()->invokeMethod(clientHash[key], "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
+        selectLSP(clientHash[key]);
     } else {
         auto client = new newlsp::Client();
-        qApp->metaObject()->invokeMethod(client, "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
-        qApp->metaObject()->invokeMethod(client, "initRequest");
+        selectLSP(client);
         clientHash.insert(key, client);
     }
 
