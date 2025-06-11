@@ -23,6 +23,7 @@ public:
     virtual ~Client();
 
     lsp::SemanticTokensProvider initSecTokensProvider();
+    bool isValid() const;
 
 public slots:
     // textDocument/semanticTokens/full/delta

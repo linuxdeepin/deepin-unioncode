@@ -32,6 +32,7 @@ class ClientPrivate : public newlsp::StdoutJsonRpcParser
     QHash<QString, int> fileVersion;
     lsp::SemanticTokensProvider secTokensProvider;
     newlsp::ProjectKey proKey;
+    bool isClientValid { false };
 
     ClientPrivate(Client *const q);
 
@@ -39,27 +40,27 @@ class ClientPrivate : public newlsp::StdoutJsonRpcParser
 
     /* server response parse */
     bool calledError(const QJsonObject &jsonObj);
-    bool calledResult(const QJsonObject &jsonObj); //found result key from json && not found method
-    bool initResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool openResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool changeResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool symbolResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool renameResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return above uri
-    bool completionResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool rangeFormattingResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool signatureHelpResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool hoverResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool referencesResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool docHighlightResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool docSemanticTokensFullResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool closeResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool calledResult(const QJsonObject &jsonObj);   // found result key from json && not found method
+    bool initResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool openResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool changeResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool symbolResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool renameResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool definitionResult(const QJsonObject &jsonObj);   // client call server rpc return above uri
+    bool completionResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool rangeFormattingResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool signatureHelpResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool hoverResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool referencesResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool docHighlightResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool docSemanticTokensFullResult(const QJsonObject &jsonObj);   // client call server rpc return
+    bool closeResult(const QJsonObject &jsonObj);   // client call server rpc return
     bool shutdownResult(const QJsonObject &jsonObj);
     bool exitResult(const QJsonObject &jsonObj);
     bool switchHeaderSourceResult(const QJsonObject &jsonObj);
 
     /* server called method */
-    bool serverCalled(const QJsonObject &jsonObj); // not found result key from json && found key method
+    bool serverCalled(const QJsonObject &jsonObj);   // not found result key from json && found key method
     bool diagnosticsCalled(const QJsonObject &jsonObj);
 
     QList<DocumentSymbol> parseDocumentSymbol(const QJsonArray &array);
@@ -80,4 +81,4 @@ public Q_SLOTS:
 
 }
 
-#endif // CLIENT_P_H
+#endif   // CLIENT_P_H

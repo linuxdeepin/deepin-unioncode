@@ -538,7 +538,7 @@ void Client::diagnostic(const WorkspaceDiagnosticParams &params)
 
 void Client::selectLspServer(const newlsp::ProjectKey &key)
 {
-    if (d->proKey == key)
+    if (d->proKey == key && d->isClientValid)
         return;
 
     d->proKey = key;
@@ -1342,6 +1342,7 @@ bool ClientPrivate::calledResult(const QJsonObject &jsonObj)
         || !jsonObj.contains(K_RESULT))
         return false;
 
+    isClientValid = true;
     bool any = false;
     any |= initResult(jsonObj);
     any |= openResult(jsonObj);
@@ -1399,6 +1400,11 @@ void ClientPrivate::identifyJsonObject(const QJsonObject &jsonObj)
 lsp::SemanticTokensProvider Client::initSecTokensProvider()
 {
     return d->secTokensProvider;
+}
+
+bool Client::isValid() const
+{
+    return d->isClientValid;
 }
 
 ClientPrivate::ClientPrivate(Client *const q)
