@@ -74,5 +74,6 @@ doc/html/*
 # union code gen
 .unioncode
 *.unioncode
+.cursor/
 .cursorindexingignore
-.specstory
+.specstory/
