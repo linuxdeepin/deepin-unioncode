@@ -156,11 +156,6 @@ void installRR(const QString &id)
     if (id == "apt") {
         auto windowService = dpfGetService(dpfservice::WindowService);
         windowService->installPackages(ReverseDebugger::tr("Reverse debugger"), "apt", { "rr" }, nullptr);
-    } else if (id == "wget") {
-        auto terminalService = dpfGetService(dpfservice::TerminalService);
-        auto command = "cd /tmp && wget https://github.com/rr-debugger/rr/releases/download/5.5.0/rr-5.5.0-Linux-x86_64.deb && sudo dpkg -i rr-5.5.0-Linux-x86_64.deb";
-        uiController.switchContext(dpfservice::TERMINAL_TAB_TEXT);
-        terminalService->sendCommand(command);
     }
 }
 
@@ -176,7 +171,7 @@ bool ReverseDebugger::checkRRInstalled()
         auto windowService = dpfGetService(dpfservice::WindowService);
         QString message = tr("Can not find rr debugger, please install it first. "
                              "If installation is not possible or the software does not work after installation, you can try installing a higher version of rr through GitHub and then attempt to use it.");
-        windowService->notifyWithCallback(0, tr("Reverse Debug"), message, QStringList{"apt", tr("Install by apt"), "wget", tr("Install by Wget")}, installRR);
+        windowService->notifyWithCallback(0, tr("Reverse Debug"), message, QStringList{"apt", tr("Install by apt")}, installRR);
         process.close();
         return false;
     }
