@@ -17,7 +17,7 @@ NETNS_ID="netns${CID}"
 BR_ID="br${CID}"
 BR_IP="172.16.0.1/16"
 BR_GW="172.16.0.1"
-MIRROR="https://pools.uniontech.com/deepin"
+MIRROR="input your mirror address"
 
 sudo ip netns add ${NETNS_ID}
 sudo ip link add ${BR_ID} type bridge
