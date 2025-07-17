@@ -174,7 +174,7 @@ void GenerateDialog::generate()
     YAML::Node sources;
     YAML::Node depend;
     depend["kind"] = "file";
-    depend["url"] = "https://pools.uniontech.com/deepin-beige/pool/main/a/acl/libacl1_2.3.1-1_amd64.deb";
+    depend["url"] = "input your url";
     depend["digest"] = "f06e936eb913b8e9271c17e6d8b94d9e4f0aa558d7debdc324c9484908ee8dc8";
     YAML::Node source;
     source["kind"] = "git";
